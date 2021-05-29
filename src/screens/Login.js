@@ -70,7 +70,8 @@ const styles = StyleSheet.create({
     gobbleimg: {
         width: 350,
         height: 350,
-        marginBottom: 30
+        marginBottom: 30,
+        marginLeft: 20
     },
 
     forgot_button: {
@@ -84,7 +85,7 @@ const styles = StyleSheet.create({
         height:50,
         alignItems:"center",
         justifyContent:"center",
-        marginTop:40,
+        marginTop:20,
         backgroundColor:"#FF1493",
     }
 });
