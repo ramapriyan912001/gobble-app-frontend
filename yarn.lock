@@ -5534,6 +5534,11 @@ source-map@^0.7.3:
   resolved "https://registry.yarnpkg.com/source-map/-/source-map-0.7.3.tgz#5302f8169031735226544092e64981f751750383"
   integrity sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ==
 
+splash-screen@^4.0.1:
+  version "4.0.1"
+  resolved "https://registry.yarnpkg.com/splash-screen/-/splash-screen-4.0.1.tgz#1fd1676dc4af06d76168a102ffa04353498613ee"
+  integrity sha512-qk0oEKe5mWCLeHfRbVOkFDA/FweydoERzhlDOSY3aoV0/36a4kp8jLwRYO13ZVefFJ8mz4Szy00vJF6q5U6UHQ==
+
 split-string@^3.0.1, split-string@^3.0.2:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/split-string/-/split-string-3.1.0.tgz#7cb09dda3a86585705c64b39a6466038682e8fe2"
