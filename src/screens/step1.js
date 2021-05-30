@@ -42,10 +42,7 @@ export default function step1(props) {
                         style={inputStyles.TextInput}
                         placeholder="Username"
                         placeholderTextColor="#003f5c"
-                        onChangeText={(username) => setState(state => {
-                            state.name = username;
-                            return state;
-                        })}
+                        onChangeText={(username) => state.name = username}
                     />
                 </View>
                     
@@ -57,10 +54,7 @@ export default function step1(props) {
                         placeholder="Email"
                         placeholderTextColor="#003f5c"
                         secureTextEntry={false}
-                        onChangeText={(email) => setState(state => {
-                            state.email = email;
-                            return state;
-                        })}
+                        onChangeText={(email) => state.email = email}
                     />
                 </View>
 
@@ -72,10 +66,8 @@ export default function step1(props) {
                         placeholder="Password"
                         placeholderTextColor="#003f5c"
                         secureTextEntry={true}
-                        onChangeText={(password) => setState(state => {
-                            state.password = password;
-                            return state;
-                        })}
+                        onChangeText={(password) => state.password = password
+                        }
                     />
                 </View>
                 
