@@ -38,6 +38,12 @@ export const buttonStyles = StyleSheet.create({
     loginButtonText: {
         // fontSize: 28,
         // fontFamily: 'IndieFlower_400Regular'
+    },
+
+    buttonView: {
+        alignSelf:"center",
+        flexDirection:"column",
+        justifyContent:"flex-end"
     }
 });
 
@@ -48,6 +54,24 @@ export const imageStyles = StyleSheet.create({
         marginBottom: '10%',
         marginLeft: '2%',
         marginTop: '-5%'
+    }
+});
+
+export const pickerStyles = StyleSheet.create({
+    picker:{
+        height: '28%',
+        alignSelf:'center',
+        width: '50%',
+        marginVertical:10,
+    },
+    switchText:{
+        fontSize: 15,
+        paddingHorizontal:'2%',
+        fontWeight:'bold',
+        alignSelf:'center',
+    },
+    switch:{
+        alignSelf:'center'
     }
 });
 
@@ -69,24 +93,17 @@ export const inputStyles = StyleSheet.create({
       },
 
     inputHeader: {
-    backgroundColor: "#fff",
-    borderRadius: 30,
-    width: "60%",
-    height: 45,
-    marginBottom: 20,
-    // shadowColor: "#000",
-    // shadowOffset: {
-    //     width: 0,
-    //     height: 2,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.84,
-    // elevation: 5,
+        backgroundColor: "#fff",
+        borderRadius: 30,
+        width: "60%",
+        height: 45,
+        marginBottom: 20,
     },
 
     headerText: {
         fontSize: 25,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        alignSelf:"center"
     },
 
     TextInput: {
@@ -94,8 +111,6 @@ export const inputStyles = StyleSheet.create({
         flex: 1,
         width: 200,
         paddingLeft: "6%",
-        // fontSize: 20,
-        // fontFamily: 'IndieFlower_400Regular'
     }
 
 });
