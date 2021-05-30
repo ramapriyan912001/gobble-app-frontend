@@ -1,30 +1,30 @@
 import React, {useState} from 'react'
 import {Text, View, TextInput, Image, StyleSheet, TouchableOpacity, StatusBar} from 'react-native'
-
+import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
 export default function signUp(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [username, setUsername] = useState('');
     return(
-        <View style={styles.container}>
-            <Image style={styles.gobbleimg}source = {require('../images/gobble.png')}/>
+        <View style={containerStyles.container}>
+            <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
             <StatusBar style="auto"/>
-            <View style={styles.inputView}>
+            <View style={inputStyles.inputView}>
                 <TextInput
                     textContentType="username"
                     autoCompleteType="username"
-                    style={styles.TextInput}
+                    style={inputStyles.TextInput}
                     placeholder="Username"
                     placeholderTextColor="#003f5c"
                     onChangeText={(username) => setUsername(username)}
                 />
             </View>
                 
-            <View style={styles.inputView}>
+            <View style={inputStyles.inputView}>
                 <TextInput
                     textContentType="emailAddress"
                     autoCompleteType="email"
-                    style={styles.TextInput}
+                    style={inputStyles.TextInput}
                     placeholder="Email"
                     placeholderTextColor="#003f5c"
                     secureTextEntry={true}
@@ -32,11 +32,11 @@ export default function signUp(props) {
                 />
             </View>
 
-            <View style={styles.inputView}>
+            <View style={inputStyles.inputView}>
                 <TextInput
                     passwordRules="minlength: 10; required: lower; required: upper; required: digit; required: [-];"
                     textContentType="password"
-                    style={styles.TextInput}
+                    style={inputStyles.TextInput}
                     placeholder="Password"
                     placeholderTextColor="#003f5c"
                     secureTextEntry={true}
@@ -44,11 +44,11 @@ export default function signUp(props) {
                 />
             </View>
 
-            <View style={styles.inputView}>
+            <View style={inputStyles.inputView}>
                 <TextInput
                     maxLength={15}
                     autoCompleteType="password"
-                    style={styles.TextInput}
+                    style={inputStyles.TextInput}
                     placeholder="Password"
                     placeholderTextColor="#003f5c"
                     secureTextEntry={true}
@@ -56,13 +56,13 @@ export default function signUp(props) {
                 />
             </View>
             
-            <TouchableOpacity style={styles.loginBtn}>
-            <Text style={styles.signUpText}>Sign Up</Text>
+            <TouchableOpacity style={buttonStyles.logginButton}>
+            <Text style={buttonStyles.signUpText}>Sign Up</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.loginBtn} onPress={
+            <TouchableOpacity style={buttonStyles.logginButton} onPress={
                 () => props.navigation.goBack()
             }>
-            <Text style={styles.signUpText}>Back to Login</Text>
+            <Text style={buttonStyles.signUpText}>Back to Login</Text>
             </TouchableOpacity>
         </View>
         
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
           paddingLeft: "6%"
       },
   
-      gobbleimg: {
+      gobbleImage: {
           width: '50%',
           height: '30%',
           marginBottom: '10%',
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
 
-    loginBtn: {
+    logginButton: {
         width:330,
         borderRadius:25,
         height:50,
