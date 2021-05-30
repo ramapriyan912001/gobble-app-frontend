@@ -52,47 +52,40 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     },
 
-    image: {
-        marginBottom: 40
-    },
-
     inputView: {
-        backgroundColor: "#FFC0CB",
+        backgroundColor: "#b5fbd7",
         borderRadius: 30,
-        width: "70%",
+        width: "60%",
         height: 45,
         marginBottom: 20,
-        alignItems: "center",
       },
       
     TextInput: {
         height: 50,
         flex: 1,
-        padding: 10,
-        alignContent: 'center',
-        justifyContent: 'center',
-        width: 200
+        width: 200,
+        paddingLeft: "6%"
     },
 
     gobbleimg: {
-        width: '40%',
-        height: '25%',
+        width: '50%',
+        height: '30%',
         marginBottom: '10%',
-        marginLeft: '2%'
+        marginLeft: '2%',
     },
 
     forgot_button: {
         height: 30,
-        marginBottom: 30,
+        marginBottom: '6%',
     },
 
     loginBtn: {
-        width:300,
+        width:330,
         borderRadius:25,
         height:50,
         alignItems:"center",
         justifyContent:"center",
         marginTop: '5%',
-        backgroundColor:"#FF1493",
+        backgroundColor:"#0aa859",
     }
 });
