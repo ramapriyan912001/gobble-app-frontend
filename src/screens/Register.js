@@ -7,7 +7,7 @@ export default function signUp(props) {
     const [username, setUsername] = useState('');
     return(
         <View style={containerStyles.container}>
-            <Image style={imageStyles.gobbleimg}source = {require('../images/gobble.png')}/>
+            <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
             <StatusBar style="auto"/>
             <View style={inputStyles.inputView}>
                 <TextInput
@@ -56,10 +56,10 @@ export default function signUp(props) {
                 />
             </View>
             
-            <TouchableOpacity style={buttonStyles.loginBtn}>
+            <TouchableOpacity style={buttonStyles.logginButton}>
             <Text style={buttonStyles.signUpText}>Sign Up</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={buttonStyles.loginBtn} onPress={
+            <TouchableOpacity style={buttonStyles.logginButton} onPress={
                 () => props.navigation.goBack()
             }>
             <Text style={buttonStyles.signUpText}>Back to Login</Text>
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
           paddingLeft: "6%"
       },
   
-      gobbleimg: {
+      gobbleImage: {
           width: '50%',
           height: '30%',
           marginBottom: '10%',
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
 
-    loginBtn: {
+    logginButton: {
         width:330,
         borderRadius:25,
         height:50,
