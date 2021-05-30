@@ -18,7 +18,7 @@ export default function step2(props) {
                     <StatusBar style="auto"/>
                     <Text style={inputStyles.headerText}>We're all Set Up.{"\n"}You can now log in to Gobble!</Text>
                     
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.back.back.back}>
+                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigate('Login')}>
                         <Text style={buttonStyles.loginButtonText}>Back to Log In</Text>
                     </TouchableOpacity>
             </SafeAreaView>

@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import {createState} from './step1'
 import {Text, View, SafeAreaView, Image, TouchableOpacity, StatusBar, Switch} from 'react-native'
 import {Picker} from '@react-native-picker/picker'
 import {pickerStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
@@ -20,13 +21,10 @@ export default function step2(props) {
                 <Text style={pickerStyles.switchText}>What are your dietary restrictions?</Text>
                 <Picker
                     selectedValue={state}
-                    onValueChange={(newDiet, itemIndex) =>
-                        setState(state => {
-                            state.diet = newDiet;
-                            return state;
-                        })
-                    }
+                    onValueChange={(newDiet, itemIndex) => 
+                    setState(dummy => createState(state.name, state.dob, newDiet, state.cuisine, state.crossIndustry, state.email, state.password))}
                     style={pickerStyles.picker}
+                    enabled= {true}
                     >
                     <Picker.Item label="Halal" value="halal" />
                     <Picker.Item label="Vegetarian" value="vegetarian" />
@@ -37,12 +35,7 @@ export default function step2(props) {
                 <Picker
                     selectedValue={state}
                     onValueChange={(newCuisineItem, itemIndex) =>
-                        setState(state => {
-                            let cuisine = [];
-                            cuisine.push(newCuisineItem);
-                            state.cuisine = cuisine;
-                            return state;
-                        })}
+                    setState(dummy => setState(state => createState(state.name, state.dob, state.diet, cuisine, state.crossIndustry, state.email, state.password)))}
                     style={pickerStyles.picker}
                     >
                     <Picker.Item label="Indian" value="indian" />
@@ -54,10 +47,8 @@ export default function step2(props) {
                 <Text style={pickerStyles.switchText}>Would you like to be matched with other Industrial Backgrounds?</Text>
                 <Switch 
                     value={state} 
-                    onValueChange={() => setState(state => {
-                    state.crossIndustry = !state.crossIndustry;
-                    return state;
-                })} 
+                    onValueChange={() => 
+                    setState(state => createState(state.name, state.dob, state.diet, state.cuisine, !state.crossIndustry, state.email, state.password))} 
                     style={pickerStyles.switch}
                 />
                 <View style = {buttonStyles.buttonView}>

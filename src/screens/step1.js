@@ -13,6 +13,16 @@ let initialState = {
     password: '',
 };
 
+export const createState = (name, dob, diet, cuisine, crossIndustry, email, pw) => ({
+    name: name,
+    dob: dob,
+    diet: diet,
+    cuisine: cuisine,
+    crossIndustry: crossIndustry,
+    email: email,
+    password: pw
+});
+
 export default function step1(props) {
     const [state, setState] = useState(initialState);
     const nextStep = () => {
@@ -42,10 +52,7 @@ export default function step1(props) {
                         style={inputStyles.TextInput}
                         placeholder="Username"
                         placeholderTextColor="#003f5c"
-                        onChangeText={(username) => setState(state => {
-                            state.name = username;
-                            return state;
-                        })}
+                        onChangeText={(username) => setState(state => createState(username, state.dob, state.diet, state.cuisine, state.crossIndustry, state.email, state.password))}
                     />
                 </View>
                     
@@ -57,10 +64,7 @@ export default function step1(props) {
                         placeholder="Email"
                         placeholderTextColor="#003f5c"
                         secureTextEntry={false}
-                        onChangeText={(email) => setState(state => {
-                            state.email = email;
-                            return state;
-                        })}
+                        onChangeText={(email) => setState(state => setState(state => createState(state.name, state.dob, state.diet, state.cuisine, state.crossIndustry, email, state.password)))}
                     />
                 </View>
 
@@ -72,10 +76,7 @@ export default function step1(props) {
                         placeholder="Password"
                         placeholderTextColor="#003f5c"
                         secureTextEntry={true}
-                        onChangeText={(password) => setState(state => {
-                            state.password = password;
-                            return state;
-                        })}
+                        onChangeText={(password) => setState(state => setState(state => createState(state.name, state.dob, state.diet, state.cuisine, state.crossIndustry, state.email, password)))}
                     />
                 </View>
                 

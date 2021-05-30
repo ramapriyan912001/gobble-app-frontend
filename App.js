@@ -1,8 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import Login from './src/screens/Login';
-import Register from './src/screens/Register'
+import Register from './src/screens/Register';
+import Welcome from './src/screens/Welcome';
+import FinalStep from './src/screens/FinalStep';
 import {createAppContainer} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation-stack'
 import { Header } from 'react-native/Libraries/NewAppScreen';
@@ -20,6 +22,12 @@ const AppNavigator = createStackNavigator({
   },
   Register: {
     screen: Register
+  },
+  FinalStep: {
+    screen: FinalStep
+  },
+  Welcome:{
+    screen: Welcome
   }
 }, {
   initialRouteName: "Login",
