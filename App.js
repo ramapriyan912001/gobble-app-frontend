@@ -8,6 +8,7 @@ import {createStackNavigator} from 'react-navigation-stack'
 import { Header } from 'react-native/Libraries/NewAppScreen';
 
 export default function App() {
+  console.log('App Executed');
   return (
     <AppContainer/>
   );
