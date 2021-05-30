@@ -56,10 +56,10 @@ export default function signUp(props) {
                 />
             </View>
             
-            <TouchableOpacity style={styles.signUpBtn}>
+            <TouchableOpacity style={styles.loginBtn}>
             <Text style={styles.signUpText}>Sign Up</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.signUpBtn} onPress={
+            <TouchableOpacity style={styles.loginBtn} onPress={
                 () => props.navigation.goBack()
             }>
             <Text style={styles.signUpText}>Back to Login</Text>
@@ -78,11 +78,19 @@ const styles = StyleSheet.create({
       },
   
       inputView: {
-          backgroundColor: "#FFC0CB",
+          backgroundColor: "#b5fbd7",
           borderRadius: 30,
           width: "60%",
           height: 45,
           marginBottom: 20,
+          shadowColor: "#000",
+        shadowOffset: {
+            width: 0,
+            height: 2,
+        },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
         },
         
       TextInput: {
@@ -97,6 +105,7 @@ const styles = StyleSheet.create({
           height: '30%',
           marginBottom: '10%',
           marginLeft: '2%',
+          marginTop: '-20%'
       },
 
     forgot_button: {
@@ -104,13 +113,21 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
 
-    signUpBtn: {
-        width:300,
+    loginBtn: {
+        width:330,
         borderRadius:25,
         height:50,
         alignItems:"center",
         justifyContent:"center",
-        marginTop:20,
-        backgroundColor:"#FF1493",
+        marginTop: '5%',
+        backgroundColor:"#0aa859",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 4,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 9,
+        elevation: 5,
     }
 });
