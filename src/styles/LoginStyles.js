@@ -27,11 +27,11 @@ export const buttonStyles = StyleSheet.create({
 
 export const imageStyles = StyleSheet.create({
     gobbleimg: {
-        width: '50%',
+        width: '60%',
         height: '30%',
         marginBottom: '10%',
         marginLeft: '2%',
-        marginTop: '-20%'
+        marginTop: '-5%'
     }
 });
 
