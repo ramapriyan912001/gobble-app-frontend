@@ -10,7 +10,7 @@ export default function Login(props) {
     const [password, setPassword] = useState('');
     return(
         <View style={containerStyles.container}>
-            <Image style={imageStyles.gobbleimg}source = {require('../images/gobble.png')}/>
+            <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
             <StatusBar style="auto"/>
             <View style={inputStyles.inputView}>
                 <TextInput
@@ -31,12 +31,12 @@ export default function Login(props) {
                 />
             </View>
             <TouchableOpacity>
-            <Text style={buttonStyles.forgot_button}>Forgot Password?</Text>
+            <Text style={buttonStyles.forgotButton}>Forgot Password?</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={buttonStyles.loginBtn}>
+            <TouchableOpacity style={buttonStyles.logginButton}>
             <Text style={buttonStyles.loginText}>LOGIN</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={buttonStyles.loginBtn}
+            <TouchableOpacity style={buttonStyles.logginButton}
             onPress={()=> props.navigation.navigate('Register')}>
             <Text style={buttonStyles.loginText}>SIGN UP</Text>
             </TouchableOpacity>

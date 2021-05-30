@@ -1,12 +1,12 @@
 import {StyleSheet} from 'react-native'
 
 export const buttonStyles = StyleSheet.create({
-    forgot_button: {
+    forgotButton: {
         height: 30,
         marginBottom: '6%',
     },
 
-    loginBtn: {
+    loginButton: {
         width:330,
         borderRadius:25,
         height:50,
@@ -26,7 +26,7 @@ export const buttonStyles = StyleSheet.create({
 });
 
 export const imageStyles = StyleSheet.create({
-    gobbleimg: {
+    gobbleImage: {
         width: '60%',
         height: '30%',
         marginBottom: '10%',
@@ -58,6 +58,7 @@ export const inputStyles = StyleSheet.create({
         width: 200,
         paddingLeft: "6%"
     }
+
 });
 
 export const containerStyles = StyleSheet.create({
