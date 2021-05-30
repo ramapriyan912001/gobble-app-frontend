@@ -4,11 +4,13 @@ import AnimatedMultistep from "react-native-animated-multistep";
 
 import Step1 from "./step1";
 import Step2 from "./step2";
+import Step3 from './step3';
 import FinalStep from "./finalstep";
 
 const allSteps = [
     { name: "step 1", component: Step1 },
     { name: "step 2", component: Step2 },
+    { name: "step 3", component: Step3 },
     { name: "final step", component: FinalStep}
 ];
 

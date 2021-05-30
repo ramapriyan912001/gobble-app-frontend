@@ -61,12 +61,11 @@ export const pickerStyles = StyleSheet.create({
     picker:{
         height: '28%',
         alignSelf:'center',
-        width: '50%',
-        marginVertical:10,
+        width: '90%',
     },
     switchText:{
         fontSize: 15,
-        paddingHorizontal:'2%',
+        paddingHorizontal:'5%',
         fontWeight:'bold',
         alignSelf:'center',
     },
@@ -103,7 +102,8 @@ export const inputStyles = StyleSheet.create({
     headerText: {
         fontSize: 25,
         fontWeight: 'bold',
-        alignSelf:"center"
+        alignSelf:"center",
+        textAlign: 'center'
     },
 
     TextInput: {
@@ -118,6 +118,7 @@ export const inputStyles = StyleSheet.create({
 export const containerStyles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection:'column',
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',

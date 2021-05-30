@@ -13,16 +13,14 @@ export default function step2(props) {
       };
       
     return(
-            <SafeAreaView contentContainerStyle={containerStyles.container}>
-                <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
-                <StatusBar style="auto"/>
-                <View style={inputStyles.inputHeader}>
-                    <Text style={inputStyles.headerText}>All Done! You can now log in</Text>
-                </View>
-                
-                <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.back.back.back}>
-                    <Text style={buttonStyles.loginButtonText}>Continue</Text>
-                </TouchableOpacity>
+            <SafeAreaView style={containerStyles.container}>
+                    <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
+                    <StatusBar style="auto"/>
+                    <Text style={inputStyles.headerText}>We're all Set Up.{"\n"}You can now log in to Gobble!</Text>
+                    
+                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.back.back.back}>
+                        <Text style={buttonStyles.loginButtonText}>Back to Log In</Text>
+                    </TouchableOpacity>
             </SafeAreaView>
     )
 }

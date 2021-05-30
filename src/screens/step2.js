@@ -49,7 +49,7 @@ export default function step2(props) {
                     <Picker.Item label="Asian" value="asian" />
                     <Picker.Item label="Malaysian" value="malay" />
                     <Picker.Item label="Western" value='western' />
-                    <Picker.Item label="Mexican/Middle-Eastern/Others" value='others' />
+                    <Picker.Item label="Others" value='others' />
                 </Picker>
                 <Text style={pickerStyles.switchText}>Would you like to be matched with other Industrial Backgrounds?</Text>
                 <Switch 
