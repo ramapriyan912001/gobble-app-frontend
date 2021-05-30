@@ -1,7 +1,10 @@
 import React, {useState} from 'react'
-import {Text, View, TextInput, Image, StyleSheet, TouchableOpacity, StatusBar} from 'react-native'
+import {Text, View, TextInput, Image, StyleSheet, TouchableOpacity} from 'react-native'
+import {StatusBar} from 'expo-status-bar'
+import {createAppContainer} from 'react-navigation'
+import {createStackNavigator} from 'react-navigation-stack'
 
-export default function Login() {
+export default function Login(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     return(
@@ -33,7 +36,7 @@ export default function Login() {
             <Text style={styles.loginText}>LOGIN</Text>
             </TouchableOpacity>
             <TouchableOpacity style={styles.loginBtn}
-            onPress={()=>navigate('Register')}>
+            onPress={()=> props.navigation.navigate('Register')}>
             <Text style={styles.loginText}>Sign Up</Text>
             </TouchableOpacity>
         </View>
@@ -72,10 +75,10 @@ const styles = StyleSheet.create({
     },
 
     gobbleimg: {
-        width: 350,
-        height: 350,
-        marginBottom: 30,
-        marginLeft: 20
+        width: '40%',
+        height: '25%',
+        marginBottom: '10%',
+        marginLeft: '2%'
     },
 
     forgot_button: {
@@ -89,7 +92,7 @@ const styles = StyleSheet.create({
         height:50,
         alignItems:"center",
         justifyContent:"center",
-        marginTop:20,
+        marginTop: '5%',
         backgroundColor:"#FF1493",
     }
 });

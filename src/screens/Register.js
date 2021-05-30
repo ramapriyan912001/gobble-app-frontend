@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {Text, View, TextInput, Image, StyleSheet, TouchableOpacity, StatusBar} from 'react-native'
 
-export default function signUp() {
+export default function signUp(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     return(
@@ -31,6 +31,11 @@ export default function signUp() {
             </TouchableOpacity>
             <TouchableOpacity style={styles.signUpBtn}>
             <Text style={styles.signUpText}>Sign Up</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.signUpBtn} onPress={
+                () => props.navigation.goBack()
+            }>
+            <Text style={styles.signUpText}>Back to Login</Text>
             </TouchableOpacity>
         </View>
         

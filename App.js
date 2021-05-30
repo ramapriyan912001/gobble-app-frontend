@@ -2,13 +2,28 @@ import { StatusBar } from 'expo-status-bar';
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import Login from './src/screens/Login';
+import Register from './src/screens/Register'
+import {createAppContainer} from 'react-navigation'
+import {createStackNavigator} from 'react-navigation-stack'
+
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Login></Login>
-    </View>
+    <AppContainer/>
   );
 }
+
+const AppNavigator = createStackNavigator({
+  Login: {
+    screen: Login
+  },
+  Register: {
+    screen: Register
+  }
+}, {
+  initialRouteName: "Login"
+});
+
+const AppContainer = createAppContainer(AppNavigator)
 
 const styles = StyleSheet.create({
   container: {
