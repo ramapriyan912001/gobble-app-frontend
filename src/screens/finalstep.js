@@ -20,7 +20,7 @@ export default function step2(props) {
                     <Text style={inputStyles.headerText}>All Done! You can now log in</Text>
                 </View>
                 
-                <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.back.back.back}>
+                <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('Login')}>
                     <Text style={buttonStyles.loginButtonText}>Continue</Text>
                 </TouchableOpacity>
             </SafeAreaView>
