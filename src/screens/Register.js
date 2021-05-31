@@ -70,7 +70,7 @@ export default function signUp(props) {
                     if (checkInfo('Username', password, 10, 20)
                     && checkInfo('Password', username, 5, 20)) {
                         console.log('API CALL FOR REGISTER')
-                        /*API.post('register', {
+                        API.post('register', {
                             body: {
                                 name: username,
                                 password: password,
@@ -80,10 +80,10 @@ export default function signUp(props) {
                                 dob: '',
                                 diet: '',
                                 cuisine: '',
-                                image: '',
+                                image: '../images/man.jpg',
                             },
                             method: 'POST',
-                        });*/
+                        });
                     }
                 }
             }>
