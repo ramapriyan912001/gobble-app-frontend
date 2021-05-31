@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Text, View, TextInput, Image, TouchableOpacity, SafeAreaView, StyleSheet, TouchableOpacity, ToastAndroid,
+import {Text, View, TextInput, Image, TouchableOpacity, SafeAreaView, StyleSheet, ToastAndroid,
     Platform, Alert} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
 import {imageStyles, inputStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'

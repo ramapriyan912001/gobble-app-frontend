@@ -4,7 +4,7 @@ import { StyleSheet, Image } from 'react-native';
 import Login from './src/screens/Login';
 import Register from './src/screens/Register';
 import Welcome from './src/screens/Welcome';
-import FinalStep from './src/screens/FinalStep';
+import FinalStep from './src/screens/finalstep';
 import {createAppContainer} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation-stack'
 import ForgotPassword from './src/screens/ForgotPassword'
@@ -34,7 +34,7 @@ const AppNavigator = createStackNavigator({
     screen: ForgotPassword
   },
 }, {
-  initialRouteName: "LoginConfirmation",
+  initialRouteName: "Login",
   defaultNavigationOptions: {
     headerShown: false
   }
