@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Text, View, TextInput, Image, SafeAreaView, ScrollView,  TouchableOpacity, StatusBar, Switch, Dimensions, StyleSheet} from 'react-native'
+import {Text, View, TextInput, Alert, Image, SafeAreaView, ScrollView,  TouchableOpacity, StatusBar, Switch, Dimensions, StyleSheet} from 'react-native'
 import {imageStyles, containerStyles, buttonStyles, inputStyles, pickerStyles} from '../styles/LoginStyles'
 import {Picker} from '@react-native-picker/picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
@@ -37,12 +37,12 @@ export default function register(props) {
     const onContentSizeChange = (width, height) => {
         setState({screenHeight: height})
     }
-    const TOO_LONG = " is too long!"
-    const TOO_SHORT = " is too short!"
+    const TOO_LONG = " has to be less than "
+    const TOO_SHORT = " has to be more than "
 
     async function checkInfo(infoString, info, minLength, maxLength) {
-        const shortMessage = infoString + TOO_SHORT
-        const longMessage = infoString + TOO_LONG
+        const shortMessage = infoString + TOO_SHORT + `${minLength} characters!`
+        const longMessage = infoString + TOO_LONG + `${maxLength} characters!`
         if (info.length < minLength) {
             Alert.alert(shortMessage)
             return false;
@@ -53,29 +53,6 @@ export default function register(props) {
             return true;
         }
     }
-    /* onPress={
-                () => {
-                    if (checkInfo('Username', password, 10, 20)
-                    && checkInfo('Password', username, 5, 20)) {
-                        console.log('API CALL FOR REGISTER')
-                        API.post('register', {
-                            body: {
-                                name: username,
-                                password: password,
-                                email: email,
-                                crossIndustry: true,
-                                lastSeen: '',
-                                dob: '',
-                                diet: '',
-                                cuisine: '',
-                                image: '../images/man.jpg',
-                            },
-                            method: 'POST',
-                        });
-                    }
-                }
-            }
-            */
     return(
             <SafeAreaView style={containerStyles.container}>
                 <ScrollView 
@@ -162,7 +139,29 @@ export default function register(props) {
                             style={pickerStyles.datePicker}
                             />
                     
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('FinalStep')}>
+                    <TouchableOpacity style={buttonStyles.loginButton} 
+                        onPress={
+                            () => {
+                                if (checkInfo('Username', password, 10, 20)
+                                && checkInfo('Password', username, 5, 20)) {
+                                    console.log('API CALL FOR REGISTER')
+                                    API.post('register', {
+                                        body: {
+                                            name: username,
+                                            password: password,
+                                            email: email,
+                                            crossIndustry: true,
+                                            lastSeen: '',
+                                            dob: '',
+                                            diet: '',
+                                            cuisine: '',
+                                            image: '../images/man.jpg',
+                                        },
+                                        method: 'POST',
+                                    });
+                                }
+                            }
+                        }>
                     <Text style={buttonStyles.loginButtonText}>Continue</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.goBack()}>
