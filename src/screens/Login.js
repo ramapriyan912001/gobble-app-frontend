@@ -5,7 +5,7 @@ import {StatusBar} from 'expo-status-bar'
 import {imageStyles, inputStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
 import {createStackNavigator} from 'react-navigation-stack'
 import {createAppContainer} from 'react-navigation'
-import API from '../api'
+import {API} from '../api'
 
 export default function Login(props) {
     const [email, setEmail] = useState('');
@@ -19,6 +19,7 @@ export default function Login(props) {
                 password: password
             }
         }).then(res => {
+            console.log('POSTING STUFF')
             if (res.statusCode === 200) {
                 console.log("success")
                 return true
@@ -62,14 +63,16 @@ export default function Login(props) {
             </TouchableOpacity>
             <TouchableOpacity style={buttonStyles.loginButton} onPress={
                 () => {
-                    verifyLogin();
+                    if (verifyLogin()) {
+                        props.navigation.navigate('LoginConfirmation')
+                    }
                 }
             }>
             <Text style={buttonStyles.loginText}>LOGIN</Text>
             </TouchableOpacity>
             <TouchableOpacity style={buttonStyles.loginButton}
             onPress={()=> props.navigation.navigate('Register')}>
-            <Text style={buttonStyles.loginText}>SIGN UP</Text>
+            <Text style={buttonStyles.loginText}>GO TO SIGN UP</Text>
             </TouchableOpacity>
         </View>
     )
