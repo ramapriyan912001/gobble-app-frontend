@@ -54,11 +54,11 @@ export default function register(props) {
         }
     }
     return(
-            <SafeAreaView style={containerStyles.container}>
+            <View style={containerStyles.container}>
                 <ScrollView 
                 style={{
                     flex: 1,}}
-                contentContainerStyle={containerStyles.scroller}
+                contentContainerStyle={containerStyles.container}
                 onContentSizeChange = {onContentSizeChange}
                 >
                     <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
@@ -100,7 +100,6 @@ export default function register(props) {
                             onChangeText={(password) => {setPassword(password);initialState.password = password;}}
                         />
                     </View>
-
                     <Text style={pickerStyles.switchText}>What are your dietary restrictions?</Text>
                     <Picker
                         selectedValue={diet}
@@ -158,7 +157,7 @@ export default function register(props) {
                                             image: '../images/man.jpg',
                                         },
                                         method: 'POST',
-                                    });
+                                    }).catch(err => console.log(err));
                                 }
                             }
                         }>
@@ -168,7 +167,7 @@ export default function register(props) {
                     <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
                     </TouchableOpacity>
                 </ScrollView>
-            </SafeAreaView>
+            </View>
     )
 }
 
