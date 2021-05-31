@@ -1,9 +1,7 @@
 import React, {useState} from 'react'
-import {Text, View, TextInput, Alert, Image, SafeAreaView, ScrollView,  TouchableOpacity, StatusBar, Dimensions} from 'react-native'
+import {Text, View, TextInput, Alert, Image, SafeAreaView, TouchableOpacity, StatusBar, Dimensions} from 'react-native'
 import {imageStyles, containerStyles, buttonStyles, inputStyles, pickerStyles} from '../styles/LoginStyles'
-import {Picker} from '@react-native-picker/picker'
-import DateTimePicker from '@react-native-community/datetimepicker'
-const { height } = Dimensions.get('window')
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 let initialState = {
     name: '',
@@ -30,10 +28,7 @@ export default function register(props) {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [diet, setDietPreference] = useState('');
-    const [cuisine, setCuisinePreference] = useState('');
-    const [cross, setCrossIndustryPreference] = useState(false);
-    const [date, setDate] = useState(new Date());
+    
     const onContentSizeChange = (width, height) => {
         setState({screenHeight: height})
     }
@@ -54,18 +49,10 @@ export default function register(props) {
         }
     }
     return(
-            <SafeAreaView style={containerStyles.container}>
-                <ScrollView 
-                style={{
-                    flex: 1,}}
-                contentContainerStyle={containerStyles.container}
-                onContentSizeChange = {onContentSizeChange}
-                >
+            <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container}>
                     <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
                     <StatusBar style="auto"/>
-                    <View style={inputStyles.inputHeader}>
-                        <Text style={inputStyles.headerText}>Introduce Yourself!</Text>
-                    </View>
+                    <Text style={inputStyles.headerText}>Introduce Yourself!</Text>
                     <View style={inputStyles.inputView}>
                         <TextInput
                             textContentType="username"
@@ -116,8 +103,7 @@ export default function register(props) {
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.goBack()}>
                     <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
                     </TouchableOpacity>
-                </ScrollView>
-            </SafeAreaView>
+            </KeyboardAwareScrollView>
     )
 }
 

@@ -16,11 +16,29 @@ export const buttonStyles = StyleSheet.create({
         // fontSize: 20,
         // fontFamily: 'IndieFlower_400Regular'
     },
+    tinyButton:{
+        width:165,
+        borderRadius:25,
+        height:50,
+        alignItems:"center",
+        justifyContent:"center",
+        marginTop: '5%',
+        backgroundColor:"#0aa859",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 2,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 9,
+        elevation: 5,
+    },
 
     loginButton: {
         width:330,
         borderRadius:25,
         height:50,
+        alignSelf:'center',
         alignItems:"center",
         justifyContent:"center",
         marginTop: '5%',
@@ -62,13 +80,24 @@ export const pickerStyles = StyleSheet.create({
         height: '28%',
         alignSelf:'center',
         width: '90%',
+        marginVertical:'3%'
     },
     datePicker:{
-        height: '40%',
+        height: '60%',
         alignSelf:'center',
         width: '90%',
+        padding:'30%',
+        justifyContent:'center',
     },
-    switchText:{
+    dateText:{
+        marginVertical:'5%',
+        fontSize: 20,
+        paddingHorizontal:'5%',
+        fontWeight:'bold',
+        alignSelf:'center',
+    },
+    text:{
+        marginVertical:'5%',
         fontSize: 15,
         paddingHorizontal:'5%',
         fontWeight:'bold',
@@ -129,10 +158,15 @@ export const containerStyles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
       },
-      scroller: {
-        flex: 1,
-        flexDirection:'column',
-        alignItems: 'center',
-        flexGrow: 1
+      buttonRow:{
+          flexDirection:'row',
+          alignItems:'stretch',
+          alignSelf:'center',
+          justifyContent:'flex-end'
       },
+      datePicker:{
+          alignSelf:'center',
+          marginHorizontal: '22%',
+          flex:1
+      }
 });

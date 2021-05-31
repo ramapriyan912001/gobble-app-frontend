@@ -3,15 +3,6 @@ import {Text, SafeAreaView, View, Image, TouchableOpacity, StatusBar} from 'reac
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
 
 export default function step2(props) {
-    const [state, setState] = useState(props);
-    const nextStep = () => {
-        const { next, saveState } = props;
-        // Save state for use in other steps
-        saveState(state);
-        // Go to next step
-        next();
-      };
-      
     return(
             <SafeAreaView style={containerStyles.container}>
                     <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
@@ -24,4 +15,4 @@ export default function step2(props) {
                     </TouchableOpacity>
             </SafeAreaView>
     )
-}
+};
