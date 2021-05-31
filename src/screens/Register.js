@@ -134,6 +134,7 @@ export default function register(props) {
     )
 }
 
+//Additions for later
 /*
 <KeyboardAwareScrollView contentContainerStyle={containerStyles.container}>
                 <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
