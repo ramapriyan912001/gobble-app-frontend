@@ -6,12 +6,10 @@ import Register from './src/screens/Register';
 import Welcome from './src/screens/Welcome';
 import RegisterPage2 from './src/screens/RegisterPage2'
 import RegisterPage3 from './src/screens/RegisterPage3'
-import FinalStep from './src/screens/finalstep';
+import FinalStep from './src/screens/FinalStep';
 import {createAppContainer} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation-stack'
 import ForgotPassword from './src/screens/ForgotPassword'
-import { Header } from 'react-native/Libraries/NewAppScreen';
-import { containerStyles } from './src/styles/LoginStyles';
 
 export default function App() {
   console.log('App Executed');

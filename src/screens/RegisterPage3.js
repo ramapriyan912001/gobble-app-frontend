@@ -30,7 +30,7 @@ export default function RegisterPage3(props) {
                                     console.log('API CALL FOR REGISTER');
                                     API.post('register', {
                                         body: {
-                                            name: initialState.username,
+                                            name: initialState.name,
                                             password: initialState.password,
                                             email: initialState.email,
                                             crossIndustry: initialState.crossIndustry,
@@ -40,9 +40,11 @@ export default function RegisterPage3(props) {
                                         },
                                         method: 'POST',
                                     })
+                                    .then(res => 
+                                    res.data.success
+                                    ? props.navigation.navigate('FinalStep', {state: initialState})
+                                    : console.log(res))
                                     .catch(err => console.log(err));
-                                    props.navigation.navigate('finalstep', {state: initialState});
-
                             }
                         }>
                     <Text style={buttonStyles.loginButtonText}>Finish</Text>

@@ -1,10 +1,7 @@
 import React, {useState} from 'react'
-import {Text, View, TextInput, Image, TouchableOpacity, SafeAreaView, StyleSheet, ToastAndroid,
-    Platform, Alert} from 'react-native'
+import {Text, View, TextInput, Image, TouchableOpacity, Alert} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
 import {imageStyles, inputStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
-import {createStackNavigator} from 'react-navigation-stack'
-import {createAppContainer} from 'react-navigation'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {API} from '../api'
 
@@ -13,30 +10,31 @@ export default function Login(props) {
     const [password, setPassword] = useState('');
 
     async function verifyLogin() {
-        API.post('login', {
+        let reply = '';
+        await API.post('login',
+        {
+            validateStatus: (status => status < 500), // Resolve only if the status code is less than 500
             method: 'POST',
             body: {
                 email: email,
                 password: password
             }
-        }).then(res => {
-            console.log('POSTING STUFF')
-            if (res.statusCode === 200) {
-                console.log("success")
-                return true
-
+        })
+        .then(res => {
+            console.log('Going to Log in....');
+            reply = res.data.success? '' : res.data.message;
                 /* BRING THE PERSON TO THE PROFILE PAGE
                 NAVIGATION.NAVIGATE(PROFILE.JS WITH PROPS STATING EMAIL AND
                 PW, USE A COMPONENTDIDMOUNT() METHOD TO SEND GET REQUEST TO API
                 AND LOAD THE PROFILE PAGE ACCORDINGLY)*/
+        })
+        .catch(err => {
+            const status = err.response.status;
+            reply = status === 401? 'Invalid Email' : status === 402? 'Invalid Password' : 'Internal Error';
+        });
+        return reply;
+    };
 
-
-            } else {
-                Alert.alert("No account with this email and password exists!")
-                return false
-            }
-        }).catch(err => console.log(err))
-    }
     return(
                 <KeyboardAwareScrollView contentContainerStyle={containerStyles.container}>
                     <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
@@ -59,15 +57,16 @@ export default function Login(props) {
                             onChangeText={(password) => setPassword(password)}
                         />
                     </View>
-                    <TouchableOpacity style={buttonStyles.forgotButton}>
+                    <TouchableOpacity style={buttonStyles.forgotButton} onPress={()=> props.navigation.navigate('ForgotPassword')}>
                     <Text style={buttonStyles.forgotButtonText}>Forgot Password?</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={
-                      () => {
-                        if (verifyLogin()) {
-                          props.navigation.navigate('Welcome')
-                        }
-                      }
+                      () => verifyLogin() //returns a Promise
+                            .then(message =>
+                                (message === '') 
+                                ? props.navigation.navigate('Welcome')
+                                : Alert.alert(message))
+                            .catch(err => Alert.alert(err))
                     }>
                     <Text style={buttonStyles.loginButtonText}>Log In</Text>
                     </TouchableOpacity>

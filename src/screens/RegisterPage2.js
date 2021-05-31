@@ -39,7 +39,7 @@ export default function RegisterPage2(props) {
             <TouchableOpacity style={buttonStyles.tinyButton} 
                             onPress={
                                 () => {
-                                        console.log('API CALL FOR REGISTER');
+                                        console.log('Register Page 2 done!');
                                         props.navigation.navigate('RegisterPage3', {state: initialState});
                                 }
                             }>

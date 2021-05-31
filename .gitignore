@@ -1,5 +1,6 @@
 node_modules/
 .expo/
+.screens/api.js
 npm-debug.*
 *.jks
 *.p8

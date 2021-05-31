@@ -1,13 +1,13 @@
 import React, {useState} from 'react'
-import {Text, View, TextInput, Alert, Image, SafeAreaView, TouchableOpacity, StatusBar, Dimensions} from 'react-native'
-import {imageStyles, containerStyles, buttonStyles, inputStyles, pickerStyles} from '../styles/LoginStyles'
+import {Text, View, TextInput, Alert, Image, TouchableOpacity, StatusBar} from 'react-native'
+import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 let initialState = {
     name: '',
     dob: '',
-    diet: '',
-    cuisine:  '',
+    diet: 'Halal',
+    cuisine:  'Indian',
     crossIndustry: false,
     email: '',
     password: '',
@@ -35,17 +35,15 @@ export default function register(props) {
     const TOO_LONG = " has to be less than "
     const TOO_SHORT = " has to be more than "
 
-    async function checkInfo(infoString, info, minLength, maxLength) {
+    function checkInfo(infoString, info, minLength, maxLength) {
         const shortMessage = infoString + TOO_SHORT + `${minLength} characters!`
         const longMessage = infoString + TOO_LONG + `${maxLength} characters!`
         if (info.length < minLength) {
-            Alert.alert(shortMessage)
-            return false;
+            return shortMessage;
         } else if (info.length > maxLength) {
-            Alert.alert(longMessage)
-            return false;
+            return longMessage;
         } else {
-            return true;
+            return '';
         }
     }
     return(
@@ -91,10 +89,13 @@ export default function register(props) {
                     <TouchableOpacity style={buttonStyles.loginButton} 
                         onPress={
                             () => {
-                                if (checkInfo('Username', name, 5, 20)
-                                && checkInfo('Password', password, 5, 20)) {
-                                    console.log('API CALL FOR REGISTER')
-                                    props.navigation.navigate('RegisterPage2', {state: initialState})
+                                const emailRegex = /@gmail.com|@yahoo.com|@icloud.com|@u.nus.edu|@live.com/;
+                                if (checkInfo('Username', name, 5, 20) != '') {Alert.alert(checkInfo('Username', name, 5, 20));}
+                                else if (checkInfo('Password', password, 5, 30) != '') {Alert.alert(checkInfo('Password', password, 5, 30));}
+                                else if (!emailRegex.test(email)) {Alert.alert('Invalid Email!');}
+                                else {
+                                    console.log('Register Page 1 Done!');
+                                    props.navigation.navigate('RegisterPage2', {state: initialState});
                                 }
                             }
                         }>

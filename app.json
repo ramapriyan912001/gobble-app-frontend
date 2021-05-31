@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "gobble-app",
+    "name": "Gobble",
     "slug": "gobble-app",
     "version": "1.0.0",
     "orientation": "portrait",
@@ -27,6 +27,8 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "description": "Gobble is an app that connects people over food!",
+    "githubUrl": "https://github.com/ramapriyan912001/gobble-app-frontend"
   }
 }
