@@ -5,7 +5,6 @@ import Login from './src/screens/Login';
 import Register from './src/screens/Register'
 import {createAppContainer} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation-stack'
-import LoginConfirmation from './src/screens/LoginConfirmation'
 import ForgotPassword from './src/screens/ForgotPassword'
 import { Header } from 'react-native/Libraries/NewAppScreen';
 
@@ -22,12 +21,9 @@ const AppNavigator = createStackNavigator({
   Register: {
     screen: Register
   },
-  LoginConfirmation: {
-    screen: LoginConfirmation
-  },
   ForgotPassword: {
     screen: ForgotPassword
-  }
+  },
 }, {
   initialRouteName: "LoginConfirmation",
   defaultNavigationOptions: {

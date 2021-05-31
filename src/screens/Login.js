@@ -64,7 +64,7 @@ export default function Login(props) {
             <TouchableOpacity style={buttonStyles.loginButton} onPress={
                 () => {
                     if (verifyLogin()) {
-                        props.navigation.navigate('LoginConfirmation')
+                        props.navigation.navigate('Welcome')
                     }
                 }
             }>
