@@ -1,9 +1,20 @@
 import {StyleSheet} from 'react-native'
+import { useFonts, IndieFlower_400Regular } from '@expo-google-fonts/indie-flower'
+const _fontsLoaded = () => {
+    let [fontsLoaded] = useFonts({
+        IndieFlower_400Regular,
+      });
+}
 
 export const buttonStyles = StyleSheet.create({
     forgotButton: {
         height: 30,
         marginBottom: '6%',
+    },
+    
+    forgotButtonText: {
+        // fontSize: 20,
+        // fontFamily: 'IndieFlower_400Regular'
     },
 
     loginButton: {
@@ -22,6 +33,17 @@ export const buttonStyles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 9,
         elevation: 5,
+    },
+
+    loginButtonText: {
+        // fontSize: 28,
+        // fontFamily: 'IndieFlower_400Regular'
+    },
+
+    buttonView: {
+        alignSelf:"center",
+        flexDirection:"column",
+        justifyContent:"flex-end"
     }
 });
 
@@ -32,6 +54,28 @@ export const imageStyles = StyleSheet.create({
         marginBottom: '10%',
         marginLeft: '2%',
         marginTop: '-5%'
+    }
+});
+
+export const pickerStyles = StyleSheet.create({
+    picker:{
+        height: '28%',
+        alignSelf:'center',
+        width: '90%',
+    },
+    datePicker:{
+        height: '40%',
+        alignSelf:'center',
+        width: '90%',
+    },
+    switchText:{
+        fontSize: 15,
+        paddingHorizontal:'5%',
+        fontWeight:'bold',
+        alignSelf:'center',
+    },
+    switch:{
+        alignSelf:'center'
     }
 });
 
@@ -51,12 +95,28 @@ export const inputStyles = StyleSheet.create({
         shadowRadius: 3.84,
         elevation: 5,
       },
-      
+
+    inputHeader: {
+        backgroundColor: "#fff",
+        borderRadius: 30,
+        width: "60%",
+        height: 45,
+        marginBottom: 20,
+    },
+
+    headerText: {
+        fontSize: 35,
+        fontWeight: 'bold',
+        alignSelf:"center",
+        textAlign: 'center',
+        marginBottom: '10%'
+    },
+
     TextInput: {
         height: 50,
         flex: 1,
         width: 200,
-        paddingLeft: "6%"
+        paddingLeft: "6%",
     }
 
 });
@@ -64,8 +124,15 @@ export const inputStyles = StyleSheet.create({
 export const containerStyles = StyleSheet.create({
     container: {
         flex: 1,
+        flexDirection:'column',
         backgroundColor: '#fff',
         alignItems: 'center',
         justifyContent: 'center',
-      }
+      },
+      scroller: {
+        flex: 1,
+        flexDirection:'column',
+        alignItems: 'center',
+        flexGrow: 1
+      },
 });
