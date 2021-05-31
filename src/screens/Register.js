@@ -123,7 +123,7 @@ export default function register(props) {
                             style={pickerStyles.datePicker}
                             />
                     
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigate('FinalStep')}>
+                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('FinalStep')}>
                     <Text style={buttonStyles.loginButtonText}>Continue</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.goBack()}>
