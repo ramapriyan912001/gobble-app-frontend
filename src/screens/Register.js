@@ -27,7 +27,7 @@ export const createState = (name, dob, diet, cuisine, crossIndustry, email, pw) 
 
 export default function register(props) {
     const [state, setState] = useState({screenHeight: 0,});
-    const [pass, setPassword] = useState('');
+    const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [diet, setDietPreference] = useState('');
@@ -104,8 +104,8 @@ export default function register(props) {
                     <TouchableOpacity style={buttonStyles.loginButton} 
                         onPress={
                             () => {
-                                if (checkInfo('Username', password, 10, 20)
-                                && checkInfo('Password', username, 5, 20)) {
+                                if (checkInfo('Username', name, 5, 20)
+                                && checkInfo('Password', password, 5, 20)) {
                                     console.log('API CALL FOR REGISTER')
                                     props.navigation.navigate('RegisterPage2', {state: initialState})
                                 }

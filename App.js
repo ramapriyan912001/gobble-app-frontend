@@ -4,6 +4,8 @@ import { StyleSheet, Image, View } from 'react-native';
 import Login from './src/screens/Login';
 import Register from './src/screens/Register';
 import Welcome from './src/screens/Welcome';
+import RegisterPage2 from './src/screens/RegisterPage2'
+import RegisterPage3 from './src/screens/RegisterPage3'
 import FinalStep from './src/screens/finalstep';
 import {createAppContainer} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation-stack'
