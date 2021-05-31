@@ -25,6 +25,12 @@ const AppNavigator = createStackNavigator({
   Register: {
     screen: Register
   },
+  RegisterPage2: {
+    screen: RegisterPage2
+  },
+  RegisterPage3: {
+    screen: RegisterPage3
+  },
   FinalStep: {
     screen: FinalStep
   },

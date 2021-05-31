@@ -27,7 +27,22 @@ export default function RegisterPage3(props) {
                         onPress={
                             () => {
                                     console.log('API CALL FOR REGISTER');
+                                    API.post('register', {
+                                        body: {
+                                            name: username,
+                                            password: password,
+                                            email: email,
+                                            crossIndustry: true,
+                                            lastSeen: '',
+                                            dob: '',
+                                            diet: '',
+                                            cuisine: '',
+                                            image: '',
+                                        },
+                                        method: 'POST',
+                                    });
                                     props.navigation.navigate('finalstep', {state: initialState});
+
                             }
                         }>
                     <Text style={buttonStyles.loginButtonText}>Finish</Text>
