@@ -27,12 +27,12 @@ export const createState = (name, dob, diet, cuisine, crossIndustry, email, pw) 
 
 export default function register(props) {
     const [state, setState] = useState({screenHeight: 0,});
-    const [pass, setPass] = useState('');
+    const [pass, setPassword] = useState('');
     const [name, setName] = useState('');
-    const [email, setMail] = useState('');
-    const [diet, setDiet] = useState('');
-    const [cuisine, setCuisine] = useState('');
-    const [cross, setCross] = useState(false);
+    const [email, setEmail] = useState('');
+    const [diet, setDietPreference] = useState('');
+    const [cuisine, setCuisinePreference] = useState('');
+    const [cross, setCrossIndustryPreference] = useState(false);
     const [date, setDate] = useState(new Date());
     const onContentSizeChange = (width, height) => {
         setState({screenHeight: height})
@@ -69,7 +69,7 @@ export default function register(props) {
                             placeholder="Email"
                             placeholderTextColor="#003f5c"
                             secureTextEntry={false}
-                            onChangeText={(email) => {setMail(email);initialState.email = email;}}
+                            onChangeText={(email) => {setEmail(email);initialState.email = email;}}
                         />
                     </View>
 
@@ -81,14 +81,14 @@ export default function register(props) {
                             placeholder="Password"
                             placeholderTextColor="#003f5c"
                             secureTextEntry={true}
-                            onChangeText={(password) => {setPass(password);initialState.password = password;}}
+                            onChangeText={(password) => {setPassword(password);initialState.password = password;}}
                         />
                     </View>
 
                     <Text style={pickerStyles.switchText}>What are your dietary restrictions?</Text>
                     <Picker
                         selectedValue={diet}
-                        onValueChange={(newDiet, itemIndex) => {setDiet(newDiet);initialState.diet = newDiet;}}
+                        onValueChange={(newDiet, itemIndex) => {setDietPreference(newDiet);initialState.diet = newDiet;}}
                         style={pickerStyles.picker}
                         enabled= {true}
                         >
@@ -100,7 +100,7 @@ export default function register(props) {
                     <Text style={pickerStyles.switchText}>What is your preferred cuisine?</Text>
                     <Picker
                         selectedValue={cuisine}
-                        onValueChange={(newCuisineItem, itemIndex) => {setCuisine(newCuisineItem);initialState.cuisine = newCuisineItem;}}
+                        onValueChange={(newCuisineItem, itemIndex) => {setCuisinePreference(newCuisineItem);initialState.cuisine = newCuisineItem;}}
                         style={pickerStyles.picker}
                         >
                         <Picker.Item label="Indian" value="indian" />
@@ -112,7 +112,7 @@ export default function register(props) {
                     <Text style={pickerStyles.switchText}>Would you like to be matched with other Industrial Backgrounds?</Text>
                     <Switch 
                         value={cross} 
-                        onValueChange={() => {setCross(!cross);initialState.crossIndustry = !initialState.crossIndustry;}} 
+                        onValueChange={() => {setCrossIndustryPreference(!cross);initialState.crossIndustry = !initialState.crossIndustry;}} 
                         style={pickerStyles.switch}
                     />
                     <Text style={inputStyles.headerText}>Tell us your Birthday!</Text>
@@ -169,7 +169,7 @@ export default function register(props) {
                         placeholder="Password"
                         placeholderTextColor="#003f5c"
                         secureTextEntry={true}
-                        onChangeText={(password) => setPassword(password)}
+                        onChangeText={(password) => setPasswordword(password)}
                     />
                 </View>
                 
