@@ -1,6 +1,7 @@
 import React from 'react'
 import {View} from 'react-native'
 import {containerStyles, pickerStyles} from '../styles/LoginStyles'
+import API from '../api'
 
 export default function RegisterPage3(props) {
     const initialState = props.navigation.getParams('state');

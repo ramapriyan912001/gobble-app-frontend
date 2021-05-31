@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Text, View, TextInput, Alert, Image, SafeAreaView, ScrollView,  TouchableOpacity, StatusBar, Switch, Dimensions, StyleSheet} from 'react-native'
+import {Text, View, TextInput, Alert, Image, SafeAreaView, ScrollView,  TouchableOpacity, StatusBar, Dimensions} from 'react-native'
 import {imageStyles, containerStyles, buttonStyles, inputStyles, pickerStyles} from '../styles/LoginStyles'
 import {Picker} from '@react-native-picker/picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
