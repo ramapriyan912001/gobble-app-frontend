@@ -259,22 +259,3 @@ export default function register(props) {
 //         />
 //     </View>);    
 // }
-=======
-    loginButton: {
-        width:330,
-        borderRadius:25,
-        height:50,
-        alignItems:"center",
-        justifyContent:"center",
-        marginTop: '5%',
-        backgroundColor:"#0aa859",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 4,
-            height: 4,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 9,
-        elevation: 5,
-    }
-});
