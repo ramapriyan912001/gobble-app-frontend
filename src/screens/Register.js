@@ -35,7 +35,7 @@ export default function register(props) {
     const TOO_LONG = " has to be less than "
     const TOO_SHORT = " has to be more than "
 
-    async function checkInfo(infoString, info, minLength, maxLength) {
+    function checkInfo(infoString, info, minLength, maxLength) {
         const shortMessage = infoString + TOO_SHORT + `${minLength} characters!`
         const longMessage = infoString + TOO_LONG + `${maxLength} characters!`
         if (info.length < minLength) {
