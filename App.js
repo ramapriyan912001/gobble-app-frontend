@@ -7,6 +7,7 @@ import Welcome from './src/screens/Welcome';
 import FinalStep from './src/screens/FinalStep';
 import {createAppContainer} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation-stack'
+import ForgotPassword from './src/screens/ForgotPassword'
 import { Header } from 'react-native/Libraries/NewAppScreen';
 
 export default function App() {
@@ -28,9 +29,12 @@ const AppNavigator = createStackNavigator({
   },
   Welcome:{
     screen: Welcome
-  }
+  },
+  ForgotPassword: {
+    screen: ForgotPassword
+  },
 }, {
-  initialRouteName: "Login",
+  initialRouteName: "LoginConfirmation",
   defaultNavigationOptions: {
     headerShown: false
   }

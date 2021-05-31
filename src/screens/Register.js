@@ -37,6 +37,45 @@ export default function register(props) {
     const onContentSizeChange = (width, height) => {
         setState({screenHeight: height})
     }
+    const TOO_LONG = " is too long!"
+    const TOO_SHORT = " is too short!"
+
+    async function checkInfo(infoString, info, minLength, maxLength) {
+        const shortMessage = infoString + TOO_SHORT
+        const longMessage = infoString + TOO_LONG
+        if (info.length < minLength) {
+            Alert.alert(shortMessage)
+            return false;
+        } else if (info.length > maxLength) {
+            Alert.alert(longMessage)
+            return false;
+        } else {
+            return true;
+        }
+    }
+    /* onPress={
+                () => {
+                    if (checkInfo('Username', password, 10, 20)
+                    && checkInfo('Password', username, 5, 20)) {
+                        console.log('API CALL FOR REGISTER')
+                        API.post('register', {
+                            body: {
+                                name: username,
+                                password: password,
+                                email: email,
+                                crossIndustry: true,
+                                lastSeen: '',
+                                dob: '',
+                                diet: '',
+                                cuisine: '',
+                                image: '../images/man.jpg',
+                            },
+                            method: 'POST',
+                        });
+                    }
+                }
+            }
+            */
     return(
             <SafeAreaView style={containerStyles.container}>
                 <ScrollView 
@@ -220,3 +259,22 @@ export default function register(props) {
 //         />
 //     </View>);    
 // }
+=======
+    loginButton: {
+        width:330,
+        borderRadius:25,
+        height:50,
+        alignItems:"center",
+        justifyContent:"center",
+        marginTop: '5%',
+        backgroundColor:"#0aa859",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 4,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 9,
+        elevation: 5,
+    }
+});

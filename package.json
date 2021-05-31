@@ -12,6 +12,7 @@
     "@expo-google-fonts/inter": "^0.1.0",
     "@react-native-community/datetimepicker": "3.2.0",
     "@react-native-picker/picker": "1.9.11",
+    "axios": "^0.21.1",
     "expo": "^41.0.1",
     "expo-app-loading": "^1.0.3",
     "expo-font": "~9.1.0",
