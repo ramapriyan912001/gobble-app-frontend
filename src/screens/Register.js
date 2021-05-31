@@ -54,7 +54,7 @@ export default function register(props) {
         }
     }
     return(
-            <View style={containerStyles.container}>
+            <SafeAreaView style={containerStyles.container}>
                 <ScrollView 
                 style={{
                     flex: 1,}}
@@ -100,43 +100,6 @@ export default function register(props) {
                             onChangeText={(password) => {setPassword(password);initialState.password = password;}}
                         />
                     </View>
-                    <Text style={pickerStyles.switchText}>What are your dietary restrictions?</Text>
-                    <Picker
-                        selectedValue={diet}
-                        onValueChange={(newDiet, itemIndex) => {setDietPreference(newDiet);initialState.diet = newDiet;}}
-                        style={pickerStyles.picker}
-                        enabled= {true}
-                        >
-                        <Picker.Item label="Halal" value="halal" />
-                        <Picker.Item label="Vegetarian" value="vegetarian" />
-                        <Picker.Item label="Vegan/Strictly Vegetarian" value="vegan" />
-                        <Picker.Item label="No Restrictions" value='nonhalal' />
-                    </Picker>
-                    <Text style={pickerStyles.switchText}>What is your preferred cuisine?</Text>
-                    <Picker
-                        selectedValue={cuisine}
-                        onValueChange={(newCuisineItem, itemIndex) => {setCuisinePreference(newCuisineItem);initialState.cuisine = newCuisineItem;}}
-                        style={pickerStyles.picker}
-                        >
-                        <Picker.Item label="Indian" value="indian" />
-                        <Picker.Item label="Asian" value="asian" />
-                        <Picker.Item label="Malaysian" value="malay" />
-                        <Picker.Item label="Western" value='western' />
-                        <Picker.Item label="Others" value='others' />
-                    </Picker>
-                    <Text style={pickerStyles.switchText}>Would you like to be matched with other Industrial Backgrounds?</Text>
-                    <Switch 
-                        value={cross} 
-                        onValueChange={() => {setCrossIndustryPreference(!cross);initialState.crossIndustry = !initialState.crossIndustry;}} 
-                        style={pickerStyles.switch}
-                    />
-                    <Text style={inputStyles.headerText}>Tell us your Birthday!</Text>
-                        <DateTimePicker
-                            value={date}
-                            is24Hour={true}
-                            onChange={(event, selectedDate) => {setDate(selectedDate);initialState.dob = selectedDate;}}
-                            style={pickerStyles.datePicker}
-                            />
                     
                     <TouchableOpacity style={buttonStyles.loginButton} 
                         onPress={
@@ -144,20 +107,7 @@ export default function register(props) {
                                 if (checkInfo('Username', password, 10, 20)
                                 && checkInfo('Password', username, 5, 20)) {
                                     console.log('API CALL FOR REGISTER')
-                                    API.post('register', {
-                                        body: {
-                                            name: username,
-                                            password: password,
-                                            email: email,
-                                            crossIndustry: true,
-                                            lastSeen: '',
-                                            dob: '',
-                                            diet: '',
-                                            cuisine: '',
-                                            image: '../images/man.jpg',
-                                        },
-                                        method: 'POST',
-                                    }).catch(err => console.log(err));
+                                    props.navigation.navigate('RegisterPage2', {state: initialState})
                                 }
                             }
                         }>
@@ -167,7 +117,7 @@ export default function register(props) {
                     <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
                     </TouchableOpacity>
                 </ScrollView>
-            </View>
+            </SafeAreaView>
     )
 }
 
@@ -257,3 +207,4 @@ export default function register(props) {
 //         />
 //     </View>);    
 // }
+                    
