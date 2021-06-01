@@ -89,7 +89,7 @@ export default function register(props) {
                     <TouchableOpacity style={buttonStyles.loginButton} 
                         onPress={
                             () => {
-                                const emailRegex = /@gmail.com|@yahoo.com|@icloud.com|@u.nus.edu|@live.com/;
+                                const emailRegex = /@gmail.com|@yahoo.com|@icloud.com|@u.nus.edu|@live.com|@yahoo.co.uk/;
                                 if (checkInfo('Username', name, 5, 20) != '') {Alert.alert(checkInfo('Username', name, 5, 20));}
                                 else if (checkInfo('Password', password, 5, 30) != '') {Alert.alert(checkInfo('Password', password, 5, 30));}
                                 else if (!emailRegex.test(email)) {Alert.alert('Invalid Email!');}
