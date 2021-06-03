@@ -7,7 +7,7 @@ import {containerStyles} from '../styles/LoginStyles'
 export function RegisterPage4() {
     return(
         <View styles={containerStyles.container}>
-
+            
         </View>
     )
 }
