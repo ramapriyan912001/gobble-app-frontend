@@ -1,13 +1,13 @@
-import Login from './src/screens/Login';
-import Register from './src/screens/Register';
-import Welcome from './src/screens/Welcome';
-import RegisterPage2 from './src/screens/RegisterPage2'
-import RegisterPage3 from './src/screens/RegisterPage3'
-import RegisterPage4 from './src/screens/RegisterPage4'
-import FinalStep from './src/screens/FinalStep';
+import Login from '../screens/Login';
+import Register from '../screens/Register';
+import Welcome from '../screens/Welcome';
+import RegisterPage2 from '../screens/RegisterPage2'
+import RegisterPage3 from '../screens/RegisterPage3'
+import RegisterPage4 from '../screens/RegisterPage4'
+import FinalStep from '../screens/finalstep';
 import {createAppContainer} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation-stack'
-import ForgotPassword from './src/screens/ForgotPassword'
+import ForgotPassword from '../screens/ForgotPassword'
 
 const AppNavigator = createStackNavigator({
     Login: {

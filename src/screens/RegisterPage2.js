@@ -36,6 +36,9 @@ export default function RegisterPage2(props) {
                 <Picker.Item label="Others" value='others' />
             </Picker>
         <View style={containerStyles.buttonRow}>
+            <TouchableOpacity style={buttonStyles.tinyButton} onPress={() => props.navigation.goBack()}>
+                <Text style={buttonStyles.loginButtonText}>Back</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={buttonStyles.tinyButton} 
                             onPress={
                                 () => {
@@ -44,9 +47,6 @@ export default function RegisterPage2(props) {
                                 }
                             }>
                 <Text style={buttonStyles.loginButtonText}>Continue</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={buttonStyles.tinyButton} onPress={() => props.navigation.goBack()}>
-                <Text style={buttonStyles.loginButtonText}>Back</Text>
             </TouchableOpacity>
         </View>
             <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('Login')}>
