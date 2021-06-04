@@ -4,6 +4,9 @@ import {StatusBar} from 'expo-status-bar'
 import {imageStyles, inputStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {API} from '../api'
+import deviceStorage from '../services/deviceStorage'
+
+const userToken = '';
 
 export default function Login(props) {
     const [email, setEmail] = useState('');
@@ -11,7 +14,7 @@ export default function Login(props) {
 
     async function verifyLogin() {
         let reply = '';
-        await API.post('login',
+        await API.post('users/login/',
         {
             validateStatus: (status => status < 500), // Resolve only if the status code is less than 500
             method: 'POST',
@@ -27,6 +30,7 @@ export default function Login(props) {
                 NAVIGATION.NAVIGATE(PROFILE.JS WITH PROPS STATING EMAIL AND
                 PW, USE A COMPONENTDIDMOUNT() METHOD TO SEND GET REQUEST TO API
                 AND LOAD THE PROFILE PAGE ACCORDINGLY)*/
+            userToken = res.data.token;
         })
         .catch(err => {
             const status = err.response.status;
@@ -62,10 +66,11 @@ export default function Login(props) {
                     </TouchableOpacity>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={
                       () => verifyLogin() //returns a Promise
-                            .then(message =>
-                                (message === '') 
-                                ? props.navigation.navigate('Welcome')
-                                : Alert.alert(message))
+                            .then(message => {
+                                if (message === '') {
+                                    props.navigation.navigate('Welcome');
+                                    deviceStorage.saveItem('token', userToken);
+                                } else {Alert.alert(message);}})
                             .catch(err => Alert.alert(err))
                     }>
                     <Text style={buttonStyles.loginButtonText}>Log In</Text>

@@ -5,4 +5,4 @@ const AppReducer = combineReducers({
     loginReducer: LoginReducer
 })
 
-export const configureStore = () => createStore(AppReducer)
+// export const configureStore = () => createStore(AppReducer)
