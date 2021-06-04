@@ -170,3 +170,18 @@ export const containerStyles = StyleSheet.create({
           flex:1
       }
 });
+
+export const profileStyles = StyleSheet.create({
+    profilePic: {
+        width: '40%',
+        height: '20%',
+        alignSelf:'center',
+      },
+      profileField: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: '5%'
+      },
+      
+});

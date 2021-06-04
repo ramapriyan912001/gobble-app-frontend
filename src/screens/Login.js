@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import {API} from '../api'
 import deviceStorage from '../services/deviceStorage'
 
-const userToken = '';
+let userToken = '';
 
 export default function Login(props) {
     const [email, setEmail] = useState('');
@@ -14,7 +14,7 @@ export default function Login(props) {
 
     async function verifyLogin() {
         let reply = '';
-        await API.post('users/login/',
+        await API.post('users/login',
         {
             validateStatus: (status => status < 500), // Resolve only if the status code is less than 500
             method: 'POST',
@@ -25,16 +25,20 @@ export default function Login(props) {
         })
         .then(res => {
             console.log('Going to Log in....');
-            reply = res.data.success? '' : res.data.message;
-                /* BRING THE PERSON TO THE PROFILE PAGE
-                NAVIGATION.NAVIGATE(PROFILE.JS WITH PROPS STATING EMAIL AND
-                PW, USE A COMPONENTDIDMOUNT() METHOD TO SEND GET REQUEST TO API
-                AND LOAD THE PROFILE PAGE ACCORDINGLY)*/
-            userToken = res.data.token;
+            try{
+                reply = res.data.success? '' : res.data.message;
+                    /* BRING THE PERSON TO THE PROFILE PAGE
+                    NAVIGATION.NAVIGATE(PROFILE.JS WITH PROPS STATING EMAIL AND
+                    PW, USE A COMPONENTDIDMOUNT() METHOD TO SEND GET REQUEST TO API
+                    AND LOAD THE PROFILE PAGE ACCORDINGLY)*/
+                userToken = res.data.token;
+            } catch(err) {
+                console.log(err);
+            }
         })
         .catch(err => {
             const status = err.response.status;
-            reply = status === 401? 'Invalid Email' : status === 402? 'Invalid Password' : 'Internal Error';
+            reply = status < 500? err.response.data.message : 'Internal Error';
         });
         return reply;
     };
@@ -68,10 +72,10 @@ export default function Login(props) {
                       () => verifyLogin() //returns a Promise
                             .then(message => {
                                 if (message === '') {
-                                    props.navigation.navigate('Welcome');
                                     deviceStorage.saveItem('token', userToken);
+                                    props.navigation.navigate('Welcome');
                                 } else {Alert.alert(message);}})
-                            .catch(err => Alert.alert(err))
+                            .catch(console.log)
                     }>
                     <Text style={buttonStyles.loginButtonText}>Log In</Text>
                     </TouchableOpacity>

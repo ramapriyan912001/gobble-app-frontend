@@ -3,7 +3,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const deviceStorage = {
     async loadJWT() {
         try {
-          const value = await AsyncStorage.getItem('id_token');
+          const value = await AsyncStorage.getItem('token');
           return value;
         } catch (error) {
           console.log('AsyncStorage Error: ' + error.message);
