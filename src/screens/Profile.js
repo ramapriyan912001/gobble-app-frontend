@@ -52,7 +52,7 @@ export default function Profile(props) {
         return userInfo;
     }
     // const isAdmin = payload.isAdmin;
-    let userInfo = findUserInfo();
+    let userInfo = findUserInfo(); //ISSUE: this is async, so its a promise not a json. Need to correspondingly pass to all the text boxes below
     const crossIndustry = userInfo.crossIndustry? 'Sure!' : 'Rather Not'
     const dateString = userInfo.dob;
     console.log(userInfo);
