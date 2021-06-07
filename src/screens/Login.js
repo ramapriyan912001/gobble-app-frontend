@@ -50,6 +50,7 @@ export default function Login(props) {
                     <StatusBar style="auto"/>
                     <View style={inputStyles.inputView}> 
                         <TextInput
+                            autoCapitalize="none"
                             style={inputStyles.TextInput}
                             placeholder="Email"
                             placeholderTextColor="#003f5c"
@@ -59,6 +60,7 @@ export default function Login(props) {
                         
                     <View style={inputStyles.inputView}>
                         <TextInput
+                            autoCapitalize="none"
                             style={inputStyles.TextInput}
                             placeholder="Password"
                             placeholderTextColor="#003f5c"

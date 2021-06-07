@@ -53,6 +53,7 @@ export default function register(props) {
                     <Text style={inputStyles.headerText}>Introduce Yourself!</Text>
                     <View style={inputStyles.inputView}>
                         <TextInput
+                            autoCapitalize="none"
                             textContentType="username"
                             autoCompleteType="username"
                             style={inputStyles.TextInput}
@@ -64,6 +65,7 @@ export default function register(props) {
                         
                     <View style={inputStyles.inputView}>
                         <TextInput
+                            autoCapitalize="none"
                             textContentType="emailAddress"
                             autoCompleteType="email"
                             style={inputStyles.TextInput}
@@ -76,6 +78,7 @@ export default function register(props) {
 
                     <View style={inputStyles.inputView}>
                         <TextInput
+                            autoCapitalize="none"
                             passwordRules="minlength: 8; required: lower; required: upper; required: digit; required: [-];"
                             textContentType="password"
                             style={inputStyles.TextInput}
