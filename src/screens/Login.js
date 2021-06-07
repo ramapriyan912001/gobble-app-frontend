@@ -37,6 +37,7 @@ export default function Login(props) {
             }
         })
         .catch(err => {
+            console.log(err)
             const status = err.response.status;
             reply = status < 500? err.response.data.message : 'Internal Error';
         });

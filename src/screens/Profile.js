@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Text, View, TextInput, Image, TouchableOpacity, Alert, SafeAreaView} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
 import {imageStyles, inputStyles, buttonStyles, profileStyles, containerStyles} from '../styles/LoginStyles'
@@ -52,7 +52,12 @@ export default function Profile(props) {
         return userInfo;
     }
     // const isAdmin = payload.isAdmin;
-    let userInfo = findUserInfo(); //ISSUE: this is async, so its a promise not a json. Need to correspondingly pass to all the text boxes below
+    const userInfo = {}
+    useEffect(() => {
+        userInfo = findUserInfo();
+    })
+
+    // let userInfo = findUserInfo(); ISSUE: this is async, so its a promise not a json. Need to correspondingly pass to all the text boxes below
     const crossIndustry = userInfo.crossIndustry? 'Sure!' : 'Rather Not'
     const dateString = userInfo.dob;
     console.log(userInfo);
