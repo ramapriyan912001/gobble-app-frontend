@@ -28,7 +28,7 @@ export default function RegisterPage4(props) {
                         onPress={
                             () => {
                                     console.log('API CALL FOR REGISTER');
-                                    API.post('register', {
+                                    API.post('users/register', {
                                         body: {
                                             name: initialState.name,
                                             password: initialState.password,
@@ -43,8 +43,8 @@ export default function RegisterPage4(props) {
                                     .then(res => 
                                     res.data.success
                                     ? props.navigation.navigate('FinalStep', {state: initialState})
-                                    : console.log(res))
-                                    .catch(err => console.log(err));
+                                    : console.error(res))
+                                    .catch(err => console.error(err));
                             }
                         }>
                     <Text style={buttonStyles.loginButtonText}>Finish</Text>

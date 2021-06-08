@@ -13,7 +13,10 @@ export default function Login(props) {
     const [password, setPassword] = useState('');
 
     async function verifyLogin() {
-        let reply = '';
+        let reply = {
+            message: '',
+            lastSeen: ''
+        };
         await API.post('users/login',
         {
             validateStatus: (status => status < 500), // Resolve only if the status code is less than 500
@@ -24,13 +27,9 @@ export default function Login(props) {
             }
         })
         .then(res => {
-            console.log('Going to Log in....');
             try{
-                reply = res.data.success? '' : res.data.message;
-                    /* BRING THE PERSON TO THE PROFILE PAGE
-                    NAVIGATION.NAVIGATE(PROFILE.JS WITH PROPS STATING EMAIL AND
-                    PW, USE A COMPONENTDIDMOUNT() METHOD TO SEND GET REQUEST TO API
-                    AND LOAD THE PROFILE PAGE ACCORDINGLY)*/
+                reply.message = res.data.success? '' : res.data.message;
+                reply.lastSeen = res.data.success? res.data.lastSeen : null;
                 userToken = res.data.token;
             } catch(err) {
                 console.log(err);
@@ -73,11 +72,16 @@ export default function Login(props) {
                     </TouchableOpacity>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={
                       () => verifyLogin() //returns a Promise
-                            .then(message => {
-                                if (message === '') {
+                            .then(reply => {
+                                if (reply.message === '') {
+                                    console.log('Logged In!');
                                     deviceStorage.saveItem('token', userToken);
-                                    props.navigation.navigate('Welcome');
-                                } else {Alert.alert(message);}})
+                                    if (reply.lastSeen === null) {
+                                        props.navigation.navigate('Welcome');//Only shows if user has never been seen before
+                                    } else {
+                                        props.navigation.navigate('Profile');
+                                    }
+                                } else {Alert.alert(reply.message);}})
                             .catch(console.log)
                     }>
                     <Text style={buttonStyles.loginButtonText}>Log In</Text>

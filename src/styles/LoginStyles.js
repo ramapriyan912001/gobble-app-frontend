@@ -6,6 +6,8 @@ const _fontsLoaded = () => {
       });
 }
 
+//TODO: Abstract styles by screen
+
 export const buttonStyles = StyleSheet.create({
     forgotButton: {
         height: 30,

@@ -28,7 +28,7 @@ export default function RegisterPage3(props) {
                         onPress={
                             () => {
                                     console.log('API CALL FOR REGISTER');
-                                    API.post('/register', {
+                                    API.post('users/register', {
                                         body: {
                                             name: initialState.name,
                                             password: initialState.password,
