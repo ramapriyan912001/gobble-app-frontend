@@ -1,43 +1,21 @@
-import React, {useState} from 'react'
+import React from 'react'
 import {Text, View, TextInput, Alert, Image, TouchableOpacity, StatusBar} from 'react-native'
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
-let initialState = {
-    name: '',
-    dob: '',
-    diet: 'Halal',
-    cuisine:  'Indian',
-    crossIndustry: false,
-    email: '',
-    password: '',
-};
-
-export const createState = (name, dob, diet, cuisine, crossIndustry, email, pw) => ({
-    name: name,
-    dob: dob,
-    diet: diet,
-    cuisine: cuisine,
-    crossIndustry: crossIndustry,
-    email: email,
-    password: pw
-});
+import {submitProfile} from '../dispatchers/profileDispatchers'
+import {MESSAGES} from '../../messages'
 
 export default function register(props) {
-    const [state, setState] = useState({screenHeight: 0,});
-    const [password, setPassword] = useState('');
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+    let initialState = {}
+    // const [state, setState] = useState({screenHeight: 0,});
     
-    const onContentSizeChange = (width, height) => {
-        setState({screenHeight: height})
-    }
-    const TOO_LONG = " has to be less than "
-    const TOO_SHORT = " has to be more than "
+    // const onContentSizeChange = (width, height) => {
+    //     setState({screenHeight: height})
+    // }
 
     function checkInfo(infoString, info, minLength, maxLength) {
-        const shortMessage = infoString + TOO_SHORT + `${minLength} characters!`
-        const longMessage = infoString + TOO_LONG + `${maxLength} characters!`
+        const shortMessage = infoString + MESSAGES.TOO_SHORT + `${minLength} characters!`
+        const longMessage = infoString + MESSAGES.TOO_LONG + `${maxLength} characters!`
         if (info.length < minLength) {
             return shortMessage;
         } else if (info.length > maxLength) {
@@ -58,7 +36,7 @@ export default function register(props) {
                             style={inputStyles.TextInput}
                             placeholder="Username"
                             placeholderTextColor="#003f5c"
-                            onChangeText={(username) => {setName(username);initialState.name = username;}}
+                            onChangeText={(username) => initialState.name = username}
                         />
                     </View>
                         
@@ -70,7 +48,7 @@ export default function register(props) {
                             placeholder="Email"
                             placeholderTextColor="#003f5c"
                             secureTextEntry={false}
-                            onChangeText={(email) => {setEmail(email);initialState.email = email;}}
+                            onChangeText={(email) => initialState.email = email}
                         />
                     </View>
 
@@ -82,7 +60,7 @@ export default function register(props) {
                             placeholder="Password"
                             placeholderTextColor="#003f5c"
                             secureTextEntry={true}
-                            onChangeText={(password) => {setPassword(password);initialState.password = password;}}
+                            onChangeText={(password) => initialState.password = password}
                         />
                     </View>
                     
@@ -94,8 +72,9 @@ export default function register(props) {
                                 else if (checkInfo('Password', password, 5, 30) != '') {Alert.alert(checkInfo('Password', password, 5, 30));}
                                 else if (!emailRegex.test(email)) {Alert.alert('Invalid Email!');}
                                 else {
+                                    submitProfile(initialState)
                                     console.log('Register Page 1 Done!');
-                                    props.navigation.navigate('RegisterPage2', {state: initialState});
+                                    props.navigation.navigate('RegisterPage2');
                                 }
                             }
                         }>

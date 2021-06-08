@@ -1,6 +1,6 @@
 import {UPDATE_AVATAR, UPDATE_CUISINE_PREFERENCE, 
     UPDATE_DIETARY_RESTRICTION, UPDATE_DOB, UPDATE_EMAIL, 
-    UPDATE_PASSWORD, UPDATE_LOCATION_PREFERENCE, UPDATE_NAME, UPDATE_CROSS_INDUSTRY_PREFERENCE} from './types'
+    UPDATE_PASSWORD, UPDATE_LOCATION_PREFERENCE, UPDATE_NAME, UPDATE_CROSS_INDUSTRY_PREFERENCE, UPDATE_PROFILE} from './types'
 
 
 export const updateAvatar = (avatar) => {
@@ -63,5 +63,12 @@ export const updateCrossIndustryPreference = (crossIndustryPreference) => {
     return {
         type: UPDATE_CROSS_INDUSTRY_PREFERENCE,
         data: crossIndustryPreference,
+    }
+}
+
+export const updateProfile = (profile) => {
+    return {
+        type: UPDATE_PROFILE,
+        data: profile
     }
 }

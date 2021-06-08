@@ -1,6 +1,6 @@
 import {UPDATE_AVATAR, UPDATE_CUISINE_PREFERENCE, 
     UPDATE_DIETARY_RESTRICTION, UPDATE_DOB, UPDATE_EMAIL, 
-    UPDATE_PASSWORD, UPDATE_LOCATION_PREFERENCE, UPDATE_NAME} from '../actions/types'
+    UPDATE_PASSWORD, UPDATE_LOCATION_PREFERENCE, UPDATE_NAME, UPDATE_PROFILE} from '../actions/types'
 
 const initialState = {
     name: '',
@@ -61,5 +61,12 @@ const loginReducer = (state = initialState, action) => {
             ...state,
             crossIndustry: action.data
         }
+        case UPDATE_PROFILE:
+        return {
+            ...state,
+            profile
+        }
     }
 }
+
+export default loginReducer;

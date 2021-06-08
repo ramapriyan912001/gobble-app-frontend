@@ -2,10 +2,12 @@ import React, {useState} from 'react'
 import {Text, View, SafeAreaView, TouchableOpacity} from 'react-native'
 import {Picker} from '@react-native-picker/picker'
 import {pickerStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
+import {submitProfile} from '../dispatchers/profileDispatchers'
+
 
 
 export default function RegisterPage2(props) {
-    const initialState = props.navigation.getParam('state');
+    const initialState = {};
     const [diet, setDietPreference] = useState('');
     const [cuisine, setCuisinePreference] = useState('');
     
@@ -14,7 +16,7 @@ export default function RegisterPage2(props) {
         <Text style={pickerStyles.text}>What are your dietary restrictions?</Text>
             <Picker
                         selectedValue={diet}
-                        onValueChange={(newDiet, itemIndex) => {setDietPreference(newDiet);initialState.diet = newDiet;}}
+                        onValueChange={(newDiet, itemIndex) => {initialState.diet = newDiet;}}
                         style={pickerStyles.picker}
                         enabled= {true}
                         >
@@ -26,7 +28,7 @@ export default function RegisterPage2(props) {
         <Text style={pickerStyles.text}>What is your preferred cuisine?</Text>
             <Picker
                 selectedValue={cuisine}
-                onValueChange={(newCuisineItem, itemIndex) => {setCuisinePreference(newCuisineItem);initialState.cuisine = newCuisineItem;}}
+                onValueChange={(newCuisineItem, itemIndex) => {initialState.cuisine = newCuisineItem;}}
                 style={pickerStyles.picker}
                 >
                 <Picker.Item label="Indian" value="indian" />
@@ -42,8 +44,9 @@ export default function RegisterPage2(props) {
             <TouchableOpacity style={buttonStyles.tinyButton} 
                             onPress={
                                 () => {
+                                        submitProfile(initialState)
                                         console.log('Register Page 2 done!');
-                                        props.navigation.navigate('RegisterPage3', {state: initialState});
+                                        props.navigation.navigate('RegisterPage3');
                                 }
                             }>
                 <Text style={buttonStyles.loginButtonText}>Continue</Text>
