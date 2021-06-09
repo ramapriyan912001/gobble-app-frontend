@@ -1,4 +1,5 @@
 import {useDispatch} from 'react-redux'
+import {updateProfile} from '../actions/profile'
 
 const dispatch = useDispatch();
 
