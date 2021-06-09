@@ -2,50 +2,53 @@ import React, {useState} from 'react'
 import {Text, View, TextInput, Alert, Image, TouchableOpacity, StatusBar} from 'react-native'
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
-let initialState = {
-    name: '',
-    dob: '',
-    diet: 'Halal',
-    cuisine:  'Indian',
-    crossIndustry: false,
-    email: '',
-    password: '',
-};
-
-export const createState = (name, dob, diet, cuisine, crossIndustry, email, pw) => ({
-    name: name,
-    dob: dob,
-    diet: diet,
-    cuisine: cuisine,
-    crossIndustry: crossIndustry,
-    email: email,
-    password: pw
-});
+import firebaseSvc from '../reducers/FirebaseSvc';
 
 export default function register(props) {
-    const [state, setState] = useState({screenHeight: 0,});
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    
-    const onContentSizeChange = (width, height) => {
-        setState({screenHeight: height})
-    }
-    const TOO_LONG = " has to be less than "
-    const TOO_SHORT = " has to be more than "
 
-    function checkInfo(infoString, info, minLength, maxLength) {
-        const shortMessage = infoString + TOO_SHORT + `${minLength} characters!`
-        const longMessage = infoString + TOO_LONG + `${maxLength} characters!`
-        if (info.length < minLength) {
-            return shortMessage;
-        } else if (info.length > maxLength) {
-            return longMessage;
-        } else {
-            return '';
+    //Handlers
+
+    const validateInput = (user) => {
+        const shortMessage = (infoString, len) => infoString + " has to be more than " + `${len} characters!`;
+        const longMessage = (infoString, len) => infoString + " has to be less than " + `${len} characters!`;
+        const emailRegex = /@gmail.com|@yahoo.com|@icloud.com|@u.nus.edu|@hotmail.com|@live.com|@yahoo.co.uk|@nus.edu.sg/;
+        
+        function checkInfo(infoString, info, minLength, maxLength) {
+            if (info.length < minLength) {
+                return {
+                    message: shortMessage(infoString, minLength),
+                    valid: false
+                };
+            } else if (info.length > maxLength) {
+                return {
+                    message: longMessage(infoString, maxLength),
+                    valid: false
+                };
+            } else {
+                return {
+                    message: '',
+                    valid: true
+                }
+            }
         }
+        if (!checkInfo('Username', user.name, 5, 20).valid) {Alert.alert(checkInfo('Username', user.name, 5, 20).message);}
+        else if (!checkInfo('Password', user.password, 5, 30).valid) {Alert.alert(checkInfo('Password', user.password, 5, 30).message);}
+        else if (!emailRegex.test(user.email)) {Alert.alert('Invalid Email!');}
+        else {props.navigation.navigate('RegisterPage2', {user: user});}
     }
+
+    const passAlongInfo = (email, name, password) => {
+        let user = {
+            email: email,
+            name: name,
+            password: password
+        };
+        validateInput(user);
+    };
+    
     return(
             <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container}>
                     <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
@@ -57,9 +60,9 @@ export default function register(props) {
                             textContentType="username"
                             autoCompleteType="username"
                             style={inputStyles.TextInput}
-                            placeholder="Username"
+                            placeholder="Name"
                             placeholderTextColor="#003f5c"
-                            onChangeText={(username) => {setName(username);initialState.name = username;}}
+                            onChangeText={(username) => setName(username)}
                         />
                     </View>
                         
@@ -72,7 +75,7 @@ export default function register(props) {
                             placeholder="Email"
                             placeholderTextColor="#003f5c"
                             secureTextEntry={false}
-                            onChangeText={(email) => {setEmail(email);initialState.email = email;}}
+                            onChangeText={(email) => setEmail(email)}
                         />
                     </View>
 
@@ -85,27 +88,17 @@ export default function register(props) {
                             placeholder="Password"
                             placeholderTextColor="#003f5c"
                             secureTextEntry={true}
-                            onChangeText={(password) => {setPassword(password);initialState.password = password;}}
+                            onChangeText={(password) => setPassword(password)}
                         />
                     </View>
                     
                     <TouchableOpacity style={buttonStyles.loginButton} 
-                        onPress={
-                            () => {
-                                const emailRegex = /@gmail.com|@yahoo.com|@icloud.com|@u.nus.edu|@live.com|@yahoo.co.uk/;
-                                if (checkInfo('Username', name, 5, 20) != '') {Alert.alert(checkInfo('Username', name, 5, 20));}
-                                else if (checkInfo('Password', password, 5, 30) != '') {Alert.alert(checkInfo('Password', password, 5, 30));}
-                                else if (!emailRegex.test(email)) {Alert.alert('Invalid Email!');}
-                                else {
-                                    console.log('Register Page 1 Done!');
-                                    props.navigation.navigate('RegisterPage2', {state: initialState});
-                                }
-                            }
-                        }>
-                    <Text style={buttonStyles.loginButtonText}>Continue</Text>
+                        onPress={() => passAlongInfo(email, name, password)}
+                    >
+                        <Text style={buttonStyles.loginButtonText}>Continue</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.goBack()}>
-                    <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
+                        <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
                     </TouchableOpacity>
             </KeyboardAwareScrollView>
     )

@@ -10,43 +10,43 @@ LogBox.ignoreLogs(['Unhandled promise rejection: Error: Native splash screen is 
 //TODO: This shouldn't be part of a stack navigator. Users can swipe left from profile page and see this.
 
 export default function Welcome(props) {
-    async function postDataAsync() {
-        await deviceStorage
-            .loadJWT()
-            .then(async token => {
-                let payload = 
-                jwt
-                .decode(
-                token, // the token
-                'iuewifu398b', // the secret - find safer place to store
-                { timeSkew: 60 }
-                );
+    // async function postDataAsync() {
+    //     await deviceStorage
+    //         .loadJWT()
+    //         .then(async token => {
+    //             let payload = 
+    //             jwt
+    //             .decode(
+    //             token, // the token
+    //             'iuewifu398b', // the secret - find safer place to store
+    //             { timeSkew: 60 }
+    //             );
 
-                const config = {
-                    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'}
-                };
+    //             const config = {
+    //                 headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json'}
+    //             };
 
-                await API
-                .put( 
-                    `users/${payload.userID}/lastseen`,
-                    {
-                        lastSeen: Date.now(),
-                        method: 'PUT'
-                    }
-                    ,config
-                )
-                .then(res => {
-                    if (!res.data.success) {
-                        Alert.alert('Could not update user details - Network Problem');
-                }})
-                .catch(err => console.log(err.response.data.message));
-            })
-            .catch(err => console.log(err));
-        };
+    //             await API
+    //             .put( 
+    //                 `users/${payload.userID}/lastseen`,
+    //                 {
+    //                     lastSeen: Date.now(),
+    //                     method: 'PUT'
+    //                 }
+    //                 ,config
+    //             )
+    //             .then(res => {
+    //                 if (!res.data.success) {
+    //                     Alert.alert('Could not update user details - Network Problem');
+    //             }})
+    //             .catch(err => console.log(err.response.data.message));
+    //         })
+    //         .catch(err => console.log(err));
+    //     };
         
-    useEffect(() => {
-        postDataAsync();
-    },[]);
+    // useEffect(() => {
+    //     postDataAsync();
+    // },[]);
 
     return (
         <SafeAreaView style={containerStyles.container}>
