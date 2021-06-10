@@ -1,4 +1,7 @@
 import firebase from 'firebase';
+import 'react-native-get-random-values';
+import { v4 as uuid } from 'uuid';
+
 class FirebaseSvc {
   constructor() {
     if (!firebase.apps.length) { //avoid re-initializing -> HIDE LATER
@@ -21,6 +24,15 @@ class FirebaseSvc {
       .catch(failed_callback);
     }
 
+  //Register
+  createUser = (user, avatar, success, failure) => {
+    firebase
+    .auth()
+    .createUserWithEmailAndPassword(user.email, user.password)
+    .then(success)
+    .catch(failure)//if create user with email and pw fails
+  }
+
   currentUser = () => firebase.auth().currentUser;
 
   observeAuth = () =>
@@ -37,6 +49,10 @@ class FirebaseSvc {
     this.ref
       .limitToLast(20)
       .on('child_added', snapshot => callback(this.parse(snapshot)));
+  }
+
+  refOff() {
+    this.ref.off();
   }
 
   // The parse method take the snapshot data and construct a message:
@@ -74,12 +90,17 @@ class FirebaseSvc {
     return firebase.database().ref('Messages');
   }
 
+  get timestamp() {
+    return firebase.database.ServerValue.TIMESTAMP;
+  }
+
   //Upload Image to Firebase Storage
   uploadImage = async uri => {
     try {
       const response = await fetch(uri);
       const blob = await response.blob();
-      const ref = firebase.storage().ref('avatar').child(uuid.v4());
+      console.log(uuid());
+      const ref = firebase.storage().ref('avatar').child(uuid());
       const task = ref.put(blob);
       return new Promise((resolve, reject) => {
         task.on('state_changed', () => { }, reject, 
@@ -89,6 +110,23 @@ class FirebaseSvc {
       console.log('uploadImage error: ' + err.message); 
     }
   }
+
+  updateAvatar = (url) => {
+    //await this.setState({ avatar: url });
+    let userf = firebase.auth().currentUser;
+    if (userf != null) {
+      userf.updateProfile({ avatar: url})
+      .then(() => console.log("Updated avatar successfully. url:" + url))
+      .catch((error) => {
+        console.warn("Error update avatar.");
+        alert("Error update avatar. Error:" + error.message);
+      });
+    } else {
+      console.log("can't update avatar, user is not login.");
+      alert("Unable to update avatar. You must login first.");
+    }
+  }
+
 }
 // To apply the default browser preference instead of explicitly setting it.
 // firebase.auth().useDeviceLanguage();

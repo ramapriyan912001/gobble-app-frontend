@@ -8,18 +8,19 @@ import firebaseSvc from '../reducers/FirebaseSvc';
 export default function ChatRoom() {
   const cUser = firebaseSvc.currentUser();
   const user = {
-    name: cUser.name,
+    name: cUser.displayName,
     email: cUser.email,
-    avatar: cUser.avatar,
+    avatar: cUser.photoURL,
     _id: firebaseSvc.uid
   };
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    firebaseSvc.refOn(message => setMessages(GiftedChat.append(messages, message)));
-    return firebaseSvc.refOff;
+    firebaseSvc.refOn(message => {console.log(message);setMessages(GiftedChat.append(messages, message))});
+    return firebaseSvc.refOff();
   }, []);
 
+  console.log(messages);
   return (
         <GiftedChat
           messages={messages}

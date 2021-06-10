@@ -216,7 +216,7 @@ export const containerStyles = StyleSheet.create({
 
 export const profileStyles = StyleSheet.create({
     profilePic: {
-        width: '40%',
+        width: '30%',
         height: '20%',
         alignSelf:'center',
       },

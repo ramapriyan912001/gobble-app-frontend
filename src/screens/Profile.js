@@ -10,6 +10,7 @@ import firebaseSvc from '../reducers/FirebaseSvc'
 export default function Profile(props) {
     const [appIsReady, setAppIsReady] = useState(false);
     const [userInfo, setUserInfo] = useState({});
+    const [avatar, setAvatar] = useState('');
     // async function loadDataAsync () {
     //     await deviceStorage
     //         .loadJWT()
@@ -46,6 +47,7 @@ export default function Profile(props) {
         if (userInfo === null) {
             props.navigation.goBack();
         }
+        setAvatar(firebaseSvc.currentUser().photoURL);
         setAppIsReady(true);
     }
 
@@ -57,13 +59,12 @@ export default function Profile(props) {
     if (!appIsReady) {//effect loads data, NO WARNINGS !! :)
         return null;
     }
-    console.log(userInfo);
 
     return(
         <SafeAreaView style={containerStyles.container}>
             <StatusBar style="auto"/>
             <Text style={inputStyles.headerText}>{userInfo.displayName}'s Profile</Text>
-            <Image style={profileStyles.profilePic} source={userInfo.avatar}/>
+            <Image style={profileStyles.profilePic} source={{uri:avatar}}/>
             <Text style={profileStyles.profileField}>Your email is {userInfo.email}</Text>
             <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('ChatRoom')}>
                 <Text style={buttonStyles.loginButtonText}>Chats</Text>

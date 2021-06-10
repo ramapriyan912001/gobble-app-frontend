@@ -15,7 +15,7 @@ export default function Login(props) {
 
     // Login Success/Fail handlers
     const loginSuccess = (userCredential) => {
-        console.log('login successful, navigate to chat.');
+        console.log('login successful');
         const user = userCredential.user;
         user.lastSeen === null
         ? props.navigation.navigate('Welcome')
