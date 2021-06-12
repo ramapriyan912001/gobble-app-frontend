@@ -6,6 +6,8 @@ const _fontsLoaded = () => {
       });
 }
 
+//TODO: Abstract styles by screen
+
 export const buttonStyles = StyleSheet.create({
     forgotButton: {
         height: 30,
@@ -16,6 +18,29 @@ export const buttonStyles = StyleSheet.create({
         // fontSize: 20,
         // fontFamily: 'IndieFlower_400Regular'
     },
+
+    backButton: {
+        width:165,
+        borderRadius:25,
+        height:50,
+        alignSelf:'flex-start',
+        justifyContent:'center',
+        backgroundColor:"#0aa859",
+        shadowColor: "#000",
+        shadowOffset: {
+            width: 2,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 9,
+        elevation: 5
+    },
+
+    backButtonText:{
+        fontSize:20,
+        alignSelf:'center'
+    },
+
     tinyButton:{
         width:165,
         borderRadius:25,
@@ -141,9 +166,27 @@ export const inputStyles = StyleSheet.create({
         marginBottom: '10%'
     },
 
+    subHeader: {
+        fontSize: 22,
+        alignSelf: 'center',
+        margin: '5%',
+    },
+
+    subText: {
+        fontSize: 15,
+        alignSelf: 'center',
+        margin: '5%',
+    },
+
     TextInput: {
-        height: 50,
+        height: '5%',
         flex: 1,
+        width: 200,
+        paddingLeft: "6%",
+    },
+
+    resetTextInput: {
+        height: '5%',
         width: 200,
         paddingLeft: "6%",
     }
@@ -169,4 +212,19 @@ export const containerStyles = StyleSheet.create({
           marginHorizontal: '22%',
           flex:1
       }
+});
+
+export const profileStyles = StyleSheet.create({
+    profilePic: {
+        width: '30%',
+        height: '20%',
+        alignSelf:'center',
+      },
+      profileField: {
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
+        marginBottom: '5%'
+      },
+      
 });

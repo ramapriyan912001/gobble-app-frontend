@@ -4,7 +4,7 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import {containerStyles, buttonStyles, pickerStyles, inputStyles} from '../styles/LoginStyles'
 import {API} from '../api'
 
-export default function RegisterPage4(props) {
+export default function RegisterPage3(props) {
     const initialState = props.navigation.getParam('state');
     const [cross, setCrossIndustryPreference] = useState(false);
     const [date, setDate] = useState(new Date());
@@ -28,7 +28,7 @@ export default function RegisterPage4(props) {
                         onPress={
                             () => {
                                     console.log('API CALL FOR REGISTER');
-                                    API.post('register', {
+                                    API.post('users/register', {
                                         body: {
                                             name: initialState.name,
                                             password: initialState.password,
