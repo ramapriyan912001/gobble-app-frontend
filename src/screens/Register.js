@@ -5,6 +5,8 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import firebaseSvc from '../reducers/FirebaseSvc';
 
+//TODO: Errors not stopping User from signing up
+
 export default function register(props) {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
