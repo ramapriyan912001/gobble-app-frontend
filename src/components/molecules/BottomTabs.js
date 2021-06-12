@@ -2,7 +2,7 @@ import React from 'react'
 import {View, Text, Image} from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Profile from '../../screens/Profile'
-import Chatroom from '../../screens/Chatroom'
+import Chatroom from '../../screens/ChatRoom'
 import Gobble from '../../screens/Gobble'
 import Matches from '../../screens/Matches'
 const Tab = createBottomTabNavigator();
