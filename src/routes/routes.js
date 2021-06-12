@@ -4,7 +4,7 @@ import Welcome from '../screens/Welcome';
 import RegisterPage2 from '../screens/RegisterPage2'
 import RegisterPage3 from '../screens/RegisterPage3'
 import RegisterPage4 from '../screens/RegisterPage4'
-import FinalStep from '../screens/finalstep';
+import FinalStep from '../screens/FinalStep';
 import {createAppContainer} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation-stack'
 import ForgotPassword from '../screens/ForgotPassword'
