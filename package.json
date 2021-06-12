@@ -12,6 +12,7 @@
     "@expo-google-fonts/inter": "^0.1.0",
     "@react-native-async-storage/async-storage": "^1.13.0",
     "@react-native-community/datetimepicker": "3.2.0",
+    "@react-native-community/image-editor": "^2.3.0",
     "@react-native-picker/picker": "1.9.11",
     "AsyncStorage": "^0.1.5",
     "Base64": "^1.1.0",
@@ -20,13 +21,17 @@
     "expo": "^41.0.1",
     "expo-app-loading": "^1.0.3",
     "expo-font": "~9.1.0",
+    "expo-image-manipulator": "~9.1.0",
+    "expo-image-picker": "~10.1.4",
     "expo-jwt": "^1.4.1",
     "expo-status-bar": "^1.0.4",
+    "firebase": "8.2.3",
     "react": "16.13.1",
     "react-dom": "16.13.1",
     "react-native": "https://github.com/expo/react-native/archive/sdk-41.0.0.tar.gz",
     "react-native-animated-multistep": "^1.1.1",
     "react-native-gesture-handler": "^1.10.3",
+    "react-native-get-random-values": "~1.7.0",
     "react-native-gifted-chat": "^0.16.3",
     "react-native-keyboard-aware-scroll-view": "^0.9.4",
     "react-native-multistep-forms": "^0.0.1",
@@ -37,7 +42,8 @@
     "react-navigation-stack": "^2.10.4",
     "react-redux": "^7.2.4",
     "redux": "^4.1.0",
-    "splash-screen": "^4.0.1"
+    "splash-screen": "^4.0.1",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.9.0"

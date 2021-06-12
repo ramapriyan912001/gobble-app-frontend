@@ -1,62 +1,56 @@
 import React, {useState} from 'react'
-import {Text, View, SafeAreaView, Switch, TouchableOpacity} from 'react-native'
-import DateTimePicker from '@react-native-community/datetimepicker'
-import {containerStyles, buttonStyles, pickerStyles, inputStyles} from '../styles/LoginStyles'
-import {API} from '../api'
+import {Text, View, SafeAreaView, TouchableOpacity} from 'react-native'
+import {Picker} from '@react-native-picker/picker'
+import {pickerStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
 
-export default function RegisterPage3(props) {
+
+export default function RegisterPage2(props) {
     const initialState = props.navigation.getParam('state');
-    const [cross, setCrossIndustryPreference] = useState(false);
-    const [date, setDate] = useState(new Date());
-    return(
-    <SafeAreaView style={containerStyles.container}>
-        <Text style={pickerStyles.text}>Would you like to be matched with other Industrial Backgrounds?</Text>
-        <Switch 
-            value={cross} 
-            onValueChange={() => {setCrossIndustryPreference(!cross);initialState.crossIndustry = !initialState.crossIndustry;}} 
-            style={pickerStyles.switch}
-        />
-        <Text style={pickerStyles.dateText}>Tell us your Birthday!</Text>
-        <View style={containerStyles.datePicker}>
-            <DateTimePicker
-            value={date}
-            onChange={(event, selectedDate) => {setDate(selectedDate);initialState.dob = selectedDate;}}
-            style={pickerStyles.datePicker}
-            />
-        </View>
-        <TouchableOpacity style={buttonStyles.loginButton} 
-                        onPress={
-                            () => {
-                                    console.log('API CALL FOR REGISTER');
-                                    API.post('users/register', {
-                                        body: {
-                                            name: initialState.name,
-                                            password: initialState.password,
-                                            email: initialState.email,
-                                            crossIndustry: initialState.crossIndustry,
-                                            dob: initialState.dob,
-                                            diet: initialState.diet,
-                                            cuisine: initialState.cuisine,
-                                        },
-                                        method: 'POST',
-                                    })
-                                    .then(res => 
-                                    res.data.success
-                                    ? props.navigation.navigate('FinalStep', {state: initialState})
-                                    : console.log(res))
-                                    .catch(err => console.log(err));
-                            }
-                        }>
-                    <Text style={buttonStyles.loginButtonText}>Finish</Text>
-        </TouchableOpacity>
+    const [diet, setDietPreference] = useState('');
+    const [cuisine, setCuisinePreference] = useState('');
+    
+    return (
+    <SafeAreaView>
+        <Text style={pickerStyles.text}>What are your dietary restrictions?</Text>
+            <Picker
+                        selectedValue={diet}
+                        onValueChange={(newDiet, itemIndex) => {setDietPreference(newDiet);initialState.diet = newDiet;}}
+                        style={pickerStyles.picker}
+                        enabled= {true}
+                        >
+                        <Picker.Item label="Halal" value="halal" />
+                        <Picker.Item label="Vegetarian" value="vegetarian" />
+                        <Picker.Item label="Vegan/Strictly Vegetarian" value="vegan" />
+                        <Picker.Item label="No Restrictions" value='nonhalal' />
+            </Picker>
+        <Text style={pickerStyles.text}>What is your preferred cuisine?</Text>
+            <Picker
+                selectedValue={cuisine}
+                onValueChange={(newCuisineItem, itemIndex) => {setCuisinePreference(newCuisineItem);initialState.cuisine = newCuisineItem;}}
+                style={pickerStyles.picker}
+                >
+                <Picker.Item label="Indian" value="indian" />
+                <Picker.Item label="Asian" value="asian" />
+                <Picker.Item label="Malaysian" value="malay" />
+                <Picker.Item label="Western" value='western' />
+                <Picker.Item label="Others" value='others' />
+            </Picker>
         <View style={containerStyles.buttonRow}>
             <TouchableOpacity style={buttonStyles.tinyButton} onPress={() => props.navigation.goBack()}>
                 <Text style={buttonStyles.loginButtonText}>Back</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={buttonStyles.tinyButton} onPress={() => props.navigation.navigate('Login')}>
-                <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
+            <TouchableOpacity style={buttonStyles.tinyButton} 
+                            onPress={
+                                () => {
+                                        console.log('Register Page 2 done!');
+                                        props.navigation.navigate('RegisterPage3', {state: initialState});
+                                }
+                            }>
+                <Text style={buttonStyles.loginButtonText}>Continue</Text>
             </TouchableOpacity>
         </View>
+            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('Login')}>
+                <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
+            </TouchableOpacity>
     </SafeAreaView>
-    )
-};
+    )};
