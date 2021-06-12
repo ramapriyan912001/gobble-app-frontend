@@ -16,7 +16,7 @@ export default function ChatRoom() {
   const [messages, setMessages] = useState([]);
 
   const loadMessages = () => {
-    firebaseSvc.refRetrieve(message => {console.log(message);setMessages(GiftedChat.append(messages, message))});
+    firebaseSvc.refRetrieve(message => setMessages(GiftedChat.append(messages, message)));//Errors occurs here
   };
 
   const updateMessages = (messageList) => {

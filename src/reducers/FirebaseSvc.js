@@ -63,11 +63,12 @@ class FirebaseSvc {
 
   // The parse method take the snapshot data and construct a message:
   parse = snapshot => {
-    console.log(snapshot);
     const { timestamp: numberStamp, text, user } = snapshot.val();
     const { key: _id } = snapshot;
     const timestamp = new Date(numberStamp);
     const message = {_id, timestamp, text, user};
+    console.log('message after being parsed :')
+    console.log(message);
     return message;
   };
 
