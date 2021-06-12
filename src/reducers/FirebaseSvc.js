@@ -44,10 +44,16 @@ class FirebaseSvc {
       }
     });
 
-  //Add Messages
+  //Retrieve Messages
+  refRetrieve = callback => {
+    this.ref
+      .limitToLast(40)
+      .on('value', snapshot => callback(this.parse(snapshot)));
+  }
+
   refOn = callback => {
     this.ref
-      .limitToLast(20)
+      .limitToLast(40)
       .on('child_added', snapshot => callback(this.parse(snapshot)));
   }
 
@@ -57,6 +63,7 @@ class FirebaseSvc {
 
   // The parse method take the snapshot data and construct a message:
   parse = snapshot => {
+    console.log(snapshot);
     const { timestamp: numberStamp, text, user } = snapshot.val();
     const { key: _id } = snapshot;
     const timestamp = new Date(numberStamp);
@@ -76,9 +83,8 @@ class FirebaseSvc {
   // The send method in Firebase.js is:
   send = messages => {
     for (let i = 0; i < messages.length; i++) {
-      const { text, user } = messages[i];
-      const message = {text, user, createdAt: this.timestamp, };
-      this.ref.push(message);
+      const { text, user, createdAt } = messages[i];
+      this.ref.push({text, user, createdAt});
     }
   };
 
@@ -87,7 +93,7 @@ class FirebaseSvc {
   }
 
   get ref() {
-    return firebase.database().ref('Messages');
+    return firebase.database().ref('Messages/');
   }
 
   get timestamp() {

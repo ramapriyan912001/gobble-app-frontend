@@ -15,16 +15,23 @@ export default function ChatRoom() {
   };
   const [messages, setMessages] = useState([]);
 
-  useEffect(() => {
-    firebaseSvc.refOn(message => {console.log(message);setMessages(GiftedChat.append(messages, message))});
-    return firebaseSvc.refOff();
-  }, []);
+  const loadMessages = () => {
+    firebaseSvc.refRetrieve(message => {console.log(message);setMessages(GiftedChat.append(messages, message))});
+  };
 
-  console.log(messages);
+  const updateMessages = (messageList) => {
+    firebaseSvc.send(messageList);
+    firebaseSvc.refOn(message => setMessages(GiftedChat.append(messages, message)));
+    return firebaseSvc.refOff();
+  };
+
+  useEffect(loadMessages, []);
+
+  // console.log(messages);
   return (
         <GiftedChat
           messages={messages}
-          onSend={firebaseSvc.send}
+          onSend={updateMessages}
           user={user}
         />
   );
