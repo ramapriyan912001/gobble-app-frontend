@@ -1,6 +1,8 @@
 import {UPDATE_AVATAR, UPDATE_CUISINE_PREFERENCE, 
     UPDATE_DIETARY_RESTRICTION, UPDATE_DOB, UPDATE_EMAIL, 
-    UPDATE_PASSWORD, UPDATE_LOCATION_PREFERENCE, UPDATE_NAME, UPDATE_PROFILE} from '../actions/types'
+    UPDATE_PASSWORD, UPDATE_LOCATION_PREFERENCE, 
+    UPDATE_NAME, UPDATE_PROFILE, UPDATE_CROSS_INDUSTRY_PREFERENCE} 
+    from '../actions/types'
 
 const initialState = {
     name: '',
@@ -66,7 +68,10 @@ const loginReducer = (state = initialState, action) => {
             ...state,
             profile
         }
+        default:
+            return state
     }
+    return state
 }
 
 export default loginReducer;
