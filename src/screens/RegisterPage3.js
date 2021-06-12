@@ -35,6 +35,7 @@ export default function RegisterPage2(props) {
                 <Picker.Item label="Western" value='western' />
                 <Picker.Item label="Others" value='others' />
             </Picker>
+
         <View style={containerStyles.buttonRow}>
             <TouchableOpacity style={buttonStyles.tinyButton} onPress={() => props.navigation.goBack()}>
                 <Text style={buttonStyles.loginButtonText}>Back</Text>

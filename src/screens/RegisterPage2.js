@@ -2,6 +2,7 @@ import React, {useState} from 'react'
 import {Text, View, SafeAreaView, TouchableOpacity, Alert} from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
 import {pickerStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
+
 import firebaseSvc from '../reducers/FirebaseSvc';
 import ImageEditor from '@react-native-community/image-editor';
 import * as ImageManipulator from 'expo-image-manipulator';
@@ -12,6 +13,7 @@ export default function RegisterPage2(props) {
     const user = initialState.user;
     const [avatar, setAvatar] = useState('');
     const [hasAvatar, setHasAvatar] = useState(false);
+
     
     //Handlers for Action Failure:
     const onFailure = (level) => (err) => Alert.alert(level + ' error ' + err.message);
@@ -103,6 +105,7 @@ export default function RegisterPage2(props) {
         <TouchableOpacity style={buttonStyles.loginButton} onPress={updateImage}>
             <Text style={buttonStyles.loginButtonText}>Select Picture</Text>
         </TouchableOpacity>
+
         <View style={containerStyles.buttonRow}>
             <TouchableOpacity style={buttonStyles.tinyButton} onPress={() => props.navigation.goBack()}>
                 <Text style={buttonStyles.loginButtonText}>Back</Text>
@@ -113,6 +116,7 @@ export default function RegisterPage2(props) {
                                         addUser(avatar, user);
                                         console.log('Register Page 2 done!');
                                         props.navigation.navigate('FinalStep');
+
                                 }
                             }>
                 <Text style={buttonStyles.loginButtonText}>Continue</Text>

@@ -1,3 +1,4 @@
+
 import React, {useEffect, useState, useCallback} from 'react'
 import {Text, Image, TouchableOpacity, SafeAreaView} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
@@ -80,3 +81,4 @@ export default function Profile(props) {
 // <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
 // <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
 // <Text style={profileStyles.profileField}>Cross-Industrial meetings? {userInfo.crossIndustry}</Text>
+
