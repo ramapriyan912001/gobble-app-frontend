@@ -7,7 +7,7 @@ import firebaseSvc from '../reducers/FirebaseSvc';
 
 export default function RegisterPage4(props) {
     const [cross, setCrossIndustryPreference] = useState(false);
-    const [date, setDate] = useState(new Date(1666666660));
+    const [date, setDate] = useState(new Date());
     const [show, setShow] = useState(false);
     //Handlers for Action Failure:
 
