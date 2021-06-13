@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+import { Alert } from 'react-native';
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 
@@ -19,21 +20,107 @@ class FirebaseSvc {
   //login
   login = async(user, success_callback, failed_callback) => {
       await firebase.auth()
-        .signInWithEmailAndPassword(user.email, user.password)
+      .signInWithEmailAndPassword(user.email, user.password)
       .then(success_callback)
       .catch(failed_callback);
     }
 
+  //Sign Out
+  signOut = (success, failure) => {
+    firebase
+    .auth()
+    .signOut()
+    .then(success)
+    .catch(failure)
+  };
+
   //Register
-  createUser = (user, avatar, success, failure) => {
+  createUser = (user, success, failure) => {
     firebase
     .auth()
     .createUserWithEmailAndPassword(user.email, user.password)
     .then(success)
-    .catch(failure)//if create user with email and pw fails
+    .catch(failure);//if create user with email and pw fails    
   }
 
+  deleteUser = () => {
+    if (this.userExists()) {
+      return this
+      .currentUser()
+      .delete()
+      .then(() => console.log('User deleted'))
+      .catch(err => {
+        if (err.code === 'auth/requires-recent-login') {
+          return false;
+        } else {
+          console.warn(err.message);
+          return false;
+        }});
+    } else {
+      return true;
+    }
+  }
+
+  reauthenticateUser = (user, success, failure) => {
+    const credentials = firebase.auth.EmailAuthProvider.credential(user.email, user.password);
+    console.log(credentials);
+    if (this.userExists()) {
+      this
+      .currentUser()
+      .reauthenticateWithCredential(credentials)
+      .then(success)
+      .catch(failure);
+    }
+  }
+
+  updateUserProfile = (user, success, failure) => {
+    if (this.userExists()) {
+      this
+      .currentUser()
+      .updateProfile(user)
+      .then(success)
+      .catch(failure);
+    }
+  }
+
+  updateEmail = (email, success, failure) => {
+    if (this.userExists()) {
+      this
+      .currentUser()
+      .updateEmail(email)
+      .then(success)
+      .catch(failure);
+    }
+  };
+
+  updateUserCollection = (user, success, failure) => {
+    if (this.userExists()) {
+      this
+      .userRef(this.uid)
+      .set(user)
+      .then(success)
+      .catch(failure);
+    }
+    // Scalable multiple update method
+    //
+    // const newUserKey = firebase.database().ref().child('Users/').key;
+    // let updates = {};
+    // updates['/Users/'+ uid + '/' + newUserKey] = userProfile;
+    // // Add more updates here
+    // return firebase.database().ref().update(updates);
+  }
+
+  getUserCollection = (success, failure) => this.userExists()
+                                            ? this
+                                              .userRef(this.uid)
+                                              .once('value')
+                                              .then(success)
+                                              .catch(failure)
+                                            : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Registration'})
+
   currentUser = () => firebase.auth().currentUser;
+
+  userExists = () => this.currentUser() != null;
 
   observeAuth = () =>
     firebase.auth().onAuthStateChanged(function(user) {
@@ -46,19 +133,19 @@ class FirebaseSvc {
 
   //Retrieve Messages
   refRetrieve = callback => {
-    this.ref
+    this.messageRef('')
       .limitToLast(40)
       .on('value', snapshot => callback(this.parse(snapshot)));
   }
 
   refOn = callback => {
-    this.ref
+    this.messageRef('')
       .limitToLast(40)
       .on('child_added', snapshot => callback(this.parse(snapshot)));
   }
 
   refOff() {
-    this.ref.off();
+    this.messageRef('').off();
   }
 
   // The parse method take the snapshot data and construct a message:
@@ -85,16 +172,24 @@ class FirebaseSvc {
   send = messages => {
     for (let i = 0; i < messages.length; i++) {
       const { text, user, createdAt } = messages[i];
-      this.ref.push({text, user, createdAt});
+      this.messageRef('').push({text, user, createdAt});
     }
   };
 
   get uid() {
-    return (firebase.auth().currentUser || {}).uid;
+    return this.currentUser().uid;
   }
 
-  get ref() {
-    return firebase.database().ref('Messages/');
+  messageRef(params) {
+    return firebase.database().ref(`Messages/${params}`);
+  }
+
+  userRef(params) {
+    return firebase.database().ref(`Users/${params}`);
+  }
+
+  matchesRef(params) {
+    return firebase.database().ref(`Matches/${params}`);
   }
 
   get timestamp() {
@@ -106,7 +201,6 @@ class FirebaseSvc {
     try {
       const response = await fetch(uri);
       const blob = await response.blob();
-      console.log(uuid());
       const ref = firebase.storage().ref('avatar').child(uuid());
       const task = ref.put(blob);
       return new Promise((resolve, reject) => {
@@ -120,17 +214,18 @@ class FirebaseSvc {
 
   updateAvatar = (url) => {
     //await this.setState({ avatar: url });
-    let userf = firebase.auth().currentUser;
-    if (userf != null) {
-      userf.updateProfile({ avatar: url})
-      .then(() => console.log("Updated avatar successfully. url:" + url))
+    let userf = this.currentUser();
+    if (this.userExists()) {
+      userf.updateProfile({photoURL: url, avatar: url})
+      .then(() => console.log("Updated avatar successfully. URL:" + url))
       .catch((error) => {
-        console.warn("Error update avatar.");
-        alert("Error update avatar. Error:" + error.message);
+        console.warn("Avatar Update Error: " + error.message);
+        Alert.alert("Error updating avatar. " + error.message);
       });
     } else {
-      console.log("can't update avatar, user is not login.");
-      alert("Unable to update avatar. You must login first.");
+      console.warn("can't update avatar, user is not logged in.");
+      Alert.alert("Unable to update avatar. You must re-authenticate first.");
+      props.navigation.navigate('Reauthentication');
     }
   }
 

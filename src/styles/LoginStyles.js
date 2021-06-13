@@ -207,6 +207,11 @@ export const containerStyles = StyleSheet.create({
           alignSelf:'center',
           justifyContent:'flex-end'
       },
+      headerRow:{
+          flexDirection:'row',
+          alignItems:'stretch',
+          alignSelf:'flex-start',
+      },
       datePicker:{
           alignSelf:'center',
           marginHorizontal: '22%',

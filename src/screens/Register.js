@@ -1,57 +1,55 @@
-import React, {useEffect, useState, useCallback} from 'react'
+import React, {useEffect, useState } from 'react'
 import {Text, View, TextInput, Alert, Image, TouchableOpacity, StatusBar} from 'react-native'
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import {TOO_LONG, TOO_SHORT} from '../../messages'
+import {onSuccess, onFailure, cancelRegistration, createUserProfile} from '../services/RegistrationHandlers';
 import firebaseSvc from '../reducers/FirebaseSvc';
-
-//TODO: Errors not stopping User from signing up
 
 export default function register(props) {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    
+    //Handlers for Action Failure:
 
-    //Handlers
-
-    const validateInput = (user) => {
-        const shortMessage = (infoString, len) => infoString + TOO_SHORT + `${len} characters!`;
-        const longMessage = (infoString, len) => infoString + TOO_LONG + `${len} characters!`;
-        const emailRegex = /@gmail.com|@yahoo.com|@icloud.com|@u.nus.edu|@hotmail.com|@live.com|@yahoo.co.uk|@nus.edu.sg/;
-        function checkInfo(infoString, info, minLength, maxLength) {
-            if (info.length < minLength) {
-                return {
-                    message: shortMessage(infoString, minLength),
-                    valid: false
-                };
-            } else if (info.length > maxLength) {
-                return {
-                    message: longMessage(infoString, maxLength),
-                    valid: false
-                };
-            } else {
-                return {
-                    message: '',
-                    valid: true
-                }
-            }
-
+    const creationFailure = (err) => {
+        if (err.code === 'auth/email-already-in-use') {
+            Alert.alert(err.message, 'Don\'t worry if you didn\'t complete your profile, you can log in and do so');
+        } else {
+            Alert.alert(err.message); console.log(err.message);
         }
-        if (!checkInfo('Username', user.name, 5, 20).valid) {Alert.alert(checkInfo('Username', user.name, 5, 20).message);}
-        else if (!checkInfo('Password', user.password, 5, 30).valid) {Alert.alert(checkInfo('Password', user.password, 5, 30).message);}
-        else if (!emailRegex.test(user.email)) {Alert.alert('Invalid Email!');}
-        else {props.navigation.navigate('RegisterPage2', {user: user});}
     }
 
-    const passAlongInfo = (email, name, password) => {
-        let user = {
-            email: email,
-            name: name,
-            password: password
-        };
-        validateInput(user);
+    const creationSuccess = (userCredential) => {
+        const cUser = userCredential.user;
+        cUser
+        .updateProfile({ displayName: name})
+        .then(onSuccess('Updating Name'))
+        .catch(onFailure('Name Update'));
+
+        let userProfile = createUserProfile();
+        userProfile['name'] = name;
+        userProfile['email'] = email;
+        userProfile['password'] = password;
+
+        firebaseSvc.updateUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+        // if (user.avatar != '') {
+        //     cUser
+        //     .updateProfile({ 
+        //         photoURL: user.avatar,
+        //         avatar: user.avatar })
+        //     .then(onSuccess('Updating Avatar'))
+        //     .catch(onFailure('Avatar Update'));
+        // }
+        props.navigation.navigate('RegisterPage2', {name: name});
     };
-    
+
+    const addUser = (user) => firebaseSvc.createUser(user, creationSuccess, creationFailure);
+
+    // useEffect(() => {
+    //     return cancelRegistration(props);
+    // }, []);
+
     return(
             <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container}>
                     <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
@@ -102,14 +100,53 @@ export default function register(props) {
                     
                     <TouchableOpacity style={buttonStyles.loginButton} 
 
-                        onPress={() => passAlongInfo(email, name, password)}
+                        onPress={() => addUser({name: name, email: email, password: password})}
                     >
-                        <Text style={buttonStyles.loginButtonText}>Continue</Text>
+                        <Text style={buttonStyles.loginButtonText}>Create Account</Text>
 
                     </TouchableOpacity>
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.goBack()}>
+                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => cancelRegistration(props)}>
                         <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
                     </TouchableOpacity>
             </KeyboardAwareScrollView>
     )
 }
+/*
+  // const validateInput = (user) => {
+    //     const shortMessage = (infoString, len) => infoString + TOO_SHORT + `${len} characters!`;
+    //     const longMessage = (infoString, len) => infoString + TOO_LONG + `${len} characters!`;
+    //     const emailRegex = /@gmail.com|@yahoo.com|@icloud.com|@u.nus.edu|@hotmail.com|@live.com|@yahoo.co.uk|@nus.edu.sg/;
+    //     function checkInfo(infoString, info, minLength, maxLength) {
+    //         if (info.length < minLength) {
+    //             return {
+    //                 message: shortMessage(infoString, minLength),
+    //                 valid: false
+    //             };
+    //         } else if (info.length > maxLength) {
+    //             return {
+    //                 message: longMessage(infoString, maxLength),
+    //                 valid: false
+    //             };
+    //         } else {
+    //             return {
+    //                 message: '',
+    //                 valid: true
+    //             }
+    //         }
+
+    //     }
+    //     if (!checkInfo('Username', user.name, 5, 20).valid) {Alert.alert(checkInfo('Username', user.name, 5, 20).message);}
+    //     else if (!checkInfo('Password', user.password, 5, 30).valid) {Alert.alert(checkInfo('Password', user.password, 5, 30).message);}
+    //     else if (!emailRegex.test(user.email)) {Alert.alert('Invalid Email!');}
+    //     else {props.navigation.navigate('RegisterPage2', {user: user});}
+    // }
+
+    // const passAlongInfo = (email, name, password) => {
+    //     let user = {
+    //         email: email,
+    //         name: name,
+    //         password: password
+    //     };
+    //     validateInput(user);
+    // };
+*/

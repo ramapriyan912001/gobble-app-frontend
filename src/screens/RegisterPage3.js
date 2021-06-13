@@ -2,19 +2,36 @@ import React, {useState} from 'react'
 import {Text, View, SafeAreaView, TouchableOpacity} from 'react-native'
 import {Picker} from '@react-native-picker/picker'
 import {pickerStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
+import firebaseSvc from '../reducers/FirebaseSvc'
+import {onSuccess, onFailure, cancelRegistration, getError} from '../services/RegistrationHandlers';
 
+export default function RegisterPage3(props) {
+    const [diet, setDietPreference] = useState('halal');
+    const [cuisine, setCuisinePreference] = useState('indian');
 
-export default function RegisterPage2(props) {
-    const initialState = props.navigation.getParam('state');
-    const [diet, setDietPreference] = useState('');
-    const [cuisine, setCuisinePreference] = useState('');
+    const updateDietCuisine = (diet, cuisine) =>
+        firebaseSvc
+            .getUserCollection(
+                (snapshot) => snapshot.val(),
+                getError(props))
+            .then(userProfile => {
+                userProfile['diet'] = diet;
+                userProfile['cuisine'] = cuisine;
+                firebaseSvc.updateUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+                props.navigation.navigate('RegisterPage4');
+            })
+            .catch(getError(props));
+
+    // useEffect(() => {
+    //     return cancelRegistration(props);
+    // }, []);
     
     return (
     <SafeAreaView>
         <Text style={pickerStyles.text}>What are your dietary restrictions?</Text>
             <Picker
                         selectedValue={diet}
-                        onValueChange={(newDiet, itemIndex) => {setDietPreference(newDiet);initialState.diet = newDiet;}}
+                        onValueChange={(newDiet, itemIndex) => {setDietPreference(newDiet)}}
                         style={pickerStyles.picker}
                         enabled= {true}
                         >
@@ -26,7 +43,7 @@ export default function RegisterPage2(props) {
         <Text style={pickerStyles.text}>What is your preferred cuisine?</Text>
             <Picker
                 selectedValue={cuisine}
-                onValueChange={(newCuisineItem, itemIndex) => {setCuisinePreference(newCuisineItem);initialState.cuisine = newCuisineItem;}}
+                onValueChange={(newCuisineItem, itemIndex) => {setCuisinePreference(newCuisineItem)}}
                 style={pickerStyles.picker}
                 >
                 <Picker.Item label="Indian" value="indian" />
@@ -43,15 +60,12 @@ export default function RegisterPage2(props) {
             <TouchableOpacity style={buttonStyles.tinyButton} 
                             onPress={
                                 () => {
-                                        console.log('Register Page 2 done!');
-                                        props.navigation.navigate('RegisterPage3', {state: initialState});
+                                        console.log('Register Page 3 done!');
+                                        updateDietCuisine(diet, cuisine);
                                 }
                             }>
                 <Text style={buttonStyles.loginButtonText}>Continue</Text>
             </TouchableOpacity>
         </View>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('Login')}>
-                <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
-            </TouchableOpacity>
     </SafeAreaView>
     )};

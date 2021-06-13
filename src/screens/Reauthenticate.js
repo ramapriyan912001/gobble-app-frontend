@@ -3,54 +3,39 @@ import {Text, View, TextInput, Image, TouchableOpacity, Alert} from 'react-nativ
 import {StatusBar} from 'expo-status-bar'
 import {imageStyles, inputStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import {API} from '../api'
 import firebaseSvc from '../reducers/FirebaseSvc';
-import deviceStorage from '../services/deviceStorage'
 
-let userToken = '';
-
-export default function Login(props) {
+export default function Reauthenticate(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const user = firebaseSvc.currentUser();
 
     // Login Success/Fail handlers
-    const loginSuccess = (userCredential) => {
-        console.log('login successful');
-        const user = userCredential.user;
-        user.lastSeen === null
-        ? props.navigation.navigate('Welcome')
-        : props.navigation.navigate('Profile');
+    const authSuccess = (userCredential) => {
+        console.log('auth successful');
+        props.navigation.goBack();
     };
-    const loginFailed = (err) => {
+    const authFailed = (err) => {
         // const errorCode = err.code;
         const errorMessage = err.message;
-        Alert.alert(errorMessage);
+        Alert.alert('Auth failed: ' + errorMessage);
     };
 
-    // add login method to handle user press Login button
-    const onPressLogin = () => {
-        const user = {
-        email: email,
+    // add auth method to handle user press re-auth button
+    const onPressAuth = () => {
+        const userAuth = {
+        email: user.email,
         password: password,
         };
         firebaseSvc
-        .login(user, loginSuccess, loginFailed);
+        .reauthenticateUser(userAuth, authSuccess, authFailed);
     };
 
     return(
                 <KeyboardAwareScrollView contentContainerStyle={containerStyles.container} scrollEnabled={false}>
+                    <Text style={inputStyles.headerText}>Enter your Credentials</Text>
                     <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
                     <StatusBar style="auto"/>
-                    <View style={inputStyles.inputView}> 
-                        <TextInput
-                            autoCapitalize="none"
-                            style={inputStyles.TextInput}
-                            placeholder="Email"
-                            placeholderTextColor="#003f5c"
-                            onChangeText={(email) => setEmail(email)}
-                        />
-                    </View>
-                        
                     <View style={inputStyles.inputView}>
                         <TextInput
                             autoCapitalize="none"
@@ -64,12 +49,8 @@ export default function Login(props) {
                     <TouchableOpacity style={buttonStyles.forgotButton} onPress={()=> props.navigation.navigate('ForgotPassword')}>
                     <Text style={buttonStyles.forgotButtonText}>Forgot Password?</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={onPressLogin}>
+                    <TouchableOpacity style={buttonStyles.loginButton} onPress={onPressAuth}>
                     <Text style={buttonStyles.loginButtonText}>Log In</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={buttonStyles.loginButton}
-                    onPress={()=> props.navigation.navigate('Register')}>
-                    <Text style={buttonStyles.loginButtonText}>Sign Up</Text>
                     </TouchableOpacity>
                 </KeyboardAwareScrollView>
     )

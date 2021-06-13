@@ -1,41 +1,35 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 import {Text, View, SafeAreaView, TouchableOpacity, Alert} from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
-import {pickerStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
-
+import {pickerStyles, buttonStyles, containerStyles, inputStyles} from '../styles/LoginStyles'
 import firebaseSvc from '../reducers/FirebaseSvc';
+import {onSuccess, onFailure, cancelRegistration, getError} from '../services/RegistrationHandlers';
 import ImageEditor from '@react-native-community/image-editor';
 import * as ImageManipulator from 'expo-image-manipulator';
 
-
 export default function RegisterPage2(props) {
-    const initialState = props.navigation.state.params;
-    const user = initialState.user;
+    const name = props.navigation.state.params.name;
+    // const user = initialState.user; User accessed from firebaseSvc
     const [avatar, setAvatar] = useState('');
-    const [hasAvatar, setHasAvatar] = useState(false);
+    // const [hasAvatar, setHasAvatar] = useState(false);
 
-    
-    //Handlers for Action Failure:
-    const onFailure = (level) => (err) => Alert.alert(level + ' error ' + err.message);
-    const onSuccess = (level) => () => console.log(level + ' successfully done');
+    //Failures Handler
 
-    const creationSuccess = (userCredential) => {
-        const cUser = userCredential.user;
-        cUser
-        .updateProfile({ displayName: user.name, name: user.name })
-        .then(onSuccess('Updating Name'))
-        .catch(onFailure('Name Update'));
-        if (hasAvatar) {
-            cUser
-            .updateProfile({ 
-                photoURL: avatar,
-                avatar: avatar })
-            .then(onSuccess('Updating Avatar'))
-            .catch(onFailure('Avatar Update'));
+    const updateAvatar = (avatar) => {
+        if (avatar != '') {
+            firebaseSvc
+            .getUserCollection(
+                (snapshot) => snapshot.val(),
+                getError(props))
+            .then(userProfile => {
+                userProfile['avatar'] = avatar;
+                firebaseSvc.updateUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+                firebaseSvc.updateAvatar(avatar);
+            })
+            .catch(getError(props));
         }
+        props.navigation.navigate('RegisterPage3');
     };
-
-    const addUser = (avatar, user) => firebaseSvc.createUser(user, avatar, creationSuccess, onFailure('createUserWithEmailAndPassword'));
 
     const updateImage = () => {
         ImagePicker
@@ -72,16 +66,15 @@ export default function RegisterPage2(props) {
                         width: pickerResult.width,
                         height: pickerResult.height,
                     }}
-                    // (uri) => resolve(uri),
-                    // () => reject(),
                 ])
                 .then(resized => {
                     const resizedUri = resized.uri;
+                    // setAvatar(resizedUri);
                     firebaseSvc
                     .uploadImage(resizedUri)
                     .then(uploadURL => {
                         setAvatar(uploadURL);
-                        setHasAvatar(true);
+                        // setHasAvatar(true);
                         // firebaseSvc
                         // .updateAvatar(uploadURL)
                         // .then(() => console.log('Avatar Updated'))
@@ -99,13 +92,16 @@ export default function RegisterPage2(props) {
         .catch(onFailure);
       };
 
+    // useEffect(() => {
+    //     // return cancelRegistration(props);
+    // }, [])
     return (
     <SafeAreaView>
-        <Text style={pickerStyles.text}>{user.name}, pick out a nice picture of yourself!</Text>
+        <Text style={inputStyles.headerText}>Complete your Profile!</Text> 
+        <Text style={pickerStyles.text}>{name}, pick out a nice picture of yourself!</Text>
         <TouchableOpacity style={buttonStyles.loginButton} onPress={updateImage}>
             <Text style={buttonStyles.loginButtonText}>Select Picture</Text>
         </TouchableOpacity>
-
         <View style={containerStyles.buttonRow}>
             <TouchableOpacity style={buttonStyles.tinyButton} onPress={() => props.navigation.goBack()}>
                 <Text style={buttonStyles.loginButtonText}>Back</Text>
@@ -113,17 +109,12 @@ export default function RegisterPage2(props) {
             <TouchableOpacity style={buttonStyles.tinyButton} 
                             onPress={
                                 () => {
-                                        addUser(avatar, user);
-                                        console.log('Register Page 2 done!');
-                                        props.navigation.navigate('FinalStep');
-
+                                    console.log('Register Page 2 done!');
+                                    updateAvatar(avatar);
                                 }
                             }>
                 <Text style={buttonStyles.loginButtonText}>Continue</Text>
             </TouchableOpacity>
         </View>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('Login')}>
-                <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
-            </TouchableOpacity>
     </SafeAreaView>
     )};

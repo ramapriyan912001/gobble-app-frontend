@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'
 import firebaseSvc from '../reducers/FirebaseSvc';
 
-//Havent worked on this yet, need to add API calls in backend and over here
+//Haven't worked on this yet, need to add API calls in backend and over here
 
 export default function ChatRoom() {
   const cUser = firebaseSvc.currentUser();
@@ -28,7 +28,6 @@ export default function ChatRoom() {
 
   useEffect(loadMessages, []);
 
-  // console.log(messages);
   return (
         <GiftedChat
           messages={messages}
