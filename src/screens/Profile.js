@@ -73,7 +73,8 @@ export function Profile(props) {
             <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('ChatRoom')}>
                 <Text style={buttonStyles.loginButtonText}>Chats</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.goBack()}>
+            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => 
+                props.navigation.navigate('BottomTabs',{screen:'App', params: {screen: 'Login'}})}>
                 <Text style={buttonStyles.loginButtonText}>Sign Out</Text>
             </TouchableOpacity>
         </SafeAreaView>

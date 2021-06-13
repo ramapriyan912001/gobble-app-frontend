@@ -1,8 +1,7 @@
 import React, {useState} from 'react'
 import {Text, View, SafeAreaView, Switch, TouchableOpacity} from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import {containerStyles, buttonStyles, pickerStyles, inputStyles} from '../styles/LoginStyles'
-import {API} from '../api'
+import {containerStyles, buttonStyles, pickerStyles, inputStyles} from '../../styles/LoginStyles'
 
 export default function RegisterPage3(props) {
     const initialState = props.navigation.getParam('state');

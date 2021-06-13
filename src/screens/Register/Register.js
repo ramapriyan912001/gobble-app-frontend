@@ -1,9 +1,9 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import {Text, View, TextInput, Alert, Image, TouchableOpacity, StatusBar} from 'react-native'
-import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
+import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import {TOO_LONG, TOO_SHORT} from '../../messages'
-import firebaseSvc from '../reducers/FirebaseSvc';
+import {TOO_LONG, TOO_SHORT} from '../../../messages'
+import firebaseSvc from '../../reducers/FirebaseSvc';
 
 //TODO: Errors not stopping User from signing up
 
@@ -54,7 +54,7 @@ export default function register(props) {
     
     return(
             <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container}>
-                    <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
+                    <Image style={imageStyles.gobbleImage}source = {require('../../images/gobble.png')}/>
                     <StatusBar style="auto"/>
                     <Text style={inputStyles.headerText}>Introduce Yourself!</Text>
                     <View style={inputStyles.inputView}>

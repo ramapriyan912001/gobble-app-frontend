@@ -6,6 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import {API} from '../api'
 import firebaseSvc from '../reducers/FirebaseSvc';
 import deviceStorage from '../services/deviceStorage'
+import BottomTabs from '../components/BottomTabs'
 
 let userToken = '';
 
@@ -19,7 +20,7 @@ export default function Login(props) {
         const user = userCredential.user;
         user.lastSeen === null
         ? props.navigation.navigate('Welcome')
-        : props.navigation.navigate('Profile');
+        : props.navigation.navigate('BottomTabs');
     };
     const loginFailed = (err) => {
         // const errorCode = err.code;

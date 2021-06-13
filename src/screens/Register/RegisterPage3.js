@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import {Text, View, SafeAreaView, TouchableOpacity} from 'react-native'
 import {Picker} from '@react-native-picker/picker'
-import {pickerStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
+import {pickerStyles, buttonStyles, containerStyles} from '../../styles/LoginStyles'
 
 
 export default function RegisterPage2(props) {
