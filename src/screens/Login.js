@@ -69,7 +69,7 @@ export default function Login(props) {
                     <Text style={buttonStyles.loginButtonText}>Log In</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={buttonStyles.loginButton}
-                    onPress={()=> props.navigation.navigate('Register')}>
+                    onPress={()=> props.navigation.navigate('RegisterNavigator')}>
                     <Text style={buttonStyles.loginButtonText}>Sign Up</Text>
                     </TouchableOpacity>
                 </KeyboardAwareScrollView>
