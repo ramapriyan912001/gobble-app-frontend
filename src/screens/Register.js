@@ -2,7 +2,7 @@ import React, {useEffect, useState, useCallback} from 'react'
 import {Text, View, TextInput, Alert, Image, TouchableOpacity, StatusBar} from 'react-native'
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-
+import {TOO_LONG, TOO_SHORT} from '../../messages'
 import firebaseSvc from '../reducers/FirebaseSvc';
 
 //TODO: Errors not stopping User from signing up
@@ -15,10 +15,9 @@ export default function register(props) {
     //Handlers
 
     const validateInput = (user) => {
-        const shortMessage = (infoString, len) => infoString + " has to be more than " + `${len} characters!`;
-        const longMessage = (infoString, len) => infoString + " has to be less than " + `${len} characters!`;
+        const shortMessage = (infoString, len) => infoString + TOO_SHORT + `${len} characters!`;
+        const longMessage = (infoString, len) => infoString + TOO_LONG + `${len} characters!`;
         const emailRegex = /@gmail.com|@yahoo.com|@icloud.com|@u.nus.edu|@hotmail.com|@live.com|@yahoo.co.uk|@nus.edu.sg/;
-        
         function checkInfo(infoString, info, minLength, maxLength) {
             if (info.length < minLength) {
                 return {
