@@ -19,8 +19,8 @@ export default function Login(props) {
         console.log('login successful');
         const user = userCredential.user;
         user.lastSeen === null
-        ? props.navigation.navigate('Welcome')
-        : props.navigation.navigate('BottomTabs');
+        ? props.navigation.replace('Welcome')
+        : props.navigation.replace('BottomTabs');
     };
     const loginFailed = (err) => {
         // const errorCode = err.code;
