@@ -3,10 +3,13 @@ import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'
 import firebaseSvc from '../reducers/FirebaseSvc';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { fetchUser, clearData } from '../actions/index'
 
 //Havent worked on this yet, need to add API calls in backend and over here
 
-export default function ChatRoom() {
+export function ChatRoom() {
   const cUser = firebaseSvc.currentUser();
   const user = {
     name: cUser.displayName,
@@ -37,3 +40,8 @@ export default function ChatRoom() {
         />
   );
 };
+const mapStateToProps = (store) => ({
+  currentUser: store.userState.currentUser
+})
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch);
+export default connect(mapStateToProps, mapDispatchProps)(ChatRoom);
