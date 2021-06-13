@@ -5,8 +5,12 @@ import {StatusBar} from 'expo-status-bar'
 import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../styles/LoginStyles'
 import { getError, onSuccess, onFailure } from '../services/RegistrationHandlers'
 import firebaseSvc from '../reducers/FirebaseSvc'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { fetchUser, clearData } from '../actions/index'
 
-export default function Profile(props) {
+export function Profile(props) {
+    const [appIsReady, setAppIsReady] = useState(false);
     const [userInfo, setUserInfo] = useState({});
 
     const signOutSuccess = () => {
@@ -60,3 +64,14 @@ export default function Profile(props) {
         </SafeAreaView>
     );  
 }
+
+const mapStateToProps = (store) => ({
+    currentUser: store.userState.currentUser
+})
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch);
+export default connect(mapStateToProps, mapDispatchProps)(Profile);
+//TODO: Find out how to add different fields to a user and how to access them
+// <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
+// <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
+// <Text style={profileStyles.profileField}>Cross-Industrial meetings? {userInfo.crossIndustry}</Text>
+

@@ -4,12 +4,15 @@ import {imageStyles, inputStyles, containerStyles, profileStyles, buttonStyles} 
 import deviceStorage from '../services/deviceStorage'
 import {API} from '../api'
 import jwt from 'expo-jwt';
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { fetchUser, clearData } from '../actions/index'
 
 LogBox.ignoreLogs(['Unhandled promise rejection: Error: Native splash screen is already hidden. Call this method before rendering any view.'])
 
 //TODO: This shouldn't be part of a stack navigator. Users can swipe left from profile page and see this.
 
-export default function Welcome(props) {
+export function Welcome(props) {
     // async function postDataAsync() {
     //     await deviceStorage
     //         .loadJWT()
@@ -64,5 +67,11 @@ export default function Welcome(props) {
         </SafeAreaView>
         );
 };
+
+const mapStateToProps = (store) => ({
+    currentUser: store.userState.currentUser
+})
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch);
+export default connect(mapStateToProps, mapDispatchProps)(Welcome);
 
 
