@@ -22,7 +22,10 @@ export default function BottomTabs() {
           labelPosition: 'below-icon',
           adaptive: true,
         }}>
-            <Tab.Screen name="Profile" component={Profile}></Tab.Screen>
+            <Tab.Screen name="Profile" navigationOptions={{
+                headerLeft: () => null,
+                headerShown: false
+            }} component={Profile}></Tab.Screen>
             <Tab.Screen name="Gobble" component={GobbleNavigator}></Tab.Screen>
             <Tab.Screen name="Matches" component={Matches}></Tab.Screen>
             <Tab.Screen name="Chats" component={ChatRoom}></Tab.Screen>
