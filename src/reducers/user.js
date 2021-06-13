@@ -1,7 +1,7 @@
 import { USER_STATE_CHANGE, CLEAR_DATA } from "../actions/types"
 
 const initialState = {
-    currentUser: null,
+    currentUser: {},
 }
 
 export const user = (state = initialState, action) => {

@@ -7,8 +7,11 @@ import {API} from '../api'
 import deviceStorage from '../services/deviceStorage'
 import jwt from 'expo-jwt';
 import firebaseSvc from '../reducers/FirebaseSvc'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import { fetchUser, clearData } from '../actions/index'
 
-export default function Profile(props) {
+export function Profile(props) {
     const [appIsReady, setAppIsReady] = useState(false);
     const [userInfo, setUserInfo] = useState({});
     const [avatar, setAvatar] = useState('');
@@ -76,7 +79,11 @@ export default function Profile(props) {
         </SafeAreaView>
     );  
 }
-
+const mapStateToProps = (store) => ({
+    currentUser: store.userState.currentUser
+})
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch);
+export default connect(mapStateToProps, mapDispatchProps)(Profile);
 //TODO: Find out how to add different fields to a user and how to access them
 // <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
 // <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
