@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'
-import firebaseSvc from '../reducers/FirebaseSvc';
+import firebaseSvc from '../firebase/FirebaseSvc';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchUser, clearData } from '../actions/index'

@@ -1,4 +1,4 @@
-import firebaseSvc from "../reducers/FirebaseSvc";
+import firebaseSvc from "../firebase/FirebaseSvc";
 import { Alert } from 'react-native';
 
 export function createUserProfile() {//factory method

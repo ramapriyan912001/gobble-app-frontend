@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'
-import firebaseSvc from '../reducers/FirebaseSvc';
+import firebaseSvc from '../firebase/FirebaseSvc';
 
 //Haven't worked on this yet, need to add API calls in backend and over here
 
