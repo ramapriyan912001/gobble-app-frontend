@@ -13,7 +13,9 @@ export function Matches() {
 }
 
 const mapStateToProps = (store) => ({
-    currentUser: store.userState.currentUser
+    currentUser: store.userState.currentUser,
+    loggedIn: store.userState.loggedIn,
+    isAdmin: store.userState.isAdmin
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(Matches);

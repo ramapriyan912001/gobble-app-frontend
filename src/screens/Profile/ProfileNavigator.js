@@ -20,9 +20,3 @@ export function ProfileNavigator() {
         </Stack.Navigator>
     )
 }
-
-const mapStateToProps = (store) => ({
-    currentUser: store.userState.currentUser
-})
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(ProfileNavigator);

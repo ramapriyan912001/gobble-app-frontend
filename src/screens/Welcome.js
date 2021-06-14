@@ -69,7 +69,9 @@ export function Welcome(props) {
 };
 
 const mapStateToProps = (store) => ({
-    currentUser: store.userState.currentUser
+    currentUser: store.userState.currentUser,
+    loggedIn: store.userState.loggedIn,
+    isAdmin: store.userState.isAdmin,
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(Welcome);
