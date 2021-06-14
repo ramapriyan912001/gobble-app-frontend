@@ -4,15 +4,35 @@ import {ProfileNavigator} from '../screens/Profile/ProfileNavigator'
 import {GobbleNavigator} from '../screens/Gobble/GobbleNavigator'
 import {Matches} from '../screens/Matches'
 import {ChatRoom} from '../screens/ChatRoom'
-import Ionicons from '@expo/vector-icons'
+import Ionicons from '@expo/vector-icons/Ionicons'
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabs() {
     return (
         <Tab.Navigator
+        screenOptions={({ route }) => ({
+            tabBarIcon: ({ focused, color, size }) => {
+              let iconName;
+  
+              if (route.name === 'ProfileNavigator') {
+                iconName = focused
+                  ? 'person'
+                  : 'person-outline';
+              } else if (route.name === 'GobbleNavigator') {
+                iconName = focused ? 'md-fast-food' : 'md-fast-food-outline';
+              } else if (route.name === 'Chats') {
+                  iconName = focused ? 'chatbubble-sharp' : 'chatbubble-outline'
+              } else {
+                  iconName = focused ? 'clipboard-sharp' : 'clipboard-outline'
+              }
+  
+              // You can return any component that you like here!
+              return <Ionicons name={iconName} size={size} color={color} />;
+            },
+          })}
         initialRouteName="Profile"
-        order={['Profile', 'Gobble', 'Matches', 'ChatRoom']}
+        order={['Profile', 'Gobble', 'Matches', 'Chats']}
         backBehavior= "order"
         headerMode={'none'}
         tabBarOptions= {{
@@ -23,11 +43,15 @@ export default function BottomTabs() {
           labelPosition: 'below-icon',
           adaptive: true,
         }}>
-            <Tab.Screen name="ProfileNavigator" navigationOptions={{
+            <Tab.Screen options={{
+                title: "Profile"
+            }} name="ProfileNavigator" navigationOptions={{
                 headerLeft: () => null,
                 headerShown: false
             }} component={ProfileNavigator}></Tab.Screen>
-            <Tab.Screen name="GobbleNavigator" component={GobbleNavigator}></Tab.Screen>
+            <Tab.Screen options={{
+                title: "Gobble"
+                }} name="GobbleNavigator" component={GobbleNavigator}></Tab.Screen>
             <Tab.Screen name="Matches" component={Matches}></Tab.Screen>
             <Tab.Screen name="Chats" component={ChatRoom}></Tab.Screen>
         </Tab.Navigator>
