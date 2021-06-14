@@ -3,7 +3,7 @@ import {Text, View, TextInput, Image, TouchableOpacity, Alert} from 'react-nativ
 import {StatusBar} from 'expo-status-bar'
 import {imageStyles, inputStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import firebaseSvc from '../reducers/FirebaseSvc';
+import firebaseSvc from '../firebase/FirebaseSvc';
 
 export default function Reauthenticate(props) {
     const [email, setEmail] = useState('');

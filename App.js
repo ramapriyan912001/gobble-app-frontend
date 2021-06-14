@@ -3,7 +3,6 @@ import React from 'react';
 import {AppContainer} from './src/routes/routes'
 import { NavigationContainer } from '@react-navigation/native';
 import { Provider } from 'react-redux';
-import store from './src/reducers/index'
 import {createStackNavigator} from '@react-navigation/stack'
 import Login from './src/screens/Login';
 import {Welcome} from './src/screens/Welcome';

@@ -2,7 +2,7 @@ import React, {useState} from 'react'
 import {Text, View, SafeAreaView, TouchableOpacity} from 'react-native'
 import {Picker} from '@react-native-picker/picker'
 import {pickerStyles, buttonStyles, containerStyles} from '../../styles/LoginStyles'
-import firebaseSvc from '../../reducers/FirebaseSvc'
+import firebaseSvc from '../../firebase/FirebaseSvc'
 import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
 
 export default function RegisterPage3(props) {

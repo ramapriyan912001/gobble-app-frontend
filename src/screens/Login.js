@@ -4,7 +4,7 @@ import {StatusBar} from 'expo-status-bar'
 import {imageStyles, inputStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {API} from '../api'
-import firebaseSvc from '../reducers/FirebaseSvc';
+import firebaseSvc from '../firebase/FirebaseSvc';
 import deviceStorage from '../services/deviceStorage'
 import BottomTabs from '../components/BottomTabs'
 

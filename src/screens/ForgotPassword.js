@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import {TouchableOpacity, SafeAreaView, Text, TextInput} from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
-import firebaseSvc from '../reducers/FirebaseSvc';
+import firebaseSvc from '../firebase/FirebaseSvc';
 import {buttonStyles, containerStyles, inputStyles} from '../styles/LoginStyles'
 
 export default function ForgotPassword(props) {

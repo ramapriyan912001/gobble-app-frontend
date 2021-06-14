@@ -3,7 +3,7 @@ import {Text, View, TextInput, Alert, Image, TouchableOpacity, StatusBar} from '
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {onSuccess, onFailure, cancelRegistration, createUserProfile, getError} from '../../services/RegistrationHandlers';
-import firebaseSvc from '../../reducers/FirebaseSvc';
+import firebaseSvc from '../../firebase/FirebaseSvc';
 
 export default function UpdateProfile(props) {
     const userProfile = firebaseSvc

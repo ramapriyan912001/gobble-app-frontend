@@ -3,7 +3,7 @@ import {Text, View, TextInput, Alert, Image, TouchableOpacity, StatusBar} from '
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {TOO_LONG, TOO_SHORT} from '../../../messages'
-import firebaseSvc from '../../reducers/FirebaseSvc';
+import firebaseSvc from '../../firebase/FirebaseSvc';
 import {onSuccess, onFailure, cancelRegistration, createUserProfile} from '../../services/RegistrationHandlers';
 
 export default function register(props) {
