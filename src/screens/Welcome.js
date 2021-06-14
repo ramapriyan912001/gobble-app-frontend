@@ -6,7 +6,7 @@ import {API} from '../api'
 import jwt from 'expo-jwt';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData } from '../actions/index'
+import { fetchUser, clearData } from '../redux/actions/index'
 
 LogBox.ignoreLogs(['Unhandled promise rejection: Error: Native splash screen is already hidden. Call this method before rendering any view.'])
 

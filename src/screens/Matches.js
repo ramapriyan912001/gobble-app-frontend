@@ -3,7 +3,7 @@ import {View, Text} from 'react-native'
 import {containerStyles} from '../styles/LoginStyles'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData } from '../actions/index'
+import { fetchUser, clearData } from '../redux/actions/index'
 
 export function Matches() {
     return (

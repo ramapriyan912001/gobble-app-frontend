@@ -5,7 +5,7 @@ import { GiftedChat } from 'react-native-gifted-chat'
 import firebaseSvc from '../firebase/FirebaseSvc';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData } from '../actions/index'
+import { fetchUser, clearData } from '../redux/actions/index'
 
 //Haven't worked on this yet, need to add API calls in backend and over here
 

@@ -7,7 +7,7 @@ import { getError, onSuccess, onFailure } from '../../services/RegistrationHandl
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData } from '../../actions/index'
+import { fetchUser, clearData } from '../../redux/actions/index'
 
 export function Profile(props) {
     const [appIsReady, setAppIsReady] = useState(false);

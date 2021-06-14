@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData } from '../../actions/index'
+import { fetchUser, clearData } from '../../redux/actions/index'
 import {createStackNavigator} from '@react-navigation/stack'
 import {GobbleSelect} from './GobbleSelect'
 import {GobbleConfirm} from './GobbleConfirm'
