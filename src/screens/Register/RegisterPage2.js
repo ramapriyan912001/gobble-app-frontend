@@ -1,9 +1,9 @@
 import React, {useState, useEffect} from 'react'
 import {Text, View, SafeAreaView, TouchableOpacity, Alert} from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
-import {pickerStyles, buttonStyles, containerStyles, inputStyles} from '../styles/LoginStyles'
-import firebaseSvc from '../reducers/FirebaseSvc';
-import {onSuccess, onFailure, cancelRegistration, getError} from '../services/RegistrationHandlers';
+import {pickerStyles, buttonStyles, containerStyles} from '../../styles/LoginStyles'
+import firebaseSvc from '../../reducers/FirebaseSvc';
+import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
 import ImageEditor from '@react-native-community/image-editor';
 import * as ImageManipulator from 'expo-image-manipulator';
 

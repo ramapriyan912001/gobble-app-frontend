@@ -1,23 +1,35 @@
 import React from 'react'
-import {View, Text, Image} from 'react-native'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import Profile from '../../screens/Profile'
-import Chatroom from '../../screens/ChatRoom'
-import Gobble from '../../screens/Gobble'
-import Matches from '../../screens/Matches'
+import {ProfileNavigator} from '../screens/Profile/ProfileNavigator'
+import {GobbleNavigator} from '../screens/Gobble/GobbleNavigator'
+import {Matches} from '../screens/Matches'
+import {ChatRoom} from '../screens/ChatRoom'
+import Ionicons from '@expo/vector-icons'
+
 const Tab = createBottomTabNavigator();
 
-function BottomTabs() {
+export default function BottomTabs() {
     return (
         <Tab.Navigator
-            initialRouteName="Profile"
-            tabBarOptions={{
-                activeTintColor: "#0aa859"
-            }}>
-            <Tab.Screen name="Profile" component={Profile}></Tab.Screen>
-            <Tab.Screen name="Gobble" component={Gobble}></Tab.Screen>
+        initialRouteName="Profile"
+        order={['Profile', 'Gobble', 'Matches', 'ChatRoom']}
+        backBehavior= "order"
+        headerMode={'none'}
+        tabBarOptions= {{
+          activeBackgroundColor: "#0aa859",
+          inactiveBackgroundColor: "#b5fbd7",
+          activeTintColor: "#000000",
+          inactiveTintColor: "#000000",
+          labelPosition: 'below-icon',
+          adaptive: true,
+        }}>
+            <Tab.Screen name="ProfileNavigator" navigationOptions={{
+                headerLeft: () => null,
+                headerShown: false
+            }} component={ProfileNavigator}></Tab.Screen>
+            <Tab.Screen name="GobbleNavigator" component={GobbleNavigator}></Tab.Screen>
             <Tab.Screen name="Matches" component={Matches}></Tab.Screen>
-            <Tab.Screen name="Chats" component={Chatroom}></Tab.Screen>
+            <Tab.Screen name="Chats" component={ChatRoom}></Tab.Screen>
         </Tab.Navigator>
     )
 }

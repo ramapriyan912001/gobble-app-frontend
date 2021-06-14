@@ -1,9 +1,9 @@
 import React, {useEffect, useState } from 'react'
 import {Text, View, TextInput, Alert, Image, TouchableOpacity, StatusBar} from 'react-native'
-import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
+import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import {onSuccess, onFailure, cancelRegistration, createUserProfile} from '../services/RegistrationHandlers';
-import firebaseSvc from '../reducers/FirebaseSvc';
+import {onSuccess, onFailure, cancelRegistration, createUserProfile, getError} from '../../services/RegistrationHandlers';
+import firebaseSvc from '../../reducers/FirebaseSvc';
 
 export default function UpdateProfile(props) {
     const userProfile = firebaseSvc
@@ -31,7 +31,7 @@ export default function UpdateProfile(props) {
 
     return(
             <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container}>
-                    <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
+                    <Image style={imageStyles.gobbleImage}source = {require('../../images/gobble.png')}/>
                     <StatusBar style="auto"/>
                     <Text style={inputStyles.headerText}>Update Particulars</Text>
                     <Text style={inputStyles.subText}>Press Continue if you don't need to update these particulars</Text>

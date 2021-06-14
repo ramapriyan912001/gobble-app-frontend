@@ -1,9 +1,10 @@
 import React, {useEffect, useState } from 'react'
 import {Text, View, TextInput, Alert, Image, TouchableOpacity, StatusBar} from 'react-native'
-import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
+import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import {onSuccess, onFailure, cancelRegistration, createUserProfile} from '../services/RegistrationHandlers';
-import firebaseSvc from '../reducers/FirebaseSvc';
+import {TOO_LONG, TOO_SHORT} from '../../../messages'
+import firebaseSvc from '../../reducers/FirebaseSvc';
+import {onSuccess, onFailure, cancelRegistration, createUserProfile} from '../../services/RegistrationHandlers';
 
 export default function register(props) {
     const [password, setPassword] = useState('');
@@ -52,7 +53,7 @@ export default function register(props) {
 
     return(
             <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container}>
-                    <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
+                    <Image style={imageStyles.gobbleImage}source = {require('../../images/gobble.png')}/>
                     <StatusBar style="auto"/>
                     <Text style={inputStyles.headerText}>Introduce Yourself!</Text>
                     <View style={inputStyles.inputView}>

@@ -1,9 +1,9 @@
 import React, {useState} from 'react'
 import {Text, View, SafeAreaView, Switch, TouchableOpacity, Alert} from 'react-native'
 import DateTimePicker from '@react-native-community/datetimepicker'
-import {containerStyles, buttonStyles, pickerStyles, inputStyles} from '../styles/LoginStyles'
-import {onSuccess, onFailure, cancelRegistration, getError} from '../services/RegistrationHandlers';
-import firebaseSvc from '../reducers/FirebaseSvc';
+import {containerStyles, buttonStyles, pickerStyles, inputStyles} from '../../styles/LoginStyles'
+import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
+import firebaseSvc from '../../reducers/FirebaseSvc';
 
 export default function RegisterPage4(props) {
     const [cross, setCrossIndustryPreference] = useState(false);

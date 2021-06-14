@@ -2,12 +2,12 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import {Text, Image, TouchableOpacity, SafeAreaView, Alert, View, Button} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
-import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../styles/LoginStyles'
-import { getError, onSuccess, onFailure } from '../services/RegistrationHandlers'
-import firebaseSvc from '../reducers/FirebaseSvc'
+import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../../styles/LoginStyles'
+import { getError, onSuccess, onFailure } from '../../services/RegistrationHandlers'
+import firebaseSvc from '../../reducers/FirebaseSvc'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData } from '../actions/index'
+import { fetchUser, clearData } from '../../actions/index'
 
 export function Profile(props) {
     const [appIsReady, setAppIsReady] = useState(false);
@@ -58,7 +58,9 @@ export function Profile(props) {
             <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('UpdateProfile')}>
                 <Text style={buttonStyles.loginButtonText}>Edit Profile</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={signOutUser}>
+            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
+                signOutUser
+                props.navigation.navigate('Login')}}>
                 <Text style={buttonStyles.loginButtonText}>Sign Out</Text>
             </TouchableOpacity>
         </SafeAreaView>
