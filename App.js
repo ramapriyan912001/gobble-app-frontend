@@ -11,6 +11,7 @@ import FinalStep from './src/screens/finalstep';
 import ForgotPassword from './src/screens/ForgotPassword'
 import BottomTabs from './src/components/BottomTabs';
 import Reauthenticate from './src/screens/Reauthenticate';
+import {store} from './src/redux/store'
 
 // const store = configureStore();
 
