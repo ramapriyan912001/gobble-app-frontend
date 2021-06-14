@@ -13,7 +13,8 @@ const Stack = createStackNavigator();
 
 export function GobbleNavigator() {
     return (
-        <Stack.Navigator initialRouteName="GobbleSelect">
+        <Stack.Navigator initialRouteName="GobbleSelect"
+        headerMode={'none'}>
             <Stack.Screen name="GobbleSelect" component={GobbleSelect}></Stack.Screen>
             <Stack.Screen name="GobbleConfirm" component={GobbleConfirm}></Stack.Screen>
         </Stack.Navigator>

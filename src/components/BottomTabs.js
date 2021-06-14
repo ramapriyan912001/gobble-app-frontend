@@ -14,9 +14,7 @@ export default function BottomTabs() {
         initialRouteName="Profile"
         order={['Profile', 'Gobble', 'Matches', 'ChatRoom']}
         backBehavior= "order"
-        defaultNavigationOptions={{
-            headerShown: false
-        }}
+        headerMode={'none'}
         tabBarOptions= {{
           activeBackgroundColor: "#0aa859",
           inactiveBackgroundColor: "#b5fbd7",
@@ -27,6 +25,7 @@ export default function BottomTabs() {
         }}>
             <Tab.Screen name="Profile" navigationOptions={{
                 headerLeft: () => null,
+                headerShown: false
             }} component={Profile}></Tab.Screen>
             <Tab.Screen name="Gobble" component={GobbleNavigator}></Tab.Screen>
             <Tab.Screen name="Matches" component={Matches}></Tab.Screen>

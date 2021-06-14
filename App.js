@@ -21,7 +21,8 @@ export default function App() {
   return (
     <NavigationContainer>
       <Provider store={store}>
-          <Stack.Navigator initialRouteName="Login">
+          <Stack.Navigator initialRouteName="Login"
+          headerMode={'none'}>
             <Stack.Screen name="Login" component={Login}></Stack.Screen>
             <Stack.Screen name="RegisterNavigator" component={RegisterNavigator}></Stack.Screen>
             <Stack.Screen name="BottomTabs" component={BottomTabs}></Stack.Screen>
