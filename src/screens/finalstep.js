@@ -2,7 +2,7 @@ import React from 'react'
 import {Text, SafeAreaView, View, Image, TouchableOpacity, StatusBar} from 'react-native'
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
 
-export default function finalstep(props) {
+export default function FinalStep(props) {
     return(
             <SafeAreaView style={containerStyles.container}>
                     <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
