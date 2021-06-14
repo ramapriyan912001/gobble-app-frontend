@@ -2,12 +2,12 @@
 import React, {useEffect, useState, useCallback} from 'react'
 import {Text, Image, TouchableOpacity, SafeAreaView, Alert, View, Button} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
-import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../styles/LoginStyles'
-import { getError, onSuccess, onFailure } from '../services/RegistrationHandlers'
-import firebaseSvc from '../reducers/FirebaseSvc'
+import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../../styles/LoginStyles'
+import { getError, onSuccess, onFailure } from '../../services/RegistrationHandlers'
+import firebaseSvc from '../../reducers/FirebaseSvc'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData } from '../actions/index'
+import { fetchUser, clearData } from '../../actions/index'
 
 export function Profile(props) {
     const [appIsReady, setAppIsReady] = useState(false);

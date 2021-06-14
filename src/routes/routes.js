@@ -7,7 +7,7 @@ import BottomTabs from '../components/BottomTabs';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation'
 import {createStackNavigator} from 'react-navigation-stack'
 import Reauthenticate from '../screens/Reauthenticate';
-import UpdateProfile from '../screens/UpdateProfile'
+import UpdateProfile from '../screens/Profile/UpdateProfile'
 
 //TODO: Split routes into diff. stacks
 //E.g. Register Pages - Stack

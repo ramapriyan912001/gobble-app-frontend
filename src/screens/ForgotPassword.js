@@ -21,14 +21,17 @@ export default function ForgotPassword(props) {
                 style={inputStyles.resetTextInput}
                 placeholder="Enter your Email here"
                 placeholderTextColor="#003f5c"
+                autoCapitalize="none"
                 onChangeText={(email) => setEmail(email)}
             />
             <Text style={inputStyles.subText}>Note: If you have not registered before, no email will be sent</Text>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => resetPassword(email)}>
+            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
+                resetPassword(email)
+                props.navigation.navigate('Login')}}>
                 <Text style={buttonStyles.loginButtonText}>Send Reset Email</Text>
             </TouchableOpacity>
             <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.goBack()}>
-                <Text style={buttonStyles.loginButtonText}>Back</Text>
+                <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
             </TouchableOpacity>
         </KeyboardAwareScrollView>
     )
