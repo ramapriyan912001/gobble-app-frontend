@@ -11,6 +11,7 @@ import RegisterNavigator from './src/screens/Register/RegisterNavigator'
 import FinalStep from './src/screens/finalstep';
 import ForgotPassword from './src/screens/ForgotPassword'
 import BottomTabs from './src/components/BottomTabs';
+import Reauthenticate from './src/screens/Reauthenticate';
 
 // const store = configureStore();
 
@@ -29,6 +30,7 @@ export default function App() {
             <Stack.Screen name="FinalStep" component={FinalStep}></Stack.Screen>
             <Stack.Screen name="ForgotPassword" component={ForgotPassword}></Stack.Screen>
             <Stack.Screen name="Welcome" component={Welcome}></Stack.Screen>
+            <Stack.Screen name="Reauthenticate" component={Reauthenticate}></Stack.Screen>
           </Stack.Navigator>
       </Provider> 
     </NavigationContainer>

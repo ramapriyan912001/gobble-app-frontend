@@ -31,7 +31,7 @@ export default function ForgotPassword(props) {
                 <Text style={buttonStyles.loginButtonText}>Send Reset Email</Text>
             </TouchableOpacity>
             <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.goBack()}>
-                <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
+                <Text style={buttonStyles.loginButtonText}>Back</Text>
             </TouchableOpacity>
         </KeyboardAwareScrollView>
     )
