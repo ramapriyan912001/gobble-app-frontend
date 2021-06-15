@@ -4,7 +4,7 @@ import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../../sty
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {onSuccess, onFailure, cancelRegistration, createUserProfile, getError} from '../../services/RegistrationHandlers';
 import firebaseSvc from '../../firebase/FirebaseSvc';
-import {fetchUser, updateUserDetails, clearData} from '../../redux/actions/index'
+import {fetchUser, updateUserDetails, clearData} from '../../redux/actions/actions'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
 export function UpdateProfile(props) {
