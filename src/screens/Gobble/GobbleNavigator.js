@@ -22,5 +22,5 @@ export function GobbleNavigator() {
 const mapStateToProps = (store) => ({
     currentUser: store.userState.currentUser
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(GobbleNavigator);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(GobbleNavigator);

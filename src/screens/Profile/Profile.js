@@ -72,8 +72,8 @@ const mapStateToProps = (store) => ({
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(Profile);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser }, dispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(Profile);
 //TODO: Find out how to add different fields to a user and how to access them
 // <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
 // <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>

@@ -44,5 +44,5 @@ const mapStateToProps = (store) => ({
   loggedIn: store.userState.currentUser,
   isAdmin: store.userState.isAdmin
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(ChatRoom);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser }, dispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(ChatRoom);

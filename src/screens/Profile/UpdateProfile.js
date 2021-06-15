@@ -83,5 +83,5 @@ const mapStateToProps = (store) => ({
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData, updateUserDetails }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(UpdateProfile);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, clearData, updateUserDetails }, dispatch);
+export default connect(mapStateToProps, mapDispatchToProps)(UpdateProfile);
