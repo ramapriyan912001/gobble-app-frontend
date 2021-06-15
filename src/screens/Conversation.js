@@ -6,7 +6,7 @@ import firebaseSvc from '../firebase/FirebaseSvc';
 
 //Haven't worked on this yet, need to add API calls in backend and over here
 
-export default function ChatRoom() {
+export default function Conversation() {
   const cUser = firebaseSvc.currentUser();
   const user = {
     name: cUser.displayName,
@@ -17,22 +17,24 @@ export default function ChatRoom() {
   const [messages, setMessages] = useState([]);
 
   const loadMessages = () => {
-    firebaseSvc.refRetrieve(message => setMessages(GiftedChat.append(messages, message)));//Errors occurs here
+    firebaseSvc.messageRefRetrieve(message => setMessages(GiftedChat.append(messages, message)));//Errors occurs here
   };
 
   const updateMessages = (messageList) => {
     firebaseSvc.send(messageList);
-    firebaseSvc.refOn(message => setMessages(GiftedChat.append(messages, message)));
-    return firebaseSvc.refOff();
+    firebaseSvc.messageRefOn(message => setMessages(GiftedChat.append(messages, message)));
+    return firebaseSvc.messageRefOff();
   };
 
   useEffect(loadMessages, []);
 
   return (
+    <SafeAreaView>
         <GiftedChat
           messages={messages}
           onSend={updateMessages}
           user={user}
         />
+    </SafeAreaView>
   );
 };

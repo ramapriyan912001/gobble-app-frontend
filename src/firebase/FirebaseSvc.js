@@ -131,32 +131,50 @@ class FirebaseSvc {
       }
     });
 
-  //Retrieve Messages
-  refRetrieve = callback => {
+  //Retrieve All Stored Messages
+  messageRefRetrieve = callback => {
+    // console.log('Retrieving Old Messages: ');
     this.messageRef('')
       .limitToLast(40)
-      .on('value', snapshot => callback(this.parse(snapshot)));
+      .on('value', snapshot => callback(this.parseStoredMessage(snapshot)));
   }
 
-  refOn = callback => {
+  messageRefOn = callback => {
+    // console.log('New Message: ');
     this.messageRef('')
       .limitToLast(40)
-      .on('child_added', snapshot => callback(this.parse(snapshot)));
+      .on('child_added', snapshot => callback(this.parseMessage(snapshot)));
   }
 
-  refOff() {
+  messageRefOff() {
     this.messageRef('').off();
   }
 
   // The parse method take the snapshot data and construct a message:
-  parse = snapshot => {
-    const { timestamp: numberStamp, text, user } = snapshot.val();
+  parseMessage = snapshot => {
+    const message = snapshot.val();
+    const { timestamp, text, user } = snapshot.val();
     const { key: _id } = snapshot;
-    const timestamp = new Date(numberStamp);
-    const message = {_id, timestamp, text, user};
-    console.log('message after being parsed :')
-    console.log(message);
-    return message;
+    const parsedMessage = {_id, timestamp, text, user};
+    return parsedMessage;
+  };
+
+  parseStoredMessage = snapshot => {
+    const messageArray = snapshot.val();
+    let parsedMessageArray = [];
+    for (let [key, value] of Object.entries(messageArray)) {
+      // console.log('here');
+      // console.log(value);
+      const parsedMessage = {
+        '_id': key,
+        'user': value.user,
+        'text': value.text,
+        'timestamp': value.timestamp,
+      };
+      // console.log(parsedMessage);
+      parsedMessageArray.unshift(parsedMessage);
+    }
+    return parsedMessageArray;
   };
 
   //Password Reset
@@ -170,10 +188,16 @@ class FirebaseSvc {
   // To send a message, we call the send method from GiftedChat component in onSend property as such: onSend={firebaseSvc.send}
   // The send method in Firebase.js is:
   send = messages => {
-    for (let i = 0; i < messages.length; i++) {
-      const { text, user, createdAt } = messages[i];
-      this.messageRef('').push({text, user, createdAt});
-    }
+    messages.map((message) => {
+      const {text, user, createdAt} = message;
+      const timestamp = createdAt.toDateString();
+      const newMessage = {text, user, timestamp};
+      this.messageRef('').push(newMessage)});
+    // for (let i = 0; i < messages.length; i++) {
+    //   const { text, user, createdAt } = messages[i];
+    //   console.log(createdAt);
+    //   this.messageRef('').push({text, user, createdAt});
+    // }
   };
 
   get uid() {

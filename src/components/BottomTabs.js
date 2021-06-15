@@ -4,6 +4,7 @@ import {ProfileNavigator} from '../screens/Profile/ProfileNavigator'
 import {GobbleNavigator} from '../screens/Gobble/GobbleNavigator'
 import {Matches} from '../screens/Matches'
 import {ChatRoom} from '../screens/ChatRoom'
+import {Conversation} from '../screens/Conversation'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
 const Tab = createBottomTabNavigator();

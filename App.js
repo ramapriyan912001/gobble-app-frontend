@@ -7,7 +7,7 @@ import {createStackNavigator} from '@react-navigation/stack'
 import Login from './src/screens/Login';
 import {Welcome} from './src/screens/Welcome';
 import RegisterNavigator from './src/screens/Register/RegisterNavigator'
-import FinalStep from './src/screens/finalstep';
+import FinalStep from './src/screens/FinalStep';
 import ForgotPassword from './src/screens/ForgotPassword'
 import BottomTabs from './src/components/BottomTabs';
 import Reauthenticate from './src/screens/Reauthenticate';

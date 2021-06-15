@@ -1,7 +1,7 @@
 import Login from '../screens/Login'
 import {Welcome} from '../screens/Welcome';
 import RegisterNavigator from '../screens/Register/RegisterNavigator'
-import FinalStep from '../screens/finalstep';
+import FinalStep from '../screens/FinalStep';
 import ForgotPassword from '../screens/ForgotPassword'
 import BottomTabs from '../components/BottomTabs';
 import {createAppContainer, createSwitchNavigator} from 'react-navigation'
