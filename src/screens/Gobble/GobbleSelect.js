@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {View, Text, Button, TouchableOpacity, ScrollView} from 'react-native'
+import {View, Text, Button, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native'
 import {containerStyles, buttonStyles, inputStyles} from '../../styles/LoginStyles'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {Picker} from '@react-native-picker/picker';
@@ -22,12 +22,10 @@ export function GobbleSelect() {
   };
     return (
         <ScrollView contentContainerStyle={containerStyles.container}>
-                <View style={{marginTop: '0%', margin: '0%'}}>
-                    <Text style={{...inputStyles.headerText, fontSize: 20, margin: '0%'}}>
+            <SafeAreaView>
+                <Text style={{...inputStyles.headerText, fontSize: 20, margin: '0%'}}>
                         Select your preferences and Gobble!
-                    </Text>
-                </View>
-                <View style={{margin: '0%'}}>
+                </Text>
                     <Text style={{...inputStyles.subHeader, margin: '0%'}}>Choose a date and time for your next Gobble!</Text>
                     <Button title="Select Date" onPress={showDatePicker} />
                     <DateTimePickerModal
@@ -36,7 +34,6 @@ export function GobbleSelect() {
                     onConfirm={handleConfirm}
                     onCancel={hideDatePicker}
                     />
-                </View>
                 <View style={{margin: '0%'}}>
                     <Text style={{...inputStyles.subHeader, margin: '0%'}}>...And How far are you willing to travel for a meal?</Text>
                     <Picker style={{margin: '0%'}}
@@ -71,6 +68,7 @@ export function GobbleSelect() {
                         <Text style={{...buttonStyles.loginButtonText, fontSize: 20}}>Find Gobblemate!</Text>
                     </TouchableOpacity>
                 </View>
+            </SafeAreaView>
         </ScrollView>
     )
 }
