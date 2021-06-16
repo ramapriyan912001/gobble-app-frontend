@@ -21,20 +21,25 @@ export function GobbleSelect() {
     hideDatePicker();
   };
     return (
-        <ScrollView contentContainerStyle={containerStyles.container}>
-            <SafeAreaView>
-                <Text style={{...inputStyles.headerText, fontSize: 20, margin: '0%'}}>
-                        Select your preferences and Gobble!
-                </Text>
-                    <Text style={{...inputStyles.subHeader, margin: '0%'}}>Choose a date and time for your next Gobble!</Text>
-                    <Button title="Select Date" onPress={showDatePicker} />
-                    <DateTimePickerModal
-                    isVisible={isDatePickerVisible}
-                    mode="datetime"
-                    onConfirm={handleConfirm}
-                    onCancel={hideDatePicker}
-                    />
-                <View style={{margin: '0%'}}>
+        <>
+        <ScrollView contentContainerStyle={{...containerStyles.container, height: '200%'}}>
+                <SafeAreaView style={{position: 'relative'}}>
+                    <View style={{position: 'relative'}}>
+                        <Text style={{...inputStyles.headerText, fontSize: 20, margin: '0%'}}>
+                                Select your preferences and Gobble!
+                        </Text>
+                    </View>
+                    <View style={{position: 'relative'}}>
+                        <Text style={{...inputStyles.subHeader, margin: '0%'}}>Choose a date and time for your next Gobble!</Text>
+                        <Button title="Select Date" onPress={showDatePicker} />
+                        <DateTimePickerModal
+                        isVisible={isDatePickerVisible}
+                        mode="datetime"
+                        onConfirm={handleConfirm}
+                        onCancel={hideDatePicker}
+                        />
+                    </View>
+                    <View style={{position: 'relative'}}>
                     <Text style={{...inputStyles.subHeader, margin: '0%'}}>...And How far are you willing to travel for a meal?</Text>
                     <Picker style={{margin: '0%'}}
                         selectedValue={cuisinePreference}
@@ -47,8 +52,8 @@ export function GobbleSelect() {
                         <Picker.Item label="Food Court" value={10}></Picker.Item>
                         <Picker.Item label="No Preference" value={200}></Picker.Item>
                     </Picker>
-                </View>
-                <View style={{margin: '0%'}}>
+                    </View>
+                    <View style={{position: 'relative'}}>
                     <Text style={{...inputStyles.subHeader, margin: '0%'}}>...And what are you in the mood for today?</Text>
                     <Picker
                         style={{margin: '0%'}}
@@ -63,12 +68,16 @@ export function GobbleSelect() {
                         <Picker.Item label="No Preference" value={200}></Picker.Item>
                     </Picker>
                 </View>
-                <View style={{margin: '0%'}}>
+                <View style={{position: 'relative'}}>
                     <TouchableOpacity style={{...buttonStyles.loginButton, margin: '0%'}} onPress={() => props.navigation.navigate('GobbleConfirm')}>
                         <Text style={{...buttonStyles.loginButtonText, fontSize: 20}}>Find Gobblemate!</Text>
                     </TouchableOpacity>
+                    <View>
+                        <Text> Something something</Text>
+                    </View>
                 </View>
-            </SafeAreaView>
+                </SafeAreaView>
         </ScrollView>
+        </>
     )
 }
