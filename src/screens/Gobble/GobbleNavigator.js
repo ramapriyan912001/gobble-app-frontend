@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData } from '../../redux/actions/actions'
+import { fetchAuthUser, clearData } from '../../redux/actions/actions'
 import {createStackNavigator} from '@react-navigation/stack'
 import {GobbleSelect} from './GobbleSelect'
 import {GobbleConfirm} from './GobbleConfirm'
@@ -22,5 +22,5 @@ export function GobbleNavigator() {
 const mapStateToProps = (store) => ({
     currentUser: store.userState.currentUser
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, clearData }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(GobbleNavigator);

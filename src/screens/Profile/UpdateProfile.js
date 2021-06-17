@@ -4,7 +4,7 @@ import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../../sty
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {onSuccess, onFailure, cancelRegistration, createUserProfile, getError} from '../../services/RegistrationHandlers';
 import firebaseSvc from '../../firebase/FirebaseSvc';
-import {fetchUser, updateUserDetails, clearData} from '../../redux/actions/actions'
+import {fetchAuthUser, updateUserDetails, clearData} from '../../redux/actions/actions'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
 export function UpdateProfile(props) {
@@ -83,5 +83,5 @@ const mapStateToProps = (store) => ({
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser, clearData, updateUserDetails }, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, clearData, updateUserDetails }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(UpdateProfile);

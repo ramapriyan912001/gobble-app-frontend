@@ -135,7 +135,7 @@ class FirebaseSvc {
   messageRefRetrieve = callback => {
     // console.log('Retrieving Old Messages: ');
     this.messageRef('')
-      .limitToLast(40)
+      // .limitToLast(40)
       .on('value', snapshot => callback(this.parseStoredMessage(snapshot)));
   }
 

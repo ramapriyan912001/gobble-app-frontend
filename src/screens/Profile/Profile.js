@@ -7,7 +7,7 @@ import { getError, onSuccess, onFailure } from '../../services/RegistrationHandl
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData, updateUserDetails } from '../../redux/actions/actions'
+import { fetchAuthUser, clearData, updateUserDetails } from '../../redux/actions/actions'
 
 export function Profile(props) {
     const [appIsReady, setAppIsReady] = useState(false);
@@ -72,7 +72,7 @@ const mapStateToProps = (store) => ({
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser }, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(Profile);
 //TODO: Find out how to add different fields to a user and how to access them
 // <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>

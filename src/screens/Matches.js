@@ -3,7 +3,7 @@ import {View, Text} from 'react-native'
 import {containerStyles} from '../styles/LoginStyles'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData } from '../redux/actions/actions'
+import { fetchAuthUser, clearData } from '../redux/actions/actions'
 
 export function Matches() {
     return (
@@ -17,5 +17,5 @@ const mapStateToProps = (store) => ({
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUser }, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(Matches);

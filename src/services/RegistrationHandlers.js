@@ -9,8 +9,11 @@ export function createUserProfile() {//factory method
         avatar: '',
         cuisine: '',
         diet: '',
+        industry:00,
         crossIndustrial: false,
-        dob: new Date().toDateString()
+        dob: new Date().toDateString(),
+        match_list:[],
+        blocked_users:[]
     };
 }
 
