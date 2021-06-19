@@ -33,6 +33,7 @@ export function Profile(props) {
                             .then(x => x)
                             .catch(getError(props));
         setUserInfo(user);
+        props.fetchUser(user);
         if (userInfo === null) {
             props.navigation.goBack();
         }

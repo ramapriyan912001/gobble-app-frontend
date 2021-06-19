@@ -1,6 +1,6 @@
 import { USER_STATE_CHANGE, CLEAR_DATA, LOGGING_IN, LOGGING_OUT, GIVE_ADMIN_ACCESS, REMOVE_ADMIN_ACCESS} from './types'
 import firebase from 'firebase'
-import { SnapshotViewIOSComponent } from 'react-native'
+import firebaseSvc from '../../firebase/FirebaseSvc'
 require('firebase/firestore')
 
 export function clearData() {
@@ -11,20 +11,18 @@ export function clearData() {
 
 export function fetchUser() {
     return ((dispatch) => {
-        firebase.firestore()
-            .collection("users")
-            .doc(firebase.auth().currentUser.uid)
-            .get()
-            .then((snapshot) => {
-                if (snapshot.exists) {
-                    dispatch({ type: USER_STATE_CHANGE, currentUser: snapshot.data() })
-                }
-                else {
-                    console.log('does not exist')
-                }
-            })
+       firebaseSvc.getUserCollection((snapshot) => {
+           dispatch({type: USER_STATE_CHANGE, currentUser: snapshot.data})
+        },getError)
     })
 }
+
+export const getError = (props) => (err) => {
+    console.warn('Insufficient data');
+    Alert.alert('Registration Error: ' + err.message);
+    props.navigation.navigate('Register');
+    return {};
+};
 
 export function updateUserDetails(updatedUser) {
     return ((dispatch) => {
