@@ -6,9 +6,9 @@ import {MatchesHistory} from './MatchesHistory';
 
 const Tab = createMaterialTopTabNavigator();
 
-function MatchesNavigator() {
+export default function MatchesNavigator() {
   return (
-    <Tab.Navigator>
+    <Tab.Navigator initialRouteName="Ongoing">
       <Tab.Screen name="Ongoing" component={Matches} />
       <Tab.Screen name="History" component={MatchesHistory} />
     </Tab.Navigator>

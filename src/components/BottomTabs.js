@@ -5,6 +5,7 @@ import {GobbleNavigator} from '../screens/Gobble/GobbleNavigator'
 import {Matches} from '../screens/Matches/Matches'
 import {ChatRoom} from '../screens/ChatRoom'
 import Ionicons from '@expo/vector-icons/Ionicons'
+import MatchesNavigator from '../screens/Matches/MatchesNavigator';
 
 const Tab = createBottomTabNavigator();
 
@@ -52,10 +53,12 @@ export default function BottomTabs() {
             <Tab.Screen options={{
                 title: "Gobble"
                 }} name="GobbleNavigator" component={GobbleNavigator}></Tab.Screen>
-            <Tab.Screen name="Matches" navigationOptions={{
+            <Tab.Screen name="MatchesNavigator" navigationOptions={{
                 headerLeft: () => null,
                 headerShown: true
-            }} component={Matches}></Tab.Screen>
+            }} options={{
+              title: "Matches"
+            }} component={MatchesNavigator}></Tab.Screen>
             <Tab.Screen name="Chats" component={ChatRoom}></Tab.Screen>
         </Tab.Navigator>
     )
