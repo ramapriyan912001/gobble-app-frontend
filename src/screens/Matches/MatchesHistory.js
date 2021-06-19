@@ -4,13 +4,14 @@ import {containerStyles} from '../../styles/LoginStyles'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchUser, clearData } from '../../redux/actions/actions'
+import { SafeAreaView } from 'react-navigation'
 
 
 export function MatchesHistory() {
     return (
-        <View style={containerStyles.container}>
+        <SafeAreaView style={containerStyles.container}>
             <Text>MatchesHistory</Text>        
-        </View>
+        </SafeAreaView>
     )
 }
 
