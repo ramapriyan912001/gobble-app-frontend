@@ -2,7 +2,7 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {ProfileNavigator} from '../screens/Profile/ProfileNavigator'
 import {GobbleNavigator} from '../screens/Gobble/GobbleNavigator'
-import {Matches} from '../screens/Matches'
+import {Matches} from '../screens/Matches/Matches'
 import {ChatRoom} from '../screens/ChatRoom'
 import Ionicons from '@expo/vector-icons/Ionicons'
 
@@ -52,7 +52,10 @@ export default function BottomTabs() {
             <Tab.Screen options={{
                 title: "Gobble"
                 }} name="GobbleNavigator" component={GobbleNavigator}></Tab.Screen>
-            <Tab.Screen name="Matches" component={Matches}></Tab.Screen>
+            <Tab.Screen name="Matches" navigationOptions={{
+                headerLeft: () => null,
+                headerShown: true
+            }} component={Matches}></Tab.Screen>
             <Tab.Screen name="Chats" component={ChatRoom}></Tab.Screen>
         </Tab.Navigator>
     )
