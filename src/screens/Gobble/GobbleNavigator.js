@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchUser, clearData } from '../../redux/actions/actions'
 import {createStackNavigator} from '@react-navigation/stack'
-import {GobbleSelect} from './GobbleSelect'
+import GobbleSelect from './GobbleSelect'
 import {GobbleConfirm} from './GobbleConfirm'
 
 

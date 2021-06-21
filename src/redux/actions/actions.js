@@ -10,11 +10,14 @@ export function clearData() {
 }
 
 export function fetchUser() {
-    return ((dispatch) => {
-       firebaseSvc.getUserCollection((snapshot) => {
-           dispatch({type: USER_STATE_CHANGE, currentUser: snapshot.data})
-        },getError)
-    })
+    return (dispatch) => {
+        firebaseSvc.userRef(firebaseSvc.currentUser().uid).on("value",
+            (snapshot) => {
+                dispatch({type: USER_STATE_CHANGE, currentUser: snapshot.val()})
+                console.log(snapshot.data)
+            }
+        )
+    }
 }
 
 export const getError = (props) => (err) => {

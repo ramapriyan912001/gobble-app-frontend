@@ -7,9 +7,9 @@ import { getError, onSuccess, onFailure } from '../../services/RegistrationHandl
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData, updateUserDetails } from '../../redux/actions/actions'
+import { fetchUser } from '../../redux/actions/actions'
 
-export function Profile(props) {
+function Profile(props) {
     const [appIsReady, setAppIsReady] = useState(false);
     const [userInfo, setUserInfo] = useState({});
 
@@ -33,7 +33,7 @@ export function Profile(props) {
                             .then(x => x)
                             .catch(getError(props));
         setUserInfo(user);
-        props.fetchUser(user);
+        await props.fetchUser();
         if (userInfo === null) {
             props.navigation.goBack();
         }
@@ -56,11 +56,13 @@ export function Profile(props) {
             <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
             <Text style={profileStyles.profileField}>Cross-Industrial meetings? {userInfo.crossIndustry?'Sure!':'Nope!'}</Text>           
             <Text style={profileStyles.profileField}>{userInfo.email}</Text>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('UpdateProfile')}>
+            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
+                props.navigation.navigate('UpdateProfile')
+                }}>
                 <Text style={buttonStyles.loginButtonText}>Edit Profile</Text>
             </TouchableOpacity>
             <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
-                signOutUser
+                signOutUser()
                 props.navigation.navigate('Login')}}>
                 <Text style={buttonStyles.loginButtonText}>Sign Out</Text>
             </TouchableOpacity>

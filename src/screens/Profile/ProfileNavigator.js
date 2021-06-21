@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchUser, clearData } from '../../redux/actions/actions'
 import {createStackNavigator} from '@react-navigation/stack'
-import {Profile} from './Profile'
+import Profile from './Profile'
 import UpdateProfile from './UpdateProfile'
 
 
