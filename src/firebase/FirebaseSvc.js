@@ -192,6 +192,35 @@ class FirebaseSvc {
     return firebase.database().ref(`Matches/${params}`);
   }
 
+  gobbleRequestsRef() {
+    return firebase.database().ref(`GobbleRequests`)
+  }
+
+  makeGobbleRequest(gobbleRequest) {
+    let ref = firebase.database().ref(`GobbleRequests`).child('All').push(gobbleRequest)
+    let requestRef = firebase.database().ref(`GobbleRequests`)
+    .child(`${gobbleRequest.dietaryRestriction}`)
+    .child(`${gobbleRequest.industryPreference}`)
+    .child(`${gobbleRequest.cuisinePreference}`)
+    this.userRef(this.uid).child('pendingMatchIDs').push(requestRef.key)
+    this.findGobbleMate(requestRef, gobbleRequest)
+  }
+
+  findGobbleMate(ref, request) {
+    let tempRef = ref;
+    tempRef.on("value", (snapshot) => {
+      let child
+      let children = snapshot.val()
+      for(child in children) {
+        console.log(child)
+        console.log(children[child])
+      }
+    })
+    // while(ref != null) {
+    //   for(child in ref)
+    // }
+  }
+
   get timestamp() {
     return firebase.database.ServerValue.TIMESTAMP;
   }

@@ -1,36 +1,61 @@
-import React, {useState} from 'react'
-import {View, Text, Button, TouchableOpacity, ScrollView, SafeAreaView} from 'react-native'
+import React, {useEffect, useState} from 'react'
+import {Platform, View, Text, Button, TouchableOpacity, ScrollView, SafeAreaView, Alert} from 'react-native'
+import * as Location from 'expo-location'
 import {containerStyles, buttonStyles, inputStyles} from '../../styles/LoginStyles'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {Picker} from '@react-native-picker/picker';
-// import {CURR_DATE, MIN_DATE, MAX_DATE} from '../../constants/dates'
 import firebaseSvc from '../../firebase/FirebaseSvc';
 import {fetchUser, updateUserDetails, clearData} from '../../redux/actions/actions'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
-import RNLocation from 'react-native-location'
+import RNLocation, { getLatestLocation } from 'react-native-location'
 import RNGeolocationService from 'react-native-geolocation-service'
+import {getDistance} from 'geolib'
 
-export function GobbleSelect() {
+function GobbleSelect(props) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [distance, setDistance] = useState(1);
-  const [cuisinePreference, setCuisinePreference] = useState('')
-  const [location, setLocation] = useState('')
+  const [cuisinePreference, setCuisinePreference] = useState('Western')
+  const [location, setLocation] = useState(null)
+  const [errorMsg, setErrorMsg] = useState(null)
   const MIN_DATE = new Date()
-  const MAX_DATE = new Date().setDate(MIN_DATE+7)
+  const MAX_DATE = new Date().setDate(MIN_DATE.getDate()+7)
   const [date, setDate] = useState(MIN_DATE)
 
+  useEffect(() => {
+      (async () => {
+          let {status} = await Location.requestForegroundPermissionsAsync();
+          if (status !== 'granted') {
+              setErrorMsg('Permission Denied')
+              console.log(errorMsg)
+              return;
+          }
+          let location = await Location.getCurrentPositionAsync({})
+          setLocation(location)
+      })();
+  }, []);
 
+  let text = 'Waiting'
+  if (errorMsg) {
+      text = errorMsg
+  } else if (location) {
+      text = JSON.stringify(location)
+  }
   function submitGobble() {
+      if(location == null) {
+          Alert("This function cannot work without your location details!")
+          return;
+      }
       const gobbleRequest = {
-          userId: firebaseSvc.uid(),
+          userId: firebaseSvc.currentUser().uid,
           dietaryRestriction: props.currentUser.diet,
-          industry: props.currentUser.crossIndustrial ? props.currentUser.industry : 'ANY',
+          industryPreference: props.currentUser.crossIndustrial ? 'Programmer' : 'ANY',
           cuisinePreference: cuisinePreference,
           location: location,
-          distance: distance
-
+          distance: distance,
       }
+      firebaseSvc.makeGobbleRequest(gobbleRequest)
+      props.navigation.navigate('GobbleConfirm')
   }
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -68,14 +93,14 @@ export function GobbleSelect() {
                     <Text style={{...inputStyles.subHeader}}>...And How far are you willing to travel for a meal?</Text>
                     <Picker
                         selectedValue={cuisinePreference}
-                        onValueChange={(itemValue, itemIndex) => {
-                            setCuisinePreference(itemValue)
+                        onValueChange={(itemIndex, itemValue) => {
+                            setCuisinePreference(itemIndex)
                         }}>
-                        <Picker.Item label="Western" value={1}></Picker.Item>
-                        <Picker.Item label="Indian" value={2}></Picker.Item>
-                        <Picker.Item label="Asian" value={5}></Picker.Item>
-                        <Picker.Item label="Food Court" value={10}></Picker.Item>
-                        <Picker.Item label="No Preference" value={200}></Picker.Item>
+                        <Picker.Item label="Western" value={"Western"}></Picker.Item>
+                        <Picker.Item label="Indian" value={"Indian"}></Picker.Item>
+                        <Picker.Item label="Asian" value={"Asian"}></Picker.Item>
+                        <Picker.Item label="Food Court" value={"Food Court"}></Picker.Item>
+                        <Picker.Item label="No Preference" value={"No Preference"}></Picker.Item>
                     </Picker>
                     </View>
                     <View style={{position: 'relative', marginTop: '0%'}}>
@@ -91,9 +116,6 @@ export function GobbleSelect() {
                         <Picker.Item label="10 km" value={10}></Picker.Item>
                         <Picker.Item label="No Preference" value={200}></Picker.Item>
                     </Picker>
-                </View>
-                <View>
-
                 </View>
                 <View style={{position: 'relative'}}>
                     <TouchableOpacity style={{...buttonStyles.loginButton, margin: '0%'}} onPress={() => submitGobble()}>
