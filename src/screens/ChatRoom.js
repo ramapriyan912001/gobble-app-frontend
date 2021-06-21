@@ -9,7 +9,7 @@ import { fetchAuthUser, fetchUserData } from '../redux/actions/actions'
 
 
 export function ChatRoom(props) {
-  const matches = props.fetchUserData().match_list;
+  const matches = fetchUserData().match_list;
   
   const [selectedMatchID, setSelectedMatchID] = useState('');
 

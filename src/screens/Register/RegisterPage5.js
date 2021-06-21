@@ -13,13 +13,14 @@ export default function RegisterPage5(props) {
 
     const addUser = (cross) => 
         firebaseSvc
-            .getUserCollection(
+            .getCurrentUserCollection(
                 (snapshot) => snapshot.val(),
                 getError(props))
             .then(userProfile => {
                 userProfile['crossIndustrial'] = cross;
                 userProfile['dob'] = date.toDateString();
-                firebaseSvc.updateUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+                userProfile['completed'] = true;
+                firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
             })
             .catch(getError(props));
     

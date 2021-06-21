@@ -9,7 +9,7 @@ import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
 export function UpdateProfile(props) {
     const userProfile = firebaseSvc
-                        .getUserCollection(
+                        .getCurrentUserCollection(
                             (snapshot) => snapshot.val(),
                             getError(props))
                         .then(x => x)

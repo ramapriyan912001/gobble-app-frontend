@@ -14,7 +14,7 @@ export function fetchAuthUser() {
 }
 
 export function fetchUserData() {
-    return ((dispatch) => dispatch({ type: USER_DATA_CHANGE, currentUser: firebaseSvc.getUserCollection(snapshot => snapshot.val(), err => console.log(err.message)) }));
+    return ((dispatch) => dispatch({ type: USER_DATA_CHANGE, currentUser: firebaseSvc.getCurrentUserCollection(snapshot => snapshot.val(), err => console.log(err.message)) }));
 }
 
 export function updateUserDetails(updatedUser) {
@@ -24,9 +24,9 @@ export function updateUserDetails(updatedUser) {
     })
 }
 
-export function updateUserCollection(updatedUser) {
+export function updateCurrentUserCollection(updatedUser) {
     return ((dispatch) => {
-        firebaseSvc.updateUserCollection(updatedUser, () => console.log('user collection updated'), (err) => console.log(err.message));
+        firebaseSvc.updateCurrentUserCollection(updatedUser, () => console.log('user collection updated'), (err) => console.log(err.message));
         dispatch({type: USER_DATA_CHANGE, currentUser: updatedUser})
     })
 }

@@ -1,29 +1,29 @@
 import React, {useState, useEffect} from 'react'
-import {Text, View, SafeAreaView, TouchableOpacity, Alert} from 'react-native'
+import {Text, View, SafeAreaView, TouchableOpacity, Alert, Image} from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
-import {pickerStyles, buttonStyles, containerStyles} from '../../styles/LoginStyles'
+import {pickerStyles, buttonStyles, containerStyles, inputStyles, imageStyles} from '../../styles/LoginStyles'
 import firebaseSvc from '../../firebase/FirebaseSvc';
 import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
 import ImageEditor from '@react-native-community/image-editor';
 import * as ImageManipulator from 'expo-image-manipulator';
 
 export default function RegisterPage2(props) {
-    const name = props.navigation.state.params.name;
+    const name = props.route.params.name;
     // const user = initialState.user; User accessed from firebaseSvc
     const [avatar, setAvatar] = useState('');
-    // const [hasAvatar, setHasAvatar] = useState(false);
+    const [hasAvatar, setHasAvatar] = useState(false);
 
     //Failures Handler
 
     const updateAvatar = (avatar) => {
-        if (avatar != '') {
+        if (hasAvatar) {
             firebaseSvc
-            .getUserCollection(
+            .getCurrentUserCollection(
                 (snapshot) => snapshot.val(),
                 getError(props))
             .then(userProfile => {
                 userProfile['avatar'] = avatar;
-                firebaseSvc.updateUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+                firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
                 firebaseSvc.updateAvatar(avatar);
             })
             .catch(getError(props));
@@ -74,7 +74,7 @@ export default function RegisterPage2(props) {
                     .uploadImage(resizedUri)
                     .then(uploadURL => {
                         setAvatar(uploadURL);
-                        // setHasAvatar(true);
+                        setHasAvatar(true);
                         // firebaseSvc
                         // .updateAvatar(uploadURL)
                         // .then(() => console.log('Avatar Updated'))
@@ -89,16 +89,16 @@ export default function RegisterPage2(props) {
               Alert.alert('We need permission to go further!');
           }
         })
-        .catch(onFailure);
+        .catch(onFailure('Permission Retrieval Error'));
       };
 
-    // useEffect(() => {
-    //     // return cancelRegistration(props);
-    // }, [])
+    // useEffect(imageDisplay, [hasAvatar]);
+    console.log(hasAvatar);
     return (
     <SafeAreaView>
         <Text style={inputStyles.headerText}>Complete your Profile!</Text> 
         <Text style={pickerStyles.text}>{name}, pick out a nice picture of yourself!</Text>
+        {hasAvatar && (<Image style={imageStyles.gobbleImage} source={avatar}/>)}
         <TouchableOpacity style={buttonStyles.loginButton} onPress={updateImage}>
             <Text style={buttonStyles.loginButtonText}>Select Picture</Text>
         </TouchableOpacity>

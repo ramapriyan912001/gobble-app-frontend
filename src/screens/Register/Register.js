@@ -31,9 +31,8 @@ export default function register(props) {
         let userProfile = createUserProfile();
         userProfile['name'] = name;
         userProfile['email'] = email;
-        userProfile['password'] = password;
 
-        firebaseSvc.updateUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+        firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
         // if (user.avatar != '') {
         //     cUser
         //     .updateProfile({ 
@@ -52,8 +51,8 @@ export default function register(props) {
     // }, []);
 
     return(
-            <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container}>
-                    <Image style={imageStyles.gobbleImage}source = {require('../../images/gobble.png')}/>
+            <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container} scrollEnabled={false}>
+                    <Image style={imageStyles.gobbleImage} source = {require('../../images/gobble.png')}/>
                     <StatusBar style="auto"/>
                     <Text style={inputStyles.headerText}>Introduce Yourself!</Text>
                     <View style={inputStyles.inputView}>

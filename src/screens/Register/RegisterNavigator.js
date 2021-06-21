@@ -16,7 +16,7 @@ const Stack = createStackNavigator();
 
 export default function RegisterNavigator() {
     return (
-        <Stack.Navigator initialRouteName="Register">
+        <Stack.Navigator initialRouteName="Register" headerMode={'none'}>
             <Stack.Screen name="Register" component={register}></Stack.Screen>
             <Stack.Screen name="RegisterPage2" component={RegisterPage2}></Stack.Screen>
             <Stack.Screen name="RegisterPage3" component={RegisterPage3}></Stack.Screen>

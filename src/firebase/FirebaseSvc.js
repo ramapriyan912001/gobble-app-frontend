@@ -43,33 +43,29 @@ class FirebaseSvc {
     .catch(failure);//if create user with email and pw fails    
   }
 
-  deleteUser = () => {
+  deleteUser = (success, failure) => {
+    // let deletionSuccess = false;
     if (this.userExists()) {
-      return this
+      this
       .currentUser()
       .delete()
-      .then(() => console.log('User deleted'))
-      .catch(err => {
-        if (err.code === 'auth/requires-recent-login') {
-          return false;
-        } else {
-          console.warn(err.message);
-          return false;
-        }});
+      .then(success)
+      .catch(failure);
     } else {
-      return true;
+      console.log('No User Found to Delete');
     }
   }
 
   reauthenticateUser = (user, success, failure) => {
     const credentials = firebase.auth.EmailAuthProvider.credential(user.email, user.password);
-    console.log(credentials);
     if (this.userExists()) {
       this
       .currentUser()
       .reauthenticateWithCredential(credentials)
       .then(success)
       .catch(failure);
+    } else {
+      failure({code: 'auth/no-user', message: 'No User Exists'});
     }
   }
 
@@ -93,7 +89,7 @@ class FirebaseSvc {
     }
   };
 
-  updateUserCollection = (user, success, failure) => {
+  updateCurrentUserCollection = (user, success, failure) => {
     if (this.userExists()) {
       this
       .userRef(this.uid)
@@ -110,13 +106,21 @@ class FirebaseSvc {
     // return firebase.database().ref().update(updates);
   }
 
-  getUserCollection = (success, failure) => this.userExists()
+  getCurrentUserCollection = (success, failure) => this.userExists()
                                             ? this
                                               .userRef(this.uid)
                                               .once('value')
                                               .then(success)
                                               .catch(failure)
-                                            : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Registration'})
+                                            : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Registration'});
+
+  getUserCollection = (id, success, failure) => id != null
+                                                ? this
+                                                  .userRef(id)
+                                                  .once('value')
+                                                  .then(success)
+                                                  .catch(failure)
+                                                : failure({code: 'auth/invalid-id', message: 'Invalid UID provided'})
 
   currentUser = () => firebase.auth().currentUser;
 

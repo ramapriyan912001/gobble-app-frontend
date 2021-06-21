@@ -3,14 +3,14 @@ import React, {useEffect, useState, useCallback} from 'react'
 import {Text, Image, TouchableOpacity, SafeAreaView, Alert, View, Button} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
 import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../../styles/LoginStyles'
-import { getError, onSuccess, onFailure } from '../../services/RegistrationHandlers'
+import { getError, onSuccess, onFailure, industryCodes } from '../../services/RegistrationHandlers'
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchAuthUser, clearData, updateUserDetails } from '../../redux/actions/actions'
 
 export function Profile(props) {
-    const [appIsReady, setAppIsReady] = useState(false);
+    const [hasAvatar, setHasAvatar] = useState(false);
     const [userInfo, setUserInfo] = useState({});
 
     const signOutSuccess = () => {
@@ -27,7 +27,7 @@ export function Profile(props) {
 
     async function loadDataAsync () {
         const user = await firebaseSvc
-                            .getUserCollection(
+                            .getCurrentUserCollection(
                                 (snapshot) => snapshot.val(),
                                 getError(props))
                             .then(x => x)
@@ -35,6 +35,8 @@ export function Profile(props) {
         setUserInfo(user);
         if (userInfo === null) {
             props.navigation.goBack();
+        } else if (userInfo.avatar != '') {
+            setHasAvatar(true);
         }
     }
 
@@ -50,9 +52,10 @@ export function Profile(props) {
         <SafeAreaView style={containerStyles.container}>
             <StatusBar style="auto"/>
             <Text style={inputStyles.headerText}>{userInfo.name}'s Profile</Text>
-            <Image style={profileStyles.profilePic} source={{uri:userInfo.avatar}}/>
+            {hasAvatar && <Image style={profileStyles.profilePic} source={{uri:userInfo.avatar}}/>}
             <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
             <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
+            <Text style={profileStyles.profileField}>You work in the {industryCodes[userInfo.industry]} industry</Text>
             <Text style={profileStyles.profileField}>Cross-Industrial meetings? {userInfo.crossIndustry?'Sure!':'Nope!'}</Text>           
             <Text style={profileStyles.profileField}>{userInfo.email}</Text>
             <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('UpdateProfile')}>
@@ -74,8 +77,3 @@ const mapStateToProps = (store) => ({
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(Profile);
-//TODO: Find out how to add different fields to a user and how to access them
-// <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
-// <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
-// <Text style={profileStyles.profileField}>Cross-Industrial meetings? {userInfo.crossIndustry}</Text>
-
