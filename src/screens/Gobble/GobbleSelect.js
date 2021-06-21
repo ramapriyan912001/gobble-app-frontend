@@ -49,7 +49,7 @@ function GobbleSelect(props) {
       const gobbleRequest = {
           userId: firebaseSvc.currentUser().uid,
           dietaryRestriction: props.currentUser.diet,
-          industry: props.currentUser.crossIndustrial ? 'Programmer' : 'ANY',
+          industryPreference: props.currentUser.crossIndustrial ? 'Programmer' : 'ANY',
           cuisinePreference: cuisinePreference,
           location: location,
           distance: distance,
