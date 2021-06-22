@@ -8,9 +8,9 @@ import firebaseSvc from '../../firebase/FirebaseSvc';
 import {fetchUser, updateUserDetails, clearData} from '../../redux/actions/actions'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
-import RNLocation, { getLatestLocation } from 'react-native-location'
-import RNGeolocationService from 'react-native-geolocation-service'
-import {getDistance} from 'geolib'
+// import RNLocation, { getLatestLocation } from 'react-native-location'
+// import RNGeolocationService from 'react-native-geolocation-service'
+// import {getDistance} from 'geolib'
 
 function GobbleSelect(props) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
