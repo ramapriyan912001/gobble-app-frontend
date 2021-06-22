@@ -9,7 +9,7 @@ import { fetchAuthUser, fetchUserData } from '../redux/actions/actions'
 
 
 export function ChatRoom(props) {
-  const matches = fetchUserData().match_list;
+  const matches = props.fetchUserData().match_list;
   
   const [selectedMatchID, setSelectedMatchID] = useState('');
 
@@ -37,5 +37,5 @@ const mapStateToProps = (store) => ({
   loggedIn: store.userState.currentUser,
   isAdmin: store.userState.isAdmin
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser }, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(ChatRoom);

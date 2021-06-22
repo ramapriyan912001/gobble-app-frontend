@@ -6,7 +6,7 @@ import firebaseSvc from '../../firebase/FirebaseSvc'
 import {onSuccess, onFailure, cancelRegistration, industryCodes, getError} from '../../services/RegistrationHandlers';
 
 export default function RegisterPage4(props) {
-    const [industry, setIndustry] = useState(1);
+    const [industry, setIndustry] = useState(0);
     const [industries] = useState(industryCodes);
 
     const updateIndustry = (industry) =>
@@ -39,7 +39,7 @@ export default function RegisterPage4(props) {
         //                 <Picker.Item label="Shipping & Transportation" value=11/>
         //                 <Picker.Item label="Others" value=00/>
         for (let [code, industryTitle] of Object.entries(industries)) {
-            pickerItems.push(<Picker.Item label= {industryTitle} value ={code}/>);
+            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} value ={code}/>);
         }
         return pickerItems;
     }

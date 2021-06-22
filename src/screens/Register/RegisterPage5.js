@@ -8,6 +8,7 @@ import firebaseSvc from '../../firebase/FirebaseSvc';
 export default function RegisterPage5(props) {
     const [cross, setCrossIndustryPreference] = useState(false);
     const [date, setDate] = useState(new Date());
+    const [dateChanged, setDateChanged] = useState(false);
     const [show, setShow] = useState(false);
     //Handlers for Action Failure:
 
@@ -28,6 +29,7 @@ export default function RegisterPage5(props) {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
         setDate(currentDate);
+        setDateChanged(true);
         };
 
     // useEffect(() => {
@@ -63,8 +65,12 @@ export default function RegisterPage5(props) {
                         onPress={
                             () => {
                                 addUser(cross);
-                                console.log('Registered User');
-                                props.navigation.navigate('FinalStep');
+                                if (!dateChanged) {
+                                    Alert.alert('You forgot your Birthday!', 'Click on the Birthday button to see a calendar');
+                                } else {
+                                    console.log('Registered User');
+                                    props.navigation.navigate('FinalStep');
+                                }
                             }
                         }>
                     <Text style={buttonStyles.loginButtonText}>Finish</Text>

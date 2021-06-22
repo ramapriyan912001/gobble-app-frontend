@@ -96,6 +96,8 @@ class FirebaseSvc {
       .set(user)
       .then(success)
       .catch(failure);
+    } else {
+      console.log('No User Logged In');
     }
     // Scalable multiple update method
     //

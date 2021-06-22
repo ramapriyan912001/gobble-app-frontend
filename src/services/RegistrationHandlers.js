@@ -7,14 +7,14 @@ export const industryCodes = {
     2: "Law",
     3: "Research",
     4: "Engineering",
-    5: "Computing",
+    0: "Computing",
     6: "Marketing",
     7: "Sales",
     8: "Artist",
     9: "Public Sector",
     10: "Medicine",
-    11: "Shipping & Transportation",
-    0: "Others"
+    5: "Shipping & Transportation",
+    11: "Others"
 }
 
 export function createUserProfile() {//factory method

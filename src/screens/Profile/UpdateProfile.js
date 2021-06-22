@@ -8,27 +8,31 @@ import {fetchAuthUser, updateUserDetails, clearData} from '../../redux/actions/a
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
 export function UpdateProfile(props) {
-    const userProfile = firebaseSvc
-                        .getCurrentUserCollection(
-                            (snapshot) => snapshot.val(),
-                            getError(props))
-                        .then(x => x)
-                        .catch(getError(props)); 
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
+    const [name, setName] = useState(props.route.params.name);
+    const [email, setEmail] = useState(props.route.params.email);
     const [nameChanged, setNameChange] = useState(false);
     const [emailChanged, setEmailChange] = useState(false);
     
     //Handlers for Action Failure:
 
-    const updateUser = (user) => {
+    const updateUser = async (user) => {
+        const userProfile = await firebaseSvc
+                                    .getCurrentUserCollection(
+                                        (snapshot) => snapshot.val(),
+                                        getError(props))
+                                    .then(x => x)
+                                    .catch(getError(props));
+
         if (nameChanged) {
-            firebaseSvc.updateUserProfile(user, onSuccess('Update'), onFailure('Update'));
+            firebaseSvc.updateUserProfile(user, onSuccess('Name Update'), onFailure('Name Update'));
+            userProfile['name'] = name;
         }
         if (emailChanged) {
             firebaseSvc.updateEmail(user.email, onSuccess('Email Update'), onFailure('Email Update'));
+            userProfile['email'] = email;
         }
-        props.navigation.navigate('RegisterPage2');
+        firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('Collection Update'), onFailure('Collection Update'));
+        props.navigation.navigate('RegisterPage2', {name: name});
     };
 
     return(
