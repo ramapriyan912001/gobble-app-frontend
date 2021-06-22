@@ -6,13 +6,14 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import firebaseSvc from '../firebase/FirebaseSvc';
 
 export default function Reauthenticate(props) {
-    const [email, setEmail] = useState('');
+    const cleanup = props.route.params.cleanup;
     const [password, setPassword] = useState('');
     const user = firebaseSvc.currentUser();
 
     // Login Success/Fail handlers
     const authSuccess = (userCredential) => {
-        console.log('auth successful');
+        console.log('Auth Successful');
+        cleanup();
         props.navigation.goBack();
     };
     const authFailed = (err) => {
@@ -36,6 +37,7 @@ export default function Reauthenticate(props) {
                     <Text style={inputStyles.headerText}>Enter your Credentials</Text>
                     <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
                     <StatusBar style="auto"/>
+                    <Text style={inputStyles.subText}>{user.email === null? 'Unknown Email' : user.email}</Text>
                     <View style={inputStyles.inputView}>
                         <TextInput
                             autoCapitalize="none"

@@ -1,16 +1,35 @@
 import firebaseSvc from "../firebase/FirebaseSvc";
 import { Alert } from 'react-native';
 
+//should be in redux 
+export const industryCodes = {
+    1: "Human Resources",
+    2: "Law",
+    3: "Research",
+    4: "Engineering",
+    0: "Computing",
+    6: "Marketing",
+    7: "Sales",
+    8: "Artist",
+    9: "Public Sector",
+    10: "Medicine",
+    5: "Shipping & Transportation",
+    11: "Others"
+}
+
 export function createUserProfile() {//factory method
     return {
         name: '',
         email: '',
-        password: '',
         avatar: '',
         cuisine: '',
         diet: '',
+        industry: 0,
         crossIndustrial: false,
-        dob: new Date().toDateString()
+        dob: new Date().toDateString(),
+        match_list:[],
+        blocked_users:[],
+        completed:false,
     };
 }
 
@@ -18,13 +37,46 @@ export const onFailure = (level) => (err) => console.warn(level + ' error: ' + e
     
 export const onSuccess = (level) => () => console.log(level + ' successfully done');
 
-export const cancelRegistration = (props) => {
-    firebaseSvc.updateUserCollection(null, onSuccess('User Collection Delete'), onFailure('User Collection Delete'));
-    if (!firebaseSvc.deleteUser()) {
-        Alert.alert('Unable to delete profile, please re-authenticate for ' + firebaseSvc.currentUser().email);
-        props.navigation.navigate('Reauthenticate');
-    } else {
+const deleteAuthUser = (props) => {
+    const deleteSuccess = () => {
         console.log('Cancelled Registration - Back to Login');
+        return;
+    };
+    const deleteFailure = (err) => {
+        if (err.code === 'auth/requires-recent-login') {
+            Alert.alert('Unable to delete profile created, please re-authenticate for ' + firebaseSvc.currentUser().email);
+            const cleanupFunction = () => deleteAuthUser(props);
+            props.navigation.navigate('Reauthenticate', {cleanup: cleanupFunction});
+        } else {
+            console.log('DeleteAuthUserError: ' + err.message);
+        }
+    };
+
+    firebaseSvc.deleteUser(deleteSuccess, deleteFailure);
+};
+
+export const cancelRegistration = (props) => {
+    const userData = firebaseSvc.getCurrentUserCollection((snapshot) => snapshot.val(), err => console.log('GetError: ' + err.message));
+    if (userData != null) {
+        userData
+        .then((user) => {
+            if (user != null) { 
+                if (!user.completed) {
+                firebaseSvc.updateCurrentUserCollection(null, onSuccess('User Collection Delete'), onFailure('User Collection Delete'));
+                deleteAuthUser();
+                } else {
+                    console.log('Complete User Exists - No need to delete');
+                    props.navigation.navigate('Login');            
+                }
+            } else {
+                console.log('Only Auth to be deleted');
+                deleteAuthUser(props);
+                props.navigation.navigate('Login');
+            }
+        })
+        .catch(err => console.log(err.message));
+    } else {
+        console.log('Complete User Exists - No need to delete');
         props.navigation.navigate('Login');
     }
 };

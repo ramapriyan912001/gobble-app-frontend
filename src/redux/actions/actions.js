@@ -1,7 +1,7 @@
-import { USER_STATE_CHANGE, CLEAR_DATA, LOGGING_IN, LOGGING_OUT, GIVE_ADMIN_ACCESS, REMOVE_ADMIN_ACCESS} from './types'
+import { USER_STATE_CHANGE, USER_DATA_CHANGE, CLEAR_DATA, LOGGING_IN, LOGGING_OUT, GIVE_ADMIN_ACCESS, REMOVE_ADMIN_ACCESS} from './types'
 import firebase from 'firebase'
+import { SnapshotViewIOSComponent } from 'react-native'
 import firebaseSvc from '../../firebase/FirebaseSvc'
-require('firebase/firestore')
 
 export function clearData() {
     return ((dispatch) => {
@@ -9,15 +9,12 @@ export function clearData() {
     })
 }
 
-export function fetchUser() {
-    return (dispatch) => {
-        firebaseSvc.userRef(firebaseSvc.currentUser().uid).on("value",
-            (snapshot) => {
-                dispatch({type: USER_STATE_CHANGE, currentUser: snapshot.val()})
-                console.log(snapshot.data)
-            }
-        )
-    }
+export function fetchAuthUser() {
+    return ((dispatch) => dispatch({ type: USER_STATE_CHANGE, currentUser: firebaseSvc.currentUser() }));
+}
+
+export function fetchUserData() {
+    return ((dispatch) => dispatch({ type: USER_DATA_CHANGE, currentUser: firebaseSvc.getCurrentUserCollection(snapshot => snapshot.val(), err => console.log(err.message)) }));
 }
 
 export const getError = (props) => (err) => {
@@ -29,7 +26,15 @@ export const getError = (props) => (err) => {
 
 export function updateUserDetails(updatedUser) {
     return ((dispatch) => {
+        firebaseSvc.updateUserProfile(updatedUser, () => console.log('user updated'), (err) => console.log(err.message));
         dispatch({type: USER_STATE_CHANGE, currentUser: updatedUser})
+    })
+}
+
+export function updateCurrentUserCollection(updatedUser) {
+    return ((dispatch) => {
+        firebaseSvc.updateCurrentUserCollection(updatedUser, () => console.log('user collection updated'), (err) => console.log(err.message));
+        dispatch({type: USER_DATA_CHANGE, currentUser: updatedUser})
     })
 }
 

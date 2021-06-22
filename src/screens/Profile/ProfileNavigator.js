@@ -3,10 +3,14 @@ import {View, Text} from 'react-native'
 import {containerStyles} from '../../styles/LoginStyles'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData } from '../../redux/actions/actions'
+import { fetchAuthUser, clearData } from '../../redux/actions/actions'
 import {createStackNavigator} from '@react-navigation/stack'
 import Profile from './Profile'
 import UpdateProfile from './UpdateProfile'
+import RegisterPage2 from '../Register/RegisterPage2'
+import RegisterPage3 from '../Register/RegisterPage3'
+import RegisterPage4 from '../Register/RegisterPage4'
+import RegisterPage5 from '../Register/RegisterPage5'
 
 
 const Stack = createStackNavigator();
@@ -17,6 +21,10 @@ export function ProfileNavigator() {
         headerMode={'none'}>
             <Stack.Screen name="Profile" component={Profile}></Stack.Screen>
             <Stack.Screen name="UpdateProfile" component={UpdateProfile}></Stack.Screen>
+            <Stack.Screen name="RegisterPage2" component={RegisterPage2}></Stack.Screen>
+            <Stack.Screen name="RegisterPage3" component={RegisterPage3}></Stack.Screen>
+            <Stack.Screen name="RegisterPage4" component={RegisterPage4}></Stack.Screen>
+            <Stack.Screen name="RegisterPage5" component={RegisterPage5}></Stack.Screen>
         </Stack.Navigator>
     )
 }

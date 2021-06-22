@@ -1,12 +1,9 @@
-
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'
 import firebaseSvc from '../firebase/FirebaseSvc';
 
-//Haven't worked on this yet, need to add API calls in backend and over here
-
-export default function ChatRoom() {
+export function Conversation(props) {
   const cUser = firebaseSvc.currentUser();
   const user = {
     name: cUser.displayName,
@@ -14,16 +11,34 @@ export default function ChatRoom() {
     avatar: cUser.photoURL,
     _id: firebaseSvc.uid
   };
+  // const [isLoaded, setIsLoaded] = useState(false);
   const [messages, setMessages] = useState([]);
 
   const loadMessages = () => {
-    firebaseSvc.refRetrieve(message => setMessages(GiftedChat.append(messages, message)));//Errors occurs here
+    //TODO: Find efficient way to incorporate child_added listener
+    // firebaseSvc.messageRefOn(message => {
+    //   if (isLoaded) {
+    //     console.log('come on');
+    //     let newMsgs = [...messages, message];
+    //     console.log(newMsgs);
+    //     setMessages(newMsgs);
+    //     // setMessages(GiftedChat.append(messages, message));
+    //   }
+    // });
+    firebaseSvc.messageRefRetrieve(messageArray => {
+      setMessages(messageArray);
+      // setIsLoaded(true);
+    });
+    return () => {
+      console.log('clean up!');
+      firebaseSvc.messageRefOff();
+      setMessages([]);
+      // setIsLoaded(false);
+    }
   };
 
   const updateMessages = (messageList) => {
     firebaseSvc.send(messageList);
-    firebaseSvc.refOn(message => setMessages(GiftedChat.append(messages, message)));
-    return firebaseSvc.refOff();
   };
 
   useEffect(loadMessages, []);
@@ -33,6 +48,7 @@ export default function ChatRoom() {
           messages={messages}
           onSend={updateMessages}
           user={user}
+          showUserAvatar={true}
         />
   );
 };

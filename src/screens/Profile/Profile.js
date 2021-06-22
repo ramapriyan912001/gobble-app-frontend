@@ -3,14 +3,18 @@ import React, {useEffect, useState, useCallback} from 'react'
 import {Text, Image, TouchableOpacity, SafeAreaView, Alert, View, Button} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
 import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../../styles/LoginStyles'
-import { getError, onSuccess, onFailure } from '../../services/RegistrationHandlers'
+import { getError, onSuccess, onFailure, industryCodes } from '../../services/RegistrationHandlers'
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser } from '../../redux/actions/actions'
+import { fetchAuthUser, clearData, updateUserDetails } from '../../redux/actions/actions'
 
-function Profile(props) {
-    const [appIsReady, setAppIsReady] = useState(false);
+export function Profile(props) {
+    const [hasAvatar, setHasAvatar] = useState(false);
+    //For some reason empty avatar not showing on my machine...
+    //TODO: Find way to safely create File URI
+    //For now, its OK
+    const [avatarURI, setAvatarURI] = useState('file:///D:/Documents/Programming/gobble-app-frontend/src/images/empty_avatar.png');
     const [userInfo, setUserInfo] = useState({});
 
     const signOutSuccess = () => {
@@ -27,7 +31,7 @@ function Profile(props) {
 
     async function loadDataAsync () {
         const user = await firebaseSvc
-                            .getUserCollection(
+                            .getCurrentUserCollection(
                                 (snapshot) => snapshot.val(),
                                 getError(props))
                             .then(x => x)
@@ -36,6 +40,9 @@ function Profile(props) {
         await props.fetchUser();
         if (userInfo === null) {
             props.navigation.goBack();
+        } else if (userInfo.avatar != '') {
+            setHasAvatar(true);
+            setAvatarURI(userInfo.avatar);
         }
     }
 
@@ -51,18 +58,17 @@ function Profile(props) {
         <SafeAreaView style={containerStyles.container}>
             <StatusBar style="auto"/>
             <Text style={inputStyles.headerText}>{userInfo.name}'s Profile</Text>
-            <Image style={profileStyles.profilePic} source={{uri:userInfo.avatar}}/>
+            <Image style={profileStyles.profilePic} source={{uri:avatarURI}}/>
             <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
             <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
+            <Text style={profileStyles.profileField}>You work in the {industryCodes[userInfo.industry]} industry</Text>
             <Text style={profileStyles.profileField}>Cross-Industrial meetings? {userInfo.crossIndustry?'Sure!':'Nope!'}</Text>           
             <Text style={profileStyles.profileField}>{userInfo.email}</Text>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
-                props.navigation.navigate('UpdateProfile')
-                }}>
+            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('UpdateProfile', {name: userInfo.name, email: userInfo.email})}>
                 <Text style={buttonStyles.loginButtonText}>Edit Profile</Text>
             </TouchableOpacity>
             <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
-                signOutUser()
+                signOutUser();
                 props.navigation.navigate('Login')}}>
                 <Text style={buttonStyles.loginButtonText}>Sign Out</Text>
             </TouchableOpacity>
@@ -75,10 +81,5 @@ const mapStateToProps = (store) => ({
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
-const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser }, dispatch);
-export default connect(mapStateToProps, mapDispatchToProps)(Profile);
-//TODO: Find out how to add different fields to a user and how to access them
-// <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
-// <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
-// <Text style={profileStyles.profileField}>Cross-Industrial meetings? {userInfo.crossIndustry}</Text>
-
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser }, dispatch);
+export default connect(mapStateToProps, mapDispatchProps)(Profile);
