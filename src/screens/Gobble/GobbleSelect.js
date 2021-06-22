@@ -51,10 +51,11 @@ function GobbleSelect(props) {
           dietaryRestriction: props.currentUser.diet,
           industryPreference: props.currentUser.crossIndustrial ? 'Programmer' : 'ANY',
           cuisinePreference: cuisinePreference,
+          datetime: String(date),
           location: location,
           distance: distance,
       }
-      firebaseSvc.makeGobbleRequest(gobbleRequest)
+    //   firebaseSvc.makeGobbleRequest(gobbleRequest)
       props.navigation.navigate('GobbleConfirm')
   }
   const showDatePicker = () => {
