@@ -231,10 +231,12 @@ class FirebaseSvc {
     date = new Date(datetime)
     let requestRef = firebase.database().ref(`GobbleRequests`)
     .child(`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`)
-    .child(`${gobbleRequest.dietaryRestriction}`)
-    .child(`${gobbleRequest.industryPreference}`)
-    .child(`${gobbleRequest.cuisinePreference}`)
-    this.findGobbleMate(requestRef, gobbleRequest)
+    firebase.database().ref(`GobbleRequests`).child('All').push(gobbleRequest)
+    // .child(`${gobbleRequest.dietaryRestriction}`)
+    // .child(`${gobbleRequest.industryPreference}`)
+    // .child(`${gobbleRequest.cuisinePreference}`)
+    // this.findGobbleMate(requestRef, gobbleRequest)
+
   }
 
   getCoords(request) {
@@ -263,29 +265,29 @@ class FirebaseSvc {
     let distance1 = this.getDistance(request)
     let date1 = this.getDatetime(request)
     let time1 = this.convertTimeToMinutes(date1)
-    while(!tempRef.hasChild(this.getDateString(date1))){
-      tempRef.on("value", (snapshot) => {
-        let child
-        let children = snapshot.val()
-        for(child in children) {
-          let currChild = children[child]
-          let coords2 = this.getCoords(currChild)
-          let distance2 = this.getDistance(currChild)
-          let date2 = this.getDatetime(currChild)
-          let time2 = this.convertTimeToMinutes(date2)
-          if(this.isWithinTime(time1, time2) && this.isWithinRange(coords1, distance1, coords2, distance2)) {
-            match(request, currChild)
-            return;
-          }
-        }
-      })
-      tempRef = tempRef.parent
+    let visited = []
+    iterateOverChildren = (request, tempRef) => {
+      let child;
+      let subVisited = [];
+      let count = tempRef.
+      // while(subVisited.length != )
+      return ;
     }
+    
     firebase.database().ref(`GobbleRequests`).child('All').push(gobbleRequest)
     this.userRef(this.uid).child('pendingMatchIDs').push(requestRef.key)
     // while(ref != null) {
     //   for(child in ref)
     // }
+    // let currChild = children[child]
+    //         let coords2 = this.getCoords(currChild)
+    //         let distance2 = this.getDistance(currChild)
+    //         let date2 = this.getDatetime(currChild)
+    //         let time2 = this.convertTimeToMinutes(date2)
+    //         if(this.isWithinTime(time1, time2) && this.isWithinRange(coords1, distance1, coords2, distance2)) {
+    //           match(request, currChild, tempRef)
+    //           return;
+    //         }
   }
 
   match(request1, request2) {

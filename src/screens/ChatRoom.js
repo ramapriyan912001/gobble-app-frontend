@@ -33,8 +33,8 @@ export function ChatRoom(props) {
   );
 };
 const mapStateToProps = (store) => ({
-  currentUser: store.userState.currentUser,
-  loggedIn: store.userState.currentUser,
+  currentUserData: store.userState.currentUserData,
+  loggedIn: store.userState.loggedIn,
   isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData }, dispatch);

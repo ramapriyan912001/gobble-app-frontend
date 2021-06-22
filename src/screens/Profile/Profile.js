@@ -7,9 +7,9 @@ import { getError, onSuccess, onFailure, industryCodes } from '../../services/Re
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAuthUser, clearData, updateUserDetails } from '../../redux/actions/actions'
+import { fetchAuthUser, fetchUserData } from '../../redux/actions/actions'
 
-export function Profile(props) {
+function Profile(props) {
     const [hasAvatar, setHasAvatar] = useState(false);
     //For some reason empty avatar not showing on my machine...
     //TODO: Find way to safely create File URI
@@ -37,7 +37,7 @@ export function Profile(props) {
                             .then(x => x)
                             .catch(getError(props));
         setUserInfo(user);
-        // await props.fetchUser();
+        await props.fetchUserData();
         if (userInfo === null) {
             props.navigation.goBack();
         } else if (userInfo.avatar != '') {
@@ -77,9 +77,9 @@ export function Profile(props) {
 }
 
 const mapStateToProps = (store) => ({
-    currentUser: store.userState.currentUser,
+    currentUserData: store.userState.currentUserData,
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser }, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(Profile);

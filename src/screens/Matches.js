@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchAuthUser, clearData } from '../redux/actions/actions'
 
-export function Matches() {
+function Matches() {
     return (
         <View style={containerStyles.container}>
         </View>
@@ -13,7 +13,7 @@ export function Matches() {
 }
 
 const mapStateToProps = (store) => ({
-    currentUser: store.userState.currentUser,
+    currentUserData: store.userState.currentUserData,
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
