@@ -231,12 +231,10 @@ class FirebaseSvc {
     date = new Date(datetime)
     let requestRef = firebase.database().ref(`GobbleRequests`)
     .child(`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`)
-    firebase.database().ref(`GobbleRequests`).child('All').push(gobbleRequest)
     // .child(`${gobbleRequest.dietaryRestriction}`)
     // .child(`${gobbleRequest.industryPreference}`)
     // .child(`${gobbleRequest.cuisinePreference}`)
-    // this.findGobbleMate(requestRef, gobbleRequest)
-
+    return this.findGobbleMate(requestRef, gobbleRequest) ? 'FOUND' : 'WAITING'
   }
 
   getCoords(request) {
@@ -260,22 +258,107 @@ class FirebaseSvc {
   }
 
   findGobbleMate(ref, request) {
-    let tempRef = ref;
+    let tempRef = ref.child(`${request.dietaryRestriction}`);
     let coords1 = this.getCoords(request)
     let distance1 = this.getDistance(request)
     let date1 = this.getDatetime(request)
     let time1 = this.convertTimeToMinutes(date1)
-    let visited = []
-    iterateOverChildren = (request, tempRef) => {
-      let child;
-      let subVisited = [];
-      let count = tempRef.
-      // while(subVisited.length != )
-      return ;
+    let bestMatchRef = null;
+    let bestMatchCompatibility = 4;
+    let dietaryRef;
+    tempRef.on("value", snapshot => {
+      let iterator, child;
+      let children = snapshot.val()
+      let compatibility
+      for(iterator in children) {
+        child = children[iterator]
+        if(!this.isWithinRange(request, child) || !this.isWithinTime(request, child)) {
+          continue;
+        }
+        compatibility = this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
+        if (compatibility >= this.getThreshold()) {
+          this.match(request, null, iterator, tempRef)
+          return true;
+        } else if (compatibility > bestMatchCompatibility) {
+          bestMatchCompatibility = compatibility
+          bestMatchRef = iterator;
+          dietaryRef = tempRef;
+        }
+      }
     }
+    )
+    if(request.dietaryRestriction != 'Any' && bestMatchCompatibility < 12) {
+      tempRef = ref.child(`Any`)
+      tempRef.on("value", snapshot => {
+        let iterator, child;
+        let children = snapshot.val()
+        let compatibility
+        for(iterator in children) {
+          child = children[iterator]
+          if(!this.isWithinRange(request, child) || this.isWithinTime(request, child)) {
+            continue;
+          }
+          compatibility = this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
+          if (compatibility >= this.getThreshold()) {
+            this.match(request, null, iterator, tempRef)
+            return true;
+            break;
+          } else if (compatibility > bestMatchCompatibility) {
+            bestMatchCompatibility = compatibility
+            bestMatchRef = iterator;
+            dietaryRef = tempRef;
+          }
+        }
+      }
+      )
+    }
+    if (bestMatchRef != null) {
+      this.match(request, null, iterator, dietaryRef)
+      return true;
+    } else {
+      pendingMatchIDRef = ref.child(`${request.dietaryRestriction}`).push(request)
+      this.userRef(request.userId).ref('pendingMatchIDs').push(request)
+      return false
+    }
+  }
+
+  // Important ref is the reference under which request
+  match(request1, dietaryRef1, request2Ref, dietaryRef2) {
+    let request2
+    dietaryRef2.child(request2Ref).once("value").then(snapshot => {
+      request2 = snapshot.val();
+    })
+    this.userRef(request1.userId).ref('matchIDs').push({...request1, otherUser: request2.userId})
+    this.userRef(request2.userId).ref('matchIDs').push({...request2, otherUser: request1.userId})
+    this.userRef(request2.userId).ref('pendingMatchIDs').remove(request2)
+    if(dietaryRef1 != null) {
+      this.userRef(request1.userId).ref('pendingMatchIDs').remove(request1)
+    } 
+  }
+
+  getThreshold(request) {
+    // Will have a threshold function to mark how low a score we are willing to accept for a match
+    // Nearer to the schedule time, the lower the threshold
+    // This is for phase 3
+    // For now we just have a threshold of 8 points
+    return 18;
+  }
+
+  measureCompatibility(request1, request2) {
+    let compatibility = 0;
+    if(request1.cuisinePreference == request2.cuisinePreference) {
+      compatibility + 5;
+    }
+    if((request1.industryPreference == request2.industry)) {
+      compatibility + 5;
+    } else if (request1.industryPreference == 'Any') {
+      compatibility + 4;
+    }
+    return compatibility;
+  }
     
-    firebase.database().ref(`GobbleRequests`).child('All').push(gobbleRequest)
-    this.userRef(this.uid).child('pendingMatchIDs').push(requestRef.key)
+    // firebase.database().ref(`GobbleRequests`).child('All').push(gobbleRequest)
+    // this.userRef(this.uid).child('pendingMatchIDs').push(requestRef.key)
     // while(ref != null) {
     //   for(child in ref)
     // }
@@ -288,15 +371,6 @@ class FirebaseSvc {
     //           match(request, currChild, tempRef)
     //           return;
     //         }
-  }
-
-  match(request1, request2) {
-
-  }
-
-  deleteFromPendingMatchRequests(request) {
-    
-  }
 
   calculteDistance(coords1, coords2) {
     let lat1 = coords1['latitude']
