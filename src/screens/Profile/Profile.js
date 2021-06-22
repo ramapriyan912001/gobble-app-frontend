@@ -37,7 +37,7 @@ export function Profile(props) {
                             .then(x => x)
                             .catch(getError(props));
         setUserInfo(user);
-        await props.fetchUser();
+        // await props.fetchUser();
         if (userInfo === null) {
             props.navigation.goBack();
         } else if (userInfo.avatar != '') {
