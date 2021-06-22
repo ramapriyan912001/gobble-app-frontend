@@ -5,7 +5,7 @@ import {containerStyles, buttonStyles, inputStyles} from '../../styles/LoginStyl
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import {Picker} from '@react-native-picker/picker';
 import firebaseSvc from '../../firebase/FirebaseSvc';
-import {fetchUser, updateUserDetails, clearData} from '../../redux/actions/actions'
+import {fetchUserData, updateUserDetails, clearData} from '../../redux/actions/actions'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
 // import RNLocation, { getLatestLocation } from 'react-native-location'
@@ -134,5 +134,5 @@ const mapStateToProps = (store) => ({
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
-const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser }, dispatch);
+const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
 export default connect(mapStateToProps, mapDispatchToProps)(GobbleSelect);
