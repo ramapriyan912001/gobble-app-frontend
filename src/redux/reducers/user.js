@@ -40,7 +40,7 @@ export const userState = (state = initialState, action) => {
         case USER_DATA_CHANGE:
             return {
                 ...state,
-                currentUserData: action.currentUser
+                currentUser: action.currentUser
             }
         default:
             return state;

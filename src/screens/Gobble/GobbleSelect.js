@@ -55,6 +55,7 @@ function GobbleSelect(props) {
           location: location,
           distance: distance,
       }
+      console.log(gobbleRequest)
     //   firebaseSvc.makeGobbleRequest(gobbleRequest)
       props.navigation.navigate('GobbleConfirm')
   }

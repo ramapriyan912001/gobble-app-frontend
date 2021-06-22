@@ -14,7 +14,11 @@ export function fetchAuthUser() {
 }
 
 export function fetchUserData() {
-    return ((dispatch) => dispatch({ type: USER_DATA_CHANGE, currentUser: firebaseSvc.getCurrentUserCollection(snapshot => snapshot.val(), err => console.log(err.message)) }));
+    return (dispatch) => {
+        firebaseSvc.userRef(firebaseSvc.currentUser().uid).on("value", (snapshot) => {
+            dispatch({ type: USER_DATA_CHANGE, currentUser: snapshot.val()})
+        })
+    }
 }
 
 export const getError = (props) => (err) => {
