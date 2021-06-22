@@ -1,7 +1,7 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import React from 'react'
 import { View, Text, SafeAreaView } from 'react-native';
-import { Matches } from './Matches';
+import Matches from './Matches';
 import {MatchesHistory} from './MatchesHistory';
 
 const Tab = createMaterialTopTabNavigator();
