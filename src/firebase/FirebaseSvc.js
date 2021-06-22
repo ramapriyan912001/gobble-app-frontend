@@ -43,33 +43,29 @@ class FirebaseSvc {
     .catch(failure);//if create user with email and pw fails    
   }
 
-  deleteUser = () => {
+  deleteUser = (success, failure) => {
+    // let deletionSuccess = false;
     if (this.userExists()) {
-      return this
+      this
       .currentUser()
       .delete()
-      .then(() => console.log('User deleted'))
-      .catch(err => {
-        if (err.code === 'auth/requires-recent-login') {
-          return false;
-        } else {
-          console.warn(err.message);
-          return false;
-        }});
+      .then(success)
+      .catch(failure);
     } else {
-      return true;
+      console.log('No User Found to Delete');
     }
   }
 
   reauthenticateUser = (user, success, failure) => {
     const credentials = firebase.auth.EmailAuthProvider.credential(user.email, user.password);
-    console.log(credentials);
     if (this.userExists()) {
       this
       .currentUser()
       .reauthenticateWithCredential(credentials)
       .then(success)
       .catch(failure);
+    } else {
+      failure({code: 'auth/no-user', message: 'No User Exists'});
     }
   }
 
@@ -93,13 +89,15 @@ class FirebaseSvc {
     }
   };
 
-  updateUserCollection = (user, success, failure) => {
+  updateCurrentUserCollection = (user, success, failure) => {
     if (this.userExists()) {
       this
       .userRef(this.uid)
       .set(user)
       .then(success)
       .catch(failure);
+    } else {
+      console.log('No User Logged In');
     }
     // Scalable multiple update method
     //
@@ -110,13 +108,21 @@ class FirebaseSvc {
     // return firebase.database().ref().update(updates);
   }
 
-  getUserCollection = (success, failure) => this.userExists()
+  getCurrentUserCollection = (success, failure) => this.userExists()
                                             ? this
                                               .userRef(this.uid)
                                               .once('value')
                                               .then(success)
                                               .catch(failure)
-                                            : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Registration'})
+                                            : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Registration'});
+
+  getUserCollection = (id, success, failure) => id != null
+                                                ? this
+                                                  .userRef(id)
+                                                  .once('value')
+                                                  .then(success)
+                                                  .catch(failure)
+                                                : failure({code: 'auth/invalid-id', message: 'Invalid UID provided'})
 
   currentUser = () => firebase.auth().currentUser;
 
@@ -131,32 +137,50 @@ class FirebaseSvc {
       }
     });
 
-  //Retrieve Messages
-  refRetrieve = callback => {
+  //Retrieve All Stored Messages
+  messageRefRetrieve = callback => {
+    // console.log('Retrieving Old Messages: ');
     this.messageRef('')
-      .limitToLast(40)
-      .on('value', snapshot => callback(this.parse(snapshot)));
+      // .limitToLast(40)
+      .on('value', snapshot => callback(this.parseStoredMessage(snapshot)));
   }
 
-  refOn = callback => {
+  messageRefOn = callback => {
+    // console.log('New Message: ');
     this.messageRef('')
       .limitToLast(40)
-      .on('child_added', snapshot => callback(this.parse(snapshot)));
+      .on('child_added', snapshot => callback(this.parseMessage(snapshot)));
   }
 
-  refOff() {
+  messageRefOff() {
     this.messageRef('').off();
   }
 
   // The parse method take the snapshot data and construct a message:
-  parse = snapshot => {
-    const { timestamp: numberStamp, text, user } = snapshot.val();
+  parseMessage = snapshot => {
+    const message = snapshot.val();
+    const { timestamp, text, user } = snapshot.val();
     const { key: _id } = snapshot;
-    const timestamp = new Date(numberStamp);
-    const message = {_id, timestamp, text, user};
-    console.log('message after being parsed :')
-    console.log(message);
-    return message;
+    const parsedMessage = {_id, timestamp, text, user};
+    return parsedMessage;
+  };
+
+  parseStoredMessage = snapshot => {
+    const messageArray = snapshot.val();
+    let parsedMessageArray = [];
+    for (let [key, value] of Object.entries(messageArray)) {
+      // console.log('here');
+      // console.log(value);
+      const parsedMessage = {
+        '_id': key,
+        'user': value.user,
+        'text': value.text,
+        'timestamp': value.timestamp,
+      };
+      // console.log(parsedMessage);
+      parsedMessageArray.unshift(parsedMessage);
+    }
+    return parsedMessageArray;
   };
 
   //Password Reset
@@ -170,10 +194,16 @@ class FirebaseSvc {
   // To send a message, we call the send method from GiftedChat component in onSend property as such: onSend={firebaseSvc.send}
   // The send method in Firebase.js is:
   send = messages => {
-    for (let i = 0; i < messages.length; i++) {
-      const { text, user, createdAt } = messages[i];
-      this.messageRef('').push({text, user, createdAt});
-    }
+    messages.map((message) => {
+      const {text, user, createdAt} = message;
+      const timestamp = createdAt.toDateString();
+      const newMessage = {text, user, timestamp};
+      this.messageRef('').push(newMessage)});
+    // for (let i = 0; i < messages.length; i++) {
+    //   const { text, user, createdAt } = messages[i];
+    //   console.log(createdAt);
+    //   this.messageRef('').push({text, user, createdAt});
+    // }
   };
 
   get uid() {

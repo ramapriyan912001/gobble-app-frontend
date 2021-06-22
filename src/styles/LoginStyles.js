@@ -105,7 +105,13 @@ export const pickerStyles = StyleSheet.create({
         height: '28%',
         alignSelf:'center',
         width: '90%',
-        marginVertical:'3%'
+        marginBottom:'3%'
+    },
+    individualPicker:{
+        height: '28%',
+        alignSelf:'center',
+        width: '90%',
+        marginBottom:'30%'
     },
     datePicker:{
         height: '60%',

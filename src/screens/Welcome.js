@@ -6,7 +6,7 @@ import {API} from '../api'
 import jwt from 'expo-jwt';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData } from '../redux/actions/actions'
+import { fetchAuthUser, clearData } from '../redux/actions/actions'
 
 LogBox.ignoreLogs(['Unhandled promise rejection: Error: Native splash screen is already hidden. Call this method before rendering any view.'])
 
@@ -73,7 +73,7 @@ const mapStateToProps = (store) => ({
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin,
 })
-const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser, clearData }, dispatch);
-export default connect(mapStateToProps, mapDispatchToProps)(Welcome);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, clearData }, dispatch);
+export default connect(mapStateToProps, mapDispatchProps)(Welcome);
 
 

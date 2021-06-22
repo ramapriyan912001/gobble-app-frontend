@@ -1,88 +1,73 @@
 import React, {useState} from 'react'
-import {Text, View, SafeAreaView, Switch, TouchableOpacity, Alert} from 'react-native'
-import DateTimePicker from '@react-native-community/datetimepicker'
-import {containerStyles, buttonStyles, pickerStyles, inputStyles} from '../../styles/LoginStyles'
-import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
-import firebaseSvc from '../../firebase/FirebaseSvc';
+import {Text, View, SafeAreaView, TouchableOpacity} from 'react-native'
+import {Picker} from '@react-native-picker/picker'
+import {pickerStyles, buttonStyles, containerStyles} from '../../styles/LoginStyles'
+import firebaseSvc from '../../firebase/FirebaseSvc'
+import {onSuccess, onFailure, cancelRegistration, industryCodes, getError} from '../../services/RegistrationHandlers';
 
 export default function RegisterPage4(props) {
-    const [cross, setCrossIndustryPreference] = useState(false);
-    const [date, setDate] = useState(new Date());
-    const [show, setShow] = useState(false);
-    //Handlers for Action Failure:
+    const [industry, setIndustry] = useState(0);
+    const [industries] = useState(industryCodes);
 
-    const addUser = (cross) => 
+    const updateIndustry = (industry) =>
         firebaseSvc
-            .getUserCollection(
+            .getCurrentUserCollection(
                 (snapshot) => snapshot.val(),
                 getError(props))
             .then(userProfile => {
-                userProfile['crossIndustrial'] = cross;
-                userProfile['dob'] = date.toDateString();
-                firebaseSvc.updateUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+                userProfile['industry'] = industry;
+                firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+                props.navigation.navigate('RegisterPage5');
             })
             .catch(getError(props));
-    
-    const onChange = (event, selectedDate) => {
-        const currentDate = selectedDate || date;
-        setShow(Platform.OS === 'ios');
-        setDate(currentDate);
-        };
 
     // useEffect(() => {
     //     return cancelRegistration(props);
     // }, []);
-
-    return(
-    <SafeAreaView style={containerStyles.container}>
-        <Text style={pickerStyles.text}>Would you like to be matched with other Industrial Backgrounds?</Text>
-        <Switch 
-            value={cross} 
-            onValueChange={() => {setCrossIndustryPreference(!cross)}} 
-            style={pickerStyles.switch}
-        />
-        <View>
-            <TouchableOpacity onPress={() => setShow(true)} style={buttonStyles.tinyButton}>
-                <Text style={buttonStyles.loginButtonText}>Tell us your Birthday!</Text>
+    const industryLabels = () => {
+        let pickerItems = [];
+        // <Picker.Item label= value = {industryCodes['Human Resources']}/>
+        //                 <Picker.Item label="Law" value={}/>
+        //                 <Picker.Item label="Scientific Research" value=3 />
+        //                 <Picker.Item label="Engineering" value=4 />
+        //                 <Picker.Item label="Computing" value=5 />
+        //                 <Picker.Item label="Marketing" value=6/>
+        //                 <Picker.Item label="Sales" value=7/>
+        //                 <Picker.Item label="Artist" value=8/>
+        //                 <Picker.Item label="Public Sector" value=9/>
+        //                 <Picker.Item label="Medicine" value=10/>
+        //                 <Picker.Item label="Shipping & Transportation" value=11/>
+        //                 <Picker.Item label="Others" value=00/>
+        for (let [code, industryTitle] of Object.entries(industries)) {
+            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} value ={code}/>);
+        }
+        return pickerItems;
+    }
+    
+    return (
+    <SafeAreaView>
+        <Text style={pickerStyles.text}>Which industry do your work in?</Text>
+            <Picker
+                        selectedValue={industry}
+                        onValueChange={(newIndustry, itemIndex) => {setIndustry(newIndustry)}}
+                        style={pickerStyles.individualPicker}
+                        enabled= {true}
+                        >
+                        {industryLabels()}
+            </Picker>
+        <View style={containerStyles.buttonRow}>
+            <TouchableOpacity style={buttonStyles.tinyButton} onPress={() => props.navigation.goBack()}>
+                <Text style={buttonStyles.loginButtonText}>Back</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={buttonStyles.tinyButton} 
+                            onPress={
+                                () => {
+                                        console.log('Register Page 4 done!');
+                                        updateIndustry(industry);
+                                }
+                            }>
+                <Text style={buttonStyles.loginButtonText}>Continue</Text>
             </TouchableOpacity>
         </View>
-        <View style={containerStyles.datePicker}>
-            {show && (
-                <DateTimePicker
-                        value={date}
-                        mode={'date'}
-                        onChange={onChange}
-                        display="default"
-                        style={pickerStyles.datePicker}
-                />
-            )}
-        </View>
-        <Text style={inputStyles.subText}>{date.toDateString()}</Text>
-        <TouchableOpacity style={buttonStyles.loginButton} 
-                        onPress={
-                            () => {
-                                addUser(cross);
-                                console.log('Registered User');
-                                props.navigation.navigate('FinalStep');
-                            }
-                        }>
-                    <Text style={buttonStyles.loginButtonText}>Finish</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.goBack()}>
-            <Text style={buttonStyles.loginButtonText}>Back</Text>
-        </TouchableOpacity>
     </SafeAreaView>
-    )
-};
-
-/*
-Date TIme Picker (Not working for Android)
-<Text style={pickerStyles.dateText}>Tell us your Birthday!</Text>
-<View style={containerStyles.datePicker}>
-            <DateTimePicker
-            value={date}
-            onChange={(event, selectedDate) => {setDate(selectedDate);initialState.dob = selectedDate;}}
-            style={pickerStyles.datePicker}
-            />
-</View>
-*/
+    )};

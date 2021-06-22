@@ -11,13 +11,13 @@ export default function RegisterPage3(props) {
 
     const updateDietCuisine = (diet, cuisine) =>
         firebaseSvc
-            .getUserCollection(
+            .getCurrentUserCollection(
                 (snapshot) => snapshot.val(),
                 getError(props))
             .then(userProfile => {
                 userProfile['diet'] = diet;
                 userProfile['cuisine'] = cuisine;
-                firebaseSvc.updateUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+                firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
                 props.navigation.navigate('RegisterPage4');
             })
             .catch(getError(props));

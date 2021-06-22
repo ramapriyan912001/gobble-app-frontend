@@ -1,8 +1,9 @@
 import { USER_STATE_CHANGE, CLEAR_DATA, LOGGING_IN, 
-    GIVE_ADMIN_ACCESS, REMOVE_ADMIN_ACCESS, LOGGING_OUT} from "../actions/types"
+    GIVE_ADMIN_ACCESS, REMOVE_ADMIN_ACCESS, LOGGING_OUT, USER_DATA_CHANGE} from "../actions/types"
 
 const initialState = {
-    currentUser: {},
+    currentUserState: {},
+    currentUserData: {},
     loggedIn: false,
     isAdmin: false
 }
@@ -12,7 +13,7 @@ export const userState = (state = initialState, action) => {
         case USER_STATE_CHANGE:
             return {
                 ...state,
-                currentUser: action.currentUser
+                currentUserState: action.currentUser
             }
         case CLEAR_DATA:
             return initialState
@@ -35,6 +36,11 @@ export const userState = (state = initialState, action) => {
             return {
                 ...state,
                 isAdmin: false
+            }
+        case USER_DATA_CHANGE:
+            return {
+                ...state,
+                currentUserData: action.currentUser
             }
         default:
             return state;

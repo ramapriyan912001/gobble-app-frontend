@@ -1,42 +1,35 @@
 
 import React, { useState, useEffect } from 'react'
-import { SafeAreaView } from 'react-native';
+import { SafeAreaView, FlatList, View, TouchableHighlight } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'
 import firebaseSvc from '../firebase/FirebaseSvc';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUser, clearData } from '../redux/actions/actions'
+import { fetchAuthUser, fetchUserData } from '../redux/actions/actions'
 
-//Haven't worked on this yet, need to add API calls in backend and over here
 
-export function ChatRoom() {
-  const cUser = firebaseSvc.currentUser();
-  const user = {
-    name: cUser.displayName,
-    email: cUser.email,
-    avatar: cUser.photoURL,
-    _id: firebaseSvc.uid
+export function ChatRoom(props) {
+  const matches = props.fetchUserData().match_list;
+  
+  const [selectedMatchID, setSelectedMatchID] = useState('');
+
+  const conversationItem = ({match, index, separators}) => {
+    <View>
+      <TouchableHighlight onPress={props.navigation.navigate('Conversation', {matchID: selectedMatchID})}>
+        <Text>{match.name}</Text>
+        <Text>{match.lastMessage}</Text>
+      </TouchableHighlight>
+    </View>
   };
-  const [messages, setMessages] = useState([]);
-
-  const loadMessages = () => {
-    firebaseSvc.refRetrieve(message => setMessages(GiftedChat.append(messages, message)));//Errors occurs here
-  };
-
-  const updateMessages = (messageList) => {
-    firebaseSvc.send(messageList);
-    firebaseSvc.refOn(message => setMessages(GiftedChat.append(messages, message)));
-    return firebaseSvc.refOff();
-  };
-
-  useEffect(loadMessages, []);
 
   return (
-        <GiftedChat
-          messages={messages}
-          onSend={updateMessages}
-          user={user}
-        />
+    <SafeAreaView>
+      <FlatList
+        data={firebaseSvc.getMatchList()}
+        renderItem={conversationItem}
+        keyExtractor={item => item.id}
+      />
+    </SafeAreaView>
   );
 };
 const mapStateToProps = (store) => ({
@@ -44,5 +37,5 @@ const mapStateToProps = (store) => ({
   loggedIn: store.userState.currentUser,
   isAdmin: store.userState.isAdmin
 })
-const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUser }, dispatch);
-export default connect(mapStateToProps, mapDispatchToProps)(ChatRoom);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData }, dispatch);
+export default connect(mapStateToProps, mapDispatchProps)(ChatRoom);
