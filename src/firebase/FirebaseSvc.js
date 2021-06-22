@@ -197,28 +197,95 @@ class FirebaseSvc {
   }
 
   makeGobbleRequest(gobbleRequest) {
-    let ref = firebase.database().ref(`GobbleRequests`).child('All').push(gobbleRequest)
+    let datetime = this.getDatetime(gobbleRequest)
+    date = new Date(datetime)
     let requestRef = firebase.database().ref(`GobbleRequests`)
+    .child(`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`)
     .child(`${gobbleRequest.dietaryRestriction}`)
     .child(`${gobbleRequest.industryPreference}`)
     .child(`${gobbleRequest.cuisinePreference}`)
-    this.userRef(this.uid).child('pendingMatchIDs').push(requestRef.key)
     this.findGobbleMate(requestRef, gobbleRequest)
+  }
+
+  getCoords(request) {
+    return request['location']['coords']
+  }
+
+  getDatetime(request) {
+    return new Date(request['datetime'])
+  }
+
+  getDistance(request) {
+    return request['distance']
+  }
+
+  convertTimeToMinutes(date) {
+    return date.getHours()*60 + date.getMinutes()
+  }
+
+  getDateString(date) {
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
   }
 
   findGobbleMate(ref, request) {
     let tempRef = ref;
-    tempRef.on("value", (snapshot) => {
-      let child
-      let children = snapshot.val()
-      for(child in children) {
-        console.log(child)
-        console.log(children[child])
-      }
-    })
+    let coords1 = this.getCoords(request)
+    let distance1 = this.getDistance(request)
+    let date1 = this.getDatetime(request)
+    let time1 = this.convertTimeToMinutes(date1)
+    while(!tempRef.hasChild(this.getDateString(date1))){
+      tempRef.on("value", (snapshot) => {
+        let child
+        let children = snapshot.val()
+        for(child in children) {
+          let currChild = children[child]
+          let coords2 = this.getCoords(currChild)
+          let distance2 = this.getDistance(currChild)
+          let date2 = this.getDatetime(currChild)
+          let time2 = this.convertTimeToMinutes(date2)
+          if(this.isWithinTime(time1, time2) && this.isWithinRange(coords1, distance1, coords2, distance2)) {
+            match(request, currChild)
+            return;
+          }
+        }
+      })
+      tempRef = tempRef.parent
+    }
+    firebase.database().ref(`GobbleRequests`).child('All').push(gobbleRequest)
+    this.userRef(this.uid).child('pendingMatchIDs').push(requestRef.key)
     // while(ref != null) {
     //   for(child in ref)
     // }
+  }
+
+  match(request1, request2) {
+
+  }
+
+  deleteFromPendingMatchRequests(request) {
+    
+  }
+
+  calculteDistance(coords1, coords2) {
+    let lat1 = coords1['latitude']
+    let lat2 = coords2['latitude']
+    let lon1 = coords1['longitude']
+    let lon2 = coords2['longitude']
+    var p = 0.017453292519943295;    // Math.PI / 180
+    var c = Math.cos;
+    var a = 0.5 - c((lat2 - lat1) * p)/2 + 
+            c(lat1 * p) * c(lat2 * p) * 
+            (1 - c((lon2 - lon1) * p))/2;
+  
+    return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+  }
+
+  isWithinRange(coords1, distance1, coords2, distance2) {
+    return (distance1 + distance2) <= this.calculteDistance(coords1, coords2)
+  }
+
+  isWithinTime(time1, time2) {
+    return (Math.abs(time1-time2) <= 30)   
   }
 
   get timestamp() {
