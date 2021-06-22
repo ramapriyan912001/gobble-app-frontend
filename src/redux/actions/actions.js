@@ -10,13 +10,13 @@ export function clearData() {
 }
 
 export function fetchAuthUser() {
-    return ((dispatch) => dispatch({ type: USER_STATE_CHANGE, currentUser: firebaseSvc.currentUser() }));
+    return ((dispatch) => dispatch({ type: USER_STATE_CHANGE, currentUserState: firebaseSvc.currentUser() }));
 }
 
 export function fetchUserData() {
     return (dispatch) => {
         firebaseSvc.userRef(firebaseSvc.currentUser().uid).on("value", (snapshot) => {
-            dispatch({ type: USER_DATA_CHANGE, currentUser: snapshot.val()})
+            dispatch({ type: USER_DATA_CHANGE, currentUserData: snapshot.val()})
         })
     }
 }

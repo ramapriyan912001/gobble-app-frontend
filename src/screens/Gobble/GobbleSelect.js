@@ -48,15 +48,15 @@ function GobbleSelect(props) {
       }
       const gobbleRequest = {
           userId: firebaseSvc.currentUser().uid,
-          dietaryRestriction: props.currentUser.diet,
-          industryPreference: props.currentUser.crossIndustrial ? 'Programmer' : 'ANY',
+          dietaryRestriction: props.currentUserData.diet,
+          industryPreference: props.currentUserData.crossIndustrial ? props.currentUserData.industry : 'ANY',
+          industry: props.currentUserData.industry,
           cuisinePreference: cuisinePreference,
           datetime: String(date),
           location: location,
           distance: distance,
       }
-      console.log(gobbleRequest)
-    //   firebaseSvc.makeGobbleRequest(gobbleRequest)
+    //firebaseSvc.makeGobbleRequest(gobbleRequest)
       props.navigation.navigate('GobbleConfirm')
   }
   const showDatePicker = () => {
@@ -130,7 +130,7 @@ function GobbleSelect(props) {
 }
 
 const mapStateToProps = (store) => ({
-    currentUser: store.userState.currentUser,
+    currentUserData: store.userState.currentUserData,
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })

@@ -13,7 +13,7 @@ export const userState = (state = initialState, action) => {
         case USER_STATE_CHANGE:
             return {
                 ...state,
-                currentUserState: action.currentUser
+                currentUserState: action.currentUserState
             }
         case CLEAR_DATA:
             return initialState
@@ -40,7 +40,7 @@ export const userState = (state = initialState, action) => {
         case USER_DATA_CHANGE:
             return {
                 ...state,
-                currentUser: action.currentUser
+                currentUserData: action.currentUserData
             }
         default:
             return state;

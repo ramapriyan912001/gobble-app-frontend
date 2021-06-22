@@ -38,7 +38,6 @@ function Profile(props) {
                             .catch(getError(props));
         setUserInfo(user);
         await props.fetchUserData();
-        console.log(props.currentUser)
         if (userInfo === null) {
             props.navigation.goBack();
         } else if (userInfo.avatar != '') {
@@ -78,7 +77,7 @@ function Profile(props) {
 }
 
 const mapStateToProps = (store) => ({
-    currentUser: store.userState.currentUser,
+    currentUserData: store.userState.currentUserData,
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })

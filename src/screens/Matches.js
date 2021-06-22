@@ -13,7 +13,7 @@ function Matches() {
 }
 
 const mapStateToProps = (store) => ({
-    currentUser: store.userState.currentUser,
+    currentUserData: store.userState.currentUserData,
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
