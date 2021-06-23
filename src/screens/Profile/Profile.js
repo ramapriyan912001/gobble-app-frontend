@@ -10,12 +10,8 @@ import { bindActionCreators } from 'redux'
 import { fetchAuthUser, fetchUserData } from '../../redux/actions/actions'
 
 function Profile(props) {
-    const [hasAvatar, setHasAvatar] = useState(false);
-    //For some reason empty avatar not showing on my machine...
-    //TODO: Find way to safely create File URI
-    //For now, its OK
-    const [avatarURI, setAvatarURI] = useState('file:///D:/Documents/Programming/gobble-app-frontend/src/images/empty_avatar.png');
     const [userInfo, setUserInfo] = useState({});
+    const [hasAvatar, setHasAvatar] = useState(false);
 
     const signOutSuccess = () => {
         console.log('Signed Out');
@@ -29,6 +25,10 @@ function Profile(props) {
     
     const signOutUser = () => firebaseSvc.signOut(signOutSuccess, signOutFailure);
 
+    const loadPic = () => hasAvatar
+                            ? (<Image style={profileStyles.profilePic} source={{uri:userInfo.avatar}}/>)
+                            : (<Text style={inputStyles.subText}>You haven't chosen any avatar!</Text>)
+
     async function loadDataAsync () {
         const user = await firebaseSvc
                             .getCurrentUserCollection(
@@ -40,9 +40,11 @@ function Profile(props) {
         await props.fetchUserData();
         if (userInfo === null) {
             props.navigation.goBack();
-        } else if (userInfo.avatar != '') {
+        } else if (userInfo.avatar == null || userInfo.avatar === '') {
+            //Do Nothing
+        } else {
+            console.log(userInfo.avatar);
             setHasAvatar(true);
-            setAvatarURI(userInfo.avatar);
         }
     }
 
@@ -58,7 +60,7 @@ function Profile(props) {
         <SafeAreaView style={containerStyles.container}>
             <StatusBar style="auto"/>
             <Text style={inputStyles.headerText}>{userInfo.name}'s Profile</Text>
-            <Image style={profileStyles.profilePic} source={{uri:avatarURI}}/>
+            {loadPic()}
             <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
             <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
             <Text style={profileStyles.profileField}>You work in the {industryCodes[userInfo.industry]} industry</Text>

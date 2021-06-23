@@ -27,7 +27,7 @@ function GobbleSelect(props) {
           let {status} = await Location.requestForegroundPermissionsAsync();
           if (status !== 'granted') {
               setErrorMsg('Permission Denied')
-              console.log(errorMsg)
+              console.warn(errorMsg)
               return;
           }
           let location = await Location.getCurrentPositionAsync({})
@@ -41,6 +41,21 @@ function GobbleSelect(props) {
   } else if (location) {
       text = JSON.stringify(location)
   }
+
+  const renderCuisines = () => {
+      const cuisines = ['Western', 'Indian', 'Asian', 'Food Court', 'No Preference'];
+      let cuisineID = 0;
+
+      return cuisines.map(cuisine => (<Picker.Item label={cuisine} value={cuisine} key={cuisineID++}/>))
+  };
+
+  const renderDistances = () => {
+    const distances = [1, 2, 5, 10, 200];
+    let distanceID = 0;
+
+    return distances.map(distance => (<Picker.Item label={distance == 200 ? 'No Preference' : `${distance} km`} value={distance} key={distanceID++}/>))
+  };
+
   function submitGobble() {
       if(location == null) {
           Alert("This function cannot work without your location details!")
@@ -97,36 +112,25 @@ function GobbleSelect(props) {
                     <Text style={{...inputStyles.subHeader}}>...And what are you in the mood for today?</Text>
                     <Picker
                         selectedValue={cuisinePreference}
-                        onValueChange={(itemIndex, itemValue) => {
-                            setCuisinePreference(itemIndex)
-                        }}>
-                        <Picker.Item label="Western" value={"Western"}></Picker.Item>
-                        <Picker.Item label="Indian" value={"Indian"}></Picker.Item>
-                        <Picker.Item label="Asian" value={"Asian"}></Picker.Item>
-                        <Picker.Item label="Food Court" value={"Food Court"}></Picker.Item>
-                        <Picker.Item label="No Preference" value={"No Preference"}></Picker.Item>
+                        onValueChange={(itemValue, itemIndex) => setCuisinePreference(itemValue)}>
+                        {renderCuisines()}
                     </Picker>
                     </View>
                     <View style={{position: 'relative', marginTop: '0%'}}>
                     <Text style={{...inputStyles.subHeader,}}>...And How far are you willing to travel for a meal?</Text>
                     <Picker
                         selectedValue={distance}
-                        onValueChange={(itemValue, itemIndex) => {
-                            setDistance(itemValue)
-                        }}>
-                        <Picker.Item label="1 km" value={1}></Picker.Item>
-                        <Picker.Item label="2 km" value={2}></Picker.Item>
-                        <Picker.Item label="5 km" value={5}></Picker.Item>
-                        <Picker.Item label="10 km" value={10}></Picker.Item>
-                        <Picker.Item label="No Preference" value={200}></Picker.Item>
+                        onValueChange={(itemValue, itemIndex) => setDistance(itemValue)}>
+                        {renderDistances()}
                     </Picker>
                 </View>
-            </ScrollView>
-            <View style={{position: 'relative'}}>
+                <View style={{position: 'relative'}}>
                 <TouchableOpacity style={{...buttonStyles.loginButton, margin: '0%'}} onPress={() => submitGobble()}>
                     <Text style={{...buttonStyles.loginButtonText, fontSize: 20}}>Find Gobblemate!</Text>
                 </TouchableOpacity>
             </View>
+            </ScrollView>
+            
         </SafeAreaView>
     )
 }
@@ -138,3 +142,15 @@ const mapStateToProps = (store) => ({
 })
 const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
 export default connect(mapStateToProps, mapDispatchToProps)(GobbleSelect);
+/*
+<Picker.Item label="Western" value={"Western"}></Picker.Item>
+                        <Picker.Item label="Indian" value={"Indian"}></Picker.Item>
+                        <Picker.Item label="Asian" value={"Asian"}></Picker.Item>
+                        <Picker.Item label="Food Court" value={"Food Court"}></Picker.Item>
+                        <Picker.Item label="No Preference" value={"No Preference"}></Picker.Item>
+<Picker.Item label="1 km" value={1}></Picker.Item>
+                        <Picker.Item label="2 km" value={2}></Picker.Item>
+                        <Picker.Item label="5 km" value={5}></Picker.Item>
+                        <Picker.Item label="10 km" value={10}></Picker.Item>
+                        <Picker.Item label="No Preference" value={200}></Picker.Item>
+                        */
