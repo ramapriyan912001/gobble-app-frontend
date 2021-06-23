@@ -1,7 +1,7 @@
 import React from 'react'
 import {View, ActivityIndicator} from 'react-native'
 
-export default function renderFooter () {
+export const renderFooter  = (state) => () => {
     if (!state.loading) return null;
     return (
       <View

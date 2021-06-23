@@ -1,6 +1,12 @@
-import React from 'react'
+import React, {useState} from 'react'
 import {SearchBar } from 'react-native-elements'
 
 export default function renderHeader() {
-    return <SearchBar placeholder="Type Here..." lightTheme round />;
+    const [search, setSearch] = useState('');
+    return <SearchBar 
+            placeholder="Type Here..."  
+            lightTheme round 
+            onChangeText={setSearch}
+            value={search}
+            />;
 };

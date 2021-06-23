@@ -72,19 +72,19 @@ function GobbleSelect(props) {
     hideDatePicker();
   };
     return (
-        <ScrollView contentContainerStyle={{...containerStyles.container, marginTop: '-10%', height: '100%'}}>
-                <SafeAreaView style={{position: 'absolute'}}>
-                    <View style={{position: 'relative'}}>
+        <SafeAreaView style={{position: 'absolute'}}>
+            <View style={{position: 'relative'}}>
                         <Text style={{...inputStyles.headerText, fontSize: 20, margin: '0%'}}>
                                 Select your preferences and Gobble!
                         </Text>
-                    </View>
+            </View>
+            <ScrollView contentContainerStyle={{...containerStyles.container, marginTop: '-10%', height: '100%'}}>        
                     <View style={{position: 'relative', marginTop: '-5%'}}>
                         <Text style={{...inputStyles.subHeader}}>Choose a date and time for your next Gobble!</Text>
                         <Button title={date.toLocaleString()} onPress={showDatePicker} />
                         <DateTimePickerModal
-                        minimumDate={MIN_DATE}
-                        maximumDate={MAX_DATE}
+                        // minimumDate={MIN_DATE}
+                        // maximumDate={MAX_DATE}
                         isVisible={isDatePickerVisible}
                         mode="datetime"
                         onConfirm={handleConfirm}
@@ -92,7 +92,7 @@ function GobbleSelect(props) {
                         />
                     </View>
                     <View style={{position: 'relative', marginTop: '2%'}}>
-                    <Text style={{...inputStyles.subHeader}}>...And How far are you willing to travel for a meal?</Text>
+                    <Text style={{...inputStyles.subHeader}}>...And what are you in the mood for today?</Text>
                     <Picker
                         selectedValue={cuisinePreference}
                         onValueChange={(itemIndex, itemValue) => {
@@ -106,7 +106,7 @@ function GobbleSelect(props) {
                     </Picker>
                     </View>
                     <View style={{position: 'relative', marginTop: '0%'}}>
-                    <Text style={{...inputStyles.subHeader,}}>...And what are you in the mood for today?</Text>
+                    <Text style={{...inputStyles.subHeader,}}>...And How far are you willing to travel for a meal?</Text>
                     <Picker
                         selectedValue={distance}
                         onValueChange={(itemValue, itemIndex) => {
@@ -119,13 +119,13 @@ function GobbleSelect(props) {
                         <Picker.Item label="No Preference" value={200}></Picker.Item>
                     </Picker>
                 </View>
-                <View style={{position: 'relative'}}>
-                    <TouchableOpacity style={{...buttonStyles.loginButton, margin: '0%'}} onPress={() => submitGobble()}>
-                        <Text style={{...buttonStyles.loginButtonText, fontSize: 20}}>Find Gobblemate!</Text>
-                    </TouchableOpacity>
-                </View>
-                </SafeAreaView>
-        </ScrollView>
+            </ScrollView>
+            <View style={{position: 'relative'}}>
+                <TouchableOpacity style={{...buttonStyles.loginButton, margin: '0%'}} onPress={() => submitGobble()}>
+                    <Text style={{...buttonStyles.loginButtonText, fontSize: 20}}>Find Gobblemate!</Text>
+                </TouchableOpacity>
+            </View>
+        </SafeAreaView>
     )
 }
 

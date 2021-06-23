@@ -317,7 +317,7 @@ class FirebaseSvc {
       return true;
     } else {
       pendingMatchIDRef = ref.child(`${request.dietaryRestriction}`).push(request)
-      this.userRef(request.userId).ref('pendingMatchIDs').push(request)
+      this.userRef(`${request.userId}/pendingMatchIDs`).push(request);
       return false
     }
   }
