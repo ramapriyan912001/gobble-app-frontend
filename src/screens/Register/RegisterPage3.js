@@ -7,7 +7,7 @@ import {onSuccess, onFailure, cancelRegistration, getError} from '../../services
 
 export default function RegisterPage3(props) {
     const [diet, setDietPreference] = useState('halal');
-    const [cuisine, setCuisinePreference] = useState('indian');
+    const [cuisine, setCuisinePreference] = useState('Indian');
 
     const updateDietCuisine = (diet, cuisine) =>
         firebaseSvc
@@ -35,10 +35,10 @@ export default function RegisterPage3(props) {
                         style={pickerStyles.picker}
                         enabled= {true}
                         >
-                        <Picker.Item label="Halal" value="halal" />
-                        <Picker.Item label="Vegetarian" value="vegetarian" />
-                        <Picker.Item label="Vegan/Strictly Vegetarian" value="vegan" />
-                        <Picker.Item label="No Restrictions" value='nonhalal' />
+                        <Picker.Item label="Halal" value="Halal" />
+                        <Picker.Item label="Vegetarian" value="Vegetarian" />
+                        <Picker.Item label="Vegan/Strictly Vegetarian" value="Vegan" />
+                        <Picker.Item label="No Restrictions" value='Any' />
             </Picker>
         <Text style={pickerStyles.text}>What is your preferred cuisine?</Text>
             <Picker
@@ -46,11 +46,11 @@ export default function RegisterPage3(props) {
                 onValueChange={(newCuisineItem, itemIndex) => {setCuisinePreference(newCuisineItem)}}
                 style={pickerStyles.picker}
                 >
-                <Picker.Item label="Indian" value="indian" />
-                <Picker.Item label="Asian" value="asian" />
-                <Picker.Item label="Malaysian" value="malay" />
-                <Picker.Item label="Western" value='western' />
-                <Picker.Item label="Others" value='others' />
+                <Picker.Item label="Indian" value="Indian" />
+                <Picker.Item label="Asian" value="Asian" />
+                <Picker.Item label="Malaysian" value="Malay" />
+                <Picker.Item label="Western" value='Western' />
+                <Picker.Item label="Any" value='Any' />
             </Picker>
 
         <View style={containerStyles.buttonRow}>
