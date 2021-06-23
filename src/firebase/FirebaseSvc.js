@@ -228,8 +228,8 @@ class FirebaseSvc {
 
   makeGobbleRequest(gobbleRequest) {
     let datetime = this.getDatetime(gobbleRequest)
-    date = new Date(datetime)
-    let requestRef = firebase.database().ref(`GobbleRequests`)
+    let date = new Date(datetime)
+    let requestRef = this.gobbleRequestsRef()
     .child(`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`)
     // .child(`${gobbleRequest.dietaryRestriction}`)
     // .child(`${gobbleRequest.industryPreference}`)
@@ -264,15 +264,23 @@ class FirebaseSvc {
     let date1 = this.getDatetime(request)
     let time1 = this.convertTimeToMinutes(date1)
     let bestMatchRef = null;
-    let bestMatchCompatibility = 4;
+    let bestMatchCompatibility = 5;
     let dietaryRef;
+    // IF THE USER IS ANY, WE NEED TO SEARCH ALL THE PENDING REQUESTS
     tempRef.on("value", snapshot => {
       let iterator, child;
+      let time2, coords2, distance2, date2;
       let children = snapshot.val()
       let compatibility
       for(iterator in children) {
+
         child = children[iterator]
-        if(!this.isWithinRange(request, child) || !this.isWithinTime(request, child)) {
+        coords2 = this.getCoords(child)
+        distance2 = this.getDistance(child)
+        date2 = this.getDatetime(child)
+        time2 = this.convertTimeToMinutes(date2)
+
+        if(!this.isWithinRange(coords1, distance1, coords2, distance2) || !this.isWithinTime(time1, time2)) {
           continue;
         }
         compatibility = this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
@@ -282,13 +290,13 @@ class FirebaseSvc {
         } else if (compatibility > bestMatchCompatibility) {
           bestMatchCompatibility = compatibility
           bestMatchRef = iterator;
-          dietaryRef = tempRef;
+          dietaryRef = tempRef; // TODO: THIS IS IMPT
         }
       }
     }
     )
-    if(request.dietaryRestriction != 'Any' && bestMatchCompatibility < 12) {
-      tempRef = ref.child(`Any`)
+    if(request.dietaryRestriction != 'ANY') {
+      tempRef = ref.child(`ANY`)
       tempRef.on("value", snapshot => {
         let iterator, child;
         let children = snapshot.val()
@@ -312,11 +320,12 @@ class FirebaseSvc {
       }
       )
     }
+
     if (bestMatchRef != null) {
-      this.match(request, null, iterator, dietaryRef)
+      this.match(request, null, bestMatchRef, dietaryRef)
       return true;
     } else {
-      pendingMatchIDRef = ref.child(`${request.dietaryRestriction}`).push(request)
+      let pendingMatchIDRef = ref.child(`${request.dietaryRestriction}`).push(request)
       this.userRef(`${request.userId}/pendingMatchIDs`).push(request);
       return false
     }
@@ -327,10 +336,11 @@ class FirebaseSvc {
     let request2
     dietaryRef2.child(request2Ref).once("value").then(snapshot => {
       request2 = snapshot.val();
+      this.userRef(request1.userId).ref('matchIDs').push({...request1, otherUser: request2.userId})
+      this.userRef(request2.userId).ref('matchIDs').push({...request2, otherUser: request1.userId})
+      this.userRef(request2.userId).ref('pendingMatchIDs').remove(request2)
     })
-    this.userRef(request1.userId).ref('matchIDs').push({...request1, otherUser: request2.userId})
-    this.userRef(request2.userId).ref('matchIDs').push({...request2, otherUser: request1.userId})
-    this.userRef(request2.userId).ref('pendingMatchIDs').remove(request2)
+    
     if(dietaryRef1 != null) {
       this.userRef(request1.userId).ref('pendingMatchIDs').remove(request1)
     } 
@@ -340,7 +350,7 @@ class FirebaseSvc {
     // Will have a threshold function to mark how low a score we are willing to accept for a match
     // Nearer to the schedule time, the lower the threshold
     // This is for phase 3
-    // For now we just have a threshold of 8 points
+    // For now we just have a threshold of 18 points
     return 18;
   }
 
@@ -349,10 +359,8 @@ class FirebaseSvc {
     if(request1.cuisinePreference == request2.cuisinePreference) {
       compatibility + 5;
     }
-    if((request1.industryPreference == request2.industry)) {
+    if((request1.industryPreference == request2.industry) || request1.industryPreference == 'ANY') {
       compatibility + 5;
-    } else if (request1.industryPreference == 'Any') {
-      compatibility + 4;
     }
     return compatibility;
   }
@@ -372,7 +380,7 @@ class FirebaseSvc {
     //           return;
     //         }
 
-  calculteDistance(coords1, coords2) {
+  calculateDistance(coords1, coords2) {
     let lat1 = coords1['latitude']
     let lat2 = coords2['latitude']
     let lon1 = coords1['longitude']
@@ -387,7 +395,7 @@ class FirebaseSvc {
   }
 
   isWithinRange(coords1, distance1, coords2, distance2) {
-    return (distance1 + distance2) <= this.calculteDistance(coords1, coords2)
+    return (distance1 + distance2) <= this.calculateDistance(coords1, coords2)
   }
 
   isWithinTime(time1, time2) {

@@ -18,7 +18,7 @@ function GobbleSelect(props) {
   const [cuisinePreference, setCuisinePreference] = useState('Western')
   const [location, setLocation] = useState(null)
   const [errorMsg, setErrorMsg] = useState(null)
-  const MIN_DATE = new Date()
+  const MIN_DATE = new Date();
   const MAX_DATE = new Date().setDate(MIN_DATE.getDate()+7)
   const [date, setDate] = useState(MIN_DATE)
 
@@ -49,14 +49,16 @@ function GobbleSelect(props) {
       const gobbleRequest = {
           userId: firebaseSvc.currentUser().uid,
           dietaryRestriction: props.currentUserData.diet,
-          industryPreference: props.currentUserData.crossIndustrial ? props.currentUserData.industry : 'ANY',
+          industryPreference: props.currentUserData.crossIndustrial ? 'ANY' : props.currentUserData.industry,
           industry: props.currentUserData.industry,
           cuisinePreference: cuisinePreference,
           datetime: String(date),
           location: location,
           distance: distance,
       }
+      console.log(gobbleRequest)
       firebaseSvc.makeGobbleRequest(gobbleRequest)
+      // We need to do some load page
       props.navigation.navigate('GobbleConfirm')
   }
   const showDatePicker = () => {

@@ -26,7 +26,8 @@ export function ChatRoom(props) {
 
   async function loadAsync() {
     try {
-      const user = await props.fetchUserData();
+      await props.fetchUserData();
+      const user = props.currentUserData;
       setMatches(user.match_list);
       setLoading(false);
     } catch (err) {
