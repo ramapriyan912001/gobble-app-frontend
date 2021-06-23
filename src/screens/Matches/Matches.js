@@ -53,7 +53,7 @@ function Matches (props) {
               roundAvatar
               title={`${item.name.first} ${item.name.last}`}
               subtitle={item.email}
-            //   avatar={{ uri: item.picture.thumbnail }}
+              avatar={{ uri: item.picture.thumbnail }}
               containerStyle={{ borderBottomWidth: 0 }}
             />
           )}
