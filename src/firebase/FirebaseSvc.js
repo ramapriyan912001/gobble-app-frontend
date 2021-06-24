@@ -2,6 +2,7 @@ import firebase from 'firebase';
 import { Alert } from 'react-native';
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
+import {DIETARY_ARRAYS} from '../constants/objects'
 
 class FirebaseSvc {
   constructor() {
@@ -258,7 +259,7 @@ class FirebaseSvc {
   }
 
   findGobbleMate(ref, request) {
-    let tempRef = ref.child(`${request.dietaryRestriction}`);
+    let tempRef;
     let coords1 = this.getCoords(request)
     let distance1 = this.getDistance(request)
     let date1 = this.getDatetime(request)
@@ -266,67 +267,44 @@ class FirebaseSvc {
     let bestMatchRef = null;
     let bestMatchCompatibility = 5;
     let dietaryRef;
+    let dietaryOptionsArray = DIETARY_ARRAYS[`${request.dietaryRestriction}`]
     // IF THE USER IS ANY, WE NEED TO SEARCH ALL THE PENDING REQUESTS
-    tempRef.on("value", snapshot => {
-      let iterator, child;
-      let time2, coords2, distance2, date2;
-      let children = snapshot.val()
-      let compatibility
-      for(iterator in children) {
-
-        child = children[iterator]
-        coords2 = this.getCoords(child)
-        distance2 = this.getDistance(child)
-        date2 = this.getDatetime(child)
-        time2 = this.convertTimeToMinutes(date2)
-
-        if(!this.isWithinRange(coords1, distance1, coords2, distance2) || !this.isWithinTime(time1, time2)) {
-          continue;
-        }
-        compatibility = this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
-        if (compatibility >= this.getThreshold()) {
-          this.match(request, null, iterator, tempRef)
-          return true;
-        } else if (compatibility > bestMatchCompatibility) {
-          bestMatchCompatibility = compatibility
-          bestMatchRef = iterator;
-          dietaryRef = tempRef; // TODO: THIS IS IMPT
-        }
-      }
-    }
-    )
-    if(request.dietaryRestriction != 'ANY') {
-      tempRef = ref.child(`ANY`)
+    for(dietaryOption in dietaryOptionsArray) {
+      tempRef = ref.child(`${dietaryOption}`);
       tempRef.on("value", snapshot => {
         let iterator, child;
+        let time2, coords2, distance2, date2;
         let children = snapshot.val()
         let compatibility
         for(iterator in children) {
+  
           child = children[iterator]
-          if(!this.isWithinRange(request, child) || this.isWithinTime(request, child)) {
+          coords2 = this.getCoords(child)
+          distance2 = this.getDistance(child)
+          date2 = this.getDatetime(child)
+          time2 = this.convertTimeToMinutes(date2)
+  
+          if(!this.isWithinRange(coords1, distance1, coords2, distance2) || !this.isWithinTime(time1, time2)) {
             continue;
           }
           compatibility = this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
           if (compatibility >= this.getThreshold()) {
             this.match(request, null, iterator, tempRef)
             return true;
-            break;
           } else if (compatibility > bestMatchCompatibility) {
             bestMatchCompatibility = compatibility
             bestMatchRef = iterator;
-            dietaryRef = tempRef;
+            dietaryRef = tempRef; // TODO: THIS IS IMPT
           }
         }
-      }
-      )
+      })
     }
-
     if (bestMatchRef != null) {
       this.match(request, null, bestMatchRef, dietaryRef)
       return true;
     } else {
       let pendingMatchIDRef = ref.child(`${request.dietaryRestriction}`).push(request)
-      this.userRef(`${request.userId}/pendingMatchIDs`).push(request);
+      this.userRef(`${request.userId}/pendingMatchIDs/${pendingMatchIDRef}`).push(request);
       return false
     }
   }
