@@ -55,8 +55,8 @@ function GobbleSelect2(props) {
     hideDatePicker();
   };
     return (
-        <SafeAreaView style={{position: 'absolute'}}>
-            <View style={{position: 'relative', marginTop: '0%'}}>
+        <SafeAreaView>
+            <View style={{position: 'relative', marginTop: '50%'}}>
                     <Text style={{...inputStyles.subHeader,}}>...And How far are you willing to travel for a meal?</Text>
                     <Picker
                         selectedValue={distance}

@@ -88,14 +88,14 @@ function GobbleSelect(props) {
     hideDatePicker();
   };
     return (
-        <SafeAreaView style={{position: 'absolute'}}>
-            <View style={{position: 'relative'}}>
+        <SafeAreaView>
+            <View style={{marginTop: '20%'}}>
                         <Text style={{...inputStyles.headerText, fontSize: 20, margin: '0%'}}>
                                 Select your preferences and Gobble!
                         </Text>
             </View>  
-            <View style={{position: 'relative', marginTop: '-5%'}}>
-                        <Text style={{...inputStyles.subHeader}}>Choose a date and time for your next Gobble!</Text>
+            <View>
+                        <Text style={{...inputStyles.subHeader, marginTop: '10%'}}>Choose a date and time for your next Gobble!</Text>
                         <Button title={date.toLocaleString()} onPress={showDatePicker} />
                         <DateTimePickerModal
                         isVisible={isDatePickerVisible}
@@ -107,15 +107,15 @@ function GobbleSelect(props) {
                         pickerStyleIOS={{backgroundColor: 'black'}}
                         />
             </View>
-            <View style={{position: 'relative', marginTop: '2%'}}>
-                    <Text style={{...inputStyles.subHeader}}>...And what are you in the mood for today?</Text>
+            <View>
+                    <Text style={{...inputStyles.subHeader, marginTop: '20%'}}>...And what are you in the mood for today?</Text>
                     <Picker
                         selectedValue={cuisinePreference}
                         onValueChange={(itemValue, itemIndex) => setCuisinePreference(itemValue)}>
                         {renderCuisines()}
                     </Picker>
             </View>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={submitGobble}>
+            <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '10%'}} onPress={submitGobble}>
                 <Text style={buttonStyles.loginButtonText}>Next</Text>
             </TouchableOpacity>        
         </SafeAreaView>

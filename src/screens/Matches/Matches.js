@@ -12,8 +12,6 @@ function Matches (props) {
     const [state, setState] = useState({
         loading: false,
         data: [{name: {first: 'hey', last: 'hey', email: 'hey'}}],
-        page: 1,
-        seed: 1,
         error: null,
         refreshing: false
     });
@@ -22,7 +20,7 @@ function Matches (props) {
     async function loadAsync() {
         const page = state.page;
         const seed = state.seed;
-        const url = `https://randomuser.me/api/?seed=${seed}&page=${page}&results=20`;
+        const url = `https://randomuser.me/api/?seed=1&page=1&results=20`;
         // setState(
         await fetch(url)
           .then(res => res.json())
@@ -39,7 +37,6 @@ function Matches (props) {
               console.log(error);
             setState({...state, loading: false });
           })
-        // );
     }
 
     useEffect(() => {
