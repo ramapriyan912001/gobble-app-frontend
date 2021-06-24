@@ -1,11 +1,13 @@
 import { USER_STATE_CHANGE, CLEAR_DATA, LOGGING_IN, 
-    GIVE_ADMIN_ACCESS, REMOVE_ADMIN_ACCESS, LOGGING_OUT, USER_DATA_CHANGE} from "../actions/types"
+    GIVE_ADMIN_ACCESS, REMOVE_ADMIN_ACCESS, LOGGING_OUT, USER_DATA_CHANGE, GET_PENDING_MATCHES_LIST, GET_MATCHES_LIST} from "../actions/types"
 
 const initialState = {
     currentUserState: {},
     currentUserData: {},
     loggedIn: false,
-    isAdmin: false
+    isAdmin: false,
+    pendingMatches: {},
+    matches: {}
 }
 
 export const userState = (state = initialState, action) => {
@@ -41,6 +43,16 @@ export const userState = (state = initialState, action) => {
             return {
                 ...state,
                 currentUserData: action.currentUserData
+            }
+        case GET_PENDING_MATCHES_LIST:
+            return {
+                ...state,
+                pendingMatches: action.pendingMatches
+            }
+        case GET_MATCHES_LIST:
+            return {
+                ...state,
+                matches: action.matches
             }
         default:
             return state;

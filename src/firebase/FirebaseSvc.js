@@ -123,7 +123,24 @@ class FirebaseSvc {
                                                   .once('value')
                                                   .then(success)
                                                   .catch(failure)
-                                                : failure({code: 'auth/invalid-id', message: 'Invalid UID provided'})
+                                                : failure({code: 'auth/invalid-id', message: 'Invalid UID provided'});
+
+  getPendingMatchIDs = (success, failure) => this.userExists()
+                                                ? this
+                                                  .userRef(`${this.uid}/pendingMatchIDs`)
+                                                  .once('value')
+                                                  .then(success)
+                                                  .catch(failure)
+                                                : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Registration'});
+    
+  getMatchIDs = (success, failure) => this.userExists()
+                                                    ? this
+                                                      .userRef(`${this.uid}/matchIDs`)
+                                                      .once('value')
+                                                      .then(success)
+                                                      .catch(failure)
+                                                    : failure({code: 'auth/invalid-id', message: 'Invalid UID provided'});                                          
+  
 
   currentUser = () => firebase.auth().currentUser;
 
@@ -263,7 +280,7 @@ class FirebaseSvc {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
   }
 
-  findGobbleMate(ref, request) {
+  async findGobbleMate(ref, request) {
     //TODO: Stop users from entering matches with same datetime
     let tempRef;
     let coords1 = this.getCoords(request)
@@ -277,8 +294,11 @@ class FirebaseSvc {
     let counter = 0;
     let dietaryOptionsArray = DIETARY_ARRAYS[`${request.dietaryRestriction}`]
     console.log(dietaryOptionsArray);
+    let requestRef2;
+    let result = false;
     // IF THE USER IS ANY, WE NEED TO SEARCH ALL THE PENDING REQUESTS
-    dietaryOptionsArray.forEach(async dietaryOption => {//was Bug
+    for(;counter < dietaryOptionsArray.length; counter++) {
+      const dietaryOption = dietaryOptionsArray[counter];
       console.log('looking through ' + dietaryOption);
       tempRef = ref.child(`${dietaryOption}`);
       await tempRef.once("value").then(snapshot => {//values in same day under dietaryOption
@@ -303,20 +323,29 @@ class FirebaseSvc {
           console.log(compatibility, 'compatiblity');
           if (compatibility >= this.getThreshold()) {//for now threshold is 18 arbitrarily
             console.log('greater than threshold');
-            this.match(request, null, child, tempRef)
-            return true;
+            console.log(iterator)
+            this.match(request, null, child, iterator)
+            result = true;
+            console.log("EARLY TERMINATION")
+            break;
           } else if (compatibility > bestMatchCompatibility) {
             console.log('new best compatibility');
             bestMatchCompatibility = compatibility
             bestMatch = child;
-            dietaryRef = tempRef; // TODO: THIS IS IMPT
+            dietaryRef = iterator; // TODO: THIS IS IMPT
           }
         }
       })
-      counter++;
-      if (counter === dietaryOptionsArray.length) {
+      if(result) {
+        return true;
+      }
+    }
+    console.log(counter)
+    console.log(dietaryOptionsArray.length)
+    if (counter === dietaryOptionsArray.length) {
         if (bestMatch != null) {
-          this.match(request, null, bestMatch, iterator)
+          console.log("AT THE END OF LOOP")
+          this.match(request, null, bestMatch, dietaryRef)
           return true;
         } else {
           console.log('No match found! Creating new entry');
@@ -333,9 +362,8 @@ class FirebaseSvc {
           // this.userRef(`${request.userId}/pendingMatchIDs/${matchID}`).set(request);
           return false;
         }
-      }
-    });
-  }
+    }
+}
 
   // Important ref is the reference under which request
   match(request1, dietaryRef1, request2, request2Ref) {

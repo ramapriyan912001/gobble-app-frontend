@@ -7,6 +7,7 @@ import { fetchUserData, clearData } from '../../redux/actions/actions'
 import { renderFooter } from '../../components/renderFooter'
 import renderSeparator from '../../components/renderSeparator'
 import renderHeader from '../../components/renderHeader'
+import firebaseSvc from '../../firebase/FirebaseSvc'
 
 function Matches (props) {
     const [state, setState] = useState({
@@ -16,8 +17,18 @@ function Matches (props) {
         refreshing: false
     });
     const [avatar, setAvatar] = useState('https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc');
-    const [search, setSearch] = useState('')
+    const [search, setSearch] = useState([])
     async function loadAsync() {
+        // let pendingMatchesArray = await firebaseSvc.getPendingMatchIDs(snapshot => 
+        //   Object.values(snapshot.val()).map(pendingMatch => 
+        //     firebaseSvc.getUserCollection(pendingMatch.otherUserId, snapshot => 
+        //       {
+        //         const user = snapshot.val()
+        //         state.push({name: user.name, avatar: user.avatar, industry: user.industry, dob: user.dob,})
+        //       })), err => console.log(err));
+        // let matchesArray = await firebaseSvc.getMatchIDs(snapshot => snapshot.val(), err => console.log(err));
+        // console.log(pendingMatchesArray)
+        // console.log(matchesArray)
         const page = state.page;
         const seed = state.seed;
         const url = `https://randomuser.me/api/?seed=1&page=1&results=20`;
@@ -61,7 +72,7 @@ function Matches (props) {
               roundAvatar>
                 <Avatar source={{uri: pickImage(item)}} />
                 <ListItem.Content>
-                  <ListItem.Title>{`${item.name.first} ${item.name.last}`}</ListItem.Title>
+                  <ListItem.Title>{`${item.name} ${item.name.last}`}</ListItem.Title>
                   <ListItem.Subtitle>{item.email}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
