@@ -22,7 +22,7 @@ export function fetchUserData() {
 }
 
 export const getError = (props) => (err) => {
-    console.warn('Insufficient data');
+    console.log('Insufficient data');
     Alert.alert('Registration Error: ' + err.message);
     props.navigation.navigate('Register');
     return {};

@@ -39,7 +39,7 @@ export default function RegisterPage4(props) {
         //                 <Picker.Item label="Shipping & Transportation" value=11/>
         //                 <Picker.Item label="Others" value=00/>
         for (let [code, industryTitle] of Object.entries(industries)) {
-            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} value ={code}/>);
+            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} value ={industryTitle}/>);
         }
         return pickerItems;
     }

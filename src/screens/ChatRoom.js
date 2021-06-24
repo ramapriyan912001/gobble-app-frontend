@@ -31,7 +31,7 @@ export function ChatRoom(props) {
       setMatches(user.match_list);
       setLoading(false);
     } catch (err) {
-      console.warn(err);
+      console.log(err);
       setLoading(false);
     }
   }

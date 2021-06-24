@@ -9,7 +9,7 @@ const Tab = createMaterialTopTabNavigator();
 
 export default function MatchesNavigator() {
   return (
-        <Tab.Navigator initialRouteName="Ongoing">
+        <Tab.Navigator initialRouteName="Ongoing" style={{paddingTop:'8%', backgroundColor:'white'}}>
             <Tab.Screen name="Pending" component={Matches} />
             <Tab.Screen name="Matched" component={MatchesHistory} />
         </Tab.Navigator>

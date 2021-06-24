@@ -235,6 +235,7 @@ class FirebaseSvc {
     // .child(`${gobbleRequest.dietaryRestriction}`)
     // .child(`${gobbleRequest.industryPreference}`)
     // .child(`${gobbleRequest.cuisinePreference}`)
+    console.log('Finding a match');
     return this.findGobbleMate(requestRef, gobbleRequest) ? 'FOUND' : 'WAITING'
   }
 
@@ -258,7 +259,8 @@ class FirebaseSvc {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
   }
 
-  findGobbleMate(ref, request) {
+  async findGobbleMate(ref, request) {
+    //TODO: Stop users from entering matches with same datetime
     let tempRef;
     let coords1 = this.getCoords(request)
     let distance1 = this.getDistance(request)
@@ -267,61 +269,78 @@ class FirebaseSvc {
     let bestMatchRef = null;
     let bestMatchCompatibility = 5;
     let dietaryRef;
+    console.log(request);
     let dietaryOptionsArray = DIETARY_ARRAYS[`${request.dietaryRestriction}`]
+    console.log(dietaryOptionsArray);
     // IF THE USER IS ANY, WE NEED TO SEARCH ALL THE PENDING REQUESTS
-    for(dietaryOption in dietaryOptionsArray) {
+    await dietaryOptionsArray.forEach(dietaryOption => {//was Bug
+      console.log('looking through ' + dietaryOption);
       tempRef = ref.child(`${dietaryOption}`);
-      tempRef.on("value", snapshot => {
+      tempRef.once("value").then(snapshot => {//values in same day under dietaryOption
         let iterator, child;
         let time2, coords2, distance2, date2;
         let children = snapshot.val()
         let compatibility
-        for(iterator in children) {
-  
+        for(iterator in children) {//iterate through these values
           child = children[iterator]
           coords2 = this.getCoords(child)
           distance2 = this.getDistance(child)
           date2 = this.getDatetime(child)
           time2 = this.convertTimeToMinutes(date2)
-  
-          if(!this.isWithinRange(coords1, distance1, coords2, distance2) || !this.isWithinTime(time1, time2)) {
+
+          if(!this.isWithinRange(coords1, distance1, coords2, distance2) || !this.isWithinTime(time1, time2) || request.userId === child.userId) {
+            console.log('out of range/time / same user');
             continue;
           }
+          
+          console.log(child,'child')
           compatibility = this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
-          if (compatibility >= this.getThreshold()) {
+          console.log(compatibility, 'compatiblity');
+          if (compatibility >= this.getThreshold()) {//for now threshold is 18 arbitrarily
+            console.log('greater than threshold');
             this.match(request, null, iterator, tempRef)
             return true;
           } else if (compatibility > bestMatchCompatibility) {
+            console.log('new best compatibility');
             bestMatchCompatibility = compatibility
             bestMatchRef = iterator;
             dietaryRef = tempRef; // TODO: THIS IS IMPT
           }
         }
       })
-    }
+    });
     if (bestMatchRef != null) {
       this.match(request, null, bestMatchRef, dietaryRef)
       return true;
     } else {
-      let pendingMatchIDRef = ref.child(`${request.dietaryRestriction}`).push(request)
-      this.userRef(`${request.userId}/pendingMatchIDs/${pendingMatchIDRef}`).push(request);
-      return false
+      console.log('No match found! Creating new entry');
+      const matchParentRef = ref.child(`${request.dietaryRestriction}`);
+      const matchID = matchParentRef.push().key;
+      matchParentRef.child(matchID).set(request);
+      // Don't push the ref, push the pending MatchID itself
+      this.userRef(`${request.userId}/pendingMatchIDs/${matchID}/`).set(request);
+      return false;
     }
   }
 
   // Important ref is the reference under which request
   match(request1, dietaryRef1, request2Ref, dietaryRef2) {
-    let request2
-    dietaryRef2.child(request2Ref).once("value").then(snapshot => {
+    console.log(dietaryRef2);
+    dietaryRef2
+    .child(request2Ref)
+    .once("value")
+    .then(snapshot => {
       request2 = snapshot.val();
-      this.userRef(request1.userId).ref('matchIDs').push({...request1, otherUser: request2.userId})
-      this.userRef(request2.userId).ref('matchIDs').push({...request2, otherUser: request1.userId})
-      this.userRef(request2.userId).ref('pendingMatchIDs').remove(request2)
+      console.log(request2);
+      this.userRef(`${request1.userId}/matchIDs`).push({...request1, otherUser: request2.userId})
+      this.userRef(`${request2.userId}/matchIDs`).push({...request2, otherUser: request1.userId})
+      this.userRef(`${request2.userId}/pendingMatchIDs`).remove(request2)
+      if(dietaryRef1 != null) {
+        this.userRef(`${request1.userId}/pendingMatchIDs`).remove(request1)
+      } 
     })
+    .catch(err => console.log('matching error: ', err));
     
-    if(dietaryRef1 != null) {
-      this.userRef(request1.userId).ref('pendingMatchIDs').remove(request1)
-    } 
   }
 
   getThreshold(request) {
@@ -335,10 +354,10 @@ class FirebaseSvc {
   measureCompatibility(request1, request2) {
     let compatibility = 0;
     if(request1.cuisinePreference == request2.cuisinePreference) {
-      compatibility + 5;
+      compatibility += 5;
     }
-    if((request1.industryPreference == request2.industry) || request1.industryPreference == 'ANY') {
-      compatibility + 5;
+    if(request1.industryPreference == 'ANY' || (request1.industryPreference == request2.industry)) {
+      compatibility += 5;
     }
     return compatibility;
   }
@@ -369,11 +388,13 @@ class FirebaseSvc {
             c(lat1 * p) * c(lat2 * p) * 
             (1 - c((lon2 - lon1) * p))/2;
   
-    return 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+    const distance = 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
+    // console.log(distance);
+    return distance;
   }
 
-  isWithinRange(coords1, distance1, coords2, distance2) {
-    return (distance1 + distance2) <= this.calculateDistance(coords1, coords2)
+  isWithinRange(coords1, distance1, coords2, distance2) {//was Bug
+    return (distance1 + distance2) >= this.calculateDistance(coords1, coords2)
   }
 
   isWithinTime(time1, time2) {
@@ -407,11 +428,11 @@ class FirebaseSvc {
       userf.updateProfile({photoURL: url, avatar: url})
       .then(() => console.log("Updated avatar successfully. URL:" + url))
       .catch((error) => {
-        console.warn("Avatar Update Error: " + error.message);
+        console.log("Avatar Update Error: " + error.message);
         Alert.alert("Error updating avatar. " + error.message);
       });
     } else {
-      console.warn("can't update avatar, user is not logged in.");
+      console.log("can't update avatar, user is not logged in.");
       Alert.alert("Unable to update avatar. You must re-authenticate first.");
       props.navigation.navigate('Reauthentication');
     }

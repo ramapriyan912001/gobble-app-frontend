@@ -33,7 +33,7 @@ export function createUserProfile() {//factory method
     };
 }
 
-export const onFailure = (level) => (err) => console.warn(level + ' error: ' + err.message);
+export const onFailure = (level) => (err) => console.log(level + ' error: ' + err.message);
     
 export const onSuccess = (level) => () => console.log(level + ' successfully done');
 
@@ -82,7 +82,7 @@ export const cancelRegistration = (props) => {
 };
 
 export const getError = (props) => (err) => {
-    console.warn('Insufficient data');
+    console.log('Insufficient data');
     Alert.alert('Registration Error: ' + err.message);
     props.navigation.navigate('Register');
     return {};

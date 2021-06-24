@@ -19,7 +19,7 @@ function Profile(props) {
     }
 
     const signOutFailure = (err) => {
-        console.warn('Sign Out Error: ' + err.message);
+        console.log('Sign Out Error: ' + err.message);
         Alert.alert('Sign Out Error. Try Again Later');
     }
     
