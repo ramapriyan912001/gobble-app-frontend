@@ -259,24 +259,25 @@ class FirebaseSvc {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
   }
 
-  async findGobbleMate(ref, request) {
+  findGobbleMate(ref, request) {
     //TODO: Stop users from entering matches with same datetime
     let tempRef;
     let coords1 = this.getCoords(request)
     let distance1 = this.getDistance(request)
     let date1 = this.getDatetime(request)
     let time1 = this.convertTimeToMinutes(date1)
-    let bestMatchRef = null;
+    let bestMatch = null;
     let bestMatchCompatibility = 5;
     let dietaryRef;
     console.log(request);
+    let counter = 0;
     let dietaryOptionsArray = DIETARY_ARRAYS[`${request.dietaryRestriction}`]
     console.log(dietaryOptionsArray);
     // IF THE USER IS ANY, WE NEED TO SEARCH ALL THE PENDING REQUESTS
-    await dietaryOptionsArray.forEach(dietaryOption => {//was Bug
+    dietaryOptionsArray.forEach(async dietaryOption => {//was Bug
       console.log('looking through ' + dietaryOption);
       tempRef = ref.child(`${dietaryOption}`);
-      tempRef.once("value").then(snapshot => {//values in same day under dietaryOption
+      await tempRef.once("value").then(snapshot => {//values in same day under dietaryOption
         let iterator, child;
         let time2, coords2, distance2, date2;
         let children = snapshot.val()
@@ -298,48 +299,52 @@ class FirebaseSvc {
           console.log(compatibility, 'compatiblity');
           if (compatibility >= this.getThreshold()) {//for now threshold is 18 arbitrarily
             console.log('greater than threshold');
-            this.match(request, null, iterator, tempRef)
+            this.match(request, null, child, tempRef)
             return true;
           } else if (compatibility > bestMatchCompatibility) {
             console.log('new best compatibility');
             bestMatchCompatibility = compatibility
-            bestMatchRef = iterator;
+            bestMatch = child;
             dietaryRef = tempRef; // TODO: THIS IS IMPT
           }
         }
       })
+      counter++;
+      if (counter === dietaryOptionsArray.length) {
+        if (bestMatch != null) {
+          this.match(request, null, bestMatch, dietaryRef)
+          return true;
+        } else {
+          console.log('No match found! Creating new entry');
+          const matchParentRef = ref.child(`${request.dietaryRestriction}`);
+          const matchID = matchParentRef.push().key;
+          matchParentRef.child(matchID).set(request);
+          // Don't push the ref, push the pending MatchID itself
+          this.userRef(`${request.userId}/pendingMatchIDs/${matchID}/`).set(request);
+          return false;
+        }
+      }
     });
-    if (bestMatchRef != null) {
-      this.match(request, null, bestMatchRef, dietaryRef)
-      return true;
-    } else {
-      console.log('No match found! Creating new entry');
-      const matchParentRef = ref.child(`${request.dietaryRestriction}`);
-      const matchID = matchParentRef.push().key;
-      matchParentRef.child(matchID).set(request);
-      // Don't push the ref, push the pending MatchID itself
-      this.userRef(`${request.userId}/pendingMatchIDs/${matchID}/`).set(request);
-      return false;
-    }
   }
 
   // Important ref is the reference under which request
-  match(request1, dietaryRef1, request2Ref, dietaryRef2) {
-    console.log(dietaryRef2);
-    dietaryRef2
-    .child(request2Ref)
-    .once("value")
-    .then(snapshot => {
-      request2 = snapshot.val();
-      console.log(request2);
+  match(request1, dietaryRef1, request2, dietaryRef2) {
+    console.log(request2);
+    // dietaryRef2
+    // .child(`${request2Ref}`)
+    // .once("value")
+    // .then(snapshot => {
+    //   console.log(snapshot,'snapshot');
+    //   request2 = snapshot.val();
+    //   console.log(request2);
       this.userRef(`${request1.userId}/matchIDs`).push({...request1, otherUser: request2.userId})
       this.userRef(`${request2.userId}/matchIDs`).push({...request2, otherUser: request1.userId})
       this.userRef(`${request2.userId}/pendingMatchIDs`).remove(request2)
       if(dietaryRef1 != null) {
         this.userRef(`${request1.userId}/pendingMatchIDs`).remove(request1)
       } 
-    })
-    .catch(err => console.log('matching error: ', err));
+    // })
+    // .catch(err => console.log('matching error: ', err));
     
   }
 
