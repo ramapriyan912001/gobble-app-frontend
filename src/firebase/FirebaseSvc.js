@@ -227,11 +227,15 @@ class FirebaseSvc {
     return firebase.database().ref(`GobbleRequests`)
   }
 
+  makeDateString(date) {
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
+  }
+
   makeGobbleRequest(gobbleRequest) {
     let datetime = this.getDatetime(gobbleRequest)
     let date = new Date(datetime)
     let requestRef = this.gobbleRequestsRef()
-    .child(`${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`)
+    .child(this.makeDateString(date))
     // .child(`${gobbleRequest.dietaryRestriction}`)
     // .child(`${gobbleRequest.industryPreference}`)
     // .child(`${gobbleRequest.cuisinePreference}`)
@@ -312,15 +316,21 @@ class FirebaseSvc {
       counter++;
       if (counter === dietaryOptionsArray.length) {
         if (bestMatch != null) {
-          this.match(request, null, bestMatch, dietaryRef)
+          this.match(request, null, bestMatch, iterator)
           return true;
         } else {
           console.log('No match found! Creating new entry');
           const matchParentRef = ref.child(`${request.dietaryRestriction}`);
           const matchID = matchParentRef.push().key;
-          matchParentRef.child(matchID).set(request);
-          // Don't push the ref, push the pending MatchID itself
-          this.userRef(`${request.userId}/pendingMatchIDs/${matchID}/`).set(request);
+          let updates = {};
+          updates[`/Users/${request.userId}/pendingMatchIDs/${matchID}`] = request;
+          updates[`/GobbleRequests/${this.makeDateString(date1)}/${request.dietaryRestriction}/${matchID}`] = request;
+          // Add more updates here
+          firebase.database().ref().update(updates);
+
+          // matchParentRef.child(matchID).set(request);
+          // // Don't push the ref, push the pending MatchID itself
+          // this.userRef(`${request.userId}/pendingMatchIDs/${matchID}`).set(request);
           return false;
         }
       }
@@ -328,24 +338,14 @@ class FirebaseSvc {
   }
 
   // Important ref is the reference under which request
-  match(request1, dietaryRef1, request2, dietaryRef2) {
-    console.log(request2);
-    // dietaryRef2
-    // .child(`${request2Ref}`)
-    // .once("value")
-    // .then(snapshot => {
-    //   console.log(snapshot,'snapshot');
-    //   request2 = snapshot.val();
-    //   console.log(request2);
-      this.userRef(`${request1.userId}/matchIDs`).push({...request1, otherUser: request2.userId})
-      this.userRef(`${request2.userId}/matchIDs`).push({...request2, otherUser: request1.userId})
-      this.userRef(`${request2.userId}/pendingMatchIDs`).remove(request2)
-      if(dietaryRef1 != null) {
-        this.userRef(`${request1.userId}/pendingMatchIDs`).remove(request1)
-      } 
-    // })
-    // .catch(err => console.log('matching error: ', err));
-    
+  match(request1, dietaryRef1, request2, request2Ref) {
+    this.userRef(`${request1.userId}/matchIDs`).push({...request1, otherUserId: request2.userId})
+    this.userRef(`${request2.userId}/matchIDs`).push({...request2, otherUserId: request1.userId})
+    let updates = {};
+    updates[`/Users/${request2.userId}/pendingMatchIDs/${request2Ref}`] = null;
+    updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request2))}/${request2.dietaryRestriction}/${request2Ref}`] = null;
+    // Add more updates here
+    firebase.database().ref().update(updates);
   }
 
   getThreshold(request) {

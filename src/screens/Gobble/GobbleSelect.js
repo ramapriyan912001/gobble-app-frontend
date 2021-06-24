@@ -89,7 +89,7 @@ function GobbleSelect(props) {
   };
     return (
         <SafeAreaView>
-            <View style={{marginTop: '20%'}}>
+            <View style={{marginTop: '8%'}}>
                         <Text style={{...inputStyles.headerText, fontSize: 20, margin: '0%'}}>
                                 Select your preferences and Gobble!
                         </Text>
@@ -115,7 +115,7 @@ function GobbleSelect(props) {
                         {renderCuisines()}
                     </Picker>
             </View>
-            <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '10%'}} onPress={submitGobble}>
+            <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '5%'}} onPress={submitGobble}>
                 <Text style={buttonStyles.loginButtonText}>Next</Text>
             </TouchableOpacity>        
         </SafeAreaView>
