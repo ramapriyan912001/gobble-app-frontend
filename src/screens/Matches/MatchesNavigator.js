@@ -3,7 +3,7 @@ import React from 'react'
 import { View, Text, SafeAreaView } from 'react-native';
 import { containerStyles } from '../../styles/LoginStyles';
 import Matches from './Matches';
-import {MatchesHistory} from './MatchesHistory';
+import MatchesHistory from './MatchesHistory';
 
 const Tab = createMaterialTopTabNavigator();
 

@@ -8,7 +8,7 @@ export function GobbleConfirm(props) {
             <Text style={inputStyles.headerText}>Your Gobble Has Been Confirmed!</Text>
             <Text style={inputStyles.headerText}>Head over to Matches to see your Matches!</Text>
             <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
-                props.navigation.navigate('MatchesNavigator')
+                props.navigation.navigate('GobbleSelect')
             }}>
                 <Text style={buttonStyles.loginButtonText}>Done!</Text>
             </TouchableOpacity>

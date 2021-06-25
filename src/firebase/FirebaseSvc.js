@@ -115,7 +115,7 @@ class FirebaseSvc {
                                               .once('value')
                                               .then(success)
                                               .catch(failure)
-                                            : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Registration'});
+                                            : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
   getUserCollection = (id, success, failure) => id != null
                                                 ? this
@@ -131,7 +131,7 @@ class FirebaseSvc {
                                                   .once('value')
                                                   .then(success)
                                                   .catch(failure)
-                                                : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Registration'});
+                                                : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
     
   getMatchIDs = (success, failure) => this.userExists()
                                                     ? this
@@ -340,8 +340,6 @@ class FirebaseSvc {
         return true;
       }
     }
-    console.log(counter)
-    console.log(dietaryOptionsArray.length)
     if (counter === dietaryOptionsArray.length) {
         if (bestMatch != null) {
           console.log("AT THE END OF LOOP")

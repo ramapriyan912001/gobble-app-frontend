@@ -11,51 +11,50 @@ import firebaseSvc from '../../firebase/FirebaseSvc'
 import { FOOD_IMAGES_URIs } from '../../constants/objects'
 
 function Matches (props) {
-    const [state, setState] = useState({
-        loading: false,
-        data: [],
-        error: null,
-        refreshing: false
-    });
+    const [data, setData] = useState([]);
+    const [loading, setLoading]= useState(true);
     
     async function loadAsync() {
-        let pendingMatchIDs = firebaseSvc.getPendingMatchIDs(snapshot => {
-          let ids = snapshot.val();
-          for(var key in ids) {
-            state.data.push(ids[key])
-          }
-          console.log(state.data)
-        })
+      await firebaseSvc
+            .getPendingMatchIDs(
+              snapshot => {
+                let ids = snapshot.val();
+                for(let key in ids) {
+                  setData(data.concat(ids[key]))
+                }
+                console.log(data);
+              },
+              err => {console.log(err.message)}
+            )
+        setLoading(false);
     }
 
     useEffect(() => {
         loadAsync();
     }, [])
 
-    const pickImage = item => {
-      return FOOD_IMAGES_URIs[item.cuisinePreference]
-    }
+    const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     
     return (
       <SafeAreaView>
           <FlatList
-            data={state.data}
+            data={data}
             renderItem={({ item, index }) => (
               <ListItem
               containerStyle={{borderBottomWidth:0}}
               key={index} 
               roundAvatar>
-                <Avatar source={{uri: pickImage(item)}} />
+                <Avatar source={{uri:pickImage(item)}} />
                 <ListItem.Content>
                   <ListItem.Title>{item.datetime}</ListItem.Title>
-                  <ListItem.Subtitle>{item.datetime}</ListItem.Subtitle>
+                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.industryPreference} industry`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}
             keyExtractor={item => item.datetime}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
-            ListFooterComponent={renderFooter(state)}
+            ListFooterComponent={renderFooter(loading)}
             onEndReachedThreshold={50}
           />
       </SafeAreaView>
@@ -69,37 +68,3 @@ const mapStateToProps = (store) => ({
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(Matches);
-
-
-
-
-
-
-    // useEffect(() => {
-    //     makeRemoteRequest();
-    // }, [])
-    
-    // const handleRefresh = () => {
-    //     setState(
-    //       {
-    //         page: 1,
-    //         seed: state.seed + 1,
-    //         refreshing: true
-    //       },
-    //       () => {
-    //         makeRemoteRequest();
-    //       }
-    //     );
-    //   };
-    
-    // const handleLoadMore = () => {
-    //     setState(
-    //       {
-    //         page: state.page + 1
-    //       },
-    //       () => {
-    //         makeRemoteRequest();
-    //       }
-    //     );
-    //   };
-        
