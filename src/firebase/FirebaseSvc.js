@@ -156,9 +156,9 @@ class FirebaseSvc {
     });
 
   //Retrieve All Stored Messages
-  messageRefRetrieve = callback => {
+  messageRefRetrieve = (id, callback) => {
     // console.log('Retrieving Old Messages: ');
-    this.messageRef('')
+    this.messageRef(`${id}`)
       // .limitToLast(40)
       .on('value', snapshot => callback(this.parseStoredMessage(snapshot)));
   }
@@ -170,8 +170,8 @@ class FirebaseSvc {
       .on('child_added', snapshot => callback(this.parseMessage(snapshot)));
   }
 
-  messageRefOff() {
-    this.messageRef('').off();
+  messageRefOff(id) {
+    this.messageRef(`${id}`).off();
   }
 
   // The parse method take the snapshot data and construct a message:
@@ -186,17 +186,21 @@ class FirebaseSvc {
   parseStoredMessage = snapshot => {
     const messageArray = snapshot.val();
     let parsedMessageArray = [];
-    for (let [key, value] of Object.entries(messageArray)) {
-      // console.log('here');
-      // console.log(value);
-      const parsedMessage = {
-        '_id': key,
-        'user': value.user,
-        'text': value.text,
-        'timestamp': value.timestamp,
-      };
-      // console.log(parsedMessage);
-      parsedMessageArray.unshift(parsedMessage);
+    if (messageArray == null) {
+      //Do Nothing
+    } else {
+      for (let [key, value] of Object.entries(messageArray)) {
+        // console.log('here');
+        // console.log(value);
+        const parsedMessage = {
+          '_id': key,
+          'user': value.user,
+          'text': value.text,
+          'timestamp': value.timestamp,
+        };
+        // console.log(parsedMessage);
+        parsedMessageArray.unshift(parsedMessage);
+      }
     }
     return parsedMessageArray;
   };
@@ -211,17 +215,20 @@ class FirebaseSvc {
 
   // To send a message, we call the send method from GiftedChat component in onSend property as such: onSend={firebaseSvc.send}
   // The send method in Firebase.js is:
-  send = messages => {
+  send = (id, messages) => {
+    const len = messages.length;
+    const lastSentMessage = len == 0 ? '' : messages[len - 1];
     messages.map((message) => {
       const {text, user, createdAt} = message;
       const timestamp = createdAt.toDateString();
       const newMessage = {text, user, timestamp};
-      this.messageRef('').push(newMessage)});
-    // for (let i = 0; i < messages.length; i++) {
-    //   const { text, user, createdAt } = messages[i];
-    //   console.log(createdAt);
-    //   this.messageRef('').push({text, user, createdAt});
-    // }
+      this.messageRef(`${id}`).push(newMessage);
+    });
+    //Change lastMessage of Match
+    this.userRef(`matchIDs/${id}/lastMessage`).set(lastSentMessage);
+    
+    // const changeLastMessage = (user) => {user.matchIDs[id][lastMessage] = lastSentMessage;};
+    // this.getCurrentUserCollection(changeLastMessage, (err) => console.log('Error Changing Last Message', err.message));
   };
 
   get uid() {
@@ -381,10 +388,10 @@ class FirebaseSvc {
     console.log(request1UserDetails)
     console.log(request2UserDetails)
     this.userRef(`${request1.userId}/matchIDs`).push({...request1, otherUserId: request2.userId, 
-      otherUserCuisinePreference: request2.cuisinePreference, otherUserData: request2UserDetails})
+      otherUserCuisinePreference: request2.cuisinePreference, otherUserData: request2UserDetails, lastMessage:'',})
 
     this.userRef(`${request2.userId}/matchIDs`).push({...request2, otherUserId: request1.userId,
-      otherUserCuisinePreference: request1.cuisinePreference, otherUserData: request1UserDetails})
+      otherUserCuisinePreference: request1.cuisinePreference, otherUserData: request1UserDetails, lastMessage:'',})
 
       // TODO: What if the user changes his/her profile picture?
       // Maybe we need to create another table of just user + profile pic so we don't need to load a lot of data every time

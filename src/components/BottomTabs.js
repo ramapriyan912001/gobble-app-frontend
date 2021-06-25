@@ -3,8 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {ProfileNavigator} from '../screens/Profile/ProfileNavigator'
 import {GobbleNavigator} from '../screens/Gobble/GobbleNavigator'
 import Matches from '../screens/Matches/Matches'
-import {ChatRoom} from '../screens/ChatRoom'
-import {Conversation} from '../screens/Conversation'
+import { ChatNavigator } from '../screens/Chats/ChatNavigator';
 import Ionicons from '@expo/vector-icons/Ionicons'
 import MatchesNavigator from '../screens/Matches/MatchesNavigator';
 
@@ -60,7 +59,7 @@ export default function BottomTabs() {
             }} options={{
               title: "Matches"
             }} component={MatchesNavigator}></Tab.Screen>
-            <Tab.Screen name="Chats" component={ChatRoom}></Tab.Screen>
+            <Tab.Screen name="Chats" component={ChatNavigator}></Tab.Screen>
         </Tab.Navigator>
     )
 }

@@ -20,7 +20,7 @@ function MatchesHistory (props) {
             .getMatchIDs(
               snapshot => {
                 let ids = snapshot.val();
-                console.log(ids)
+                // console.log(ids)
                 for(let key in ids) {
                   if(!(key in matchIDs)) {
                     matchIDs[key] = true;
@@ -38,7 +38,7 @@ function MatchesHistory (props) {
         loadAsync();
     }, [])
 
-    const pickImage = item => item.otherUserData.avatar == null 
+    const pickImage = item =>   item.otherUserData.avatar == null || item.otherUserData.avatar == ''
                                 ? 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc'
                                 : item.otherUserData.avatar;
     
