@@ -4,3 +4,9 @@ export const DIETARY_ARRAYS = {//was Bug
     "Vegan": ["Vegan", "ANY"],
     "ANY": ["VEGAN", "VEGETARIAN", "HALAL", "ANY"]
 }
+
+export const FOOD_IMAGES_URIs = {
+    "Vegetarian": './../../../assets/Indian.jpg',
+    "Western": './../../../assets/Western.jpg',
+    'Asian': './../../../assets/Asian.jpg'
+}

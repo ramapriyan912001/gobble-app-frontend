@@ -66,7 +66,7 @@ function GobbleSelect(props) {
             industryPreference: props.currentUserData.crossIndustrial ? 'ANY' : props.currentUserData.industry,
             industry: props.currentUserData.industry,
             cuisinePreference: cuisinePreference,
-            datetime: date.toDateString(),
+            datetime: date.toLocaleTimeString(),
             location: location,
             distance: 200,
         }
