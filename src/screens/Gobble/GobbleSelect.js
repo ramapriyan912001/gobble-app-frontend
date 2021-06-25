@@ -66,11 +66,11 @@ function GobbleSelect(props) {
             industryPreference: props.currentUserData.crossIndustrial ? 'ANY' : props.currentUserData.industry,
             industry: props.currentUserData.industry,
             cuisinePreference: cuisinePreference,
-            datetime: date.toLocaleTimeString(),
+            datetime: date.toLocaleString(),
             location: location,
             distance: 200,
         }
-        // console.log(gobbleRequest, 'ongoing')
+
         // We need to do some load page
         props.navigation.navigate('GobbleSelect2', {req: gobbleRequest})
       }

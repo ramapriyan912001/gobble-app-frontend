@@ -13,6 +13,7 @@ import { FOOD_IMAGES_URIs } from '../../constants/objects'
 function Matches (props) {
     const [data, setData] = useState([]);
     const [loading, setLoading]= useState(true);
+    const [matchIDs, setMatchIDs] = useState({});
     
     async function loadAsync() {
       await firebaseSvc
@@ -20,7 +21,10 @@ function Matches (props) {
               snapshot => {
                 let ids = snapshot.val();
                 for(let key in ids) {
-                  setData(data.concat(ids[key]))
+                  if(!(key in matchIDs)) {
+                    matchIDs[key] = true
+                    setData(data.concat(ids[key]))
+                  }
                 }
                 console.log(data);
               },
@@ -41,7 +45,7 @@ function Matches (props) {
             data={data}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={{borderBottomWidth:0}}
+              containerStyle={{borderBottomWidth:5, height: 160}}
               key={index} 
               roundAvatar>
                 <Avatar source={{uri:pickImage(item)}} />

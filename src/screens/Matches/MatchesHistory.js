@@ -12,6 +12,7 @@ import { FOOD_IMAGES_URIs } from '../../constants/objects'
 
 function MatchesHistory (props) {
     const [data, setData] = useState([]);
+    const [matchIDs, setMatchIDs] = useState({});
     const [loading, setLoading]= useState(true);
     
     async function loadAsync() {
@@ -19,9 +20,12 @@ function MatchesHistory (props) {
             .getMatchIDs(
               snapshot => {
                 let ids = snapshot.val();
+                console.log(ids)
                 for(let key in ids) {
-                    console.log(ids[key]);
-                    setData(data.concat(ids[key]))
+                  if(!(key in matchIDs)) {
+                    matchIDs[key] = true;
+                    setData(data.concat({...ids[key], matchID: key}))
+                  }
                 }
                 console.log(data);
               },
@@ -34,9 +38,9 @@ function MatchesHistory (props) {
         loadAsync();
     }, [])
 
-    const pickImage = item => item.otherUser.avatar == null 
+    const pickImage = item => item.otherUserData.avatar == null 
                                 ? 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc'
-                                : item.otherUser.avatar;
+                                : item.otherUserData.avatar;
     
     return (
       <SafeAreaView>
@@ -44,13 +48,13 @@ function MatchesHistory (props) {
             data={data}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={{borderBottomWidth:0}}
+              containerStyle={{borderBottomWidth:5, height: 160}}
               key={index} 
               roundAvatar>
-                <Avatar source={{uri:pickImage(item)}}/>
+                <Avatar size="large" source={{uri:pickImage(item)}}/>
                 <ListItem.Content>
-                  <ListItem.Title>{item.otherUser.name}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.industryPreference} industry`}</ListItem.Subtitle>
+                  <ListItem.Title>{`${item.otherUserData.name}, ${item.industryPreference} industry`}</ListItem.Title>
+                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.datetime}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}

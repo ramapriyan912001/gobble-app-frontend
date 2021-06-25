@@ -314,6 +314,12 @@ class FirebaseSvc {
           time2 = this.convertTimeToMinutes(date2)
 
           if(!this.isWithinRange(coords1, distance1, coords2, distance2) || !this.isWithinTime(time1, time2) || request.userId === child.userId) {
+            console.log(!this.isWithinTime(time1, time2))
+            console.log(time1)
+            console.log(time2)
+            console.log(!this.isWithinRange(coords1, distance1, coords2, distance2))
+            console.log(request.userId)
+            console.log(child.userId)
             console.log('out of range/time / same user');
             continue;
           }
@@ -364,9 +370,26 @@ class FirebaseSvc {
 }
 
   // Important ref is the reference under which request
-  match(request1, dietaryRef1, request2, request2Ref) {
-    this.userRef(`${request1.userId}/matchIDs`).push({...request1, otherUserId: request2.userId})
-    this.userRef(`${request2.userId}/matchIDs`).push({...request2, otherUserId: request1.userId})
+
+  async getUserDetails(id) {
+    return this.getUserCollection(id, snapshot => snapshot.val(), err => console.log(err))
+  }
+
+  async match(request1, dietaryRef1, request2, request2Ref) {
+    let request2UserDetails = await this.getUserDetails(request2.userId)
+    let request1UserDetails = await this.getUserDetails(request1.userId)
+    console.log(request1UserDetails)
+    console.log(request2UserDetails)
+    this.userRef(`${request1.userId}/matchIDs`).push({...request1, otherUserId: request2.userId, 
+      otherUserCuisinePreference: request2.cuisinePreference, otherUserData: request2UserDetails})
+
+    this.userRef(`${request2.userId}/matchIDs`).push({...request2, otherUserId: request1.userId,
+      otherUserCuisinePreference: request1.cuisinePreference, otherUserData: request1UserDetails})
+
+      // TODO: What if the user changes his/her profile picture?
+      // Maybe we need to create another table of just user + profile pic so we don't need to load a lot of data every time
+
+    
     let updates = {};
     updates[`/Users/${request2.userId}/pendingMatchIDs/${request2Ref}`] = null;
     updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request2))}/${request2.dietaryRestriction}/${request2Ref}`] = null;
