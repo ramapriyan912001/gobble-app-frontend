@@ -54,6 +54,12 @@ export function logout() {
     })
 }
 
+export function getPendingMatches(pendingMatches) {
+    return ((dispatch) => {
+        firebaseSvc.getPendingMatchIDs();
+    })
+}
+
 export function giveAdminAccess() {
     return ((dispatch) => {
         dispatch({type: GIVE_ADMIN_ACCESS})
