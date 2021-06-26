@@ -1,21 +1,7 @@
 import firebaseSvc from "../firebase/FirebaseSvc";
 import { Alert } from 'react-native';
-
+import { INDUSTRY_CODES } from "../constants/objects";
 //should be in redux 
-export const industryCodes = {
-    1: "Human Resources",
-    2: "Law",
-    3: "Research",
-    4: "Engineering",
-    0: "Computing",
-    6: "Marketing",
-    7: "Sales",
-    8: "Artist",
-    9: "Public Sector",
-    10: "Medicine",
-    5: "Shipping & Transportation",
-    11: "Others"
-}
 
 export function createUserProfile() {//factory method
     return {
@@ -33,7 +19,7 @@ export function createUserProfile() {//factory method
     };
 }
 
-export const onFailure = (level) => (err) => console.warn(level + ' error: ' + err.message);
+export const onFailure = (level) => (err) => console.log(level + ' error: ' + err.message);
     
 export const onSuccess = (level) => () => console.log(level + ' successfully done');
 
@@ -82,7 +68,7 @@ export const cancelRegistration = (props) => {
 };
 
 export const getError = (props) => (err) => {
-    console.warn('Insufficient data');
+    console.log('Insufficient data');
     Alert.alert('Registration Error: ' + err.message);
     props.navigation.navigate('Register');
     return {};

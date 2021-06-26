@@ -174,7 +174,7 @@ export const inputStyles = StyleSheet.create({
 
     subHeader: {
         fontSize: 22,
-        alignSelf: 'center',
+        // alignSelf: 'center',
         margin: '5%',
     },
 

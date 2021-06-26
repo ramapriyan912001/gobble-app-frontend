@@ -1,20 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native';
 import { GiftedChat } from 'react-native-gifted-chat'
-import firebaseSvc from '../firebase/FirebaseSvc';
+import firebaseSvc from '../../firebase/FirebaseSvc';
+import { getError, onSuccess, onFailure, } from '../../services/RegistrationHandlers'
 
 export function Conversation(props) {
-  const cUser = firebaseSvc.currentUser();
-  const user = {
-    name: cUser.displayName,
-    email: cUser.email,
-    avatar: cUser.photoURL,
-    _id: firebaseSvc.uid
-  };
-  // const [isLoaded, setIsLoaded] = useState(false);
+  const metadata = props.route.params.metadata;
+  const [user, setUser] = useState(metadata);
+  const id = metadata.conversation;
   const [messages, setMessages] = useState([]);
 
-  const loadMessages = () => {
+  const loadChat = async () => {
     //TODO: Find efficient way to incorporate child_added listener
     // firebaseSvc.messageRefOn(message => {
     //   if (isLoaded) {
@@ -25,23 +21,31 @@ export function Conversation(props) {
     //     // setMessages(GiftedChat.append(messages, message));
     //   }
     // });
-    firebaseSvc.messageRefRetrieve(messageArray => {
+
+    await firebaseSvc.messageRefRetrieve(id, messageArray => {
       setMessages(messageArray);
       // setIsLoaded(true);
     });
-    return () => {
-      console.log('clean up!');
-      firebaseSvc.messageRefOff();
-      setMessages([]);
-      // setIsLoaded(false);
+    // await props.fetchUserData();
+    if (user == null) {
+        props.navigation.goBack();
     }
+    //TODO: Use Promise.all for cleaner async code
   };
 
   const updateMessages = (messageList) => {
-    firebaseSvc.send(messageList);
+    firebaseSvc.send(id, metadata.otherUserId, messageList);
   };
 
-  useEffect(loadMessages, []);
+  useEffect(() => {
+    loadChat();
+    return () => {
+      console.log('convo clean up!');
+      firebaseSvc.messageRefOff(id);
+      setMessages([]);
+      // setIsLoaded(false);
+    }
+  }, []);
 
   return (
         <GiftedChat

@@ -37,7 +37,7 @@ export function UpdateProfile(props) {
 
     return(
             <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container}>
-                    <Image style={imageStyles.gobbleImage}source = {require('../../images/gobble.png')}/>
+                    <Image style={imageStyles.gobbleImage} source = {require('../../images/gobble.png')}/>
                     <StatusBar style="auto"/>
                     <Text style={inputStyles.headerText}>Update Particulars</Text>
                     <Text style={inputStyles.subText}>Press Continue if you don't need to update these particulars</Text>

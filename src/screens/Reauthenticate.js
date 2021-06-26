@@ -35,7 +35,7 @@ export default function Reauthenticate(props) {
     return(
                 <KeyboardAwareScrollView contentContainerStyle={containerStyles.container} scrollEnabled={false}>
                     <Text style={inputStyles.headerText}>Enter your Credentials</Text>
-                    <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
+                    <Image style={imageStyles.gobbleImage} source = {require('../images/gobble.png')}/>
                     <StatusBar style="auto"/>
                     <Text style={inputStyles.subText}>{user.email === null? 'Unknown Email' : user.email}</Text>
                     <View style={inputStyles.inputView}>

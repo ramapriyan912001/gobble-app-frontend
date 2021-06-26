@@ -38,7 +38,7 @@ export default function RegisterPage3(props) {
                         <Picker.Item label="Halal" value="Halal" />
                         <Picker.Item label="Vegetarian" value="Vegetarian" />
                         <Picker.Item label="Vegan/Strictly Vegetarian" value="Vegan" />
-                        <Picker.Item label="No Restrictions" value='Any' />
+                        <Picker.Item label="No Restrictions" value='ANY' />
             </Picker>
         <Text style={pickerStyles.text}>What is your preferred cuisine?</Text>
             <Picker
@@ -50,7 +50,7 @@ export default function RegisterPage3(props) {
                 <Picker.Item label="Asian" value="Asian" />
                 <Picker.Item label="Malaysian" value="Malay" />
                 <Picker.Item label="Western" value='Western' />
-                <Picker.Item label="Any" value='Any' />
+                <Picker.Item label="Any" value='ANY' />
             </Picker>
 
         <View style={containerStyles.buttonRow}>

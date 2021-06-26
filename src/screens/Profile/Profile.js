@@ -3,22 +3,27 @@ import React, {useEffect, useState, useCallback} from 'react'
 import {Text, Image, TouchableOpacity, SafeAreaView, Alert, View, Button} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
 import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../../styles/LoginStyles'
-import { getError, onSuccess, onFailure, industryCodes } from '../../services/RegistrationHandlers'
+import { getError, onSuccess, onFailure } from '../../services/RegistrationHandlers'
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchAuthUser, fetchUserData } from '../../redux/actions/actions'
+import { INDUSTRY_CODES } from '../../constants/objects'
 
 function Profile(props) {
+    const [userInfo, setUserInfo] = useState({});
     const [hasAvatar, setHasAvatar] = useState(false);
 
     const signOutSuccess = () => {
         console.log('Signed Out');
-        props.navigation.navigate('Login');
+        props.navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+        });
     }
 
     const signOutFailure = (err) => {
-        console.warn('Sign Out Error: ' + err.message);
+        console.log('Sign Out Error: ' + err.message);
         Alert.alert('Sign Out Error. Try Again Later');
     }
     
@@ -62,7 +67,7 @@ function Profile(props) {
             {loadPic()}
             <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
             <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
-            <Text style={profileStyles.profileField}>You work in the {industryCodes[userInfo.industry]} industry</Text>
+            <Text style={profileStyles.profileField}>You work in the {INDUSTRY_CODES[userInfo.industry]} industry</Text>
             <Text style={profileStyles.profileField}>Cross-Industrial meetings? {userInfo.crossIndustry?'Sure!':'Nope!'}</Text>           
             <Text style={profileStyles.profileField}>{userInfo.email}</Text>
             <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('UpdateProfile', {name: userInfo.name, email: userInfo.email})}>

@@ -20,7 +20,7 @@ export default function Login(props) {
         const user = userCredential.user;
         user.lastSeen === null
         ? props.navigation.navigate('Welcome')
-        : props.navigation.navigate('BottomTabs');
+        : props.navigation.replace('BottomTabs');
     };
     const loginFailed = (err) => {
         // const errorCode = err.code;
@@ -40,7 +40,7 @@ export default function Login(props) {
 
     return(
                 <KeyboardAwareScrollView contentContainerStyle={containerStyles.container} scrollEnabled={false}>
-                    <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
+                    <Image style={imageStyles.gobbleImage} source = {require('../images/gobble.png')}/>
                     <StatusBar style="auto"/>
                     <View style={inputStyles.inputView}> 
                         <TextInput
@@ -48,6 +48,8 @@ export default function Login(props) {
                             style={inputStyles.TextInput}
                             placeholder="Email"
                             placeholderTextColor="#003f5c"
+                            returnKeyType = 'done'
+                            onSubmitEditing={(event) => onPressLogin()}
                             onChangeText={(email) => setEmail(email)}
                         />
                     </View>
@@ -58,7 +60,9 @@ export default function Login(props) {
                             style={inputStyles.TextInput}
                             placeholder="Password"
                             placeholderTextColor="#003f5c"
+                            returnKeyType = 'done'
                             secureTextEntry={true}
+                            onSubmitEditing={(event) => onPressLogin()}
                             onChangeText={(password) => setPassword(password)}
                         />
                     </View>
