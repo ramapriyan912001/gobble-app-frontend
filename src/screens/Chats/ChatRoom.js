@@ -9,20 +9,21 @@ import renderSeparator from '../../components/renderSeparator'
 import renderHeader from '../../components/renderHeader'
 import firebaseSvc from '../../firebase/FirebaseSvc'
 
-function MatchesHistory (props) {
+function ChatRoom (props) {
     const [data, setData] = useState([]);
-    const [matchIDs, setMatchIDs] = useState({});
+    const [userIDs, setUserIDs] = useState({});
     const [loading, setLoading]= useState(true);
     
     async function loadAsync() {
       await firebaseSvc
-            .getMatchIDs(
+            .getChats(
               snapshot => {
-                let ids = snapshot.val();
-                for(let key in ids) {
-                  if(!(key in matchIDs)) {
-                    matchIDs[key] = true;
-                    setData(data.concat({...ids[key], matchID: key}))
+                const chats = snapshot.val();
+                // console.log(chats, 'all chats')
+                for(let key in chats) {
+                  if(!(key in userIDs)) {
+                    userIDs[key] = true;
+                    setData(data.concat({...chats[key].metadata}))
                   }
                 }
               },
@@ -33,12 +34,14 @@ function MatchesHistory (props) {
 
     useEffect(() => {
         loadAsync();
+        return () => {
+          firebaseSvc.chatsOff();
+        }
     }, [])
 
-    const pickImage = item => item.otherUserData.avatar == null || item.otherUserData.avatar == ""
+    const pickImage = item => item.avatar == null || item.avatar == ""
                                 ? 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc'
-                                : item.otherUserData.avatar;
-    
+                                : item.avatar;
     return (
       <SafeAreaView>
           <FlatList
@@ -47,16 +50,16 @@ function MatchesHistory (props) {
               <ListItem
               containerStyle={{borderBottomWidth:5, height: 160}}
               key={index}
-              onPress={() => props.navigation.navigate('Conversation', {matchID: item.matchID})}
+              onPress={() => props.navigation.navigate('Conversation', {metadata: item})}
               roundAvatar>
                 <Avatar size="large" source={{uri:pickImage(item)}}/>
                 <ListItem.Content>
-                  <ListItem.Title>{`${item.otherUserData.name}, ${item.industryPreference} industry`}</ListItem.Title>
+                  <ListItem.Title>{`${item.name}, ${item.industry} industry`}</ListItem.Title>
                   <ListItem.Subtitle>{`${item.lastMessage == '' ? 'Click here to start a chat!': item.lastMessage}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}
-            keyExtractor={item => item.datetime}
+            keyExtractor={item => item.matchDateTime}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
             ListFooterComponent={renderFooter(loading)}
@@ -72,7 +75,7 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(MatchesHistory);
+export default connect(mapStateToProps, mapDispatchProps)(ChatRoom);
 // import React, { useState, useEffect } from 'react'
 // import { SafeAreaView, FlatList, View, TouchableHighlight } from 'react-native';
 // import { GiftedChat } from 'react-native-gifted-chat'

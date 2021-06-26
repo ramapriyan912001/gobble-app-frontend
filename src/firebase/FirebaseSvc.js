@@ -110,12 +110,12 @@ class FirebaseSvc {
   }
 
   getCurrentUserCollection = (success, failure) => this.userExists()
-                                            ? this
-                                              .userRef(this.uid)
-                                              .once('value')
-                                              .then(success)
-                                              .catch(failure)
-                                            : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+                                                    ? this
+                                                      .userRef(this.uid)
+                                                      .once('value')
+                                                      .then(success)
+                                                      .catch(failure)
+                                                    : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
   getUserCollection = (id, success, failure) => id != null
                                                 ? this
@@ -125,22 +125,46 @@ class FirebaseSvc {
                                                   .catch(failure)
                                                 : failure({code: 'auth/invalid-id', message: 'Invalid UID provided'});
 
-  getPendingMatchIDs = (success, failure) => this.userExists()
-                                                ? this
-                                                  .userRef(`${this.uid}/pendingMatchIDs`)
-                                                  .once('value')
-                                                  .then(success)
-                                                  .catch(failure)
-                                                : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
-    
-  getMatchIDs = (success, failure) => this.userExists()
-                                                    ? this
-                                                      .userRef(`${this.uid}/matchIDs`)
-                                                      .once('value')
-                                                      .then(success)
-                                                      .catch(failure)
-                                                    : failure({code: 'auth/invalid-id', message: 'Invalid UID provided'});                                          
+  getPendingMatchIDs = (success, callback, failure) => this.userExists()
+                                              ? this
+                                                .userRef(`${this.uid}/pendingMatchIDs`)
+                                                .on('value', (x) => callback(success(x)))
+                                              : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+
+  pendingMatchIDsOff = () => {if (this.userExists()){
+                                this
+                                .userRef(`${this.uid}/pendingMatchIDs`)
+                                .off()
+                              }}
   
+   
+                                
+  getMatchIDs = (success, callback, failure) => this.userExists()
+                                      ? this
+                                        .userRef(`${this.uid}/matchIDs`)
+                                        .on('value', (x) => callback(success(x)))
+                                      : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+
+  matchIDsOff = () => {
+                        if (this.userExists()) {
+                          this
+                          .userRef(`${this.uid}/matchIDs`)
+                          .off()
+                      }}
+  
+  getChats = (success, failure) => this.userExists()
+                                      ? this  
+                                        .chatsRef(`${this.uid}`)
+                                        .on('value', success)
+                                      : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});  
+  
+  chatsOff = () => {
+                      if (this.userExists()) {
+                        this
+                        .chatsRef(`${this.uid}`)
+                        .off();
+                    }
+                  }
 
   currentUser = () => firebase.auth().currentUser;
 
@@ -158,20 +182,20 @@ class FirebaseSvc {
   //Retrieve All Stored Messages
   messageRefRetrieve = (id, callback) => {
     // console.log('Retrieving Old Messages: ');
-    this.messageRef(`${id}`)
+    this.conversationRef(`${id}`)
       // .limitToLast(40)
       .on('value', snapshot => callback(this.parseStoredMessage(snapshot)));
   }
 
-  messageRefOn = callback => {
-    // console.log('New Message: ');
-    this.messageRef('')
-      .limitToLast(40)
-      .on('child_added', snapshot => callback(this.parseMessage(snapshot)));
-  }
+  // messageRefOn = callback => {
+  //   // console.log('New Message: ');
+  //   this.conversationRef('')
+  //     .limitToLast(40)
+  //     .on('child_added', snapshot => callback(this.parseMessage(snapshot)));
+  // }
 
   messageRefOff(id) {
-    this.messageRef(`${id}`).off();
+    this.conversationRef(`${id}`).off();
   }
 
   // The parse method take the snapshot data and construct a message:
@@ -215,18 +239,20 @@ class FirebaseSvc {
 
   // To send a message, we call the send method from GiftedChat component in onSend property as such: onSend={firebaseSvc.send}
   // The send method in Firebase.js is:
-  send = (id, messages) => {
+  send = (id, otherUserID, messages) => {
     const len = messages.length;
     const lastSentMessage = len == 0 ? '' : messages[len - 1];
     messages.map((message) => {
       const {text, user, createdAt} = message;
       const timestamp = createdAt.toDateString();
       const newMessage = {text, user, timestamp};
-      this.messageRef(`${id}`).push(newMessage);
+      this.conversationRef(`${id}`).push(newMessage);
     });
-    //Change lastMessage of Match
-    this.userRef(`matchIDs/${id}/lastMessage`).set(lastSentMessage);
-    
+    //Change lastMessage of Match - switch to Chats Table
+    // this.userRef(`/${this.uid}/matchIDs/${id}/lastMessage`).set(lastSentMessage);
+    this.chatsRef(`/${this.uid}/${otherUserID}/metadata/lastMessage`).set(lastSentMessage.text);
+    this.chatsRef(`/${otherUserID}/${this.uid}/metadata/lastMessage`).set(lastSentMessage.text);
+
     // const changeLastMessage = (user) => {user.matchIDs[id][lastMessage] = lastSentMessage;};
     // this.getCurrentUserCollection(changeLastMessage, (err) => console.log('Error Changing Last Message', err.message));
   };
@@ -235,12 +261,16 @@ class FirebaseSvc {
     return this.currentUser().uid;
   }
 
-  messageRef(params) {
-    return firebase.database().ref(`Messages/${params}`);
+  conversationRef(params) {
+    return firebase.database().ref(`Conversation/${params}`);
   }
 
   userRef(params) {
     return firebase.database().ref(`Users/${params}`);
+  }
+
+  chatsRef(params) {
+    return firebase.database().ref(`Chats/${params}`);
   }
 
   matchesRef(params) {
@@ -312,7 +342,7 @@ class FirebaseSvc {
           date2 = this.getDatetime(child)
           time2 = this.convertTimeToMinutes(date2)
           if(!this.isWithinRange(coords1, distance1, coords2, distance2) || !this.isWithinTime(time1, time2) || request.userId === child.userId) {
-            console.log('out of range/time / same user');
+            console.log('out of range/time/ same user');
             continue;
           }
           compatibility = this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
@@ -368,13 +398,22 @@ makeGobbleRequest(ref, request, date) {
     let request1UserDetails = await this.getUserDetails(request1.userId)
     const matchID = await this.gobbleRequestsRef().child('ANY').child('ANY').push().key;
     let updates = {}
+
+    //The Match Updates
     updates[`/Users/${request1.userId}/matchIDs/${matchID}`] = {...request1, otherUserId: request2.userId, 
       otherUserCuisinePreference: request2.cuisinePreference, otherUserData: request2UserDetails, lastMessage:'',}
     updates[`/Users/${request2.userId}/matchIDs/${matchID}`] = {...request2, otherUserId: request1.userId,
       otherUserCuisinePreference: request1.cuisinePreference, otherUserData: request1UserDetails, lastMessage:'',}
     updates[`/Users/${request2.userId}/pendingMatchIDs/${request2Ref}`] = null;
-    updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request2))}/${request2.dietaryRestriction}/${request2Ref}`] = null
-    await firebase.database().ref().update(updates)
+    updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request2))}/${request2.dietaryRestriction}/${request2Ref}`] = null;
+
+    updates = await this.linkChats(updates, request1, request2, request1UserDetails, request2UserDetails);
+    try{
+      // console.log('Updates',updates);
+      await firebase.database().ref().update(updates);
+    } catch(err) {
+      console.log('Match Update Error:', err.message);
+    }
       // TODO: What if the user changes his/her profile picture?
       // Maybe we need to create another table of just user + profile pic so we don't need to load a lot of data every time
   }
@@ -385,6 +424,48 @@ makeGobbleRequest(ref, request, date) {
     // This is for phase 3
     // For now we just have a threshold of 18 points
     return 18;
+  }
+
+  async linkChats(updates, req1, req2, user1, user2) {
+    //Adding to Chats Table
+    //If the User has never been matched before, add a new entry in each User's ref under this table
+    //If they have been matched before, update matchDateTime
+   const isNewMatch = this.chatsRef(`${req1.userId}/${req2.userId}`)
+                          .once('value', snapshot => !snapshot.exists());
+    if (isNewMatch == null){
+      //Do Nothing
+      console.log('Nothing is done to link chats');
+    } else { 
+      if (isNewMatch) {
+        const conversationID = await this.conversationRef().push().key;  
+        updates[`/Chats/${req1.userId}/${req2.userId}/metadata`] = {
+                                                            _id: req1.userId,
+                                                            name: user2.name,
+                                                            otherUserId: req2.userId,
+                                                            industry: req2.industry,
+                                                            avatar: user2.avatar,
+                                                            lastMessage: '',
+                                                            conversation: conversationID,
+                                                            matchDateTime: req1.datetime,
+                                                          };
+        updates[`/Chats/${req2.userId}/${req1.userId}/metadata`] = {
+                                                            _id: req2.userId,
+                                                            name: user1.name,
+                                                            otherUserId: req1.userId,
+                                                            industry: req1.industry,
+                                                            avatar: user1.avatar,
+                                                            lastMessage: '',
+                                                            conversation: conversationID,
+                                                            matchDateTime: req1.datetime,
+                                                          };
+      } else {
+        updates[`/Chats/${req1.userId}/${req2.userId}/metadata/matchDateTime`] = req1.datetime;
+        updates[`/Chats/${req2.userId}/${req1.userId}/metadata/matchDateTime`] = req1.datetime;
+      }
+    }
+    return updates;
+          // .then (x => x)
+          // .catch(err => console.log('Linking Chats Error:', err.message));
   }
 
   measureCompatibility(request1, request2) {

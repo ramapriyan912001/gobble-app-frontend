@@ -48,6 +48,8 @@ export default function Login(props) {
                             style={inputStyles.TextInput}
                             placeholder="Email"
                             placeholderTextColor="#003f5c"
+                            returnKeyType = 'done'
+                            onSubmitEditing={(event) => onPressLogin()}
                             onChangeText={(email) => setEmail(email)}
                         />
                     </View>
@@ -58,7 +60,9 @@ export default function Login(props) {
                             style={inputStyles.TextInput}
                             placeholder="Password"
                             placeholderTextColor="#003f5c"
+                            returnKeyType = 'done'
                             secureTextEntry={true}
+                            onSubmitEditing={(event) => onPressLogin()}
                             onChangeText={(password) => setPassword(password)}
                         />
                     </View>

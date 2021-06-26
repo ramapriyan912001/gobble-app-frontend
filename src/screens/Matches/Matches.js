@@ -20,14 +20,16 @@ function Matches (props) {
             .getPendingMatchIDs(
               snapshot => {
                 let ids = snapshot.val();
+                // console.log(ids,'ids');
                 for(let key in ids) {
                   if(!(key in matchIDs)) {
                     matchIDs[key] = true
                     setData(data.concat(ids[key]))
                   }
                 }
-                console.log(data);
+                // console.log(data);
               },
+              x => x,
               err => {console.log(err.message)}
             )
         setLoading(false);
@@ -35,8 +37,10 @@ function Matches (props) {
 
     useEffect(() => {
         loadAsync();
+        return () => {
+          firebaseSvc.pendingMatchIDsOff();
+        }
     }, [])
-
     const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     
     return (

@@ -20,7 +20,7 @@ function MatchesHistory (props) {
             .getMatchIDs(
               snapshot => {
                 let ids = snapshot.val();
-                // console.log(ids)
+                console.log(ids, 'ids')
                 for(let key in ids) {
                   if(!(key in matchIDs)) {
                     matchIDs[key] = true;
@@ -29,6 +29,7 @@ function MatchesHistory (props) {
                 }
                 console.log(data);
               },
+              x => x,
               err => {console.log(err.message)}
             )
         setLoading(false);
@@ -36,6 +37,9 @@ function MatchesHistory (props) {
 
     useEffect(() => {
         loadAsync();
+        return () => {
+          firebaseSvc.matchIDsOff();
+        }
     }, [])
 
     const pickImage = item =>   item.otherUserData.avatar == null || item.otherUserData.avatar == ''
@@ -53,7 +57,7 @@ function MatchesHistory (props) {
               roundAvatar>
                 <Avatar size="large" source={{uri:pickImage(item)}}/>
                 <ListItem.Content>
-                  <ListItem.Title>{`${item.otherUserData.name}, ${item.industryPreference} industry`}</ListItem.Title>
+                  <ListItem.Title>{`${item.otherUserData.name}, ${item.industry} industry`}</ListItem.Title>
                   <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.datetime}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>

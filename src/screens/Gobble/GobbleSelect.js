@@ -22,6 +22,7 @@ function GobbleSelect(props) {
 
   useEffect(() => {
       (async () => {
+          await props.fetchUserData();
             let {status} = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 setErrorMsg('Permission Denied')
@@ -63,7 +64,7 @@ function GobbleSelect(props) {
             industryPreference: props.currentUserData.crossIndustrial ? 'ANY' : props.currentUserData.industry,
             industry: props.currentUserData.industry,
             cuisinePreference: cuisinePreference,
-            datetime: date.toLocaleString(),
+            datetime: date.toString(),
             location: location,
             distance: 200,
         }
