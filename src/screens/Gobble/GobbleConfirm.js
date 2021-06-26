@@ -4,7 +4,6 @@ import {buttonStyles, containerStyles, inputStyles} from '../../styles/LoginStyl
 
 export function GobbleConfirm(props) {
     let result = props.route.params.result;
-    console.log(result)
     if(result) {
         return(
             <View style={containerStyles.container}>

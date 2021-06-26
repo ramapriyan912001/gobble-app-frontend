@@ -26,7 +26,7 @@ function GobbleSelect2(props) {
     return distances.map(distance => (<Picker.Item label={distance == 200 ? 'No Preference' : `${distance} km`} value={distance} key={distanceID++}/>))
   };
 
-  function submitGobble() {
+  async function submitGobble() {
     const gobbleRequest = {
         userId: request.userId,
         dietaryRestriction: request.dietaryRestriction,
@@ -37,10 +37,8 @@ function GobbleSelect2(props) {
         location: request.location,
         distance: distance,
     }
-    // console.log(gobbleRequest, 'completed');
-    let result = await firebaseSvc.findGobbleMate(gobbleRequest);
+    let result =  await firebaseSvc.findGobbleMate(gobbleRequest);
     // We need to do some load page
-    console.log(result)
     props.navigation.navigate('GobbleConfirm', {result: result});
   }
   const showDatePicker = () => {
