@@ -38,7 +38,7 @@ function GobbleSelect2(props) {
         distance: distance,
     }
     // console.log(gobbleRequest, 'completed');
-    firebaseSvc.makeGobbleRequest(gobbleRequest);
+    firebaseSvc.findGobbleMate(gobbleRequest);
     // We need to do some load page
     props.navigation.navigate('GobbleConfirm');
   }

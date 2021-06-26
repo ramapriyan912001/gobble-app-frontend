@@ -255,18 +255,6 @@ class FirebaseSvc {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
   }
 
-  makeGobbleRequest(gobbleRequest) {
-    let datetime = this.getDatetime(gobbleRequest)
-    let date = new Date(datetime)
-    let requestRef = this.gobbleRequestsRef()
-    .child(this.makeDateString(date))
-    // .child(`${gobbleRequest.dietaryRestriction}`)
-    // .child(`${gobbleRequest.industryPreference}`)
-    // .child(`${gobbleRequest.cuisinePreference}`)
-    console.log('Finding a match');
-    return this.findGobbleMate(requestRef, gobbleRequest) ? 'FOUND' : 'WAITING'
-  }
-
   getCoords(request) {
     return request['location']['coords']
   }
@@ -287,7 +275,13 @@ class FirebaseSvc {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
   }
 
-  async findGobbleMate(ref, request) {
+  async findGobbleMate(gobbleRequest) {
+    console.log('Finding a match');
+    let request = gobbleRequest;
+    let datetime = this.getDatetime(gobbleRequest)
+    let date = new Date(datetime)
+    let ref = this.gobbleRequestsRef()
+    .child(this.makeDateString(date))
     //TODO: Stop users from entering matches with same datetime
     let tempRef;
     let coords1 = this.getCoords(request)
@@ -350,20 +344,19 @@ class FirebaseSvc {
           return true;
         } else {
           console.log('No match found! Creating new entry');
-          const matchParentRef = ref.child(`${request.dietaryRestriction}`);
-          const matchID = matchParentRef.push().key;
-          let updates = {};
-          updates[`/Users/${request.userId}/pendingMatchIDs/${matchID}`] = request;
-          updates[`/GobbleRequests/${this.makeDateString(date1)}/${request.dietaryRestriction}/${matchID}`] = request;
-          // Add more updates here
-          firebase.database().ref().update(updates);
-
-          // matchParentRef.child(matchID).set(request);
-          // // Don't push the ref, push the pending MatchID itself
-          // this.userRef(`${request.userId}/pendingMatchIDs/${matchID}`).set(request);
+          this.makeGobbleRequest(ref, request, date1)
           return false;
         }
     }
+}
+
+makeGobbleRequest(ref, request, date) {
+  const matchID = ref.child(`${request.dietaryRestriction}`).push().key;
+  let updates = {};
+  updates[`/Users/${request.userId}/pendingMatchIDs/${matchID}`] = request;
+  updates[`/GobbleRequests/${this.makeDateString(date)}/${request.dietaryRestriction}/${matchID}`] = request;
+  // Add more updates here
+  firebase.database().ref().update(updates);
 }
 
   // Important ref is the reference under which request
@@ -382,6 +375,7 @@ class FirebaseSvc {
     updates[`/Users/${request2.userId}/matchIDs/${matchID}`] = {...request2, otherUserId: request1.userId,
       otherUserCuisinePreference: request1.cuisinePreference, otherUserData: request1UserDetails, lastMessage:'',}
     updates[`/Users/${request2.userId}/pendingMatchIDs/${request2Ref}`] = null;
+    updates[`GobbleRequests/${this.makeDateString(this.getDatetime(request2))}/${request2.dietaryRestriction}/${request2Ref}`] = null
     await firebase.database().ref().update(updates)
       // TODO: What if the user changes his/her profile picture?
       // Maybe we need to create another table of just user + profile pic so we don't need to load a lot of data every time
