@@ -38,9 +38,10 @@ function GobbleSelect2(props) {
         distance: distance,
     }
     // console.log(gobbleRequest, 'completed');
-    firebaseSvc.findGobbleMate(gobbleRequest);
+    let result = await firebaseSvc.findGobbleMate(gobbleRequest);
     // We need to do some load page
-    props.navigation.navigate('GobbleConfirm');
+    console.log(result)
+    props.navigation.navigate('GobbleConfirm', {result: result});
   }
   const showDatePicker = () => {
     setDatePickerVisibility(true);

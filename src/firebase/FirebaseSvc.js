@@ -315,8 +315,6 @@ class FirebaseSvc {
             console.log('out of range/time / same user');
             continue;
           }
-          
-          console.log(child,'child')
           compatibility = this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
           console.log(compatibility, 'compatiblity');
           if (compatibility >= this.getThreshold()) {//for now threshold is 18 arbitrarily
@@ -375,7 +373,7 @@ makeGobbleRequest(ref, request, date) {
     updates[`/Users/${request2.userId}/matchIDs/${matchID}`] = {...request2, otherUserId: request1.userId,
       otherUserCuisinePreference: request1.cuisinePreference, otherUserData: request1UserDetails, lastMessage:'',}
     updates[`/Users/${request2.userId}/pendingMatchIDs/${request2Ref}`] = null;
-    updates[`GobbleRequests/${this.makeDateString(this.getDatetime(request2))}/${request2.dietaryRestriction}/${request2Ref}`] = null
+    updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request2))}/${request2.dietaryRestriction}/${request2Ref}`] = null
     await firebase.database().ref().update(updates)
       // TODO: What if the user changes his/her profile picture?
       // Maybe we need to create another table of just user + profile pic so we don't need to load a lot of data every time
