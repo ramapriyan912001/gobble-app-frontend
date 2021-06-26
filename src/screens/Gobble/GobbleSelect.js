@@ -54,7 +54,7 @@ function GobbleSelect(props) {
 
   function submitGobble() {
       if (loading) {
-          //Do Nothing
+          Alert.alert('Hang on for a sec!', 'We\'re still getting your location');
       } else if(location == null) {
           Alert.alert('We need Location Permission!', 'You can change permissions in your phone settings');
       } else {

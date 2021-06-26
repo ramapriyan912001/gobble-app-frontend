@@ -13,12 +13,12 @@ export const FOOD_IMAGES_URIs = {
 }
 
 export const INDUSTRY_CODES = {
-    1: "Human Resources",
+    6: "Human Resources",
     2: "Law",
     3: "Research",
     4: "Engineering",
     0: "Computing",
-    6: "Marketing",
+    1: "Marketing",
     7: "Sales",
     8: "Artist",
     9: "Public Sector",

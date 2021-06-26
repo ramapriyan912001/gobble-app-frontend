@@ -65,7 +65,7 @@ function MatchesHistory (props) {
               roundAvatar>
                 <Avatar size="large" source={{uri:pickImage(item)}}/>
                 <ListItem.Content>
-                  <ListItem.Title>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
+                  <ListItem.Title>{`${item.otherUserData.name}, ${INDUSTRY_CODES[item.otherUserData.industry]} industry`}</ListItem.Title>
                   <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.datetime}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
