@@ -43,8 +43,6 @@ export function Conversation(props) {
     if (user === null) {
         props.navigation.goBack();
     }
-    console.log("messages")
-    console.log(messages)
     //TODO: Use Promise.all for cleaner async code
   };
 

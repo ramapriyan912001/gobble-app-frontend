@@ -19,14 +19,12 @@ function MatchesHistory (props) {
             .getMatchIDs(
               snapshot => {
                 let ids = snapshot.val();
-                console.log(ids)
                 for(let key in ids) {
                   if(!(key in matchIDs)) {
                     matchIDs[key] = true;
                     setData(data.concat({...ids[key], matchID: key}))
                   }
                 }
-                console.log(data);
               },
               err => {console.log(err.message)}
             )
