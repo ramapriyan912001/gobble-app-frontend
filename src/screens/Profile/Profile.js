@@ -15,7 +15,10 @@ function Profile(props) {
 
     const signOutSuccess = () => {
         console.log('Signed Out');
-        props.navigation.navigate('Login');
+        props.navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+        });
     }
 
     const signOutFailure = (err) => {

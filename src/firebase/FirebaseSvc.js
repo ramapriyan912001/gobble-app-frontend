@@ -387,21 +387,16 @@ class FirebaseSvc {
     let request1UserDetails = await this.getUserDetails(request1.userId)
     console.log(request1UserDetails)
     console.log(request2UserDetails)
-    this.userRef(`${request1.userId}/matchIDs`).push({...request1, otherUserId: request2.userId, 
-      otherUserCuisinePreference: request2.cuisinePreference, otherUserData: request2UserDetails, lastMessage:'',})
-
-    this.userRef(`${request2.userId}/matchIDs`).push({...request2, otherUserId: request1.userId,
-      otherUserCuisinePreference: request1.cuisinePreference, otherUserData: request1UserDetails, lastMessage:'',})
-
+    const matchID = await this.gobbleRequestsRef().child('ANY').child('ANY').push().key;
+    let updates = {}
+    updates[`/Users/${request1.userId}/matchIDs/${matchID}`] = {...request1, otherUserId: request2.userId, 
+      otherUserCuisinePreference: request2.cuisinePreference, otherUserData: request2UserDetails, lastMessage:'',}
+    updates[`/Users/${request2.userId}/matchIDs/${matchID}`] = {...request2, otherUserId: request1.userId,
+      otherUserCuisinePreference: request1.cuisinePreference, otherUserData: request1UserDetails, lastMessage:'',}
+    updates[`/Users/${request2.userId}/pendingMatchIDs/${request2Ref}`] = null;
+    await firebase.database().ref().update(updates)
       // TODO: What if the user changes his/her profile picture?
       // Maybe we need to create another table of just user + profile pic so we don't need to load a lot of data every time
-
-    
-    let updates = {};
-    updates[`/Users/${request2.userId}/pendingMatchIDs/${request2Ref}`] = null;
-    updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request2))}/${request2.dietaryRestriction}/${request2Ref}`] = null;
-    // Add more updates here
-    firebase.database().ref().update(updates);
   }
 
   getThreshold(request) {
