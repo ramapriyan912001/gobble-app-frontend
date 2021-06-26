@@ -297,10 +297,8 @@ class FirebaseSvc {
     let bestMatch = null;
     let bestMatchCompatibility = 5;
     let dietaryRef;
-    console.log(request);
     let counter = 0;
     let dietaryOptionsArray = DIETARY_ARRAYS[`${request.dietaryRestriction}`]
-    console.log(dietaryOptionsArray);
     let requestRef2;
     let result = false;
     // IF THE USER IS ANY, WE NEED TO SEARCH ALL THE PENDING REQUESTS
@@ -319,14 +317,7 @@ class FirebaseSvc {
           distance2 = this.getDistance(child)
           date2 = this.getDatetime(child)
           time2 = this.convertTimeToMinutes(date2)
-
           if(!this.isWithinRange(coords1, distance1, coords2, distance2) || !this.isWithinTime(time1, time2) || request.userId === child.userId) {
-            console.log(!this.isWithinTime(time1, time2))
-            console.log(time1)
-            console.log(time2)
-            console.log(!this.isWithinRange(coords1, distance1, coords2, distance2))
-            console.log(request.userId)
-            console.log(child.userId)
             console.log('out of range/time / same user');
             continue;
           }
@@ -336,7 +327,6 @@ class FirebaseSvc {
           console.log(compatibility, 'compatiblity');
           if (compatibility >= this.getThreshold()) {//for now threshold is 18 arbitrarily
             console.log('greater than threshold');
-            console.log(iterator)
             this.match(request, null, child, iterator)
             result = true;
             console.log("EARLY TERMINATION")
@@ -385,8 +375,6 @@ class FirebaseSvc {
   async match(request1, dietaryRef1, request2, request2Ref) {
     let request2UserDetails = await this.getUserDetails(request2.userId)
     let request1UserDetails = await this.getUserDetails(request1.userId)
-    console.log(request1UserDetails)
-    console.log(request2UserDetails)
     const matchID = await this.gobbleRequestsRef().child('ANY').child('ANY').push().key;
     let updates = {}
     updates[`/Users/${request1.userId}/matchIDs/${matchID}`] = {...request1, otherUserId: request2.userId, 
