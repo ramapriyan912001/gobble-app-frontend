@@ -18,7 +18,7 @@ function MatchesHistory (props) {
     async function loadAsync() {
       await firebaseSvc
             .getMatchIDs(
-              snapshot => {
+              async(snapshot) => {
                 let ids = snapshot.val();
                 // console.log(ids, 'ids')
                 for(let key in ids) {
@@ -26,7 +26,10 @@ function MatchesHistory (props) {
                     matchIDs[key] = true;
                     let details = ids[key]
                     let otherUserId = details.otherUserId
-                    setData(data.concat({...details, otherUserAvatar: firebaseSvc.getAvatar(otherUserId), otherUserIndustry: firebaseSvc.getIndustry(otherUserId)}))
+                    let avatar, industry;
+                    await firebaseSvc.avatarRef(details.otherUserId).on("value", subsnap => {details = {...details, otherUserAvatar: subsnap.val()}})
+                    await firebaseSvc.industryRef(details.otherUserId).on("value", subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
+                    setData(data.concat(details))
                   }
                 }
                 // console.log(data);
@@ -45,9 +48,10 @@ function MatchesHistory (props) {
         }
     }, [])
 
-    const pickImage = item =>   item.otherUserAvatar == null || item.otherUserAvatar == ''
+    const pickImage = item =>   {
+      return item.otherUserAvatar == null || item.otherUserAvatar == ''
                                 ? 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc'
-                                : item.otherUserAvatar;
+                                : item.otherUserAvatar};
     
     return (
       <SafeAreaView>

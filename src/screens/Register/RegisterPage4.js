@@ -3,11 +3,12 @@ import {Text, View, SafeAreaView, TouchableOpacity} from 'react-native'
 import {Picker} from '@react-native-picker/picker'
 import {pickerStyles, buttonStyles, containerStyles} from '../../styles/LoginStyles'
 import firebaseSvc from '../../firebase/FirebaseSvc'
-import {onSuccess, onFailure, cancelRegistration, industryCodes, getError} from '../../services/RegistrationHandlers';
+import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
+import { INDUSTRY_CODES } from '../../constants/objects'
 
 export default function RegisterPage4(props) {
     const [industry, setIndustry] = useState(0);
-    const [industries] = useState(industryCodes);
+    const [industries] = useState(INDUSTRY_CODES);
 
     const updateIndustry = (industry) =>
         firebaseSvc
@@ -26,7 +27,7 @@ export default function RegisterPage4(props) {
     // }, []);
     const industryLabels = () => {
         let pickerItems = [];
-        // <Picker.Item label= value = {industryCodes['Human Resources']}/>
+        // <Picker.Item label= value = {INDUSTRY_CODES['Human Resources']}/>
         //                 <Picker.Item label="Law" value={}/>
         //                 <Picker.Item label="Scientific Research" value=3 />
         //                 <Picker.Item label="Engineering" value=4 />

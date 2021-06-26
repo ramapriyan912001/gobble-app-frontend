@@ -11,3 +11,18 @@ export const FOOD_IMAGES_URIs = {
     'Asian': 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/icons%2FAsian.jpg?alt=media&token=42a2bb66-5128-40b3-bbdf-90a3a08f0050',
     'ANY': 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/icons%2Fadaptive-icon.png?alt=media&token=b3b418d2-6c37-4f0d-bcc7-5fd94abc615e'
 }
+
+export const INDUSTRY_CODES = {
+    1: "Human Resources",
+    2: "Law",
+    3: "Research",
+    4: "Engineering",
+    0: "Computing",
+    6: "Marketing",
+    7: "Sales",
+    8: "Artist",
+    9: "Public Sector",
+    10: "Medicine",
+    5: "Shipping & Transportation",
+    11: "Others"
+}

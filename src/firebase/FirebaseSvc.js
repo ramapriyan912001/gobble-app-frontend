@@ -401,11 +401,13 @@ makeGobbleRequest(ref, request, date) {
 
     //The Match Updates
     updates[`/Users/${request1.userId}/matchIDs/${matchID}`] = {...request1, otherUserId: request2.userId, 
-      otherUserCuisinePreference: request2.cuisinePreference, otherUserDietaryRestriction: request2UserDetails.dietaryRestriction, 
-      otherUserDOB: request2UserDetails.dob, otherUserLocation: request2UserDetails.location, otherUserName: request2UserDetails.name, matchID: matchID, lastMessage:'',}
+      otherUserCuisinePreference: request2.cuisinePreference, otherUserDietaryRestriction: request2UserDetails.diet, 
+      otherUserDOB: request2UserDetails.dob, otherUserLocation: request2.location, otherUserIndustry: request2UserDetails.industry,
+      otherUserAvatar: request1UserDetails.avatar, otherUserName: request2UserDetails.name, matchID: matchID, lastMessage:'',}
     updates[`/Users/${request2.userId}/matchIDs/${matchID}`] = {...request2, otherUserId: request1.userId,
-      otherUserCuisinePreference: request1.cuisinePreference, otherUserDietaryRestriction: request1UserDetails.dietaryRestriction, 
-      otherUserDOB: request1UserDetails.dob, otherUserLocation: request1UserDetails.location, otherUserName: request1UserDetails.name, matchID: matchID, lastMessage:'',}
+      otherUserCuisinePreference: request1.cuisinePreference, otherUserDietaryRestriction: request1UserDetails.diet, 
+      otherUserDOB: request1UserDetails.dob, otherUserLocation: request1.location, otherUserIndustry: request1UserDetails.industry, 
+      otherUserAvatar: request1UserDetails.avatar, otherUserName: request1UserDetails.name, matchID: matchID, lastMessage:'',}
 
     //Remove Respective Pending Matches
     updates[`/Users/${request2.userId}/pendingMatchIDs/${request2Ref}`] = null;
@@ -469,6 +471,7 @@ makeGobbleRequest(ref, request, date) {
         updates[`/Chats/${req2.userId}/${req1.userId}/metadata/matchDateTime`] = req1.datetime;
       }
     }
+    console.log(updates)
     return updates;
           // .then (x => x)
           // .catch(err => console.log('Linking Chats Error:', err.message));
@@ -565,16 +568,8 @@ makeGobbleRequest(ref, request, date) {
     return firebase.database().ref(`Industry/${params}`)
   }
 
-  getIndustry(params) {
-    return this.industryRef(params).on("value", snapshot => snapshot.val())
-  }
-
   avatarRef(params) {
     return firebase.database().ref(`Avatar/${params}`)
-  }
-
-  getAvatar(params) {
-    return this.industryRef(params).on("Industry", snapshot => snapshot.val())
   }
 
   // Making

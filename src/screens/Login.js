@@ -40,7 +40,7 @@ export default function Login(props) {
 
     return(
                 <KeyboardAwareScrollView contentContainerStyle={containerStyles.container} scrollEnabled={false}>
-                    <Image style={imageStyles.gobbleImage}source = {require('../images/gobble.png')}/>
+                    <Image style={imageStyles.gobbleImage} source = {require('../images/gobble.png')}/>
                     <StatusBar style="auto"/>
                     <View style={inputStyles.inputView}> 
                         <TextInput
