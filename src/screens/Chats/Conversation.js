@@ -40,7 +40,7 @@ export function Conversation(props) {
   useEffect(() => {
     loadChat();
     return () => {
-      console.log('clean up!');
+      console.log('convo clean up!');
       firebaseSvc.messageRefOff(id);
       setMessages([]);
       // setIsLoaded(false);

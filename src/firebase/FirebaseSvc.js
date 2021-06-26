@@ -434,8 +434,10 @@ makeGobbleRequest(ref, request, date) {
     //Adding to Chats Table
     //If the User has never been matched before, add a new entry in each User's ref under this table
     //If they have been matched before, update matchDateTime
-   const isNewMatch = this.chatsRef(`${req1.userId}/${req2.userId}`)
-                          .once('value', snapshot => !snapshot.exists());
+    let isNewMatch = false;
+    await this.chatsRef(`${req1.userId}/${req2.userId}`)
+                          .once('value', snapshot => {isNewMatch = !snapshot.exists()});
+    console.log(isNewMatch, 'BOOL');
     if (isNewMatch == null){
       //Do Nothing
       console.log('Nothing is done to link chats');
