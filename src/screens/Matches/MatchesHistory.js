@@ -24,7 +24,9 @@ function MatchesHistory (props) {
                 for(let key in ids) {
                   if(!(key in matchIDs)) {
                     matchIDs[key] = true;
-                    setData(data.concat({...ids[key], matchID: key}))
+                    let details = ids[key]
+                    let otherUserId = details.otherUserId
+                    setData(data.concat({...details, otherUserAvatar: firebaseSvc.getAvatar(otherUserId), otherUserIndustry: firebaseSvc.getIndustry(otherUserId)}))
                   }
                 }
                 console.log(data);
@@ -42,9 +44,9 @@ function MatchesHistory (props) {
         }
     }, [])
 
-    const pickImage = item =>   item.otherUserData.avatar == null || item.otherUserData.avatar == ''
+    const pickImage = item =>   item.otherUserAvatar == null || item.otherUserAvatar == ''
                                 ? 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc'
-                                : item.otherUserData.avatar;
+                                : item.otherUserAvatar;
     
     return (
       <SafeAreaView>
@@ -57,7 +59,7 @@ function MatchesHistory (props) {
               roundAvatar>
                 <Avatar size="large" source={{uri:pickImage(item)}}/>
                 <ListItem.Content>
-                  <ListItem.Title>{`${item.otherUserData.name}, ${item.industry} industry`}</ListItem.Title>
+                  <ListItem.Title>{`${item.otherUserName}, ${item.otherUserIndustry} industry`}</ListItem.Title>
                   <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.datetime}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>

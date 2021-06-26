@@ -357,7 +357,7 @@ class FirebaseSvc {
             console.log('new best compatibility');
             bestMatchCompatibility = compatibility
             bestMatch = child;
-            dietaryRef = iterator; // TODO: THIS IS IMPT
+            dietaryRef = iterator; 
           }
         }
       })
@@ -401,9 +401,13 @@ makeGobbleRequest(ref, request, date) {
 
     //The Match Updates
     updates[`/Users/${request1.userId}/matchIDs/${matchID}`] = {...request1, otherUserId: request2.userId, 
-      otherUserCuisinePreference: request2.cuisinePreference, otherUserData: request2UserDetails, lastMessage:'',}
+      otherUserCuisinePreference: request2.cuisinePreference, otherUserDietaryRestriction: request2UserDetails.dietaryRestriction, 
+      otherUserDOB: request2UserDetails.dob, otherUserLocation: request2UserDetails.location, otherUserName: request2UserDetails.name, matchID: matchID, lastMessage:'',}
     updates[`/Users/${request2.userId}/matchIDs/${matchID}`] = {...request2, otherUserId: request1.userId,
-      otherUserCuisinePreference: request1.cuisinePreference, otherUserData: request1UserDetails, lastMessage:'',}
+      otherUserCuisinePreference: request1.cuisinePreference, otherUserDietaryRestriction: request1UserDetails.dietaryRestriction, 
+      otherUserDOB: request1UserDetails.dob, otherUserLocation: request1UserDetails.location, otherUserName: request1UserDetails.name, matchID: matchID, lastMessage:'',}
+
+    //Remove Respective Pending Matches
     updates[`/Users/${request2.userId}/pendingMatchIDs/${request2Ref}`] = null;
     updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request2))}/${request2.dietaryRestriction}/${request2Ref}`] = null;
 
@@ -553,6 +557,22 @@ makeGobbleRequest(ref, request, date) {
       Alert.alert("Unable to update avatar. You must re-authenticate first.");
       props.navigation.navigate('Reauthentication');
     }
+  }
+
+  industryRef(params) {
+    return firebase.database().ref(`Industry/${params}`)
+  }
+
+  getIndustry(params) {
+    return this.industryRef(params).on("value", snapshot => snapshot.val())
+  }
+
+  avatarRef(params) {
+    return firebase.database().ref(`Avatar/${params}`)
+  }
+
+  getAvatar(params) {
+    return this.industryRef(params).on("Industry", snapshot => snapshot.val())
   }
 
   // Making
