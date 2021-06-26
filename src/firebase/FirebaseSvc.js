@@ -97,6 +97,12 @@ class FirebaseSvc {
       .set(user)
       .then(success)
       .catch(failure);
+      this
+      .industryRef(this.uid)
+      .set(user.industry)
+      this
+      .avatarRef(this.uid)
+      .set(user.avatar)
     } else {
       console.log('No User Logged In');
     }
@@ -569,7 +575,7 @@ makeGobbleRequest(ref, request, date) {
   }
 
   avatarRef(params) {
-    return firebase.database().ref(`Avatar/${params}`)
+    return firebase.database().ref(`Avatars/${params}`)
   }
 
   // Making
