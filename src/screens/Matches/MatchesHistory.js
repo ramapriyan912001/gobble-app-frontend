@@ -9,6 +9,7 @@ import renderSeparator from '../../components/renderSeparator'
 import renderHeader from '../../components/renderHeader'
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { FOOD_IMAGES_URIs } from '../../constants/objects'
+import { INDUSTRY_CODES } from '../../constants/objects'
 
 function MatchesHistory (props) {
     const [data, setData] = useState([]);
@@ -64,7 +65,7 @@ function MatchesHistory (props) {
               roundAvatar>
                 <Avatar size="large" source={{uri:pickImage(item)}}/>
                 <ListItem.Content>
-                  <ListItem.Title>{`${item.otherUserName}, ${item.otherUserIndustry} industry`}</ListItem.Title>
+                  <ListItem.Title>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
                   <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.datetime}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>

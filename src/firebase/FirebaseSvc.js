@@ -482,7 +482,7 @@ makeGobbleRequest(ref, request, date) {
     if(request1.cuisinePreference == request2.cuisinePreference) {
       compatibility += 5;
     }
-    if(request1.industryPreference == 'ANY' || (request1.industryPreference == request2.industry)) {
+    if(request1.industryPreference == 12 || (request1.industryPreference == request2.industry)) {
       compatibility += 5;
     }
     return compatibility;
