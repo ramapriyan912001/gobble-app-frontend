@@ -28,8 +28,8 @@ function MatchesHistory (props) {
                     let details = ids[key]
                     let otherUserId = details.otherUserId
                     let avatar, industry;
-                    await firebaseSvc.avatarRef(details.otherUserId).on("value", subsnap => {details = {...details, otherUserAvatar: subsnap.val()}})
-                    await firebaseSvc.industryRef(details.otherUserId).on("value", subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
+                    await firebaseSvc.avatarRef(details.otherUserId).once("value").then(subsnap => {details = {...details, otherUserAvatar: subsnap.val()}})
+                    await firebaseSvc.industryRef(details.otherUserId).once("value").then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
                     setData(data.concat(details))
                   }
                 }

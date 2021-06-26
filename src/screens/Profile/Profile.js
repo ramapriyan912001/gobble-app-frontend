@@ -68,7 +68,7 @@ function Profile(props) {
             <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
             <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
             <Text style={profileStyles.profileField}>You work in the {INDUSTRY_CODES[userInfo.industry]} industry</Text>
-            <Text style={profileStyles.profileField}>Cross-Industrial meetings? {userInfo.crossIndustry?'Sure!':'Nope!'}</Text>           
+            <Text style={profileStyles.profileField}>Cross-Industrial meetings? {userInfo.crossIndustrial?'Sure!':'Nope!'}</Text>           
             <Text style={profileStyles.profileField}>{userInfo.email}</Text>
             <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('UpdateProfile', {name: userInfo.name, email: userInfo.email})}>
                 <Text style={buttonStyles.loginButtonText}>Edit Profile</Text>
