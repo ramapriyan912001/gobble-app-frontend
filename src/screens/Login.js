@@ -20,7 +20,7 @@ export default function Login(props) {
         const user = userCredential.user;
         user.lastSeen === null
         ? props.navigation.navigate('Welcome')
-        : props.navigation.navigate('BottomTabs');
+        : props.navigation.replace('BottomTabs');
     };
     const loginFailed = (err) => {
         // const errorCode = err.code;

@@ -6,6 +6,7 @@ import Matches from '../screens/Matches/Matches'
 import { ChatNavigator } from '../screens/Chats/ChatNavigator';
 import Ionicons from '@expo/vector-icons/Ionicons'
 import MatchesNavigator from '../screens/Matches/MatchesNavigator';
+import ChatRoom from '../screens/Chats/ChatRoom';
 
 const Tab = createBottomTabNavigator();
 
@@ -35,7 +36,6 @@ export default function BottomTabs() {
         initialRouteName="Profile"
         order={['Profile', 'Gobble', 'Matches', 'Chats']}
         backBehavior= "order"
-        headerMode={'none'}
         tabBarOptions= {{
           activeBackgroundColor: "#0aa859",
           inactiveBackgroundColor: "#b5fbd7",
@@ -46,20 +46,14 @@ export default function BottomTabs() {
         }}>
             <Tab.Screen options={{
                 title: "Profile"
-            }} name="ProfileNavigator" navigationOptions={{
-                headerLeft: () => null,
-                headerShown: false
-            }} component={ProfileNavigator}></Tab.Screen>
+            }} name="ProfileNavigator" component={ProfileNavigator}></Tab.Screen>
             <Tab.Screen options={{
                 title: "Gobble"
                 }} name="GobbleNavigator" component={GobbleNavigator}></Tab.Screen>
-            <Tab.Screen name="MatchesNavigator" navigationOptions={{
-                headerLeft: () => null,
-                headerShown: true
-            }} options={{
+            <Tab.Screen name="MatchesNavigator" options={{
               title: "Matches"
             }} component={MatchesNavigator}></Tab.Screen>
-            <Tab.Screen name="Chats" component={ChatNavigator}></Tab.Screen>
+            <Tab.Screen name="Chatroom" component={ChatRoom}></Tab.Screen>
         </Tab.Navigator>
     )
 }
