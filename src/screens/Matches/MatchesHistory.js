@@ -13,31 +13,32 @@ import { FOOD_IMAGES_URIs } from '../../constants/objects'
 function MatchesHistory (props) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
-    const [loading, setLoading]= useState(true);
+    // const [loading, setLoading]= useState(true);
     
     async function loadAsync() {
       await firebaseSvc
             .getMatchIDs(
               snapshot => {
                 let ids = snapshot.val();
-                console.log(ids, 'ids')
+                // console.log(ids, 'ids')
                 for(let key in ids) {
                   if(!(key in matchIDs)) {
                     matchIDs[key] = true;
                     setData(data.concat({...ids[key], matchID: key}))
                   }
                 }
-                console.log(data);
+                // console.log(data);
               },
               x => x,
               err => {console.log(err.message)}
             )
-        setLoading(false);
+        // setLoading(false);
     }
 
     useEffect(() => {
         loadAsync();
         return () => {
+          console.log('matchHistory clean up!');
           firebaseSvc.matchIDsOff();
         }
     }, [])
@@ -65,7 +66,7 @@ function MatchesHistory (props) {
             keyExtractor={item => item.datetime}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
-            ListFooterComponent={renderFooter(loading)}
+            // ListFooterComponent={renderFooter(loading)}
             onEndReachedThreshold={50}
           />
       </SafeAreaView>

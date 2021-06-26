@@ -12,7 +12,7 @@ import { FOOD_IMAGES_URIs } from '../../constants/objects'
 
 function Matches (props) {
     const [data, setData] = useState([]);
-    const [loading, setLoading]= useState(true);
+    // const [loading, setLoading]= useState(true);
     const [matchIDs, setMatchIDs] = useState({});
     
     async function loadAsync() {
@@ -32,12 +32,13 @@ function Matches (props) {
               x => x,
               err => {console.log(err.message)}
             )
-        setLoading(false);
+        // setLoading(false);
     }
 
     useEffect(() => {
         loadAsync();
         return () => {
+          console.log('pendingMatchID clean up!');
           firebaseSvc.pendingMatchIDsOff();
         }
     }, [])
@@ -62,7 +63,7 @@ function Matches (props) {
             keyExtractor={item => item.datetime}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
-            ListFooterComponent={renderFooter(loading)}
+            // ListFooterComponent={renderFooter(loading)}
             onEndReachedThreshold={50}
           />
       </SafeAreaView>

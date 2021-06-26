@@ -35,6 +35,7 @@ function ChatRoom (props) {
     useEffect(() => {
         loadAsync();
         return () => {
+          console.log('chatroom clean up!');
           firebaseSvc.chatsOff();
         }
     }, [])
