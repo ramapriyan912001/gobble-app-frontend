@@ -433,7 +433,7 @@ makeGobbleRequest(ref, request, date) {
   getThreshold(request) {
     // Will have a threshold function to mark how low a score we are willing to accept for a match
     // Nearer to the schedule time, the lower the threshold
-    // This is for phase 3
+    // This is for milestone 3
     // For now we just have a threshold of 18 points
     return 18;
   }
