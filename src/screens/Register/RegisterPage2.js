@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Text, View, SafeAreaView, TouchableOpacity, Alert, Image} from 'react-native'
+import {Text, View, SafeAreaView, TouchableOpacity, Alert, Image, ScrollView} from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
 import {pickerStyles, buttonStyles, containerStyles, inputStyles, imageStyles} from '../../styles/LoginStyles'
 import firebaseSvc from '../../firebase/FirebaseSvc';
@@ -10,7 +10,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 export default function RegisterPage2(props) {
     const name = props.route.params.name;
     // const user = initialState.user; User accessed from firebaseSvc
-    const [avatar, setAvatar] = useState('');
+    const [avatar, setAvatar] = useState('https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc');
     const [hasAvatar, setHasAvatar] = useState(false);
 
     //Failures Handler
@@ -95,7 +95,8 @@ export default function RegisterPage2(props) {
     // useEffect(imageDisplay, [hasAvatar]);
     console.log(hasAvatar);
     return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1}}>
+        <ScrollView>
         <Text style={inputStyles.headerText}>Complete your Profile!</Text> 
         <Text style={pickerStyles.text}>{name}, pick out a nice picture of yourself!</Text>
         {hasAvatar && (<Image style={imageStyles.gobbleImage} source={avatar}/>)}
@@ -116,5 +117,6 @@ export default function RegisterPage2(props) {
                 <Text style={buttonStyles.loginButtonText}>Continue</Text>
             </TouchableOpacity>
         </View>
+        </ScrollView>
     </SafeAreaView>
     )};
