@@ -18,10 +18,7 @@ const Tab = createMaterialTopTabNavigator();
 function Profile(props) {
 
     const [userInfo, setUserInfo] = useState({});
-    const [age, setAge] = useState(getAge(props.currentUserData.dob))
-    const [counter, setCounter] = useState(0)
-    const [random, setRandom] = useState('')
-    
+    const [hasAvatar, setHasAvatar] = useState(false);
 
     function getAge(dateString) {
         var today = new Date();
