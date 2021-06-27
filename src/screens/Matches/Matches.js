@@ -9,6 +9,7 @@ import renderSeparator from '../../components/renderSeparator'
 import renderHeader from '../../components/renderHeader'
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { FOOD_IMAGES_URIs } from '../../constants/objects'
+import { INDUSTRY_CODES } from '../../constants/objects'
 
 function Matches (props) {
     const [data, setData] = useState([]);
@@ -56,7 +57,7 @@ function Matches (props) {
                 <Avatar size='large' source={{uri:pickImage(item)}} />
                 <ListItem.Content>
                   <ListItem.Title>{item.datetime}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.industryPreference} industry`}</ListItem.Subtitle>
+                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${INDUSTRY_CODES[item.industryPreference]} industry`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}

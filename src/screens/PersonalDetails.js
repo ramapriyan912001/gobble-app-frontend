@@ -10,10 +10,17 @@ import firebaseSvc from '../firebase/FirebaseSvc'
 
 function PersonalDetails(props) {
 
-    const [name, setName] = useState(props.currentUserData.name)
-    const [email, setEmail] = useState(props.currentUserData.email)
-    const [dob, setDob] = useState(props.currentUserData.dob)
-    const [dateJoined, setDateJoined] = useState(props.currentUserData.dob)
+    const [name, setName] = useState('')
+    const [email, setEmail] = useState('')
+    const [dob, setDob] = useState('')
+    const [dateJoined, setDateJoined] = useState('')
+
+    useEffect(() => {
+        setName(props.currentUserData.name)
+        setEmail(props.currentUserData.email)
+        setDob(props.currentUserData.dob)
+        setDateJoined(props.currentUserData.dateJoined)
+    })
 
     const signOutSuccess = () => {
         console.log('Signed Out');

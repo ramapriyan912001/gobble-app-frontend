@@ -10,10 +10,17 @@ import firebaseSvc from '../firebase/FirebaseSvc'
 
 function MealPreferences(props) {
 
-    const [cuisinePreference, setCuisinePreference] = useState(props.currentUserData.cuisine)
-    const [diet, setDiet] = useState(props.currentUserData.diet)
-    const [industryPreference, setCrossIndustryPreference] = useState(props.currentUserData.crossIndustrial ? 'Any' : INDUSTRY_CODES[props.currentUserData.industry])
-    const [industry, setIndustry] = useState(INDUSTRY_CODES[props.currentUserData.industry])
+    const [cuisinePreference, setCuisinePreference] = useState('')
+    const [diet, setDiet] = useState('')
+    const [industryPreference, setIndustryPreference] = useState('')
+    const [industry, setIndustry] = useState('')
+
+    useEffect(() => {
+        setCuisinePreference(props.currentUserData.cuisine)
+        setDiet(props.currentUserData.diet)
+        setIndustryPreference(props.currentUserData.crossIndustrial ? 'Any' : INDUSTRY_CODES[props.currentUserData.industry])
+        setIndustry(INDUSTRY_CODES[props.currentUserData.industry])
+    })
 
     const signOutSuccess = () => {
         console.log('Signed Out');
@@ -42,6 +49,7 @@ function MealPreferences(props) {
             <View style={{marginLeft: '5%'}}>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
                         console.log("Editing Preferences")
+                        console.log(props.currentUserData.diet)
                         props.navigation.navigate('UpdateProfile')
                     }}>
                         <Text style={buttonStyles.loginButtonText}>Edit Preferences</Text>
