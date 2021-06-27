@@ -53,7 +53,7 @@ function Matches (props) {
               containerStyle={{borderBottomWidth:5, height: 160}}
               key={index} 
               roundAvatar>
-                <Avatar source={{uri:pickImage(item)}} />
+                <Avatar size='large' source={{uri:pickImage(item)}} />
                 <ListItem.Content>
                   <ListItem.Title>{item.datetime}</ListItem.Title>
                   <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.industryPreference} industry`}</ListItem.Subtitle>

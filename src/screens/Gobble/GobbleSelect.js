@@ -88,12 +88,12 @@ function GobbleSelect(props) {
     return (
         <SafeAreaView>
             <View style={{marginTop: '8%'}}>
-                        <Text style={{...inputStyles.headerText, fontSize: 20, margin: '0%'}}>
+                        <Text style={{...inputStyles.headerText, fontSize: 20, margin: '2%'}}>
                                 Select your preferences and Gobble!
                         </Text>
             </View>  
             <View>
-                        <Text style={{...inputStyles.subHeader, marginTop: '10%'}}>Choose a date and time for your next Gobble!</Text>
+                        <Text style={{...inputStyles.subHeader, marginTop: '0%'}}>Choose a date and time for your next Gobble!</Text>
                         <Button title={date.toLocaleString()} onPress={showDatePicker} />
                         <DateTimePickerModal
                         isVisible={isDatePickerVisible}
@@ -107,7 +107,7 @@ function GobbleSelect(props) {
                         />
             </View>
             <View>
-                    <Text style={{...inputStyles.subHeader, marginTop: '20%'}}>...And what are you in the mood for today?</Text>
+                    <Text style={{...inputStyles.subHeader, marginTop: '0%'}}>...And what are you in the mood for today?</Text>
                     <Picker
                         selectedValue={cuisinePreference}
                         onValueChange={(itemValue, itemIndex) => setCuisinePreference(itemValue)}>
