@@ -54,6 +54,7 @@ function Profile(props) {
             //Do Nothing
         } else {
             setHasAvatar(true);
+            setAvatarSource(userInfo.avatar);
         }
     }
 

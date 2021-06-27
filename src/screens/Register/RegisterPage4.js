@@ -21,26 +21,10 @@ export default function RegisterPage4(props) {
                 props.navigation.navigate('RegisterPage5');
             })
             .catch(getError(props));
-
-    // useEffect(() => {
-    //     return cancelRegistration(props);
-    // }, []);
     const industryLabels = () => {
         let pickerItems = [];
-        // <Picker.Item label= value = {INDUSTRY_CODES['Human Resources']}/>
-        //                 <Picker.Item label="Law" value={}/>
-        //                 <Picker.Item label="Scientific Research" value=3 />
-        //                 <Picker.Item label="Engineering" value=4 />
-        //                 <Picker.Item label="Computing" value=5 />
-        //                 <Picker.Item label="Marketing" value=6/>
-        //                 <Picker.Item label="Sales" value=7/>
-        //                 <Picker.Item label="Artist" value=8/>
-        //                 <Picker.Item label="Public Sector" value=9/>
-        //                 <Picker.Item label="Medicine" value=10/>
-        //                 <Picker.Item label="Shipping & Transportation" value=11/>
-        //                 <Picker.Item label="Others" value=00/>
         for (let [code, industryTitle] of Object.entries(industries)) {
-            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} value ={industryTitle}/>);
+            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} value ={code}/>);
         }
         return pickerItems;
     }

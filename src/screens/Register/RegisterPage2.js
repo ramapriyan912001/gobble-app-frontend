@@ -99,7 +99,7 @@ export default function RegisterPage2(props) {
         <ScrollView>
         <Text style={inputStyles.headerText}>Complete your Profile!</Text> 
         <Text style={pickerStyles.text}>{name}, pick out a nice picture of yourself!</Text>
-        {hasAvatar && (<Image style={imageStyles.gobbleImage} source={avatar}/>)}
+        {/* {hasAvatar && (<Image style={imageStyles.gobbleImage} source={avatar}/>)} */}
         <TouchableOpacity style={buttonStyles.loginButton} onPress={updateImage}>
             <Text style={buttonStyles.loginButtonText}>Select Picture</Text>
         </TouchableOpacity>
