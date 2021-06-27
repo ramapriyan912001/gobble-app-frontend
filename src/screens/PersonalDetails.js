@@ -46,9 +46,8 @@ function PersonalDetails(props) {
             <Input label='Date of Birth' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#DFD8C8", borderBottomWidth: 2}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={dob} editable={false}></Input>
             <Input label='Date Joined' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#DFD8C8", borderBottomWidth: 2}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={dateJoined} editable={false}></Input>
             </View>
-            <View style={{marginLeft: '5%'}}>
+            <View style={{marginLeft: '7.5%'}}>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
-                        signOutUser();
                         props.navigation.navigate('ForgotPassword')}}>
                         <Text style={buttonStyles.loginButtonText}>Reset Password</Text>
                     </TouchableOpacity>

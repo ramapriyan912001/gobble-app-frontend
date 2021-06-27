@@ -46,10 +46,9 @@ function MealPreferences(props) {
             <Input label='Industry Preference' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#DFD8C8", borderBottomWidth: 2}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={industryPreference} editable={false}></Input>
             <Input label='Industry' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#DFD8C8", borderBottomWidth: 2}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={industry} editable={false}></Input>
             </View>
-            <View style={{marginLeft: '5%'}}>
+            <View style={{marginLeft: '7.5%'}}>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
                         console.log("Editing Preferences")
-                        console.log(props.currentUserData.diet)
                         props.navigation.navigate('UpdateProfile')
                     }}>
                         <Text style={buttonStyles.loginButtonText}>Edit Preferences</Text>

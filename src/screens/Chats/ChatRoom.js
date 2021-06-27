@@ -8,6 +8,7 @@ import { renderFooter } from '../../components/renderFooter'
 import renderSeparator from '../../components/renderSeparator'
 import renderHeader from '../../components/renderHeader'
 import firebaseSvc from '../../firebase/FirebaseSvc'
+import { INDUSTRY_CODES } from '../../constants/objects'
 
 function ChatRoom (props) {
     const [data, setData] = useState([]);
@@ -55,7 +56,7 @@ function ChatRoom (props) {
               roundAvatar>
                 <Avatar size="large" source={{uri:pickImage(item)}}/>
                 <ListItem.Content>
-                  <ListItem.Title>{`${item.name}, ${item.industry} industry`}</ListItem.Title>
+                  <ListItem.Title>{`${item.name}, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Title>
                   <ListItem.Subtitle>{`${item.lastMessage == '' ? 'Click here to start a chat!': item.lastMessage}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>

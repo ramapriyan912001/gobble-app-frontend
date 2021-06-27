@@ -12,6 +12,7 @@ import { INDUSTRY_CODES } from '../../constants/objects'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import PersonalDetails from '../PersonalDetails'
 import MealPreferences from '../MealPreferences'
+import { Avatar } from 'react-native-elements'
 const Tab = createMaterialTopTabNavigator();
 
 function Profile(props) {
@@ -38,20 +39,27 @@ function Profile(props) {
                             : (<Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}} resizeMode='center' source={{uri: 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc'}}/>)
 
     async function loadDataAsync () {
+        const user = await firebaseSvc
+                            .getCurrentUserCollection(
+                                (snapshot) => snapshot.val(),
+                                getError(props))
+                            .then(x => x)
+                            .catch(getError(props));
+        setUserInfo(user);
         await props.fetchUserData();
+        setAvatarSource(props.currentUserData.avatar)
         if (userInfo === null) {
             props.navigation.goBack();
         } else if (userInfo.avatar == null || userInfo.avatar === '') {
             //Do Nothing
         } else {
-            setAvatarSource(props.currentUserData.avatar)
-            console.log(avatarSource)
             setHasAvatar(true);
         }
     }
 
     useEffect(() => {
         loadDataAsync();
+        console.log(avatarSource)
     },[]);
 
     // if (!appIsReady) {//effect loads data, NO WARNINGS !! :)
