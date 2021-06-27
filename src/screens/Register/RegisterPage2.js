@@ -9,13 +9,18 @@ import * as ImageManipulator from 'expo-image-manipulator';
 
 export default function RegisterPage2(props) {
     const name = props.route.params.name;
+    const emptyAvatar = 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc';
     // const user = initialState.user; User accessed from firebaseSvc
-    const [avatar, setAvatar] = useState('https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc');
+    const [avatar, setAvatar] = useState(emptyAvatar);
     const [hasAvatar, setHasAvatar] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     //Failures Handler
 
     const updateAvatar = (avatar) => {
+        if (loading) {
+            Alert.alert('Wait up!', 'We\'re still uploading your picture!');
+        } else { 
         if (hasAvatar) {
             firebaseSvc
             .getCurrentUserCollection(
@@ -27,8 +32,20 @@ export default function RegisterPage2(props) {
                 firebaseSvc.updateAvatar(avatar);
             })
             .catch(getError(props));
+        } else {
+            firebaseSvc
+            .getCurrentUserCollection(
+                (snapshot) => snapshot.val(),
+                getError(props))
+            .then(userProfile => {
+                userProfile['avatar'] = emptyAvatar;
+                firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+                firebaseSvc.updateAvatar(emptyAvatar);
+            })
+            .catch(getError(props));
         }
         props.navigation.navigate('RegisterPage3');
+        }
     };
 
     const updateImage = () => {
@@ -75,6 +92,7 @@ export default function RegisterPage2(props) {
                     .then(uploadURL => {
                         setAvatar(uploadURL);
                         setHasAvatar(true);
+                        setLoading(false);
                         // firebaseSvc
                         // .updateAvatar(uploadURL)
                         // .then(() => console.log('Avatar Updated'))

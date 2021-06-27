@@ -20,13 +20,14 @@ function ChatRoom (props) {
             .getChats(
               snapshot => {
                 const chats = snapshot.val();
-                // console.log(chats, 'all chats')
-                for(let key in chats) {
+                let newData = [];
+                for(let [key, value] of Object.entries(chats)) {
                   if(!(key in userIDs)) {
                     userIDs[key] = true;
-                    setData(data.concat({...chats[key].metadata}))
                   }
+                  newData = newData.concat(value.metadata);
                 }
+                setData(newData);
               },
               err => {console.log(err.message)}
             )
@@ -41,9 +42,9 @@ function ChatRoom (props) {
         }
     }, [])
 
-    const pickImage = item => item.avatar == null || item.avatar == ""
-                                ? 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc'
-                                : item.avatar;
+    // const pickImage = item => item.avatar == null || item.avatar == ""
+    //                             ? 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc'
+    //                             : item.avatar;
     return (
       <SafeAreaView>
           <FlatList
@@ -54,7 +55,7 @@ function ChatRoom (props) {
               key={index}
               onPress={() => props.navigation.navigate('Conversation', {metadata: item})}
               roundAvatar>
-                <Avatar size="large" source={{uri:pickImage(item)}}/>
+                <Avatar size="large" source={{uri:item.otherUserAvatar}}/>
                 <ListItem.Content>
                   <ListItem.Title>{`${item.name}, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Title>
                   <ListItem.Subtitle>{`${item.lastMessage == '' ? 'Click here to start a chat!': item.lastMessage}`}</ListItem.Subtitle>

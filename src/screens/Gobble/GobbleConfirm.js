@@ -19,8 +19,8 @@ export function GobbleConfirm(props) {
     } else {
         return (
             <View style={containerStyles.container}>
-                <Text style={inputStyles.headerText}>We have not found your Gobblemate just yet!</Text>
-                <Text style={inputStyles.headerText}>Click Done and Head over to Matches to see your Gobble request!</Text>
+                <Text style={inputStyles.subHeader}>We have not found your Gobblemate just yet!</Text>
+                <Text style={inputStyles.subHeader}>Click Done and Head over to Matches to see your Gobble request!</Text>
                 <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
                     props.navigation.navigate('GobbleSelect')
                 }}>

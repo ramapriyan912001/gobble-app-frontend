@@ -97,12 +97,21 @@ class FirebaseSvc {
       .set(user)
       .then(success)
       .catch(failure);
-      this
-      .industryRef(this.uid)
-      .set(user.industry)
-      this
-      .avatarRef(this.uid)
-      .set(user.avatar)
+      if (user == null) {
+        this
+        .industryRef(this.uid)
+        .set(null);
+        this
+        .avatarRef(this.uid)
+        .set(null);
+      } else {
+        this
+        .industryRef(this.uid)
+        .set(user.industry)
+        this
+        .avatarRef(this.uid)
+        .set(user.avatar)
+      }
     } else {
       console.log('No User Logged In');
     }
@@ -455,9 +464,10 @@ makeGobbleRequest(ref, request, date) {
         updates[`/Chats/${req1.userId}/${req2.userId}/metadata`] = {
                                                             _id: req1.userId,
                                                             name: user2.name,
+                                                            avatar: user1.avatar,
                                                             otherUserId: req2.userId,
                                                             industry: req2.industry,
-                                                            avatar: user2.avatar,
+                                                            otherUserAvatar: user2.avatar,
                                                             lastMessage: '',
                                                             conversation: conversationID,
                                                             matchDateTime: req1.datetime,
@@ -465,9 +475,10 @@ makeGobbleRequest(ref, request, date) {
         updates[`/Chats/${req2.userId}/${req1.userId}/metadata`] = {
                                                             _id: req2.userId,
                                                             name: user1.name,
+                                                            avatar: user2.avatar,
                                                             otherUserId: req1.userId,
                                                             industry: req1.industry,
-                                                            avatar: user1.avatar,
+                                                            otherUserAvatar: user1.avatar,
                                                             lastMessage: '',
                                                             conversation: conversationID,
                                                             matchDateTime: req1.datetime,

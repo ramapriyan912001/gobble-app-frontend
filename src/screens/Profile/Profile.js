@@ -18,9 +18,7 @@ const Tab = createMaterialTopTabNavigator();
 function Profile(props) {
 
     const [userInfo, setUserInfo] = useState({});
-    const [hasAvatar, setHasAvatar] = useState(false);
     const [age, setAge] = useState(getAge(props.currentUserData.dob))
-    const [avatarSource, setAvatarSource] = useState('')
     const [counter, setCounter] = useState(0)
     const [random, setRandom] = useState('')
     
@@ -37,22 +35,14 @@ function Profile(props) {
     }                           
 
     async function loadDataAsync () {
-        const user = await firebaseSvc
-                            .getCurrentUserCollection(
-                                (snapshot) => snapshot.val(),
-                                getError(props))
-                            .then(x => x)
-                            .catch(getError(props));
-        setUserInfo(user);
-        await props.fetchUserData();
-        setAvatarSource(user.avatar)
-        if (userInfo === null) {
-            props.navigation.goBack();
-        } else if (userInfo.avatar == null || userInfo.avatar === '') {
-            //Do Nothing
-        } else {
-            setHasAvatar(true);
-            setAvatarSource(userInfo.avatar);
+        try {
+            await props.fetchUserData();
+            setUserInfo(props.currentUserData);
+            if (userInfo === null) {
+                props.navigation.goBack();
+            }
+        } catch (err) {
+            console.log('Profile Fetch User Error:', err.message);
         }
     }
 

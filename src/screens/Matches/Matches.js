@@ -43,7 +43,7 @@ function Matches (props) {
           firebaseSvc.pendingMatchIDsOff();
         }
     }, [])
-    const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
+    // const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     
     return (
       <SafeAreaView>
@@ -54,10 +54,10 @@ function Matches (props) {
               containerStyle={{borderBottomWidth:5, height: 160}}
               key={index} 
               roundAvatar>
-                <Avatar size='large' source={{uri:pickImage(item)}} />
+                <Avatar size='large' source={{uri:FOOD_IMAGES_URIs[item.cuisinePreference]}} />
                 <ListItem.Content>
                   <ListItem.Title>{item.datetime}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${INDUSTRY_CODES[item.industryPreference]} industry`}</ListItem.Subtitle>
+                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}
