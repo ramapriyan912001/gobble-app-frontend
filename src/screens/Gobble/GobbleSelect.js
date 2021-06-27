@@ -97,6 +97,7 @@ function GobbleSelect(props) {
                         <Button title={date.toLocaleString()} onPress={showDatePicker} />
                         <DateTimePickerModal
                         isVisible={isDatePickerVisible}
+                        minimumDate={MIN_DATE}
                         mode={"datetime"}
                         display={'spinner'}
                         onConfirm={handleConfirm}
