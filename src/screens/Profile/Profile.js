@@ -19,11 +19,6 @@ function Profile(props) {
 
     const [userInfo, setUserInfo] = useState({});
     const [hasAvatar, setHasAvatar] = useState(false);
-    const [age, setAge] = useState(getAge(props.currentUserData.dob))
-    const [avatarSource, setAvatarSource] = useState('')
-    const [counter, setCounter] = useState(0)
-    const [random, setRandom] = useState('')
-    
 
     function getAge(dateString) {
         var today = new Date();
