@@ -21,6 +21,14 @@ export function fetchUserData() {
     }
 }
 
+export function fetchUserDataWithUID(uid) {
+    return (dispatch) => {
+        firebaseSvc.userRef(uid).once("value", (snapshot) => {
+            dispatch({ type: USER_DATA_CHANGE, currentUserData: snapshot.val()})
+        })
+    }
+}
+
 export const getError = (props) => (err) => {
     console.log('Insufficient data');
     Alert.alert('Registration Error: ' + err.message);

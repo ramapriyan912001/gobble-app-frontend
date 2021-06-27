@@ -21,6 +21,8 @@ function Profile(props) {
     const [hasAvatar, setHasAvatar] = useState(false);
     const [age, setAge] = useState(getAge(props.currentUserData.dob))
     const [avatarSource, setAvatarSource] = useState('')
+    const [counter, setCounter] = useState(0)
+    const [random, setRandom] = useState('')
     
 
     function getAge(dateString) {
@@ -32,11 +34,7 @@ function Profile(props) {
             age--;
         }
         return age;
-    }
- 
-    const loadPic = () => hasAvatar
-                            ? (<Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: avatarSource}}/>)
-                            : (<Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}} resizeMode='center' source={{uri: 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc'}}/>)
+    }                           
 
     async function loadDataAsync () {
         const user = await firebaseSvc
@@ -47,7 +45,7 @@ function Profile(props) {
                             .catch(getError(props));
         setUserInfo(user);
         await props.fetchUserData();
-        setAvatarSource(props.currentUserData.avatar)
+        setAvatarSource(user.avatar)
         if (userInfo === null) {
             props.navigation.goBack();
         } else if (userInfo.avatar == null || userInfo.avatar === '') {
@@ -60,7 +58,6 @@ function Profile(props) {
 
     useEffect(() => {
         loadDataAsync();
-        console.log(avatarSource)
     },[]);
 
     // if (!appIsReady) {//effect loads data, NO WARNINGS !! :)
@@ -71,7 +68,7 @@ function Profile(props) {
         <SafeAreaView style={{flex: 1}}>
             <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
             <StatusBar style="auto"/>
-            {loadPic()}
+            <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: props.currentUserData.avatar}}/>
             <Text style={{...inputStyles.headerText, fontWeight:'400', marginBottom: '0%',fontSize: 26}}>{`${props.currentUserData.name}, ${getAge(props.currentUserData.dob)}`}</Text>
             <Text style={{...inputStyles.headerText, fontWeight: '300', marginBottom: '2%',fontSize: 16}}>{`${INDUSTRY_CODES[props.currentUserData.industry]}`}</Text>
             <Tab.Navigator initialRouteName="Ongoing" style={{marginTop: '0%',paddingTop:'0%', backgroundColor:'white'}}>
