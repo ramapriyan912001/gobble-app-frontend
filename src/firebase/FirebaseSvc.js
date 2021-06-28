@@ -432,7 +432,7 @@ class FirebaseSvc {
    * Function called when user launches a request
    * to find a gobblemate
    * @param {*} match request sent by user searching for gobble
-   * @returns  
+   * @returns  Boolean depending on match found
    */
   async findGobbleMate(gobbleRequest) {
     console.log('Finding a match');
