@@ -30,14 +30,20 @@ function Matches (props) {
             .getPendingMatchIDs(
               snapshot => {
                 let ids = snapshot.val();
-                // console.log(ids,'ids');
-                for(let key in ids) {
-                  if(!(key in matchIDs)) {
-                    matchIDs[key] = true
-                    setData(data.concat(ids[key]))
+                if (ids == null) {
+                  //Do Nothing
+                } else  {
+                  // console.log(ids, 'ids')
+                  let newData = [];
+                  for(let [key, value] of Object.entries(ids)) {
+                    if(!(key in matchIDs)) {
+                      matchIDs[key] = true;
+                    }
+                    newData = newData.concat(value);
                   }
-                }
+                  setData(newData);
                 // console.log(data);
+                }
               },
               x => x,
               err => {console.log(err.message)}
