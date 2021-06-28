@@ -5,10 +5,22 @@ import {pickerStyles, buttonStyles, containerStyles} from '../../styles/LoginSty
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
 
+/**
+ * Page 3 for Registration
+ * 
+ * @param {*} props Props from previous screen
+ * @returns RegisterPage3 Render Method
+ */
 export default function RegisterPage3(props) {
     const [diet, setDietPreference] = useState('halal');
     const [cuisine, setCuisinePreference] = useState('Indian');
 
+    /**
+     * Function to update the dietary restriction and cuisine preference in the database.
+     * @param {*} diet The Dietary Restriction Chosen
+     * @param {*} cuisine The Cuisine Preference chosen
+     * @returns undefined
+     */
     const updateDietCuisine = (diet, cuisine) =>
         firebaseSvc
             .getCurrentUserCollection(
@@ -21,10 +33,6 @@ export default function RegisterPage3(props) {
                 props.navigation.navigate('RegisterPage4');
             })
             .catch(getError(props));
-
-    // useEffect(() => {
-    //     return cancelRegistration(props);
-    // }, []);
     
     return (
     <SafeAreaView>

@@ -4,6 +4,12 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import firebaseSvc from '../firebase/FirebaseSvc';
 import {buttonStyles, containerStyles, inputStyles} from '../styles/LoginStyles'
 
+/**
+ * Page for users to send a reset password link
+ * 
+ * @param {*} props Props from previous screen
+ * @returns ForgotPassword render method
+ */
 export default function ForgotPassword(props) {
     const [email, setEmail] = useState('');
 
@@ -11,6 +17,10 @@ export default function ForgotPassword(props) {
     const resetAuthorized = () => console.log('Reset Password Email Sent');
     const resetNotAuthorized = (err) => console.log(err.message);
 
+    /**
+     * Calls the firebaseSvc's resetPassword method.
+     * @param {*} email Takes in email of user to send a reset password email to
+     */
     const resetPassword = (email) => firebaseSvc.resetPassword(email, resetAuthorized, resetNotAuthorized);
 
     return (

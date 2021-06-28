@@ -7,30 +7,47 @@ import {onSuccess, onFailure, cancelRegistration, getError} from '../../services
 import ImageEditor from '@react-native-community/image-editor';
 import * as ImageManipulator from 'expo-image-manipulator';
 
+/**
+ * Second Page of Registration
+ * 
+ * @param {*} props Props from previous screen
+ * @returns RegisterPage2 Render Method
+ */
 export default function RegisterPage2(props) {
     const name = props.route.params.name;
     // const user = initialState.user; User accessed from firebaseSvc
     const [avatar, setAvatar] = useState('');
     const [hasAvatar, setHasAvatar] = useState(false);
+    const [loading, setLoading] = useState(true);
 
-    //Failures Handler
-
+    /**
+     * Updates the given avatar (if any)
+     * 
+     * @param {*} avatar The URL to the avatar
+     */
     const updateAvatar = (avatar) => {
-        if (hasAvatar) {
-            firebaseSvc
-            .getCurrentUserCollection(
-                (snapshot) => snapshot.val(),
-                getError(props))
-            .then(userProfile => {
-                userProfile['avatar'] = avatar;
-                firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
-                firebaseSvc.updateAvatar(avatar);
-            })
-            .catch(getError(props));
+    if (loading) {
+        Alert.alert('Wait a sec!', 'The Next Page hasn\'t loaded yet');
+    } else {
+            if (hasAvatar) {
+                firebaseSvc
+                .getCurrentUserCollection(
+                    (snapshot) => snapshot.val(),
+                    getError(props))
+                .then(userProfile => {
+                    userProfile['avatar'] = avatar;
+                    firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+                    firebaseSvc.updateAvatar(avatar);
+                })
+                .catch(getError(props));
+            }
+            props.navigation.navigate('RegisterPage3');
         }
-        props.navigation.navigate('RegisterPage3');
     };
 
+    /**
+     * Gets permissions for accessing image, and uploads to the database
+     */
     const updateImage = () => {
         ImagePicker
         .requestMediaLibraryPermissionsAsync()
@@ -75,6 +92,7 @@ export default function RegisterPage2(props) {
                     .then(uploadURL => {
                         setAvatar(uploadURL);
                         setHasAvatar(true);
+                        setLoading(false);
                         // firebaseSvc
                         // .updateAvatar(uploadURL)
                         // .then(() => console.log('Avatar Updated'))
@@ -91,9 +109,7 @@ export default function RegisterPage2(props) {
         })
         .catch(onFailure('Permission Retrieval Error'));
       };
-
-    // useEffect(imageDisplay, [hasAvatar]);
-    console.log(hasAvatar);
+      
     return (
     <SafeAreaView>
         <Text style={inputStyles.headerText}>Complete your Profile!</Text> 

@@ -6,10 +6,22 @@ import firebaseSvc from '../../firebase/FirebaseSvc'
 import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
 import { INDUSTRY_CODES } from '../../constants/objects'
 
+/**
+ * Page 4 for Registration
+ * 
+ * @param {*} props Props from previous screen
+ * @returns RegisterPage4 Render Method
+ */
 export default function RegisterPage4(props) {
     const [industry, setIndustry] = useState(0);
     const [industries] = useState(INDUSTRY_CODES);
 
+    /**
+     * Update Industry of User in the database
+     * 
+     * @param {*} industry The Industry code of the user
+     * @returns undefined
+     */
     const updateIndustry = (industry) =>
         firebaseSvc
             .getCurrentUserCollection(
@@ -22,23 +34,13 @@ export default function RegisterPage4(props) {
             })
             .catch(getError(props));
 
-    // useEffect(() => {
-    //     return cancelRegistration(props);
-    // }, []);
+    /**
+     * Generates Picker Labels
+     * 
+     * @returns List of Picker.items for industries
+     */
     const industryLabels = () => {
         let pickerItems = [];
-        // <Picker.Item label= value = {INDUSTRY_CODES['Human Resources']}/>
-        //                 <Picker.Item label="Law" value={}/>
-        //                 <Picker.Item label="Scientific Research" value=3 />
-        //                 <Picker.Item label="Engineering" value=4 />
-        //                 <Picker.Item label="Computing" value=5 />
-        //                 <Picker.Item label="Marketing" value=6/>
-        //                 <Picker.Item label="Sales" value=7/>
-        //                 <Picker.Item label="Artist" value=8/>
-        //                 <Picker.Item label="Public Sector" value=9/>
-        //                 <Picker.Item label="Medicine" value=10/>
-        //                 <Picker.Item label="Shipping & Transportation" value=11/>
-        //                 <Picker.Item label="Others" value=00/>
         for (let [code, industryTitle] of Object.entries(industries)) {
             pickerItems.push(<Picker.Item key ={code} label= {industryTitle} value ={industryTitle}/>);
         }

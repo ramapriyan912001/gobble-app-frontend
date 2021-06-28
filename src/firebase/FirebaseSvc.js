@@ -3,6 +3,7 @@ import { Alert } from 'react-native';
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 import {DIETARY_ARRAYS} from '../constants/objects'
+import {firebaseDetails} from '../../FirebaseDetails'
 
 /**
  * Class which operates as a database object, whose functions are
@@ -14,14 +15,7 @@ import {DIETARY_ARRAYS} from '../constants/objects'
 class FirebaseSvc {
   constructor() {
     if (!firebase.apps.length) { //avoid re-initializing -> HIDE LATER
-      firebase.initializeApp({
-        apiKey: "AIzaSyBEJucuLUGt2iBYJJmAjYGh0NLmk9aKSL8",
-        authDomain: "gobble-b3dfa.firebaseapp.com",
-        databaseURL: "https://gobble-b3dfa-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "gobble-b3dfa",
-        storageBucket: "gobble-b3dfa.appspot.com",
-        messagingSenderId: "816051198473"
-      });
+      firebase.initializeApp(firebaseDetails);
      }
   }
 

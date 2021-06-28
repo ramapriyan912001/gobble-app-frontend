@@ -2,6 +2,12 @@ import React from 'react'
 import {Text, SafeAreaView, View, Image, TouchableOpacity, StatusBar} from 'react-native'
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
 
+/**
+ * Once user finishes registration
+ * 
+ * @param {*} props The props from the previous screen
+ * @returns FinalStep render function
+ */
 export default function FinalStep(props) {
     return(
             <SafeAreaView style={containerStyles.container}>

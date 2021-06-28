@@ -10,10 +10,17 @@ import { bindActionCreators } from 'redux'
 import { fetchAuthUser, fetchUserData } from '../../redux/actions/actions'
 import { INDUSTRY_CODES } from '../../constants/objects'
 
+/**
+ * User Profile Page
+ * 
+ * @param {*} props Props from previous screen
+ * @returns Profile Render Method
+ */
 function Profile(props) {
     const [userInfo, setUserInfo] = useState({});
     const [hasAvatar, setHasAvatar] = useState(false);
 
+    //Success Handler for SignOut
     const signOutSuccess = () => {
         console.log('Signed Out');
         props.navigation.reset({
@@ -22,17 +29,26 @@ function Profile(props) {
         });
     }
 
+    //Error Handler for SignOut
     const signOutFailure = (err) => {
         console.log('Sign Out Error: ' + err.message);
         Alert.alert('Sign Out Error. Try Again Later');
     }
     
+    /**
+     * Function to sign out a user
+     * 
+     * @returns undefined
+     */
     const signOutUser = () => firebaseSvc.signOut(signOutSuccess, signOutFailure);
 
     const loadPic = () => hasAvatar
                             ? (<Image style={profileStyles.profilePic} source={{uri:userInfo.avatar}}/>)
                             : (<Text style={inputStyles.subText}>You haven't chosen any avatar!</Text>)
 
+    /**
+     * Asynchronous FUnction to load Profile Data
+     */
     async function loadDataAsync () {
         const user = await firebaseSvc
                             .getCurrentUserCollection(
@@ -55,10 +71,6 @@ function Profile(props) {
     useEffect(() => {
         loadDataAsync();
     },[]);
-
-    // if (!appIsReady) {//effect loads data, NO WARNINGS !! :)
-    //     return null;
-    // }
 
     return(
         <SafeAreaView style={containerStyles.container}>

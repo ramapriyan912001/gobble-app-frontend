@@ -5,6 +5,12 @@ import {containerStyles, buttonStyles, pickerStyles, inputStyles} from '../../st
 import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
 import firebaseSvc from '../../firebase/FirebaseSvc';
 
+/**
+ * Last Page of Registration
+ * 
+ * @param {*} props Props from previous screen
+ * @returns RegisterPage5 Render Method
+ */
 export default function RegisterPage5(props) {
     const [cross, setCrossIndustryPreference] = useState(false);
     const [date, setDate] = useState(new Date());
@@ -12,6 +18,12 @@ export default function RegisterPage5(props) {
     const [show, setShow] = useState(false);
     //Handlers for Action Failure:
 
+    /**
+     * Finalize Registration
+     * 
+     * @param {*} cross Whether the user is okay with crossIndustrial matchings
+     * @returns undefined
+     */
     const addUser = (cross) => 
         firebaseSvc
             .getCurrentUserCollection(
@@ -25,6 +37,12 @@ export default function RegisterPage5(props) {
             })
             .catch(getError(props));
     
+    /**
+     * Function to handle date picker change
+     * 
+     * @param {*} event Event occurred
+     * @param {*} selectedDate Date Selected
+     */
     const onChange = (event, selectedDate) => {
         const currentDate = selectedDate || date;
         setShow(Platform.OS === 'ios');
@@ -32,9 +50,6 @@ export default function RegisterPage5(props) {
         setDateChanged(true);
         };
 
-    // useEffect(() => {
-    //     return cancelRegistration(props);
-    // }, []);
 
     return(
     <SafeAreaView style={containerStyles.container}>

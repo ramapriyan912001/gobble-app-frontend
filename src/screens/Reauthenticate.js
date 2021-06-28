@@ -5,6 +5,12 @@ import {imageStyles, inputStyles, buttonStyles, containerStyles} from '../styles
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import firebaseSvc from '../firebase/FirebaseSvc';
 
+/**
+ * The page to re-authenticate a user if required
+ * 
+ * @param {*} props Props from previous screen
+ * @returns Reauthenticate render function
+ */
 export default function Reauthenticate(props) {
     const cleanup = props.route.params.cleanup;
     const [password, setPassword] = useState('');
@@ -22,7 +28,9 @@ export default function Reauthenticate(props) {
         Alert.alert('Auth failed: ' + errorMessage);
     };
 
-    // add auth method to handle user press re-auth button
+    /**
+     * Used to re-authenticate user if user goes offline for too long before performing any major action.
+     */
     const onPressAuth = () => {
         const userAuth = {
         email: user.email,
