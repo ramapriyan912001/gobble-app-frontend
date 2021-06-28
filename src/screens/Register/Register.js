@@ -2,7 +2,7 @@ import React, {useEffect, useState } from 'react'
 import {Text, View, TextInput, Alert, Image, TouchableOpacity, StatusBar} from 'react-native'
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import {TOO_LONG, TOO_SHORT} from '../../constants/messages'
+import {MESSAGES} from '../../constants/messages'
 import firebaseSvc from '../../firebase/FirebaseSvc';
 import {onSuccess, onFailure, cancelRegistration, createUserProfile} from '../../services/RegistrationHandlers';
 
@@ -28,6 +28,43 @@ export default function register(props) {
             Alert.alert(err.message, 'Don\'t worry if you didn\'t complete your profile, you can log in and do so');
         } else {
             Alert.alert(err.message); console.log(err.message);
+        }
+    }
+
+    const validateInput = (user) => {
+        const shortMessage = (infoString, len) => infoString + MESSAGES.TOO_SHORT + `${len} characters!`;
+        const longMessage = (infoString, len) => infoString + MESSAGES.TOO_LONG + `${len} characters!`;
+        const emailRegex = /@gmail.com|@yahoo.com|@icloud.com|@u.nus.edu|@hotmail.com|@live.com|@yahoo.co.uk|@nus.edu.sg/;
+        function checkInfo(infoString, info, minLength, maxLength) {
+            if (info.length < minLength) {
+                return {
+                    message: shortMessage(infoString, minLength),
+                    valid: false
+                };
+            } else if (info.length > maxLength) {
+                return {
+                    message: longMessage(infoString, maxLength),
+                    valid: false
+                };
+            } else {
+                return {
+                    message: '',
+                    valid: true
+                }
+            }
+
+        }
+        if (!checkInfo('Username', user.name, 5, 20).valid) {
+            Alert.alert(checkInfo('Username', user.name, 5, 20).message);
+            return false;
+        } else if (!checkInfo('Password', user.password, 8, 30).valid) {
+            Alert.alert(checkInfo('Password', user.password, 8, 30).message);
+            return false;
+        } else if (!emailRegex.test(user.email)) {
+            Alert.alert('Invalid Email!');
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -57,7 +94,11 @@ export default function register(props) {
      * @param {*} user The User details to create
      * @returns undefined
      */
-    const addUser = (user) => firebaseSvc.createUser(user, creationSuccess, creationFailure);
+    const addUser = (user) => {
+        if (validateInput(user)) {
+            firebaseSvc.createUser(user, creationSuccess, creationFailure);
+        }
+    }
 
     return(
             <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container} scrollEnabled={false}>
@@ -120,31 +161,3 @@ export default function register(props) {
             </KeyboardAwareScrollView>
     )
 }
-  // const validateInput = (user) => {
-    //     const shortMessage = (infoString, len) => infoString + TOO_SHORT + `${len} characters!`;
-    //     const longMessage = (infoString, len) => infoString + TOO_LONG + `${len} characters!`;
-    //     const emailRegex = /@gmail.com|@yahoo.com|@icloud.com|@u.nus.edu|@hotmail.com|@live.com|@yahoo.co.uk|@nus.edu.sg/;
-    //     function checkInfo(infoString, info, minLength, maxLength) {
-    //         if (info.length < minLength) {
-    //             return {
-    //                 message: shortMessage(infoString, minLength),
-    //                 valid: false
-    //             };
-    //         } else if (info.length > maxLength) {
-    //             return {
-    //                 message: longMessage(infoString, maxLength),
-    //                 valid: false
-    //             };
-    //         } else {
-    //             return {
-    //                 message: '',
-    //                 valid: true
-    //             }
-    //         }
-
-    //     }
-    //     if (!checkInfo('Username', user.name, 5, 20).valid) {Alert.alert(checkInfo('Username', user.name, 5, 20).message);}
-    //     else if (!checkInfo('Password', user.password, 5, 30).valid) {Alert.alert(checkInfo('Password', user.password, 5, 30).message);}
-    //     else if (!emailRegex.test(user.email)) {Alert.alert('Invalid Email!');}
-    //     else {props.navigation.navigate('RegisterPage2', {user: user});}
-    // }

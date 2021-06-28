@@ -27,9 +27,6 @@ export default function RegisterPage2(props) {
      * @param {*} avatar The URL to the avatar
      */
     const updateAvatar = (avatar) => {
-        if (loading) {
-            Alert.alert('Wait up!', 'We haven\'t loaded the next page!');
-        } else { 
         if (hasAvatar) {
             firebaseSvc
             .getCurrentUserCollection(
@@ -54,7 +51,6 @@ export default function RegisterPage2(props) {
             .catch(getError(props));
         }
         props.navigation.navigate('RegisterPage3');
-        }
     };
 
     /**
