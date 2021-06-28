@@ -5,11 +5,14 @@ import {imageStyles, inputStyles, buttonStyles, containerStyles} from '../styles
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {API} from '../api'
 import firebaseSvc from '../firebase/FirebaseSvc';
-import deviceStorage from '../services/deviceStorage'
 import BottomTabs from '../components/BottomTabs'
 
-let userToken = '';
-
+/**
+ * Page for user to log in!
+ * 
+ * @param {*} props Props from previous screen
+ * @returns Login page render function
+ */
 export default function Login(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -28,7 +31,10 @@ export default function Login(props) {
         Alert.alert(errorMessage);
     };
 
-    // add login method to handle user press Login button
+    /**
+     * Login to user account. Uses the email password and user details from function state.
+     * Calls firebaseSvc.login() to log in the user
+     */
     const onPressLogin = () => {
         const user = {
         email: email,

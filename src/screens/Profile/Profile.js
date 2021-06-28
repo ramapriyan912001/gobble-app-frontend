@@ -15,6 +15,12 @@ import MealPreferences from '../MealPreferences'
 import { Avatar } from 'react-native-elements'
 const Tab = createMaterialTopTabNavigator();
 
+/**
+ * User Profile Page
+ * 
+ * @param {*} props Props from previous screen
+ * @returns Profile Render Method
+ */
 function Profile(props) {
 
     const [userInfo, setUserInfo] = useState({});
@@ -29,8 +35,32 @@ function Profile(props) {
             age--;
         }
         return age;
-    }                           
+    }
+    //Success Handler for SignOut
+    const signOutSuccess = () => {
+        console.log('Signed Out');
+        props.navigation.reset({
+            index: 0,
+            routes: [{name: 'Login'}],
+        });
+    }
 
+    //Error Handler for SignOut
+    const signOutFailure = (err) => {
+        console.log('Sign Out Error: ' + err.message);
+        Alert.alert('Sign Out Error. Try Again Later');
+    }
+    
+    /**
+     * Function to sign out a user
+     * 
+     * @returns undefined
+     */
+    const signOutUser = () => firebaseSvc.signOut(signOutSuccess, signOutFailure);
+
+    /**
+     * Asynchronous FUnction to load Profile Data
+     */
     async function loadDataAsync () {
         try {
             await props.fetchUserData();
@@ -47,10 +77,6 @@ function Profile(props) {
         loadDataAsync();
     },[]);
 
-    // if (!appIsReady) {//effect loads data, NO WARNINGS !! :)
-    //     return null;
-    // }
-
     return(
         <SafeAreaView style={{flex: 1}}>
             <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
@@ -63,6 +89,7 @@ function Profile(props) {
             <Tab.Screen name="Meal Preferences" component={MealPreferences} />
             </Tab.Navigator>
             </ScrollView>
+
         </SafeAreaView>
     );  
 }
@@ -74,17 +101,3 @@ const mapStateToProps = (store) => ({
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(Profile);
-
-{/* <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
-            <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
-            <Text style={profileStyles.profileField}>You work in the {INDUSTRY_CODES[userInfo.industry]} industry</Text>
-            <Text style={profileStyles.profileField}>Cross-Industrial meetings? {userInfo.crossIndustry?'Sure!':'Nope!'}</Text>           
-            <Text style={profileStyles.profileField}>{userInfo.email}</Text> */}
-{/* <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('UpdateProfile', {name: userInfo.name, email: userInfo.email})}>
-                <Text style={buttonStyles.loginButtonText}>Edit Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
-                signOutUser();
-                props.navigation.navigate('Login')}}>
-                <Text style={buttonStyles.loginButtonText}>Sign Out</Text>
-            </TouchableOpacity> */}

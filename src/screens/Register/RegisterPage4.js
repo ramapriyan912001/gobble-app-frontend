@@ -6,10 +6,22 @@ import firebaseSvc from '../../firebase/FirebaseSvc'
 import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
 import { INDUSTRY_CODES } from '../../constants/objects'
 
+/**
+ * Page 4 for Registration
+ * 
+ * @param {*} props Props from previous screen
+ * @returns RegisterPage4 Render Method
+ */
 export default function RegisterPage4(props) {
     const [industry, setIndustry] = useState(0);
     const [industries] = useState(INDUSTRY_CODES);
 
+    /**
+     * Update Industry of User in the database
+     * 
+     * @param {*} industry The Industry code of the user
+     * @returns undefined
+     */
     const updateIndustry = (industry) =>
         firebaseSvc
             .getCurrentUserCollection(
@@ -21,6 +33,12 @@ export default function RegisterPage4(props) {
                 props.navigation.navigate('RegisterPage5');
             })
             .catch(getError(props));
+
+    /**
+     * Generates Picker Labels
+     * 
+     * @returns List of Picker.items for industries
+     */
     const industryLabels = () => {
         let pickerItems = [];
         for (let [code, industryTitle] of Object.entries(industries)) {

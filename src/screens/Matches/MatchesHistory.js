@@ -28,6 +28,7 @@ function MatchesHistory (props) {
                     let details = ids[key]
                     let otherUserId = details.otherUserId
                     let avatar, industry;
+
                     await firebaseSvc
                           .avatarRef(details.otherUserId)
                           .once("value")
@@ -38,6 +39,7 @@ function MatchesHistory (props) {
                           .once("value")
                           .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
                           .catch(err => console.log('Error Loading Avatar:',err.message));
+
                     setData(data.concat(details))
                   }
                 }

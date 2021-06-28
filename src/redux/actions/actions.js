@@ -13,6 +13,11 @@ export function fetchAuthUser() {
     return ((dispatch) => dispatch({ type: USER_STATE_CHANGE, currentUserState: firebaseSvc.currentUser() }));
 }
 
+/**
+ * Fetching user data and updating state so multiple firebase calls
+ * do not have to be made
+ * @returns user object
+ */
 export function fetchUserData() {
     return (dispatch) => {
         firebaseSvc.userRef(firebaseSvc.currentUser().uid).once("value").then(snapshot => {

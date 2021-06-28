@@ -6,13 +6,23 @@ import {TOO_LONG, TOO_SHORT} from '../../constants/messages'
 import firebaseSvc from '../../firebase/FirebaseSvc';
 import {onSuccess, onFailure, cancelRegistration, createUserProfile} from '../../services/RegistrationHandlers';
 
+/**
+ * The first page to register a new user
+ * 
+ * @param {*} props Props from previous screen
+ * @returns Register render function
+ */
 export default function register(props) {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     
     //Handlers for Action Failure:
-
+    /**
+     * Handles error from user account creation
+     * 
+     * @param {*} err The error encountered 
+     */
     const creationFailure = (err) => {
         if (err.code === 'auth/email-already-in-use') {
             Alert.alert(err.message, 'Don\'t worry if you didn\'t complete your profile, you can log in and do so');
@@ -21,6 +31,11 @@ export default function register(props) {
         }
     }
 
+    /**
+     * Handles the new user created if done successfully
+     * 
+     * @param {*} userCredential The newly created User
+     */
     const creationSuccess = (userCredential) => {
         const cUser = userCredential.user;
         cUser
@@ -33,22 +48,16 @@ export default function register(props) {
         userProfile['email'] = email;
 
         firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
-        // if (user.avatar != '') {
-        //     cUser
-        //     .updateProfile({ 
-        //         photoURL: user.avatar,
-        //         avatar: user.avatar })
-        //     .then(onSuccess('Updating Avatar'))
-        //     .catch(onFailure('Avatar Update'));
-        // }
         props.navigation.navigate('RegisterPage2', {name: name});
     };
 
+    /**
+     * Starts the new user creation process
+     * 
+     * @param {*} user The User details to create
+     * @returns undefined
+     */
     const addUser = (user) => firebaseSvc.createUser(user, creationSuccess, creationFailure);
-
-    // useEffect(() => {
-    //     return cancelRegistration(props);
-    // }, []);
 
     return(
             <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container} scrollEnabled={false}>
@@ -111,7 +120,6 @@ export default function register(props) {
             </KeyboardAwareScrollView>
     )
 }
-/*
   // const validateInput = (user) => {
     //     const shortMessage = (infoString, len) => infoString + TOO_SHORT + `${len} characters!`;
     //     const longMessage = (infoString, len) => infoString + TOO_LONG + `${len} characters!`;
@@ -140,13 +148,3 @@ export default function register(props) {
     //     else if (!emailRegex.test(user.email)) {Alert.alert('Invalid Email!');}
     //     else {props.navigation.navigate('RegisterPage2', {user: user});}
     // }
-
-    // const passAlongInfo = (email, name, password) => {
-    //     let user = {
-    //         email: email,
-    //         name: name,
-    //         password: password
-    //     };
-    //     validateInput(user);
-    // };
-*/

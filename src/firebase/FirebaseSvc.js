@@ -3,22 +3,28 @@ import { Alert } from 'react-native';
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 import {DIETARY_ARRAYS} from '../constants/objects'
+import {firebaseDetails} from '../../FirebaseDetails'
+
+/**
+ * Class which operates as a database object, whose functions are
+ * called for any and all CRUD operations. Backend logic is present
+ * here as well, through the matching functions.
+ * TODO: Migrate these operations to a separate backend repository
+ */
 
 class FirebaseSvc {
   constructor() {
     if (!firebase.apps.length) { //avoid re-initializing -> HIDE LATER
-      firebase.initializeApp({
-        apiKey: "AIzaSyBEJucuLUGt2iBYJJmAjYGh0NLmk9aKSL8",
-        authDomain: "gobble-b3dfa.firebaseapp.com",
-        databaseURL: "https://gobble-b3dfa-default-rtdb.asia-southeast1.firebasedatabase.app",
-        projectId: "gobble-b3dfa",
-        storageBucket: "gobble-b3dfa.appspot.com",
-        messagingSenderId: "816051198473"
-      });
+      firebase.initializeApp(firebaseDetails);
      }
   }
 
-  //login
+  /**
+   * Login to user account
+   * @param {*} user User object containing all parameters of user
+   * @param {*} success_callback 
+   * @param {*} failed_callback Print error if failure occurs
+   */
   login = async(user, success_callback, failed_callback) => {
       await firebase.auth()
       .signInWithEmailAndPassword(user.email, user.password)
@@ -26,7 +32,11 @@ class FirebaseSvc {
       .catch(failed_callback);
     }
 
-  //Sign Out
+  /**
+   * Sign out of user account
+   * @param {*} success Sign out of account
+   * @param {*} failure Print error if failure occurs
+   */
   signOut = (success, failure) => {
     firebase
     .auth()
@@ -35,7 +45,12 @@ class FirebaseSvc {
     .catch(failure)
   };
 
-  //Register
+  /**
+   * For registration of new users
+   * @param {*} user User object containing all parameters of user
+   * @param {*} success 
+   * @param {*} failure 
+   */
   createUser = (user, success, failure) => {
     firebase
     .auth()
@@ -44,6 +59,13 @@ class FirebaseSvc {
     .catch(failure);//if create user with email and pw fails    
   }
 
+  /**
+   * Used in registration process in case user decides to quit
+   * registration half way. Will also be used to implement delete
+   * functionality.
+   * @param {*} success 
+   * @param {*} failure 
+   */
   deleteUser = (success, failure) => {
     // let deletionSuccess = false;
     if (this.userExists()) {
@@ -57,6 +79,12 @@ class FirebaseSvc {
     }
   }
 
+  /**
+   * 
+   * @param {*} user 
+   * @param {*} success 
+   * @param {*} failure 
+   */
   reauthenticateUser = (user, success, failure) => {
     const credentials = firebase.auth.EmailAuthProvider.credential(user.email, user.password);
     if (this.userExists()) {
@@ -70,6 +98,12 @@ class FirebaseSvc {
     }
   }
 
+  /**
+   * 
+   * @param {*} user 
+   * @param {*} success 
+   * @param {*} failure 
+   */
   updateUserProfile = (user, success, failure) => {
     if (this.userExists()) {
       this
@@ -140,6 +174,14 @@ class FirebaseSvc {
                                                   .catch(failure)
                                                 : failure({code: 'auth/invalid-id', message: 'Invalid UID provided'});
 
+
+  /**
+   * Get all IDs of pending matches
+   * @param {*} success 
+   * @param {*} callback 
+   * @param {*} failure 
+   * @returns 
+   */
   getPendingMatchIDs = (success, callback, failure) => this.userExists()
                                               ? this
                                                 .userRef(`${this.uid}/pendingMatchIDs`)
@@ -181,8 +223,16 @@ class FirebaseSvc {
                     }
                   }
 
+  /**
+   * Getter for current user
+   * @returns current user
+   */                
   currentUser = () => firebase.auth().currentUser;
 
+  /**
+   * Check to see if the user exists
+   * @returns boolean 
+   */
   userExists = () => this.currentUser() != null;
 
   observeAuth = () =>
@@ -244,7 +294,13 @@ class FirebaseSvc {
     return parsedMessageArray;
   };
 
-  //Password Reset
+  /**
+   * Functionality for resetting password
+   * @param {*} email ID to which password reset email is sent
+   * @param {*} success 
+   * @param {*} failure Print error if failure occurs
+   * @returns 
+   */
   resetPassword = (email, success, failure) =>
     firebase
     .auth()
@@ -271,55 +327,111 @@ class FirebaseSvc {
     // const changeLastMessage = (user) => {user.matchIDs[id][lastMessage] = lastSentMessage;};
     // this.getCurrentUserCollection(changeLastMessage, (err) => console.log('Error Changing Last Message', err.message));
   };
-
+  
+  /**
+   * Getter for user ID
+   */
   get uid() {
     return this.currentUser().uid;
   }
-
+  
+  /**
+   * Get the reference to chat object within the conversation object within the database
+   * @param {*} params id of object
+   * @returns reference
+   */
   conversationRef(params) {
     return firebase.database().ref(`Conversation/${params}`);
   }
 
+  /**
+   * Get the reference to user object within the users object within the database
+   * @param {*} params id of object
+   * @returns reference
+   */
   userRef(params) {
     return firebase.database().ref(`Users/${params}`);
   }
 
+  /**
+   * Get the reference to object within the chats object within the database
+   * @param {*} params id of object
+   * @returns reference
+   */
   chatsRef(params) {
     return firebase.database().ref(`Chats/${params}`);
   }
 
+  /**
+   * Get the reference to object within the matches object within the database
+   * @param {*} params id of object
+   * @returns reference
+   */
   matchesRef(params) {
     return firebase.database().ref(`Matches/${params}`);
   }
 
+  /**
+   * Get the reference to object within the GobbleRequests object within the database
+   * @param {*} params id of object
+   * @returns reference
+   */
   gobbleRequestsRef() {
     return firebase.database().ref(`GobbleRequests`)
   }
 
+  /**
+   * Converts the date object into a readable string
+   * So that it can be stored in the database easily
+   * @param {*} date Date object
+   * @returns String of date
+   */
   makeDateString(date) {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
   }
 
+  /**
+   * Get coordinates of the user's location
+   * @param {*} request match request sent by user searching for gobble
+   * @returns 
+   */
   getCoords(request) {
     return request['location']['coords']
   }
 
+  /**
+   * Get datetime string from request sent by user
+   * @param {*} request match request sent by user searching for gobble
+   * @returns 
+   */
   getDatetime(request) {
     return new Date(request['datetime'])
   }
 
+  /**
+   * Get preferred distance for meal from request sent by user
+   * @param {*} request match request sent by user searching for gobble
+   * @returns 
+   */
   getDistance(request) {
     return request['distance']
   }
 
+  /**
+   * Convert time into minutes to easily evaluate time difference
+   * @param {*} date date object
+   * @returns 
+   */
   convertTimeToMinutes(date) {
     return date.getHours()*60 + date.getMinutes()
   }
 
-  getDateString(date) {
-    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`
-  }
-
+  /**
+   * Function called when user launches a request
+   * to find a gobblemate
+   * @param {*} match request sent by user searching for gobble
+   * @returns  
+   */
   async findGobbleMate(gobbleRequest) {
     console.log('Finding a match');
     let request = gobbleRequest;
@@ -393,6 +505,13 @@ class FirebaseSvc {
     }
 }
 
+/**
+ * Function called when match is not instantly found
+ * Pending match ID generated and added to the pile
+ * @param {*} ref Reference of date object within GobbleRequests object
+ * @param {*} request Request sent by user searching for gobble
+ * @param {*} date Date object of request
+ */
 makeGobbleRequest(ref, request, date) {
   const matchID = ref.child(`${request.dietaryRestriction}`).push().key;
   let updates = {};
@@ -402,12 +521,22 @@ makeGobbleRequest(ref, request, date) {
   firebase.database().ref().update(updates);
 }
 
-  // Important ref is the reference under which request
-
+  /**
+   * Getter for user details
+   * @param {*} id user id
+   * @returns user object
+   */
   async getUserDetails(id) {
     return this.getUserCollection(id, snapshot => snapshot.val(), err => console.log(err))
   }
 
+  /**
+   * Handling database operations when two users match
+   * @param {*} request1 request sent by first user
+   * @param {*} dietaryRef1 Useful for scheduled functions - TODO for phase 3
+   * @param {*} request2 request sent by second user
+   * @param {*} request2Ref pending match ID of request2 in GobbleRequests and within the user object itself
+   */
   async match(request1, dietaryRef1, request2, request2Ref) {
     let request2UserDetails = await this.getUserDetails(request2.userId)
     let request1UserDetails = await this.getUserDetails(request1.userId)
@@ -439,6 +568,13 @@ makeGobbleRequest(ref, request, date) {
       // Maybe we need to create another table of just user + profile pic so we don't need to load a lot of data every time
   }
 
+  /**
+   * Threshold for when matching algorithm can stop and return
+   * This is supposed to be dynamic
+   * Will be improved in phase 3
+   * @param {*} request request sent by user
+   * @returns a score number value
+   */
   getThreshold(request) {
     // Will have a threshold function to mark how low a score we are willing to accept for a match
     // Nearer to the schedule time, the lower the threshold
@@ -494,6 +630,13 @@ makeGobbleRequest(ref, request, date) {
           // .catch(err => console.log('Linking Chats Error:', err.message));
   }
 
+  /**
+   * Function to measure compatibility between users when 
+   * deciding whether or not to match users
+   * @param {*} request1 request sent by one user
+   * @param {*} request2 request sent by other user
+   * @returns a score number value
+   */
   measureCompatibility(request1, request2) {
     let compatibility = 0;
     if(request1.cuisinePreference == request2.cuisinePreference) {
@@ -504,22 +647,13 @@ makeGobbleRequest(ref, request, date) {
     }
     return compatibility;
   }
-    
-    // firebase.database().ref(`GobbleRequests`).child('All').push(gobbleRequest)
-    // this.userRef(this.uid).child('pendingMatchIDs').push(requestRef.key)
-    // while(ref != null) {
-    //   for(child in ref)
-    // }
-    // let currChild = children[child]
-    //         let coords2 = this.getCoords(currChild)
-    //         let distance2 = this.getDistance(currChild)
-    //         let date2 = this.getDatetime(currChild)
-    //         let time2 = this.convertTimeToMinutes(date2)
-    //         if(this.isWithinTime(time1, time2) && this.isWithinRange(coords1, distance1, coords2, distance2)) {
-    //           match(request, currChild, tempRef)
-    //           return;
-    //         }
 
+  /**
+   * Calculate distance between two users using coordinates provided
+   * @param {*} coords1 coordinates of first user's location
+   * @param {*} coords2 coordinates of second user's location
+   * @returns the distance between the two users via a number value
+   */
   calculateDistance(coords1, coords2) {
     let lat1 = coords1['latitude']
     let lat2 = coords2['latitude']
@@ -532,18 +666,34 @@ makeGobbleRequest(ref, request, date) {
             (1 - c((lon2 - lon1) * p))/2;
   
     const distance = 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
-    // console.log(distance);
     return distance;
   }
 
+  /**
+   * Evaluates if two users are within range of each other for a match to ocurr
+   * @param {*} coords1 coordinates of first user's location
+   * @param {*} distance1 distance willing to be travelled by first user
+   * @param {*} coords2 coordinates of second user's location
+   * @param {*} distance2 distance willing to be travelled by second user
+   * @returns boolean
+   */
   isWithinRange(coords1, distance1, coords2, distance2) {//was Bug
     return (distance1 + distance2) >= this.calculateDistance(coords1, coords2)
   }
 
+  /**
+   * Evaluates if two users are compatible based on their match times
+   * @param {*} time1 Preferred time of first user request
+   * @param {*} time2 Preferred time of second user request
+   * @returns Boolean
+   */
   isWithinTime(time1, time2) {
     return (Math.abs(time1-time2) <= 30)   
   }
 
+  /**
+   * Getter for timestamp of when item was added to database
+   */
   get timestamp() {
     return firebase.database.ServerValue.TIMESTAMP;
   }
@@ -581,15 +731,23 @@ makeGobbleRequest(ref, request, date) {
     }
   }
 
+  /**
+   * Reference to string under user object within industry object in database
+   * @param {*} params user id
+   * @returns Reference
+   */
   industryRef(params) {
     return firebase.database().ref(`Industry/${params}`)
   }
 
+  /**
+   * Reference to string under user object within avatar object in database
+   * @param {*} params user id
+   * @returns Reference
+   */
   avatarRef(params) {
     return firebase.database().ref(`Avatars/${params}`)
   }
-
-  // Making
 
 }
 // To apply the default browser preference instead of explicitly setting it.
@@ -598,13 +756,3 @@ makeGobbleRequest(ref, request, date) {
 
 const firebaseSvc = new FirebaseSvc();
 export default firebaseSvc;
-
-// var firebaseConfig = {
-//     apiKey: "AIzaSyBEJucuLUGt2iBYJJmAjYGh0NLmk9aKSL8",
-//     authDomain: "gobble-b3dfa.firebaseapp.com",
-//     databaseURL: "https://gobble-b3dfa-default-rtdb.asia-southeast1.firebasedatabase.app",
-//     projectId: "gobble-b3dfa",
-//     storageBucket: "gobble-b3dfa.appspot.com",
-//     messagingSenderId: "816051198473",
-//     appId: "1:816051198473:web:7de57f3eb1e72eaec8f6d8",
-//     measurementId: "G-D9J9SX4T89"

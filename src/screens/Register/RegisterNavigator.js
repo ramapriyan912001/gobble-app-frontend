@@ -14,6 +14,11 @@ import RegisterPage5 from './RegisterPage5'
 
 const Stack = createStackNavigator();
 
+/**
+ * The Stack navigator for the registration Pages
+ * 
+ * @returns Stack Navigator for registration
+ */
 export default function RegisterNavigator() {
     return (
         <Stack.Navigator initialRouteName="Register" headerMode={'none'}>

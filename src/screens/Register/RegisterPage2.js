@@ -7,6 +7,12 @@ import {onSuccess, onFailure, cancelRegistration, getError} from '../../services
 import ImageEditor from '@react-native-community/image-editor';
 import * as ImageManipulator from 'expo-image-manipulator';
 
+/**
+ * Second Page of Registration
+ * 
+ * @param {*} props Props from previous screen
+ * @returns RegisterPage2 Render Method
+ */
 export default function RegisterPage2(props) {
     const name = props.route.params.name;
     const emptyAvatar = 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc';
@@ -15,11 +21,14 @@ export default function RegisterPage2(props) {
     const [hasAvatar, setHasAvatar] = useState(false);
     const [loading, setLoading] = useState(true);
 
-    //Failures Handler
-
+    /**
+     * Updates the given avatar (if any)
+     * 
+     * @param {*} avatar The URL to the avatar
+     */
     const updateAvatar = (avatar) => {
         if (loading) {
-            Alert.alert('Wait up!', 'We\'re still uploading your picture!');
+            Alert.alert('Wait up!', 'We haven\'t loaded the next page!');
         } else { 
         if (hasAvatar) {
             firebaseSvc
@@ -48,6 +57,9 @@ export default function RegisterPage2(props) {
         }
     };
 
+    /**
+     * Gets permissions for accessing image, and uploads to the database
+     */
     const updateImage = () => {
         ImagePicker
         .requestMediaLibraryPermissionsAsync()
@@ -109,9 +121,7 @@ export default function RegisterPage2(props) {
         })
         .catch(onFailure('Permission Retrieval Error'));
       };
-
-    // useEffect(imageDisplay, [hasAvatar]);
-    console.log(hasAvatar);
+      
     return (
     <SafeAreaView style={{flex: 1}}>
         <ScrollView>
