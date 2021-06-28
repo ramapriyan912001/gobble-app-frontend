@@ -29,14 +29,18 @@ function ChatRoom (props) {
             .getChats(
               snapshot => {
                 const chats = snapshot.val();
-                let newData = [];
-                for(let [key, value] of Object.entries(chats)) {
-                  if(!(key in userIDs)) {
-                    userIDs[key] = true;
+                if (chats == null) {
+                  //Do Nothing
+                } else {
+                  let newData = [];
+                  for(let [key, value] of Object.entries(chats)) {
+                    if(!(key in userIDs)) {
+                      userIDs[key] = true;
+                    }
+                    newData = newData.concat(value.metadata);
                   }
-                  newData = newData.concat(value.metadata);
-                }
-                setData(newData);
+                  setData(newData);
+                } 
               },
               err => {console.log(err.message)}
             )
