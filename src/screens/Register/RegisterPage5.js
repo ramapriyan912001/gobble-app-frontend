@@ -33,6 +33,7 @@ export default function RegisterPage5(props) {
                 userProfile['crossIndustrial'] = cross;
                 userProfile['dob'] = date.toDateString();
                 userProfile['completed'] = true;
+                userProfile['dateJoined'] = new Date().toDateString();
                 firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
             })
             .catch(getError(props));

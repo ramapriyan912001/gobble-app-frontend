@@ -20,7 +20,15 @@ export function fetchAuthUser() {
  */
 export function fetchUserData() {
     return (dispatch) => {
-        firebaseSvc.userRef(firebaseSvc.currentUser().uid).on("value", (snapshot) => {
+        firebaseSvc.userRef(firebaseSvc.currentUser().uid).once("value").then(snapshot => {
+            dispatch({ type: USER_DATA_CHANGE, currentUserData: snapshot.val()})
+        })
+    }
+}
+
+export function fetchUserDataWithUID(uid) {
+    return (dispatch) => {
+        firebaseSvc.userRef(uid).once("value", (snapshot) => {
             dispatch({ type: USER_DATA_CHANGE, currentUserData: snapshot.val()})
         })
     }

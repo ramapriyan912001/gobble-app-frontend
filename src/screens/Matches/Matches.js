@@ -9,6 +9,7 @@ import renderSeparator from '../../components/renderSeparator'
 import renderHeader from '../../components/renderHeader'
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { FOOD_IMAGES_URIs } from '../../constants/objects'
+import { INDUSTRY_CODES } from '../../constants/objects'
 
 function Matches (props) {
     const [data, setData] = useState([]);
@@ -42,7 +43,7 @@ function Matches (props) {
           firebaseSvc.pendingMatchIDsOff();
         }
     }, [])
-    const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
+    // const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     
     return (
       <SafeAreaView>
@@ -53,10 +54,10 @@ function Matches (props) {
               containerStyle={{borderBottomWidth:5, height: 160}}
               key={index} 
               roundAvatar>
-                <Avatar source={{uri:pickImage(item)}} />
+                <Avatar size='large' source={{uri:FOOD_IMAGES_URIs[item.cuisinePreference]}} />
                 <ListItem.Content>
                   <ListItem.Title>{item.datetime}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.industryPreference} industry`}</ListItem.Subtitle>
+                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}

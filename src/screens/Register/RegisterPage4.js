@@ -42,7 +42,7 @@ export default function RegisterPage4(props) {
     const industryLabels = () => {
         let pickerItems = [];
         for (let [code, industryTitle] of Object.entries(industries)) {
-            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} value ={industryTitle}/>);
+            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} value ={code}/>);
         }
         return pickerItems;
     }

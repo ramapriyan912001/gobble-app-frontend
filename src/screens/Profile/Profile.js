@@ -1,6 +1,6 @@
 
 import React, {useEffect, useState, useCallback} from 'react'
-import {Text, Image, TouchableOpacity, SafeAreaView, Alert, View, Button} from 'react-native'
+import {Text, Image, TouchableOpacity, SafeAreaView, Alert, View, Button, ScrollView} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
 import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../../styles/LoginStyles'
 import { getError, onSuccess, onFailure } from '../../services/RegistrationHandlers'
@@ -9,6 +9,11 @@ import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchAuthUser, fetchUserData } from '../../redux/actions/actions'
 import { INDUSTRY_CODES } from '../../constants/objects'
+import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import PersonalDetails from '../PersonalDetails'
+import MealPreferences from '../MealPreferences'
+import { Avatar } from 'react-native-elements'
+const Tab = createMaterialTopTabNavigator();
 
 /**
  * User Profile Page
@@ -17,9 +22,20 @@ import { INDUSTRY_CODES } from '../../constants/objects'
  * @returns Profile Render Method
  */
 function Profile(props) {
+
     const [userInfo, setUserInfo] = useState({});
     const [hasAvatar, setHasAvatar] = useState(false);
 
+    function getAge(dateString) {
+        var today = new Date();
+        var birthDate = new Date(dateString);
+        var age = today.getFullYear() - birthDate.getFullYear();
+        var m = today.getMonth() - birthDate.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+            age--;
+        }
+        return age;
+    }
     //Success Handler for SignOut
     const signOutSuccess = () => {
         console.log('Signed Out');
@@ -42,29 +58,18 @@ function Profile(props) {
      */
     const signOutUser = () => firebaseSvc.signOut(signOutSuccess, signOutFailure);
 
-    const loadPic = () => hasAvatar
-                            ? (<Image style={profileStyles.profilePic} source={{uri:userInfo.avatar}}/>)
-                            : (<Text style={inputStyles.subText}>You haven't chosen any avatar!</Text>)
-
     /**
      * Asynchronous FUnction to load Profile Data
      */
     async function loadDataAsync () {
-        const user = await firebaseSvc
-                            .getCurrentUserCollection(
-                                (snapshot) => snapshot.val(),
-                                getError(props))
-                            .then(x => x)
-                            .catch(getError(props));
-        setUserInfo(user);
-        await props.fetchUserData();
-        if (userInfo === null) {
-            props.navigation.goBack();
-        } else if (userInfo.avatar == null || userInfo.avatar === '') {
-            //Do Nothing
-        } else {
-            console.log(userInfo.avatar);
-            setHasAvatar(true);
+        try {
+            await props.fetchUserData();
+            setUserInfo(props.currentUserData);
+            if (userInfo === null) {
+                props.navigation.goBack();
+            }
+        } catch (err) {
+            console.log('Profile Fetch User Error:', err.message);
         }
     }
 
@@ -73,23 +78,18 @@ function Profile(props) {
     },[]);
 
     return(
-        <SafeAreaView style={containerStyles.container}>
+        <SafeAreaView style={{flex: 1}}>
+            <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
             <StatusBar style="auto"/>
-            <Text style={inputStyles.headerText}>{userInfo.name}'s Profile</Text>
-            {loadPic()}
-            <Text style={profileStyles.profileField}>Your dietary restriction is {userInfo.diet}</Text>
-            <Text style={profileStyles.profileField}>Your favorite cuisine is {userInfo.cuisine}</Text>
-            <Text style={profileStyles.profileField}>You work in the {INDUSTRY_CODES[userInfo.industry]} industry</Text>
-            <Text style={profileStyles.profileField}>Cross-Industrial meetings? {userInfo.crossIndustrial?'Sure!':'Nope!'}</Text>           
-            <Text style={profileStyles.profileField}>{userInfo.email}</Text>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('UpdateProfile', {name: userInfo.name, email: userInfo.email})}>
-                <Text style={buttonStyles.loginButtonText}>Edit Profile</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
-                signOutUser();
-                props.navigation.navigate('Login')}}>
-                <Text style={buttonStyles.loginButtonText}>Sign Out</Text>
-            </TouchableOpacity>
+            <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: props.currentUserData.avatar}}/>
+            <Text style={{...inputStyles.headerText, fontWeight:'400', marginBottom: '0%',fontSize: 26}}>{`${props.currentUserData.name}, ${getAge(props.currentUserData.dob)}`}</Text>
+            <Text style={{...inputStyles.headerText, fontWeight: '300', marginBottom: '2%',fontSize: 16}}>{`${INDUSTRY_CODES[props.currentUserData.industry]}`}</Text>
+            <Tab.Navigator initialRouteName="Ongoing" style={{marginTop: '0%',paddingTop:'0%', backgroundColor:'white'}}>
+            <Tab.Screen name="Personal Details" component={PersonalDetails} />
+            <Tab.Screen name="Meal Preferences" component={MealPreferences} />
+            </Tab.Navigator>
+            </ScrollView>
+
         </SafeAreaView>
     );  
 }

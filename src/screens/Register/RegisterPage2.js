@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Text, View, SafeAreaView, TouchableOpacity, Alert, Image} from 'react-native'
+import {Text, View, SafeAreaView, TouchableOpacity, Alert, Image, ScrollView} from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
 import {pickerStyles, buttonStyles, containerStyles, inputStyles, imageStyles} from '../../styles/LoginStyles'
 import firebaseSvc from '../../firebase/FirebaseSvc';
@@ -15,8 +15,9 @@ import * as ImageManipulator from 'expo-image-manipulator';
  */
 export default function RegisterPage2(props) {
     const name = props.route.params.name;
+    const emptyAvatar = 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc';
     // const user = initialState.user; User accessed from firebaseSvc
-    const [avatar, setAvatar] = useState('');
+    const [avatar, setAvatar] = useState(emptyAvatar);
     const [hasAvatar, setHasAvatar] = useState(false);
     const [loading, setLoading] = useState(true);
 
@@ -26,22 +27,33 @@ export default function RegisterPage2(props) {
      * @param {*} avatar The URL to the avatar
      */
     const updateAvatar = (avatar) => {
-    if (loading) {
-        Alert.alert('Wait a sec!', 'The Next Page hasn\'t loaded yet');
-    } else {
-            if (hasAvatar) {
-                firebaseSvc
-                .getCurrentUserCollection(
-                    (snapshot) => snapshot.val(),
-                    getError(props))
-                .then(userProfile => {
-                    userProfile['avatar'] = avatar;
-                    firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
-                    firebaseSvc.updateAvatar(avatar);
-                })
-                .catch(getError(props));
-            }
-            props.navigation.navigate('RegisterPage3');
+        if (loading) {
+            Alert.alert('Wait up!', 'We haven\'t loaded the next page!');
+        } else { 
+        if (hasAvatar) {
+            firebaseSvc
+            .getCurrentUserCollection(
+                (snapshot) => snapshot.val(),
+                getError(props))
+            .then(userProfile => {
+                userProfile['avatar'] = avatar;
+                firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+                firebaseSvc.updateAvatar(avatar);
+            })
+            .catch(getError(props));
+        } else {
+            firebaseSvc
+            .getCurrentUserCollection(
+                (snapshot) => snapshot.val(),
+                getError(props))
+            .then(userProfile => {
+                userProfile['avatar'] = emptyAvatar;
+                firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+                firebaseSvc.updateAvatar(emptyAvatar);
+            })
+            .catch(getError(props));
+        }
+        props.navigation.navigate('RegisterPage3');
         }
     };
 
@@ -111,10 +123,11 @@ export default function RegisterPage2(props) {
       };
       
     return (
-    <SafeAreaView>
+    <SafeAreaView style={{flex: 1}}>
+        <ScrollView>
         <Text style={inputStyles.headerText}>Complete your Profile!</Text> 
         <Text style={pickerStyles.text}>{name}, pick out a nice picture of yourself!</Text>
-        {hasAvatar && (<Image style={imageStyles.gobbleImage} source={avatar}/>)}
+        {/* {hasAvatar && (<Image style={imageStyles.gobbleImage} source={avatar}/>)} */}
         <TouchableOpacity style={buttonStyles.loginButton} onPress={updateImage}>
             <Text style={buttonStyles.loginButtonText}>Select Picture</Text>
         </TouchableOpacity>
@@ -132,5 +145,6 @@ export default function RegisterPage2(props) {
                 <Text style={buttonStyles.loginButtonText}>Continue</Text>
             </TouchableOpacity>
         </View>
+        </ScrollView>
     </SafeAreaView>
     )};

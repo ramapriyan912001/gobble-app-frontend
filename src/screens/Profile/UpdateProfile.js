@@ -8,8 +8,8 @@ import {fetchAuthUser, updateUserDetails, clearData} from '../../redux/actions/a
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
 export function UpdateProfile(props) {
-    const [name, setName] = useState(props.route.params.name);
-    const [email, setEmail] = useState(props.route.params.email);
+    const [name, setName] = useState(props.currentUserData.name);
+    const [email, setEmail] = useState(props.currentUserData.email);
     const [nameChanged, setNameChange] = useState(false);
     const [emailChanged, setEmailChange] = useState(false);
     
