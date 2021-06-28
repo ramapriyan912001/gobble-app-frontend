@@ -80,6 +80,7 @@ class FirebaseSvc {
   }
 
   /**
+   * Function to re-authenticate a user
    * 
    * @param {*} user 
    * @param {*} success 
@@ -99,6 +100,7 @@ class FirebaseSvc {
   }
 
   /**
+   * Function to update user profile in Authentication database
    * 
    * @param {*} user 
    * @param {*} success 
@@ -583,6 +585,9 @@ makeGobbleRequest(ref, request, date) {
     return 18;
   }
 
+  /**
+   * Asynchronously create a chat for matched users
+   */
   async linkChats(updates, req1, req2, user1, user2) {
     //Adding to Chats Table
     //If the User has never been matched before, add a new entry in each User's ref under this table
