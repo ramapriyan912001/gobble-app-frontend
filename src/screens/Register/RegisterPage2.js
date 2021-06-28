@@ -108,7 +108,6 @@ export default function RegisterPage2(props) {
                     .then(uploadURL => {
                         setAvatar(uploadURL);
                         setHasAvatar(true);
-                        setLoading(false);
                         // firebaseSvc
                         // .updateAvatar(uploadURL)
                         // .then(() => console.log('Avatar Updated'))
@@ -125,13 +124,15 @@ export default function RegisterPage2(props) {
         })
         .catch(onFailure('Permission Retrieval Error'));
       };
+    
+    const whichText = hasAvatar => hasAvatar ? 'You have chosen an avatar' : 'No avatar picked (Re-try if you have done so already)';
       
     return (
     <SafeAreaView style={{flex: 1}}>
-        <ScrollView>
         <Text style={inputStyles.headerText}>Complete your Profile!</Text> 
         <Text style={pickerStyles.text}>{name}, pick out a nice picture of yourself!</Text>
         {/* {hasAvatar && (<Image style={imageStyles.gobbleImage} source={avatar}/>)} */}
+        <Text style={inputStyles.subText}>{whichText(hasAvatar)}</Text>
         <TouchableOpacity style={buttonStyles.loginButton} onPress={updateImage}>
             <Text style={buttonStyles.loginButtonText}>Select Picture</Text>
         </TouchableOpacity>
@@ -149,6 +150,5 @@ export default function RegisterPage2(props) {
                 <Text style={buttonStyles.loginButtonText}>Continue</Text>
             </TouchableOpacity>
         </View>
-        </ScrollView>
     </SafeAreaView>
     )};
