@@ -45,12 +45,12 @@ function MealPreferences(props) {
     return (
         <View style={styles.container}>
             <View style={{...styles.item}}>
-            <Input label='Cuisine' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderBottomColor: 'black', borderBottomWidth: 2}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={cuisinePreference} editable={false}></Input>
-            <Input scrollEnabled={true} label='Diet' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: 'black', borderBottomWidth: 2}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={diet} editable={false}></Input>
+            <Input label='Cuisine' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderBottomColor: '#000000', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={cuisinePreference} editable={false}></Input>
+            <Input scrollEnabled={true} label='Diet' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: '#000000', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={diet} editable={false}></Input>
             </View>
             <View style={styles.item}>
-            <Input label='Industry Preference' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#DFD8C8", borderBottomWidth: 2}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={industryPreference} editable={false}></Input>
-            <Input label='Industry' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#DFD8C8", borderBottomWidth: 2}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={industry} editable={false}></Input>
+            <Input label='Industry Preference' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={industryPreference} editable={false}></Input>
+            <Input label='Industry' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={industry} editable={false}></Input>
             </View>
             <View style={{marginLeft: '7.5%'}}>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {

@@ -254,13 +254,6 @@ class FirebaseSvc {
       .on('value', snapshot => callback(this.parseStoredMessage(snapshot)));
   }
 
-  // messageRefOn = callback => {
-  //   // console.log('New Message: ');
-  //   this.conversationRef('')
-  //     .limitToLast(40)
-  //     .on('child_added', snapshot => callback(this.parseMessage(snapshot)));
-  // }
-
   messageRefOff(id) {
     this.conversationRef(`${id}`).off();
   }
@@ -281,15 +274,12 @@ class FirebaseSvc {
       //Do Nothing
     } else {
       for (let [key, value] of Object.entries(messageArray)) {
-        // console.log('here');
-        // console.log(value);
         const parsedMessage = {
           '_id': key,
           'user': value.user,
           'text': value.text,
           'timestamp': value.timestamp,
         };
-        // console.log(parsedMessage);
         parsedMessageArray.unshift(parsedMessage);
       }
     }
@@ -325,9 +315,6 @@ class FirebaseSvc {
     // this.userRef(`/${this.uid}/matchIDs/${id}/lastMessage`).set(lastSentMessage);
     this.chatsRef(`/${this.uid}/${otherUserID}/metadata/lastMessage`).set(lastSentMessage.text);
     this.chatsRef(`/${otherUserID}/${this.uid}/metadata/lastMessage`).set(lastSentMessage.text);
-
-    // const changeLastMessage = (user) => {user.matchIDs[id][lastMessage] = lastSentMessage;};
-    // this.getCurrentUserCollection(changeLastMessage, (err) => console.log('Error Changing Last Message', err.message));
   };
   
   /**

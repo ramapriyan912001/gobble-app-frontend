@@ -45,12 +45,12 @@ function PersonalDetails(props) {
     return (
         <View style={styles.container}>
             <View style={{...styles.item}}>
-            <Input label='Name' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderBottomColor: 'black', borderBottomWidth: 2}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={name} editable={false}></Input>
-            <Input scrollEnabled={true} label='Email' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: 'black', borderBottomWidth: 2}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={email} editable={false}></Input>
+            <Input label='Name' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderBottomColor: 'black', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={name} editable={false}></Input>
+            <Input label='Email' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: 'black', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={email} editable={false}></Input>
             </View>
             <View style={styles.item}>
-            <Input label='Date of Birth' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#DFD8C8", borderBottomWidth: 2}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={dob} editable={false}></Input>
-            <Input label='Date Joined' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#DFD8C8", borderBottomWidth: 2}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={dateJoined} editable={false}></Input>
+            <Input label='Date of Birth' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={dob} editable={false}></Input>
+            <Input label='Date Joined' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={dateJoined} editable={false}></Input>
             </View>
             <View style={{marginLeft: '7.5%'}}>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
