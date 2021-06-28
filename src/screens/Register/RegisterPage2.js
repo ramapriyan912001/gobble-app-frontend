@@ -19,7 +19,7 @@ export default function RegisterPage2(props) {
     // const user = initialState.user; User accessed from firebaseSvc
     const [avatar, setAvatar] = useState(emptyAvatar);
     const [hasAvatar, setHasAvatar] = useState(false);
-    const [loading, setLoading] = useState(true);
+    const [confirmation, setConfirmation] = useState(false);
 
     /**
      * Updates the given avatar (if any)
@@ -38,19 +38,27 @@ export default function RegisterPage2(props) {
                 firebaseSvc.updateAvatar(avatar);
             })
             .catch(getError(props));
+            props.navigation.navigate('RegisterPage3');
         } else {
-            firebaseSvc
-            .getCurrentUserCollection(
-                (snapshot) => snapshot.val(),
-                getError(props))
-            .then(userProfile => {
-                userProfile['avatar'] = emptyAvatar;
-                firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
-                firebaseSvc.updateAvatar(emptyAvatar);
-            })
-            .catch(getError(props));
+            //No Avatar selected
+            //First we confirm choice
+            if (!confirmation) {
+                Alert.alert('Proceeding with no avatar!', 'If so, tap ok and click next again. Otherwise please retry selecting an avatar');
+                setConfirmation(true);
+            } else {
+                firebaseSvc
+                .getCurrentUserCollection(
+                    (snapshot) => snapshot.val(),
+                    getError(props))
+                .then(userProfile => {
+                    userProfile['avatar'] = emptyAvatar;
+                    firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+                    firebaseSvc.updateAvatar(emptyAvatar);
+                })
+                .catch(getError(props));
+                props.navigation.navigate('RegisterPage3');
+            }
         }
-        props.navigation.navigate('RegisterPage3');
     };
 
     /**
