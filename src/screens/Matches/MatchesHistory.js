@@ -30,10 +30,15 @@ function MatchesHistory (props) {
             .getMatchIDs(
               async(snapshot) => {
                 let ids = snapshot.val();
-                // console.log(ids, 'ids')
-                for(let key in ids) {
-                  if(!(key in matchIDs)) {
-                    matchIDs[key] = true;
+                if (ids == null) {
+                  //Do Nothing
+                } else  {
+                  // console.log(ids, 'ids')
+                  let newData = [];
+                  for(let [key, value] of Object.entries(ids)) {
+                    if(!(key in matchIDs)) {
+                      matchIDs[key] = true;
+                    }
                     let details = ids[key]
                     let otherUserId = details.otherUserId
                     let avatar, industry;
@@ -49,10 +54,11 @@ function MatchesHistory (props) {
                           .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
                           .catch(err => console.log('Error Loading Avatar:',err.message));
 
-                    setData(data.concat(details))
+                    newData = newData.concat(details);
                   }
+                  setData(newData);
+                  console.log(data);
                 }
-                // console.log(data);
               },
               x => x,
               err => {console.log('Error Loading Matched IDs:',err.message)}
