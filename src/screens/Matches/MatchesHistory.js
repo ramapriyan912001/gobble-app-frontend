@@ -57,7 +57,6 @@ function MatchesHistory (props) {
                     newData = newData.concat(details);
                   }
                   setData(newData);
-                  console.log(data);
                 }
               },
               x => x,
