@@ -1,8 +1,12 @@
 import firebaseSvc from "../firebase/FirebaseSvc";
 import { Alert } from 'react-native';
 import { INDUSTRY_CODES } from "../constants/objects";
-//should be in redux 
+//TODO: Shift to redux 
 
+/**
+ * Creates new User Object
+ * @returns Empty Geneir User Object
+ */
 export function createUserProfile() {//factory method
     return {
         name: '',
@@ -19,10 +23,27 @@ export function createUserProfile() {//factory method
     };
 }
 
+/**
+ * Curried Generic Failure Handler
+ * 
+ * @param {*} level Error Level
+ * @returns Level-based Failure Handler
+ */
 export const onFailure = (level) => (err) => console.log(level + ' error: ' + err.message);
     
+/**
+ * Curried Generic Success Handler
+ * 
+ * @param {*} level Success Level
+ * @returns level-based success handler
+ */
 export const onSuccess = (level) => () => console.log(level + ' successfully done');
 
+/**
+ * Function to delete user from authentication database
+ * 
+ * @param {*} props Props passed from parent screen (Register)
+ */
 const deleteAuthUser = (props) => {
     const deleteSuccess = () => {
         console.log('Cancelled Registration - Back to Login');
@@ -41,6 +62,11 @@ const deleteAuthUser = (props) => {
     firebaseSvc.deleteUser(deleteSuccess, deleteFailure);
 };
 
+/**
+ * Cancel the Registration of a user
+ * 
+ * @param {*} props Props from Parent Screen (Register)
+ */
 export const cancelRegistration = (props) => {
     const userData = firebaseSvc.getCurrentUserCollection((snapshot) => snapshot.val(), err => console.log('GetError: ' + err.message));
     if (userData != null) {
@@ -67,6 +93,12 @@ export const cancelRegistration = (props) => {
     }
 };
 
+/**
+ * Error Handler for the Register
+ * 
+ * @param {*} props 
+ * @returns 
+ */
 export const getError = (props) => (err) => {
     console.log('Insufficient data');
     Alert.alert('Registration Error: ' + err.message);

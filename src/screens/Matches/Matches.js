@@ -11,11 +11,20 @@ import firebaseSvc from '../../firebase/FirebaseSvc'
 import { FOOD_IMAGES_URIs } from '../../constants/objects'
 import { INDUSTRY_CODES } from '../../constants/objects'
 
+/**
+ * Page to Load the Pending Matches Screen
+ * 
+ * @param {*} props Props from previous screen
+ * @returns Matches Render Method 
+ */
 function Matches (props) {
     const [data, setData] = useState([]);
     // const [loading, setLoading]= useState(true);
     const [matchIDs, setMatchIDs] = useState({});
     
+    /**
+     * Load Page Data Asynchronously
+     */
     async function loadAsync() {
       await firebaseSvc
             .getPendingMatchIDs(

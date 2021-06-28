@@ -10,6 +10,12 @@ import {fetchUserData, updateUserDetails, clearData} from '../../redux/actions/a
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
 
+/**
+ * Page to search for a new Match
+ * 
+ * @param {*} props Props from previous screen
+ * @returns GobbleSelect Render Method 
+ */
 function GobbleSelect(props) {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [cuisinePreference, setCuisinePreference] = useState('Western')
@@ -21,6 +27,9 @@ function GobbleSelect(props) {
   const [date, setDate] = useState(MIN_DATE)
 
   useEffect(() => {
+      /**
+       * Function to get and set User's current location
+       */
       (async () => {
           await props.fetchUserData();
             let {status} = await Location.requestForegroundPermissionsAsync();
@@ -43,6 +52,11 @@ function GobbleSelect(props) {
       text = JSON.stringify(location)
   }
 
+  /**
+   * Function to load all Cuisines
+   * 
+   * @returns List of Picker Items of Cuisines
+   */
   const renderCuisines = () => {
       const cuisines = ['Western', 'Indian', 'Asian', 'Food Court', 'No Preference'];
       let cuisineID = 0;
@@ -50,8 +64,9 @@ function GobbleSelect(props) {
       return cuisines.map(cuisine => (<Picker.Item label={cuisine} value={cuisine} key={cuisineID++}/>))
   };
 
-  
-
+  /**
+   * Function to create a request and pass it to the next page
+   */
   function submitGobble() {
       if (loading) {
           Alert.alert('Hang on for a sec!', 'We\'re still getting your location');
@@ -128,15 +143,3 @@ const mapStateToProps = (store) => ({
 })
 const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
 export default connect(mapStateToProps, mapDispatchToProps)(GobbleSelect);
-/*
-<Picker.Item label="Western" value={"Western"}></Picker.Item>
-                        <Picker.Item label="Indian" value={"Indian"}></Picker.Item>
-                        <Picker.Item label="Asian" value={"Asian"}></Picker.Item>
-                        <Picker.Item label="Food Court" value={"Food Court"}></Picker.Item>
-                        <Picker.Item label="No Preference" value={"No Preference"}></Picker.Item>
-<Picker.Item label="1 km" value={1}></Picker.Item>
-                        <Picker.Item label="2 km" value={2}></Picker.Item>
-                        <Picker.Item label="5 km" value={5}></Picker.Item>
-                        <Picker.Item label="10 km" value={10}></Picker.Item>
-                        <Picker.Item label="No Preference" value={200}></Picker.Item>
-                        */

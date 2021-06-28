@@ -2,6 +2,12 @@ import React from 'react'
 import {View, Text, TouchableOpacity} from 'react-native'
 import {buttonStyles, containerStyles, inputStyles} from '../../styles/LoginStyles'
 
+/**
+ * Page to show confirmation of match request submission
+ * 
+ * @param {*} props Props from previous screen
+ * @returns GobbleConfirm Render Method
+ */
 export function GobbleConfirm(props) {
     let result = props.route.params.result;
     if(result) {

@@ -10,6 +10,11 @@ import { Conversation } from './Conversation'
 
 const Stack = createStackNavigator();
 
+/**
+ * Navigate between ChatRoom and Conversation Page
+ * 
+ * @returns Stack Navigator
+ */
 export function ChatNavigator() {
     return (
         <Stack.Navigator initialRouteName="ChatRoom"

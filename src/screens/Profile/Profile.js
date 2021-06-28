@@ -24,8 +24,7 @@ const Tab = createMaterialTopTabNavigator();
 function Profile(props) {
 
     const [userInfo, setUserInfo] = useState({});
-    const [hasAvatar, setHasAvatar] = useState(false);
-
+    
     function getAge(dateString) {
         var today = new Date();
         var birthDate = new Date(dateString);
@@ -36,27 +35,6 @@ function Profile(props) {
         }
         return age;
     }
-    //Success Handler for SignOut
-    const signOutSuccess = () => {
-        console.log('Signed Out');
-        props.navigation.reset({
-            index: 0,
-            routes: [{name: 'Login'}],
-        });
-    }
-
-    //Error Handler for SignOut
-    const signOutFailure = (err) => {
-        console.log('Sign Out Error: ' + err.message);
-        Alert.alert('Sign Out Error. Try Again Later');
-    }
-    
-    /**
-     * Function to sign out a user
-     * 
-     * @returns undefined
-     */
-    const signOutUser = () => firebaseSvc.signOut(signOutSuccess, signOutFailure);
 
     /**
      * Asynchronous FUnction to load Profile Data

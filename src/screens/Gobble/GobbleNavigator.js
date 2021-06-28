@@ -7,9 +7,13 @@ import GobbleSelect from './GobbleSelect'
 import GobbleSelect2 from './GobbleSelect2'
 import {GobbleConfirm} from './GobbleConfirm'
 
-
 const Stack = createStackNavigator();
 
+/**
+ * Navigate between GobbleSelect, GobbleSelect2, and GobbleConfirm
+ * 
+ * @returns Stack Navigator
+ */
 export function GobbleNavigator() {
     return (
         <Stack.Navigator initialRouteName="GobbleSelect">

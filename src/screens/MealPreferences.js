@@ -8,6 +8,12 @@ import {inputStyles, buttonStyles} from '../styles/LoginStyles'
 import {INDUSTRY_CODES} from '../constants/objects'
 import firebaseSvc from '../firebase/FirebaseSvc'
 
+/**
+ * The Tab to show the user's Meal Preferences
+ * 
+ * @param {*} props Props from previous screen
+ * @returns MealPreferences Render Method
+ */
 function MealPreferences(props) {
 
     const [cuisinePreference, setCuisinePreference] = useState('')

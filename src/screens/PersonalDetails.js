@@ -8,6 +8,12 @@ import {inputStyles, buttonStyles} from '../styles/LoginStyles'
 import {INDUSTRY_CODES} from '../constants/objects'
 import firebaseSvc from '../firebase/FirebaseSvc'
 
+/**
+ * Tab for User's Personal Details
+ * 
+ * @param {*} props Props from previous screen
+ * @returns PersonalDetails Render Method
+ */
 function PersonalDetails(props) {
 
     const [name, setName] = useState('')

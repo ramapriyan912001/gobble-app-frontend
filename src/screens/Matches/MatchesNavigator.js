@@ -7,6 +7,11 @@ import MatchesHistory from './MatchesHistory';
 
 const Tab = createMaterialTopTabNavigator();
 
+/**
+ * Navigate between Matches and MatchesHistory
+ * 
+ * @returns The Tab Navigator between Pending and Previous Matches
+ */
 export default function MatchesNavigator() {
   return (
         <Tab.Navigator initialRouteName="Ongoing" style={{paddingTop:'8%', backgroundColor:'white'}}>

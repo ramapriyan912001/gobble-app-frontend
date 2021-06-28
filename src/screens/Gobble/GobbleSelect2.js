@@ -8,16 +8,16 @@ import firebaseSvc from '../../firebase/FirebaseSvc';
 import {fetchUserData, updateUserDetails, clearData} from '../../redux/actions/actions'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
-// import RNLocation, { getLatestLocation } from 'react-native-location'
-// import RNGeolocationService from 'react-native-geolocation-service'
-// import {getDistance} from 'geolib'
 
+/**
+ * Final Page before submitting a new Match Request
+ * 
+ * @param {*} props Props from previous screen
+ * @returns GobbleSelect2 Render Method
+ */
 function GobbleSelect2(props) {
   const [distance, setDistance] = useState(1);
   const request = props.route.params.req;
-//   useEffect(() => {
-      
-//   }, []);
 
   const renderDistances = () => {
     const distances = [1, 2, 5, 10, 200];
@@ -26,6 +26,9 @@ function GobbleSelect2(props) {
     return distances.map(distance => (<Picker.Item label={distance == 200 ? 'No Preference' : `${distance} km`} value={distance} key={distanceID++}/>))
   };
 
+  /**
+   * Asynchronously submits a new match request
+   */
   async function submitGobble() {
     const gobbleRequest = {
         userId: request.userId,
@@ -82,15 +85,3 @@ const mapStateToProps = (store) => ({
 })
 const mapDispatchToProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
 export default connect(mapStateToProps, mapDispatchToProps)(GobbleSelect2);
-/*
-<Picker.Item label="Western" value={"Western"}></Picker.Item>
-                        <Picker.Item label="Indian" value={"Indian"}></Picker.Item>
-                        <Picker.Item label="Asian" value={"Asian"}></Picker.Item>
-                        <Picker.Item label="Food Court" value={"Food Court"}></Picker.Item>
-                        <Picker.Item label="No Preference" value={"No Preference"}></Picker.Item>
-<Picker.Item label="1 km" value={1}></Picker.Item>
-                        <Picker.Item label="2 km" value={2}></Picker.Item>
-                        <Picker.Item label="5 km" value={5}></Picker.Item>
-                        <Picker.Item label="10 km" value={10}></Picker.Item>
-                        <Picker.Item label="No Preference" value={200}></Picker.Item>
-                        */

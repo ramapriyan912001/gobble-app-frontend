@@ -11,11 +11,20 @@ import firebaseSvc from '../../firebase/FirebaseSvc'
 import { FOOD_IMAGES_URIs } from '../../constants/objects'
 import { INDUSTRY_CODES } from '../../constants/objects'
 
+/**
+ * Page to Show previous Matches
+ * 
+ * @param {*} props Props from previous screen
+ * @returns MatchesHistory Render Method 
+ */
 function MatchesHistory (props) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
     // const [loading, setLoading]= useState(true);
     
+    /**
+     * Load Data Asynchronously
+     */
     async function loadAsync() {
       await firebaseSvc
             .getMatchIDs(
@@ -58,11 +67,6 @@ function MatchesHistory (props) {
           firebaseSvc.matchIDsOff();
         }
     }, [])
-
-    // const pickImage = item =>   {
-    //   return item.otherUserAvatar == null || item.otherUserAvatar == ''
-    //                             ? 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc'
-    //                             : item.otherUserAvatar};
     
     return (
       <SafeAreaView>

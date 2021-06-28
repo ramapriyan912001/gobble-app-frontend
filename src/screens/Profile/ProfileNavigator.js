@@ -15,6 +15,11 @@ import RegisterPage5 from '../Register/RegisterPage5'
 
 const Stack = createStackNavigator();
 
+/**
+ * Navigate between Profile and Update Profile Screens
+ * 
+ * @returns The Stack Navigator for the Profile Pages
+ */
 export function ProfileNavigator() {
     return (
         <Stack.Navigator initialRouteName="Profile"

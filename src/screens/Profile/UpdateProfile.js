@@ -7,6 +7,13 @@ import firebaseSvc from '../../firebase/FirebaseSvc';
 import {fetchAuthUser, updateUserDetails, clearData} from '../../redux/actions/actions'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
+
+/**
+ * The Page to Update User Profile
+ * 
+ * @param {*} props Props from previous screen
+ * @returns UpdateProfile Render Method 
+ */
 export function UpdateProfile(props) {
     const [name, setName] = useState(props.currentUserData.name);
     const [email, setEmail] = useState(props.currentUserData.email);
