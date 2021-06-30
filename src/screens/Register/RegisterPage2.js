@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react'
-import {Text, View, SafeAreaView, TouchableOpacity, Alert, Image, ScrollView} from 'react-native'
+import {Text, View, SafeAreaView, TouchableOpacity, Alert, Image, ScrollView, StyleSheet} from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
 import {pickerStyles, buttonStyles, containerStyles, inputStyles, imageStyles} from '../../styles/LoginStyles'
 import firebaseSvc from '../../firebase/FirebaseSvc';
@@ -125,14 +125,17 @@ export default function RegisterPage2(props) {
         .catch(onFailure('Permission Retrieval Error'));
       };
     
-    const whichText = hasAvatar => hasAvatar ? 'You have chosen an avatar' : 'No avatar picked (Re-try if you have done so already)';
+    const whichText = hasAvatar => hasAvatar ? 'Nice Avatar!' : 'No avatar picked (Re-try if you have done so already)';
       
     return (
     <SafeAreaView style={{flex: 1}}>
         <Text style={inputStyles.headerText}>Complete your Profile!</Text> 
-        <Text style={pickerStyles.text}>{name}, pick out a nice picture of yourself!</Text>
-        {/* {hasAvatar && (<Image style={imageStyles.gobbleImage} source={avatar}/>)} */}
-        <Text style={inputStyles.subText}>{whichText(hasAvatar)}</Text>
+        {!hasAvatar && <Text style={pickerStyles.text}>{name}, pick out a nice picture of yourself!</Text>}
+        <Text style={styles.caption}>{whichText(hasAvatar)}</Text>
+        {hasAvatar && (<Image style={styles.profilePic} source={{uri:avatar}}/>)}
+        {/* <TouchableOpacity style={buttonStyles.loginButton} onPress={setAvatar(emptyAvatar)}> //-> Cuasing 'Too many re-renders'! Need to fix 
+            <Text style={buttonStyles.loginButtonText}>Clear Picture</Text>
+        </TouchableOpacity> */}
         <TouchableOpacity style={buttonStyles.loginButton} onPress={updateImage}>
             <Text style={buttonStyles.loginButtonText}>Select Picture</Text>
         </TouchableOpacity>
@@ -152,3 +155,20 @@ export default function RegisterPage2(props) {
         </View>
     </SafeAreaView>
     )};
+
+    const styles = StyleSheet.create({
+        profilePic: {
+            width: '60%',
+            height: '30%',
+            marginBottom: '10%',
+            marginLeft: '20%',
+            marginTop: '-5%'
+        },
+        caption: {
+            fontSize: 20,
+            fontWeight: 'bold',
+            alignSelf: 'center',
+            margin: '5%',
+            marginVertical: '10%'
+        },
+    })

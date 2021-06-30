@@ -53,6 +53,7 @@ const deleteAuthUser = (props) => {
         if (err.code === 'auth/requires-recent-login') {
             Alert.alert('Unable to delete profile created, please re-authenticate for ' + firebaseSvc.currentUser().email);
             const cleanupFunction = () => deleteAuthUser(props);
+            console.log(props, 'props');
             props.navigation.navigate('Reauthenticate', {cleanup: cleanupFunction});
         } else {
             console.log('DeleteAuthUserError: ' + err.message);
