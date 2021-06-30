@@ -44,14 +44,14 @@ export const getError = (props) => (err) => {
 export function updateUserDetails(updatedUser) {
     return ((dispatch) => {
         firebaseSvc.updateUserProfile(updatedUser, () => console.log('user updated'), (err) => console.log(err.message));
-        dispatch({type: USER_STATE_CHANGE, currentUser: updatedUser})
+        dispatch({type: USER_STATE_CHANGE, currentUserData: updatedUser})
     })
 }
 
 export function updateCurrentUserCollection(updatedUser) {
-    return ((dispatch) => {
-        firebaseSvc.updateCurrentUserCollection(updatedUser, () => console.log('user collection updated'), (err) => console.log(err.message));
-        dispatch({type: USER_DATA_CHANGE, currentUser: updatedUser})
+    return (async(dispatch) => {
+        await firebaseSvc.updateCurrentUserCollection(updatedUser, () => console.log('user collection updated'), (err) => console.log(err.message));
+        dispatch({type: USER_DATA_CHANGE, currentUserData: updatedUser})
     })
 }
 
@@ -64,12 +64,6 @@ export function login() {
 export function logout() {
     return ((dispatch) => {
         dispatch({type: LOGGING_OUT})
-    })
-}
-
-export function getPendingMatches(pendingMatches) {
-    return ((dispatch) => {
-        firebaseSvc.getPendingMatchIDs();
     })
 }
 
