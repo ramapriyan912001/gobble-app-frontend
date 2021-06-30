@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Platform, View, Text, Button, TouchableOpacity, ScrollView, SafeAreaView, Alert} from 'react-native'
+import {Platform, View, Text, Button, TouchableOpacity, StyleSheet, SafeAreaView, Alert} from 'react-native'
 import * as Location from 'expo-location'
 import {containerStyles, buttonStyles, inputStyles} from '../../styles/LoginStyles'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -58,8 +58,8 @@ function GobbleSelect2(props) {
   };
     return (
         <SafeAreaView>
-            <View style={{position: 'relative', marginTop: '50%'}}>
-                    <Text style={{...inputStyles.subHeader,}}>...And How far are you willing to travel for a meal?</Text>
+            <View style={styles.container}>
+                    <Text style={{...inputStyles.subHeader,}}>How far are you willing to travel for a meal?</Text>
                     <Picker
                         selectedValue={distance}
                         onValueChange={(itemValue, itemIndex) => setDistance(itemValue)}>
@@ -77,6 +77,13 @@ function GobbleSelect2(props) {
         </SafeAreaView>
     )
 }
+
+const styles = StyleSheet.create({
+  container: {
+    position: 'relative',
+    marginTop: '40%'
+  }
+})
 
 const mapStateToProps = (store) => ({
     currentUserData: store.userState.currentUserData,
