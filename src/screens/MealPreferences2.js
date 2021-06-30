@@ -172,7 +172,7 @@ function MealPreferences2(props) {
                 <View style={{marginLeft: '7.5%', marginTop: '5%'}}>
                         <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
                             console.log("Changing Preferences");
-                            // props.updateCurrentUserCollection({...props.currentUserData, cuisine: editState.cuisine, diet: editState.diet, industry: editState.industry, crossIndustrial: editState.crossIndustrial})
+                            props.updateCurrentUserCollection({...props.currentUserData, cuisine: cuisine, diet: diet, industry: industry, crossIndustrial: crossIndustrial})
                             setEdit(false);
                         }}>
                             <Text style={buttonStyles.loginButtonText}>Confirm</Text>
