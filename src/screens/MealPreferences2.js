@@ -34,7 +34,13 @@ function MealPreferences2(props) {
     }
 
     useEffect(() => {
-        
+        if(!edit) {
+            setCuisine(props.currentUserData.cuisine)
+            setDiet(props.currentUserData.diet)
+            setIndustry(props.currentUserData.industry)
+            setCrossIndustrial(props.currentUserData.crossIndustrial)
+            setIndustryPreference(props.currentUserData.crossIndustrial ? 'Any' : INDUSTRY_CODES[props.currentUserData.industry])
+        }
     }, [crossIndustrial, industry, industryPreference])
 
     const signOutSuccess = () => {
