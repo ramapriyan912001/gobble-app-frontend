@@ -9,32 +9,33 @@ import {inputStyles, buttonStyles} from '../styles/LoginStyles'
 import {INDUSTRY_CODES, CUISINES, DIETS} from '../constants/objects'
 import firebaseSvc from '../firebase/FirebaseSvc'
 import PickerModal from 'react-native-picker-modal-view';
+import { set } from 'react-native-reanimated'
 /**
  * The Tab to show the user's Meal Preferences
  * 
  * @param {*} props Props from previous screen
  * @returns MealPreferences Render Method
  */
-function MealPreferences(props) {
+function MealPreferences2(props) {
 
-    const [cuisinePreference, setCuisinePreference] = useState('')
-    const [diet, setDiet] = useState('')
-    const [industryPreference, setIndustryPreference] = useState('')
-    const [industry, setIndustry] = useState('')
+    const [cuisine, setCuisine] = useState(props.currentUserData.cuisine)
+    const [diet, setDiet] = useState(props.currentUserData.diet)
+    const [industry, setIndustry] = useState(props.currentUserData.industry)
+    const [crossIndustrial, setCrossIndustrial] = useState(props.currentUserData.crossIndustrial)
+    const [industryPreference, setIndustryPreference] = useState(props.currentUserData.crossIndustrial ? 'Any' : INDUSTRY_CODES[props.currentUserData.industry])
     const [edit, setEdit] = useState(false);
-    let editState = {
-            cuisine: props.currentUserData.cuisine,
-            diet: props.currentUserData.diet,
-            crossIndustrial: props.currentUserData.crossIndustrial,
-            industry: props.currentUserData.industry
-        };
+
+    const setState = () => {
+        setCuisine(props.currentUserData.cuisine)
+        setDiet(props.currentUserData.diet)
+        setIndustry(props.currentUserData.industry)
+        setCrossIndustrial(props.currentUserData.crossIndustrial)
+        setIndustryPreference(props.currentUserData.crossIndustrial ? 'Any' : INDUSTRY_CODES[props.currentUserData.industry])
+    }
 
     useEffect(() => {
-        setCuisinePreference(props.currentUserData.cuisine)
-        setDiet(props.currentUserData.diet)
-        setIndustryPreference(props.currentUserData.crossIndustrial ? 'Any' : INDUSTRY_CODES[props.currentUserData.industry])
-        setIndustry(INDUSTRY_CODES[props.currentUserData.industry])
-    })
+        
+    }, [crossIndustrial, industry, industryPreference])
 
     const signOutSuccess = () => {
         console.log('Signed Out');
@@ -70,27 +71,19 @@ function MealPreferences(props) {
         return industries;
     })();
 
-    const updatePreferences = async () => {
-        await firebaseSvc.getCurrentUserCollection(
-            user => user.val(),
-            err => console.log('EditProfile GetUser Error:', err.message)
-        )
-        .then(user => {
-            user['cuisine'] = editState.cuisine;
-            user['diet'] = editState.diet;
-            user['industry'] = editState.industry;
-            user['crossIndustrial'] = editState.crossIndustrial;
-            firebaseSvc.updateCurrentUserCollection(user, onSuccess('User Collection Update'), onFailure('User Collection Update'));
-            setEdit(false);
-        })
-        .catch(err => console.log('EditProfile UpdateUser Error:', err.message))
-    };
+    function chooseIndustry(disabled, selected, showIndustryModal){
+        return(
+            <TouchableOpacity onPress={showIndustryModal} style={{width: '100%'}}>
+            <Input label='Industry' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={INDUSTRY_CODES[industry]} editable={false}></Input>
+            </TouchableOpacity>     
+        )         
+    }
 
     const signOutFailure = (err) => {
         console.log('Sign Out Error: ' + err.message);
         Alert.alert('Sign Out Error. Try Again Later');
     }
-    
+
     const signOutUser = () => firebaseSvc.signOut(signOutSuccess, signOutFailure);
     if (edit) {
         return (
@@ -99,13 +92,13 @@ function MealPreferences(props) {
                 <View style={styles.item}>
                 <PickerModal
                     renderSelectView={(disabled, selected, showCuisineModal) => 
-                        (<TouchableOpacity disabled={disabled} onPress={showCuisineModal} style={styles.smallButton}>
-                            <Text>{editState.cuisine}</Text>
-                        </TouchableOpacity>)
+                        <TouchableOpacity onPress={showCuisineModal} style={{width: '100%'}}>
+                            <Input label='Cuisine' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderBottomColor: '#000000', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={cuisine} editable={false}></Input>
+                        </TouchableOpacity>
                     }
                     onSelected={(selected) => {
                         if (Object.keys(selected).length > 0) {
-                            editState['cuisine'] = selected.Value;
+                            setCuisine(selected.Value)
                         }
                         return selected;
                     }}
@@ -113,13 +106,13 @@ function MealPreferences(props) {
                 />
                 <PickerModal
                     renderSelectView={(disabled, selected, showDietModal) => 
-                        <TouchableOpacity disabled={disabled} onPress={showDietModal} style={styles.smallButton}>
-                            <Text>{editState.diet}</Text>
+                        <TouchableOpacity onPress={showDietModal} style={{width: '100%'}}>
+                            <Input scrollEnabled={true} label='Diet' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: '#000000', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={diet} editable={false}></Input>
                         </TouchableOpacity>
                     }
                     onSelected={(selected) => {
                         if (Object.keys(selected).length > 0) {
-                            editState['diet'] = selected.Value;
+                            setDiet(selected.Value)
                         }
                         return selected;
                     }}
@@ -129,13 +122,18 @@ function MealPreferences(props) {
                 <View style={styles.item}>
                 <PickerModal
                     renderSelectView={(disabled, selected, showCrossModal) => 
-                        <TouchableOpacity disabled={disabled} onPress={showCrossModal} style={styles.smallButton}>
-                            <Text>{editState.crossIndustrial ? 'Any' : INDUSTRY_CODES[editState.industry]}</Text>
+                        <TouchableOpacity onPress={showCrossModal} style={{width: '100%'}}>
+                            <Input label='Industry Preference' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={industryPreference} editable={false}></Input>
                         </TouchableOpacity>
                     }
                     onSelected={(selected) => {
                         if (Object.keys(selected).length > 0) {
-                            editState['industryPreference'] = selected.Value;
+                            setCrossIndustrial(selected.Value)
+                            if(selected.Value) {
+                                setIndustryPreference('Any')
+                            } else {
+                                setIndustryPreference(industry)
+                            }
                         }
                         return selected;
                     }}
@@ -152,29 +150,38 @@ function MealPreferences(props) {
                         }
                     ]}
                 />
+                
                 <PickerModal
-                    renderSelectView={(disabled, selected, showIndustryModal) => 
-                        <TouchableOpacity disabled={disabled} onPress={showIndustryModal} style={styles.smallButton}>
-                            <Text>{INDUSTRY_CODES[editState.industry]}</Text>
-                        </TouchableOpacity>
+                    renderSelectView={(disabled, selected, showIndustryModal) => {return chooseIndustry(disabled, selected, showIndustryModal)}
                     }
                     onSelected={(selected) => {
                         if (Object.keys(selected).length > 0) {
-                            editState['industry'] = selected.Value;
+                            setIndustry(selected.Value)
+                            if(crossIndustrial) {
+                                setIndustryPreference('Any')
+                            } else {
+                                setIndustryPreference(INDUSTRY_CODES[selected.Value])
+                            }
+            
                         }
                         return selected;
                     }}
                     items={industryLabels}
                 />
                 </View>
-                <View style={{marginLeft: '7.5%'}}>
+                <View style={{marginLeft: '7.5%', marginTop: '5%'}}>
                         <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
                             console.log("Changing Preferences");
-                            props.updateCurrentUserCollection({...props.currentUserData, cuisine: editState.cuisine, diet: editState.diet, industry: editState.industry, crossIndustrial: editState.crossIndustrial})
+                            // props.updateCurrentUserCollection({...props.currentUserData, cuisine: editState.cuisine, diet: editState.diet, industry: editState.industry, crossIndustrial: editState.crossIndustrial})
                             setEdit(false);
-                            // props.navigation.navigate('UpdateProfile')
                         }}>
                             <Text style={buttonStyles.loginButtonText}>Confirm</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
+                           setEdit(false);
+                           setState();
+                        }}>
+                            <Text style={buttonStyles.loginButtonText}>Discard Changes</Text>
                         </TouchableOpacity>
                 </View>
             </View>
@@ -183,12 +190,12 @@ function MealPreferences(props) {
         return (
             <View style={styles.container}>
                 <View style={{...styles.item}}>
-                <Input label='Cuisine' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderBottomColor: '#000000', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={cuisinePreference} editable={false}></Input>
+                <Input label='Cuisine' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderBottomColor: '#000000', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={cuisine} editable={false}></Input>
                 <Input scrollEnabled={true} label='Diet' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: '#000000', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={diet} editable={false}></Input>
                 </View>
                 <View style={styles.item}>
                 <Input label='Industry Preference' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={industryPreference} editable={false}></Input>
-                <Input label='Industry' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={industry} editable={false}></Input>
+                <Input label='Industry' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={INDUSTRY_CODES[industry]} editable={false}></Input>
                 </View>
                 <View style={{marginLeft: '7.5%'}}>
                         <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
@@ -247,4 +254,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData, updateCurrentUserCollection }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(MealPreferences);
+export default connect(mapStateToProps, mapDispatchProps)(MealPreferences2);
