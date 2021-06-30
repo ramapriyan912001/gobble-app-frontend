@@ -1,11 +1,12 @@
 import React, {useEffect, useState} from 'react'
-import {Platform, View, Text, Button, TouchableOpacity, ScrollView, SafeAreaView, Alert} from 'react-native'
+import {Platform, View, Text, Button, TouchableOpacity, StyleSheet, SafeAreaView, Alert} from 'react-native'
 import * as Location from 'expo-location'
 import {containerStyles, buttonStyles, inputStyles, pickerStyles} from '../../styles/LoginStyles'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import DateTimePicker from '@react-native-community/datetimepicker'
 import {Picker} from '@react-native-picker/picker';
 import firebaseSvc from '../../firebase/FirebaseSvc';
+import { CUISINES } from '../../constants/objects';
 import {fetchUserData, updateUserDetails, clearData} from '../../redux/actions/actions'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -17,7 +18,7 @@ import { bindActionCreators } from 'redux'
  * @returns GobbleSelect Render Method 
  */
 function GobbleSelect(props) {
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isPickerShow, setIsPickerShow] = useState(false);
   const [cuisinePreference, setCuisinePreference] = useState('Western')
   const [location, setLocation] = useState(null)
   const [errorMsg, setErrorMsg] = useState(null)
@@ -52,16 +53,27 @@ function GobbleSelect(props) {
       text = JSON.stringify(location)
   }
 
+  const showPicker = () => {
+    setIsPickerShow(!isPickerShow);
+  };
+
+  const pickerText = () => isPickerShow ? 'Close' : 'choose Date & Time';
+
+  const onChange = (event, value) => {
+    setDate(value);
+    if (Platform.OS === 'android') {
+      setIsPickerShow(false);
+    }
+  };
+
   /**
    * Function to load all Cuisines
    * 
    * @returns List of Picker Items of Cuisines
    */
   const renderCuisines = () => {
-      const cuisines = ['Western', 'Indian', 'Asian', 'Food Court', 'No Preference'];
       let cuisineID = 0;
-
-      return cuisines.map(cuisine => (<Picker.Item label={cuisine} value={cuisine} key={cuisineID++}/>))
+      return CUISINES.map(cuisine => (<Picker.Item label={cuisine} value={cuisine} key={cuisineID++}/>))
   };
 
   /**
@@ -88,13 +100,6 @@ function GobbleSelect(props) {
         props.navigation.navigate('GobbleSelect2', {req: gobbleRequest})
       }
   }
-  const showDatePicker = () => {
-    setDatePickerVisibility(true);
-  };
-
-  const hideDatePicker = () => {
-    setDatePickerVisibility(false);
-  };
 
   const handleConfirm = (date) => {
     setDate(date);
@@ -108,33 +113,60 @@ function GobbleSelect(props) {
                         </Text>
             </View>  
             <View>
-                        <Text style={{...inputStyles.subHeader, marginTop: '0%'}}>Choose a date and time for your next Gobble!</Text>
-                        <Button title={date.toLocaleString()} onPress={showDatePicker} />
-                        <DateTimePickerModal
-                        isVisible={isDatePickerVisible}
-                        minimumDate={MIN_DATE}
-                        mode={"datetime"}
-                        display={'spinner'}
-                        onConfirm={handleConfirm}
-                        onCancel={hideDatePicker}
-                        pickerContainerStyleIOS={{backgroundColor: 'black'}}
-                        pickerStyleIOS={{backgroundColor: 'black'}}
-                        />
+                        <Text style={{...inputStyles.subHeader, marginTop: '0%'}}>Pick out your preferred Date & Time</Text>
+                        <Button title={`Chosen: ${date.toLocaleString()} ${'\n'}Click me to ${pickerText()}`} onPress={showPicker} />
+                        
+                        {/* The date picker */}
+                        {isPickerShow && (
+                            <DateTimePicker
+                            value={date}
+                            mode={'datetime'}
+                            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                            is24Hour={true}
+                            onChange={onChange}
+                            style={styles.datePicker}
+                            maximumDate={MAX_DATE}
+                            minimumDate={MIN_DATE}
+                            />
+                        )}
             </View>
             <View>
-                    <Text style={{...inputStyles.subHeader, marginTop: '0%'}}>...And what are you in the mood for today?</Text>
-                    <Picker
+                    {!isPickerShow && <Text style={{...inputStyles.subHeader, marginTop: '0%'}}>...And what are you in the mood for today?</Text>}
+                    {!isPickerShow && <Picker
                         selectedValue={cuisinePreference}
                         onValueChange={(itemValue, itemIndex) => setCuisinePreference(itemValue)}>
                         {renderCuisines()}
-                    </Picker>
+                    </Picker>}
             </View>
-            <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '5%'}} onPress={submitGobble}>
+            {!isPickerShow && <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '5%'}} onPress={submitGobble}>
                 <Text style={buttonStyles.loginButtonText}>Next</Text>
-            </TouchableOpacity>        
+            </TouchableOpacity>}
         </SafeAreaView>
     )
 }
+
+const styles = StyleSheet.create({
+    pickedDateContainer: {
+        padding: 20,
+        backgroundColor: '#eee',
+        borderRadius: 10,
+    },
+    pickedDate: {
+        fontSize: 18,
+        color: 'black',
+    },
+    //Below is iOS Only
+    datePicker: {
+        width: 320,
+        height: 260,
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+    },
+    cuisinePicker: {
+        marginTop: '0%'
+    }
+})
 
 const mapStateToProps = (store) => ({
     currentUserData: store.userState.currentUserData,
