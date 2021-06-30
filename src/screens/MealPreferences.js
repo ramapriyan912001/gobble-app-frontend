@@ -17,11 +17,11 @@ import PickerModal from 'react-native-picker-modal-view';
  */
 function MealPreferences(props) {
 
-    const [cuisine, setCuisine] = useState(props.currentUserData.cuisine)
-    const [diet, setDiet] = useState(props.currentUserData.diet)
-    const [industry, setIndustry] = useState(props.currentUserData.industry)
-    const [crossIndustrial, setCrossIndustrial] = useState(props.currentUserData.crossIndustrial)
-    const [industryPreference, setIndustryPreference] = useState(props.currentUserData.crossIndustrial ? 'Any' : INDUSTRY_CODES[props.currentUserData.industry])
+    const [cuisine, setCuisine] = useState('')
+    const [diet, setDiet] = useState('')
+    const [industry, setIndustry] = useState(50)
+    const [crossIndustrial, setCrossIndustrial] = useState(false)
+    const [industryPreference, setIndustryPreference] = useState('')
     const [edit, setEdit] = useState(false);
 
     const setState = async() => {

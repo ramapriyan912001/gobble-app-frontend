@@ -18,11 +18,11 @@ import { set } from 'react-native-reanimated'
  */
 function MealPreferences2(props) {
 
-    const [cuisine, setCuisine] = useState(props.currentUserData.cuisine)
-    const [diet, setDiet] = useState(props.currentUserData.diet)
-    const [industry, setIndustry] = useState(props.currentUserData.industry)
-    const [crossIndustrial, setCrossIndustrial] = useState(props.currentUserData.crossIndustrial)
-    const [industryPreference, setIndustryPreference] = useState(props.currentUserData.crossIndustrial ? 'Any' : INDUSTRY_CODES[props.currentUserData.industry])
+    const [cuisine, setCuisine] = useState('')
+    const [diet, setDiet] = useState('')
+    const [industry, setIndustry] = useState(50)
+    const [crossIndustrial, setCrossIndustrial] = useState(false)
+    const [industryPreference, setIndustryPreference] = useState('')
     const [edit, setEdit] = useState(false);
 
     const setState = () => {
@@ -41,7 +41,7 @@ function MealPreferences2(props) {
             setCrossIndustrial(props.currentUserData.crossIndustrial)
             setIndustryPreference(props.currentUserData.crossIndustrial ? 'Any' : INDUSTRY_CODES[props.currentUserData.industry])
         }
-    }, [crossIndustrial, industry, industryPreference])
+    })
 
     const signOutSuccess = () => {
         console.log('Signed Out');
@@ -76,14 +76,6 @@ function MealPreferences2(props) {
         }
         return industries;
     })();
-
-    function chooseIndustry(disabled, selected, showIndustryModal){
-        return(
-            <TouchableOpacity onPress={showIndustryModal} style={{width: '100%'}}>
-            <Input label='Industry' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={INDUSTRY_CODES[industry]} editable={false}></Input>
-            </TouchableOpacity>     
-        )         
-    }
 
     const signOutFailure = (err) => {
         console.log('Sign Out Error: ' + err.message);
@@ -158,8 +150,11 @@ function MealPreferences2(props) {
                 />
                 
                 <PickerModal
-                    renderSelectView={(disabled, selected, showIndustryModal) => {return chooseIndustry(disabled, selected, showIndustryModal)}
-                    }
+                    renderSelectView={(disabled, selected, showIndustryModal) => 
+                        <TouchableOpacity onPress={showIndustryModal} style={{width: '100%'}}>
+                        <Input label='Industry' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={INDUSTRY_CODES[industry]} editable={false}></Input>
+                        </TouchableOpacity>
+                        }
                     onSelected={(selected) => {
                         if (Object.keys(selected).length > 0) {
                             setIndustry(selected.Value)
