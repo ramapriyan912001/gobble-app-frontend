@@ -26,3 +26,6 @@ export const INDUSTRY_CODES = {
     5: "Shipping & Transportation",
     11: "Others"
 }
+
+export const CUISINES = ['Western', 'Indian', 'Asian', 'Food Court', 'Any'];
+export const DIETS = ['Halal', 'Vegetarian', 'Vegan', 'Any'];

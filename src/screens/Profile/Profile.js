@@ -13,6 +13,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import PersonalDetails from '../PersonalDetails'
 import MealPreferences from '../MealPreferences'
 import { Avatar } from 'react-native-elements'
+import MealPreferences2 from '../MealPreferences2'
 const Tab = createMaterialTopTabNavigator();
 
 /**
@@ -40,6 +41,7 @@ function Profile(props) {
      * Asynchronous FUnction to load Profile Data
      */
     async function loadDataAsync () {
+        console.log(props.currentUserData)
         try {
             await props.fetchUserData();
             setUserInfo(props.currentUserData);
@@ -64,7 +66,7 @@ function Profile(props) {
             <Text style={{...inputStyles.headerText, fontWeight: '300', marginBottom: '2%',fontSize: 16}}>{`${INDUSTRY_CODES[props.currentUserData.industry]}`}</Text>
             <Tab.Navigator initialRouteName="Ongoing" style={{marginTop: '0%',paddingTop:'0%', backgroundColor:'white'}}>
             <Tab.Screen name="Personal Details" component={PersonalDetails} />
-            <Tab.Screen name="Meal Preferences" component={MealPreferences} />
+            <Tab.Screen name="Meal Preferences" component={MealPreferences2} />
             </Tab.Navigator>
             </ScrollView>
 

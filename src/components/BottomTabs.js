@@ -23,7 +23,7 @@ export default function BottomTabs() {
                   : 'person-outline';
               } else if (route.name === 'GobbleNavigator') {
                 iconName = focused ? 'md-fast-food' : 'md-fast-food-outline';
-              } else if (route.name === 'Chats') {
+              } else if (route.name === 'Chatroom') {
                   iconName = focused ? 'chatbubble-sharp' : 'chatbubble-outline'
               } else {
                   iconName = focused ? 'clipboard-sharp' : 'clipboard-outline'
