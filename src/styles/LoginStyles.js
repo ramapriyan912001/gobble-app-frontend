@@ -105,7 +105,7 @@ export const pickerStyles = StyleSheet.create({
         height: '28%',
         alignSelf:'center',
         width: '90%',
-        marginBottom:'3%'
+        marginBottom:'5%'
     },
     individualPicker:{
         height: '28%',
@@ -128,7 +128,7 @@ export const pickerStyles = StyleSheet.create({
         alignSelf:'center',
     },
     text:{
-        marginVertical:'5%',
+        marginVertical:'3%',
         fontSize: 15,
         paddingHorizontal:'5%',
         fontWeight:'bold',

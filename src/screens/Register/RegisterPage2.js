@@ -1,11 +1,12 @@
 import React, {useState, useEffect} from 'react'
-import {Text, View, SafeAreaView, TouchableOpacity, Alert, Image, ScrollView} from 'react-native'
+import {Text, View, SafeAreaView, TouchableOpacity, Alert, Image, ScrollView, StyleSheet} from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
 import {pickerStyles, buttonStyles, containerStyles, inputStyles, imageStyles} from '../../styles/LoginStyles'
 import firebaseSvc from '../../firebase/FirebaseSvc';
 import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
 import ImageEditor from '@react-native-community/image-editor';
 import * as ImageManipulator from 'expo-image-manipulator';
+import { AntDesign } from '@expo/vector-icons';
 
 /**
  * Second Page of Registration
@@ -17,9 +18,16 @@ export default function RegisterPage2(props) {
     const name = props.route.params.name;
     const emptyAvatar = 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc';
     // const user = initialState.user; User accessed from firebaseSvc
-    const [avatar, setAvatar] = useState(emptyAvatar);
+    const [avatar, setAvatar] = useState('');
     const [hasAvatar, setHasAvatar] = useState(false);
     const [confirmation, setConfirmation] = useState(false);
+    const [edit, setEdit] = useState(false);
+
+    useEffect(() => {
+        if(!hasAvatar) {
+            setAvatar(emptyAvatar)
+        }
+    })
 
     /**
      * Updates the given avatar (if any)
@@ -125,16 +133,32 @@ export default function RegisterPage2(props) {
         .catch(onFailure('Permission Retrieval Error'));
       };
     
-    const whichText = hasAvatar => hasAvatar ? 'You have chosen an avatar' : 'No avatar picked (Re-try if you have done so already)';
+    const whichText = hasAvatar => hasAvatar ? 'Nice Avatar!' : 'No avatar picked (Re-try if you have done so already)';
       
     return (
     <SafeAreaView style={{flex: 1}}>
         <Text style={inputStyles.headerText}>Complete your Profile!</Text> 
-        <Text style={pickerStyles.text}>{name}, pick out a nice picture of yourself!</Text>
-        {/* {hasAvatar && (<Image style={imageStyles.gobbleImage} source={avatar}/>)} */}
-        <Text style={inputStyles.subText}>{whichText(hasAvatar)}</Text>
-        <TouchableOpacity style={buttonStyles.loginButton} onPress={updateImage}>
-            <Text style={buttonStyles.loginButtonText}>Select Picture</Text>
+        {!hasAvatar && <Text numberOfLines={2} style={styles.caption}>Select a profile picture, {name}!</Text>}
+        {hasAvatar && <Text numberOfLines={2} style={styles.caption}>Looking good, {name}!</Text>}
+        <View style={{marginBottom: '10%', marginTop: '20%'}}>
+            {(<Image style={{...styles.profilePic, borderRadius: 120}} source={{uri:avatar}}/>)}
+            <TouchableOpacity style={{borderColor: '#000000'}} onPress={() => {
+                if(!hasAvatar) {
+                    updateImage()
+                }
+                setHasAvatar(!hasAvatar)}}>
+            <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color="#000000" style={styles.icon}></AntDesign>
+            </TouchableOpacity>
+        </View>
+
+        
+        {/* <TouchableOpacity style={buttonStyles.loginButton} onPress={setAvatar(emptyAvatar)}> //-> Cuasing 'Too many re-renders'! Need to fix 
+            <Text style={buttonStyles.loginButtonText}>Clear Picture</Text>
+        </TouchableOpacity> */}
+        <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '20%'}} onPress={() => {
+                updateImage()
+                setHasAvatar(true)}}>
+            <Text style={buttonStyles.loginButtonText}>{hasAvatar ? 'Change Picture' : 'Select Picture'}</Text>
         </TouchableOpacity>
         <View style={containerStyles.buttonRow}>
             <TouchableOpacity style={buttonStyles.tinyButton} onPress={() => props.navigation.goBack()}>
@@ -152,3 +176,27 @@ export default function RegisterPage2(props) {
         </View>
     </SafeAreaView>
     )};
+
+    const styles = StyleSheet.create({
+        profilePic: {
+            width: 250,
+            height: 250,
+            alignSelf: 'center',
+        },
+        caption: {
+            fontSize: 20,
+            fontWeight: 'bold',
+            alignSelf: 'center',
+            margin: '0%',
+            marginVertical: '0%',
+            marginBottom: '5%'
+        },
+
+        icon: {
+            color: '#0aa859', 
+            alignSelf: 'center',
+            marginLeft: '45%',
+            marginBottom: '0%',
+            marginTop: '-12%'
+        }
+    })

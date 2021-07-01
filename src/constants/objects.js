@@ -24,7 +24,8 @@ export const INDUSTRY_CODES = {
     9: "Public Sector",
     10: "Medicine",
     5: "Shipping & Transportation",
-    11: "Others"
+    11: "Sports",
+    12: "Others"
 }
 
 export const CUISINES = ['Western', 'Indian', 'Asian', 'Food Court', 'Any']
