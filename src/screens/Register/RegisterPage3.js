@@ -13,6 +13,7 @@ import { CUISINES, DIETS, INDUSTRY_CODES } from '../../constants/objects'
  * @returns RegisterPage3 Render Method
  */
 export default function RegisterPage3(props) {
+    let user = props.route.params;
     const [diet, setDietPreference] = useState('Halal');
     const [cuisine, setCuisinePreference] = useState('Indian');
     const [industry, setIndustry] = useState(0);
@@ -27,19 +28,7 @@ export default function RegisterPage3(props) {
      * @param {*} cuisine The Cuisine Preference chosen
      * @returns undefined
      */
-    const updatePreferences = (diet, cuisine, industry) =>
-        firebaseSvc
-            .getCurrentUserCollection(
-                (snapshot) => snapshot.val(),
-                getError(props))
-            .then(userProfile => {
-                userProfile['diet'] = diet;
-                userProfile['industry'] = industry;
-                userProfile['cuisine'] = cuisine;
-                firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
-                props.navigation.navigate('RegisterPage4');
-            })
-            .catch(getError(props));
+    const updatePreferences = (diet, cuisine, industry) => props.navigation.navigate('RegisterPage4', {...user, diet: diet, cuisine: cuisine, industry: industry})
     
     /**
      * Generates Picker Labels

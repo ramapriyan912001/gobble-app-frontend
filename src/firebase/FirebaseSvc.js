@@ -126,6 +126,12 @@ class FirebaseSvc {
     }
   };
 
+  validateEmail = (user, success, failure) => firebase
+                                                .auth()
+                                                .fetchSignInMethodsForEmail(user.email)
+                                                .then(success(user))
+                                                .catch(failure)
+
   updateCurrentUserCollection = (user, success, failure) => {
     if (this.userExists()) {
       this

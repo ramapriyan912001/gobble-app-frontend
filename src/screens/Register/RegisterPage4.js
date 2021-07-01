@@ -12,6 +12,7 @@ import firebaseSvc from '../../firebase/FirebaseSvc';
  * @returns RegisterPage4 Render Method
  */
 export default function RegisterPage4(props) {
+    let user = props.route.params;
     const [cross, setCrossIndustryPreference] = useState(false);
     const [date, setDate] = useState(new Date());
     const [isPickerShow, setIsPickerShow] = useState(false);
@@ -19,25 +20,18 @@ export default function RegisterPage4(props) {
 
     //Handlers for Action Failure:
 
+    const authUpdateSuccess = () => firebaseSvc.updateCurrentUserCollection({...user, crossIndustrial: cross, dob: date.toString(), password: null, dateJoined: new Date().toString()}, onSuccess('User Collection Update'), onFailure('User Collection Update'));
+    const authUpdateFailure = (err) => {Alert.alert('Profile cannot be created!', err.message)};
+
+    const authCreationSuccess = (userCredential) => firebaseSvc.updateUserProfile({displayName: user.name, photoURL: user.avatar}, authUpdateSuccess, authUpdateFailure);
+    const authCreationFailure = (err) => Alert.alert('Account cannot be created!', err.message);  
+
     /**
      * Finalize Registration
      * 
-     * @param {*} cross Whether the user is okay with crossIndustrial matchings
      * @returns undefined
      */
-    const addUser = (cross) => 
-        firebaseSvc
-            .getCurrentUserCollection(
-                (snapshot) => snapshot.val(),
-                getError(props))
-            .then(userProfile => {
-                userProfile['crossIndustrial'] = cross;
-                userProfile['dob'] = date.toDateString();
-                userProfile['completed'] = true;
-                userProfile['dateJoined'] = new Date().toDateString();
-                firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
-            })
-            .catch(getError(props));
+    const addUser = () => firebaseSvc.createUser(user, authCreationSuccess, authCreationFailure);
     
     /**
      * Function to handle date picker change
@@ -92,7 +86,7 @@ export default function RegisterPage4(props) {
                                 if ((new Date().getFullYear() - date.getFullYear()) < 13) {
                                     Alert.alert('Too Young to Sign Up! Sorry');
                                 } else {
-                                    addUser(cross);
+                                    addUser();
                                     console.log('Registered User');
                                     props.navigation.navigate('FinalStep');
                                 }
