@@ -21,15 +21,14 @@ export default function RegisterPage2(props) {
     const emptyAvatar = 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc';
 
     // const user = initialState.user; User accessed from firebaseSvc
-    const [avatar, setAvatar] = useState('');
+    const [avatar, setAvatar] = useState(EMPTY_AVATAR);
     const [hasAvatar, setHasAvatar] = useState(false);
     const [confirmation, setConfirmation] = useState(false);
-    const [edit, setEdit] = useState(false);
 
     useEffect(() => {
         if(!hasAvatar) {
             setAvatar(EMPTY_AVATAR)
-        }
+        } 
     })
 
     /**
@@ -98,8 +97,9 @@ export default function RegisterPage2(props) {
                     firebaseSvc
                     .uploadImage(resizedUri)
                     .then(uploadURL => {
-                        setAvatar(uploadURL);
+                        console.log("Set pic")
                         setHasAvatar(true);
+                        setAvatar(uploadURL);
                         // firebaseSvc
                         // .updateAvatar(uploadURL)
                         // .then(() => console.log('Avatar Updated'))
@@ -107,7 +107,10 @@ export default function RegisterPage2(props) {
                     })
                     .catch(onFailure('URI Upload'))
                     })
-                .catch(onFailure('Image Picking'))
+                .catch((err) => {
+                    onFailure('Image Picking')
+                    setHasAvatar(false)
+                })
             })
             .catch(onFailure('Permissions'))
           } else {
@@ -129,9 +132,13 @@ export default function RegisterPage2(props) {
             {(<Image style={{...styles.profilePic, borderRadius: 120}} source={{uri:avatar}}/>)}
             <TouchableOpacity style={{borderColor: '#000000'}} onPress={() => {
                 if(!hasAvatar) {
+                    setHasAvatar(true)
                     updateImage()
+                } else {
+                    setHasAvatar(false)
+
                 }
-                setHasAvatar(!hasAvatar)}}>
+                }}>
             <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color="#000000" style={styles.icon}></AntDesign>
             </TouchableOpacity>
         </View>
