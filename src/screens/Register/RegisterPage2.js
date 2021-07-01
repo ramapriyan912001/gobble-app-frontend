@@ -7,6 +7,7 @@ import {onSuccess, onFailure, cancelRegistration, getError} from '../../services
 import ImageEditor from '@react-native-community/image-editor';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { AntDesign } from '@expo/vector-icons';
+import { EMPTY_AVATAR } from '../../constants/objects';
 
 /**
  * Second Page of Registration
@@ -16,7 +17,7 @@ import { AntDesign } from '@expo/vector-icons';
  */
 export default function RegisterPage2(props) {
     const name = props.route.params.name;
-    const emptyAvatar = 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc';
+    ;
     // const user = initialState.user; User accessed from firebaseSvc
     const [avatar, setAvatar] = useState('');
     const [hasAvatar, setHasAvatar] = useState(false);
@@ -25,7 +26,7 @@ export default function RegisterPage2(props) {
 
     useEffect(() => {
         if(!hasAvatar) {
-            setAvatar(emptyAvatar)
+            setAvatar(EMPTY_AVATAR)
         }
     })
 
@@ -59,9 +60,9 @@ export default function RegisterPage2(props) {
                     (snapshot) => snapshot.val(),
                     getError(props))
                 .then(userProfile => {
-                    userProfile['avatar'] = emptyAvatar;
+                    userProfile['avatar'] = EMPTY_AVATAR;
                     firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
-                    firebaseSvc.updateAvatar(emptyAvatar);
+                    firebaseSvc.updateAvatar(EMPTY_AVATAR);
                 })
                 .catch(getError(props));
                 props.navigation.navigate('RegisterPage3');
@@ -152,7 +153,7 @@ export default function RegisterPage2(props) {
         </View>
 
         
-        {/* <TouchableOpacity style={buttonStyles.loginButton} onPress={setAvatar(emptyAvatar)}> //-> Cuasing 'Too many re-renders'! Need to fix 
+        {/* <TouchableOpacity style={buttonStyles.loginButton} onPress={setAvatar(EMPTY_AVATAR)}> //-> Cuasing 'Too many re-renders'! Need to fix 
             <Text style={buttonStyles.loginButtonText}>Clear Picture</Text>
         </TouchableOpacity> */}
         <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '20%'}} onPress={() => {

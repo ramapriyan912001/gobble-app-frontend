@@ -5,6 +5,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import {MESSAGES} from '../../constants/messages'
 import firebaseSvc from '../../firebase/FirebaseSvc';
 import {onSuccess, onFailure, cancelRegistration, createUserProfile} from '../../services/RegistrationHandlers';
+import { EMPTY_AVATAR } from '../../constants/objects'
 
 /**
  * The first page to register a new user
@@ -83,6 +84,8 @@ export default function register(props) {
         let userProfile = createUserProfile();
         userProfile['name'] = name;
         userProfile['email'] = email;
+        userProfile['avatar'] = EMPTY_AVATAR;
+        userProfile['dateJoined'] = new Date();
 
         firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
         props.navigation.navigate('RegisterPage2', {name: name});
