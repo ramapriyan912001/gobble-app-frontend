@@ -6,11 +6,7 @@ import firebaseSvc from '../../firebase/FirebaseSvc';
 import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
 import ImageEditor from '@react-native-community/image-editor';
 import * as ImageManipulator from 'expo-image-manipulator';
-import Ionicons from '@expo/vector-icons/Ionicons'
-import { MaterialCommunityIcons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
 import { AntDesign } from '@expo/vector-icons';
-import { EvilIcons } from '@expo/vector-icons';
-import { Fontisto } from '@expo/vector-icons';
 
 /**
  * Second Page of Registration
