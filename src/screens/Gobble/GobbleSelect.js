@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {Platform, View, Text, Button, TouchableOpacity, StyleSheet, SafeAreaView, Alert} from 'react-native'
+import {Platform, View, Text, Button, TouchableOpacity, StyleSheet, SafeAreaView, Alert, ScrollView} from 'react-native'
 import * as Location from 'expo-location'
 import {containerStyles, buttonStyles, inputStyles, pickerStyles} from '../../styles/LoginStyles'
 import DateTimePickerModal from "react-native-modal-datetime-picker";
@@ -26,6 +26,7 @@ function GobbleSelect(props) {
   const MIN_DATE = new Date();
   const MAX_DATE = new Date().setDate(MIN_DATE.getDate()+7)
   const [date, setDate] = useState(MIN_DATE)
+  const [distance, setDistance] = useState(1);
 
   useEffect(() => {
       /**
@@ -76,10 +77,17 @@ function GobbleSelect(props) {
       return CUISINES.map(cuisine => (<Picker.Item label={cuisine} value={cuisine} key={cuisineID++}/>))
   };
 
+  const renderDistances = () => {
+    const distances = [1, 2, 5, 10, 200];
+    let distanceID = 0;
+
+    return distances.map(distance => (<Picker.Item label={distance == 200 ? 'No Preference' : `${distance} km`} value={distance} key={distanceID++}/>))
+  };
+
   /**
    * Function to create a request and pass it to the next page
    */
-  function submitGobble() {
+  async function submitGobble() {
       if (loading) {
           Alert.alert('Hang on for a sec!', 'We\'re still getting your location');
       } else if(location == null) {
@@ -93,11 +101,11 @@ function GobbleSelect(props) {
             cuisinePreference: cuisinePreference,
             datetime: date.toString(),
             location: location,
-            distance: 200,
+            distance: distance,
         }
-
+        let result =  await firebaseSvc.findGobbleMate(gobbleRequest);
         // We need to do some load page
-        props.navigation.navigate('GobbleSelect2', {req: gobbleRequest})
+        props.navigation.navigate('GobbleConfirm', {result: result})
       }
   }
 
@@ -106,15 +114,16 @@ function GobbleSelect(props) {
     hideDatePicker();
   };
     return (
-        <SafeAreaView>
-            <View style={{marginTop: '8%'}}>
+        <SafeAreaView style={{flex: 1}}>
+            <ScrollView>
+            <View style={{marginTop: '5%'}}>
                         <Text style={{...inputStyles.headerText, fontSize: 20, margin: '2%'}}>
                                 Select your preferences and Gobble!
                         </Text>
             </View>  
             <View>
                         <Text style={{...inputStyles.subHeader, marginTop: '0%'}}>Pick out your preferred Date & Time</Text>
-                        <Button title={`Chosen: ${date.toLocaleString()} ${'\n'}Click me to ${pickerText()}`} onPress={showPicker} />
+                        <Button title={`Chosen: ${date.toLocaleString([], {hour: 'numeric', minute:'2-digit'})} ${'\n'}Click me to ${pickerText()}`} onPress={showPicker} />
                         
                         {/* The date picker */}
                         {isPickerShow && (
@@ -127,20 +136,33 @@ function GobbleSelect(props) {
                             style={styles.datePicker}
                             maximumDate={MAX_DATE}
                             minimumDate={MIN_DATE}
+                            minuteInterval={15}
                             />
                         )}
             </View>
-            <View>
+            <View style={{...styles.container, marginTop: '0%'}}>
                     {!isPickerShow && <Text style={{...inputStyles.subHeader, marginTop: '0%'}}>...And what are you in the mood for today?</Text>}
                     {!isPickerShow && <Picker
+                       
                         selectedValue={cuisinePreference}
                         onValueChange={(itemValue, itemIndex) => setCuisinePreference(itemValue)}>
                         {renderCuisines()}
                     </Picker>}
             </View>
-            {!isPickerShow && <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '5%'}} onPress={submitGobble}>
-                <Text style={buttonStyles.loginButtonText}>Next</Text>
-            </TouchableOpacity>}
+            <View style={{...styles.container, marginTop: '0%'}}>
+                    <Text style={{...inputStyles.subHeader, marginTop: '0%'}}>How far are you willing to travel for a meal?</Text>
+                    <Picker
+                        selectedValue={distance}
+                        onValueChange={(itemValue, itemIndex) => setDistance(itemValue)}>
+                        {renderDistances()}
+                    </Picker>
+            </View>
+            <View style={{marginTop: '-10%', marginBottom: '2%'}}>
+                {!isPickerShow && <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '0%'}} onPress={submitGobble}>
+                    <Text style={buttonStyles.loginButtonText}>Submit Gobble</Text>
+                </TouchableOpacity>}
+            </View>
+            </ScrollView>
         </SafeAreaView>
     )
 }

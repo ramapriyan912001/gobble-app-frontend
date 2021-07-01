@@ -85,7 +85,7 @@ function MealPreferences2(props) {
     const signOutUser = () => firebaseSvc.signOut(signOutSuccess, signOutFailure);
     if (edit) {
         return (
-            <View style={styles.container}>
+            <View style={{...styles.container}}>
                 {/* <Text style={inputStyles.subText}>Click on any button to edit</Text> */}
                 <View style={styles.item}>
                 <PickerModal
@@ -171,14 +171,14 @@ function MealPreferences2(props) {
                 />
                 </View>
                 <View style={{marginLeft: '7.5%', marginTop: '5%'}}>
-                        <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
+                        <TouchableOpacity style={{...buttonStyles.loginButton, backgroundColor: '#b5fbd7'}} onPress={() => {
                             console.log("Changing Preferences");
                             props.updateCurrentUserCollection({...props.currentUserData, cuisine: cuisine, diet: diet, industry: industry, crossIndustrial: crossIndustrial})
                             setEdit(false);
                         }}>
                             <Text style={buttonStyles.loginButtonText}>Confirm</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
+                        <TouchableOpacity style={{...buttonStyles.loginButton, backgroundColor: '#b5fbd7', marginBottom: '20%'}} onPress={() => {
                            setEdit(false);
                            setState();
                         }}>
@@ -198,7 +198,7 @@ function MealPreferences2(props) {
                 <Input label='Industry Preference' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={industryPreference} editable={false}></Input>
                 <Input label='Industry' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={INDUSTRY_CODES[industry]} editable={false}></Input>
                 </View>
-                <View style={{marginLeft: '7.5%'}}>
+                <View style={{marginLeft: '7.5%', marginTop: '5%'}}>
                         <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
                             console.log("Editing Preferences")
                             setEdit(true);
@@ -206,7 +206,7 @@ function MealPreferences2(props) {
                         }}>
                             <Text style={buttonStyles.loginButtonText}>Edit Preferences</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
+                        <TouchableOpacity style={{...buttonStyles.loginButton, marginBottom: '20%'}} onPress={() => {
                             signOutUser();
                             props.navigation.navigate('Login')}}>
                             <Text style={buttonStyles.loginButtonText}>Sign Out</Text>
