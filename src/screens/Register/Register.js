@@ -4,7 +4,7 @@ import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../../sty
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {MESSAGES} from '../../constants/messages'
 import firebaseSvc from '../../firebase/FirebaseSvc';
-import {onSuccess, onFailure, cancelRegistration, createUserProfile} from '../../services/RegistrationHandlers';
+import { createUserProfile, cancelRegistration } from '../../services/RegistrationHandlers';
 
 /**
  * The first page to register a new user
@@ -19,16 +19,12 @@ export default function register(props) {
     
     //Handlers for Action Failure:
     /**
-     * Handles error from user account creation
+     * Handles error from email validation
      * 
      * @param {*} err The error encountered 
      */
     const creationFailure = (err) => {
-        if (err.code === 'auth/email-already-in-use') {
-            Alert.alert(err.message, 'Don\'t worry if you didn\'t complete your profile, you can log in and do so');
-        } else {
-            Alert.alert(err.message); console.log(err.message);
-        }
+        Alert.alert('Error Registering', err.message);
     }
 
     const validateInput = (user) => {
@@ -56,15 +52,13 @@ export default function register(props) {
         }
         if (!checkInfo('Username', user.name, 5, 20).valid) {
             Alert.alert(checkInfo('Username', user.name, 5, 20).message);
-            return false;
         } else if (!checkInfo('Password', user.password, 8, 30).valid) {
             Alert.alert(checkInfo('Password', user.password, 8, 30).message);
-            return false;
         } else if (!emailRegex.test(user.email)) {
             Alert.alert('Invalid Email!');
-            return false;
         } else {
-            return true;
+            //Check if email has been taken
+            firebaseSvc.validateEmail(user, creationSuccess, creationFailure);
         }
     }
 
@@ -73,32 +67,14 @@ export default function register(props) {
      * 
      * @param {*} userCredential The newly created User
      */
-    const creationSuccess = (userCredential) => {
-        const cUser = userCredential.user;
-        cUser
-        .updateProfile({ displayName: name})
-        .then(onSuccess('Updating Name'))
-        .catch(onFailure('Name Update'));
-
-        let userProfile = createUserProfile();
-        userProfile['name'] = name;
-        userProfile['email'] = email;
-
-        firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
-        props.navigation.navigate('RegisterPage2', {name: name});
-    };
-
-    /**
-     * Starts the new user creation process
-     * 
-     * @param {*} user The User details to create
-     * @returns undefined
-     */
-    const addUser = (user) => {
-        if (validateInput(user)) {
-            firebaseSvc.createUser(user, creationSuccess, creationFailure);
+    const creationSuccess = user => (signInMethods) => {
+        if (signInMethods.length) {
+            //Email Exists
+            Alert.alert('Sorry!', 'This E-mail has already been taken');
+        } else {
+            props.navigation.navigate('RegisterPage2', {user});
         }
-    }
+    };
 
     return(
             <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container} scrollEnabled={false}>
@@ -150,12 +126,15 @@ export default function register(props) {
                     
                     <TouchableOpacity style={buttonStyles.loginButton} 
 
-                        onPress={() => addUser({name: name, email: email, password: password})}
+                        onPress={() => {
+                                let user = createUserProfile();
+                                validateInput({...user, name: name, email: email, password: password});
+                            }}
                     >
                         <Text style={buttonStyles.loginButtonText}>Create Account</Text>
 
                     </TouchableOpacity>
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => cancelRegistration(props)}>
+                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('Login')}>
                         <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
                     </TouchableOpacity>
             </KeyboardAwareScrollView>

@@ -16,10 +16,8 @@ export function createUserProfile() {//factory method
         diet: '',
         industry: 0,
         crossIndustrial: false,
-        dob: new Date().toDateString(),
-        match_list:[],
-        blocked_users:[],
-        completed:false,
+        dob: '',
+        dateJoined: ''
     };
 }
 
