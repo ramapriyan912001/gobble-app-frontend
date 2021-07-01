@@ -30,3 +30,5 @@ export const INDUSTRY_CODES = {
 
 export const CUISINES = ['Western', 'Indian', 'Asian', 'Food Court', 'Any']
 export const DIETS = ['Halal', 'Vegetarian', 'Vegan', 'Any']
+
+export const EMPTY_AVATAR = 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc'

@@ -4,7 +4,8 @@ import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../../sty
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {MESSAGES} from '../../constants/messages'
 import firebaseSvc from '../../firebase/FirebaseSvc';
-import { createUserProfile, cancelRegistration } from '../../services/RegistrationHandlers';
+import {onSuccess, onFailure, cancelRegistration, createUserProfile} from '../../services/RegistrationHandlers';
+import { EMPTY_AVATAR } from '../../constants/objects'
 
 /**
  * The first page to register a new user
