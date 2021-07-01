@@ -6,6 +6,7 @@ import firebaseSvc from '../../firebase/FirebaseSvc';
 import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
 import ImageEditor from '@react-native-community/image-editor';
 import * as ImageManipulator from 'expo-image-manipulator';
+import Ionicons from '@expo/vector-icons/Ionicons'
 
 /**
  * Second Page of Registration
@@ -20,6 +21,10 @@ export default function RegisterPage2(props) {
     const [avatar, setAvatar] = useState(emptyAvatar);
     const [hasAvatar, setHasAvatar] = useState(false);
     const [confirmation, setConfirmation] = useState(false);
+
+    useEffect(() => {
+        
+    }, [avatar])
 
     /**
      * Updates the given avatar (if any)
@@ -132,7 +137,13 @@ export default function RegisterPage2(props) {
         <Text style={inputStyles.headerText}>Complete your Profile!</Text> 
         {!hasAvatar && <Text style={pickerStyles.text}>{name}, pick out a nice picture of yourself!</Text>}
         <Text style={styles.caption}>{whichText(hasAvatar)}</Text>
-        {hasAvatar && (<Image style={styles.profilePic} source={{uri:avatar}}/>)}
+        {hasAvatar && (<Image style={{...styles.profilePic, borderRadius: 120}} source={{uri:avatar}}/>)}
+        <TouchableOpacity style={{borderColor: '#000000'}}>
+            <Ionicons name="close-circle-outline" size={48} color="#000000" style={{ marginTop: 6, marginLeft: 2 }}></Ionicons>
+        </TouchableOpacity>
+        <TouchableOpacity style={{borderColor: '#000000'}}>
+            <Ionicons name="add-circle-outline" size={48} color="#000000" style={{ marginTop: 6, marginLeft: 2 }}></Ionicons>
+        </TouchableOpacity>
         {/* <TouchableOpacity style={buttonStyles.loginButton} onPress={setAvatar(emptyAvatar)}> //-> Cuasing 'Too many re-renders'! Need to fix 
             <Text style={buttonStyles.loginButtonText}>Clear Picture</Text>
         </TouchableOpacity> */}
@@ -171,4 +182,16 @@ export default function RegisterPage2(props) {
             margin: '5%',
             marginVertical: '10%'
         },
+
+        cross: {
+            backgroundColor: "#41444B",
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+            width: 60,
+            height: 60,
+            borderRadius: 30,
+            alignItems: "center",
+            justifyContent: "center"
+        }
     })
