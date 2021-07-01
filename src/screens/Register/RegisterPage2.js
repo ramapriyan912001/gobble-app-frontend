@@ -7,6 +7,10 @@ import {onSuccess, onFailure, cancelRegistration, getError} from '../../services
 import ImageEditor from '@react-native-community/image-editor';
 import * as ImageManipulator from 'expo-image-manipulator';
 import Ionicons from '@expo/vector-icons/Ionicons'
+import { MaterialCommunityIcons, MaterialIcons, SimpleLineIcons } from '@expo/vector-icons';
+import { AntDesign } from '@expo/vector-icons';
+import { EvilIcons } from '@expo/vector-icons';
+import { Fontisto } from '@expo/vector-icons';
 
 /**
  * Second Page of Registration
@@ -18,13 +22,16 @@ export default function RegisterPage2(props) {
     const name = props.route.params.name;
     const emptyAvatar = 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc';
     // const user = initialState.user; User accessed from firebaseSvc
-    const [avatar, setAvatar] = useState(emptyAvatar);
+    const [avatar, setAvatar] = useState('');
     const [hasAvatar, setHasAvatar] = useState(false);
     const [confirmation, setConfirmation] = useState(false);
+    const [edit, setEdit] = useState(false);
 
     useEffect(() => {
-        
-    }, [avatar])
+        if(!hasAvatar) {
+            setAvatar(emptyAvatar)
+        }
+    })
 
     /**
      * Updates the given avatar (if any)
@@ -135,20 +142,27 @@ export default function RegisterPage2(props) {
     return (
     <SafeAreaView style={{flex: 1}}>
         <Text style={inputStyles.headerText}>Complete your Profile!</Text> 
-        {!hasAvatar && <Text style={pickerStyles.text}>{name}, pick out a nice picture of yourself!</Text>}
-        <Text style={styles.caption}>{whichText(hasAvatar)}</Text>
-        {hasAvatar && (<Image style={{...styles.profilePic, borderRadius: 120}} source={{uri:avatar}}/>)}
-        <TouchableOpacity style={{borderColor: '#000000'}}>
-            <Ionicons name="close-circle-outline" size={48} color="#000000" style={{ marginTop: 6, marginLeft: 2 }}></Ionicons>
-        </TouchableOpacity>
-        <TouchableOpacity style={{borderColor: '#000000'}}>
-            <Ionicons name="add-circle-outline" size={48} color="#000000" style={{ marginTop: 6, marginLeft: 2 }}></Ionicons>
-        </TouchableOpacity>
+        {!hasAvatar && <Text numberOfLines={2} style={styles.caption}>Select a profile picture, {name}!</Text>}
+        {hasAvatar && <Text numberOfLines={2} style={styles.caption}>Looking good, {name}!</Text>}
+        <View style={{marginBottom: '10%', marginTop: '20%'}}>
+            {(<Image style={{...styles.profilePic, borderRadius: 120}} source={{uri:avatar}}/>)}
+            <TouchableOpacity style={{borderColor: '#000000'}} onPress={() => {
+                if(!hasAvatar) {
+                    updateImage()
+                }
+                setHasAvatar(!hasAvatar)}}>
+            <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color="#000000" style={styles.icon}></AntDesign>
+            </TouchableOpacity>
+        </View>
+
+        
         {/* <TouchableOpacity style={buttonStyles.loginButton} onPress={setAvatar(emptyAvatar)}> //-> Cuasing 'Too many re-renders'! Need to fix 
             <Text style={buttonStyles.loginButtonText}>Clear Picture</Text>
         </TouchableOpacity> */}
-        <TouchableOpacity style={buttonStyles.loginButton} onPress={updateImage}>
-            <Text style={buttonStyles.loginButtonText}>Select Picture</Text>
+        <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '20%'}} onPress={() => {
+                updateImage()
+                setHasAvatar(true)}}>
+            <Text style={buttonStyles.loginButtonText}>{hasAvatar ? 'Change Picture' : 'Select Picture'}</Text>
         </TouchableOpacity>
         <View style={containerStyles.buttonRow}>
             <TouchableOpacity style={buttonStyles.tinyButton} onPress={() => props.navigation.goBack()}>
@@ -169,29 +183,24 @@ export default function RegisterPage2(props) {
 
     const styles = StyleSheet.create({
         profilePic: {
-            width: '60%',
-            height: '30%',
-            marginBottom: '10%',
-            marginLeft: '20%',
-            marginTop: '-5%'
+            width: 250,
+            height: 250,
+            alignSelf: 'center',
         },
         caption: {
             fontSize: 20,
             fontWeight: 'bold',
             alignSelf: 'center',
-            margin: '5%',
-            marginVertical: '10%'
+            margin: '0%',
+            marginVertical: '0%',
+            marginBottom: '5%'
         },
 
-        cross: {
-            backgroundColor: "#41444B",
-            position: "absolute",
-            bottom: 0,
-            right: 0,
-            width: 60,
-            height: 60,
-            borderRadius: 30,
-            alignItems: "center",
-            justifyContent: "center"
+        icon: {
+            color: '#0aa859', 
+            alignSelf: 'center',
+            marginLeft: '45%',
+            marginBottom: '0%',
+            marginTop: '-12%'
         }
     })
