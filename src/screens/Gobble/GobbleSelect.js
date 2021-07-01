@@ -17,17 +17,42 @@ import { bindActionCreators } from 'redux'
  * @param {*} props Props from previous screen
  * @returns GobbleSelect Render Method 
  */
-function GobbleSelect(props) {
+function GobbleSelect(props, {navigation}) {
   const [isPickerShow, setIsPickerShow] = useState(false);
-  const [cuisinePreference, setCuisinePreference] = useState('Western')
+  const [cuisinePreference, setCuisinePreference] = useState('Any')
   const [location, setLocation] = useState(null)
   const [errorMsg, setErrorMsg] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [dateSelected, setDateSelected] = useState(false)
   const MIN_DATE = new Date();
   const MAX_DATE = new Date().setDate(MIN_DATE.getDate()+7)
   const [date, setDate] = useState(MIN_DATE)
-  const [distance, setDistance] = useState(1);
+  const [distance, setDistance] = useState(200);
 
+  function calculateDefaultTime(date) {
+      date = new Date(date)
+      let minutes = date.getMinutes();
+      let hours = date.getHours();
+      if(!dateSelected) {
+        if(minutes < 5) {
+            date.setMinutes(15)
+        } else if (minutes < 20){
+            date.setMinutes(30)
+        } else if (minutes < 35) {
+            date.setMinutes(45)
+        }
+        else if (hours == 23) {
+            date.setDate(date.getDate() +1)
+            date.setHours(0)
+            date.setMinutes(0)
+        } else {
+            hours = hours +1
+            date.setHours(hours)
+            date.setMinutes(0)
+        }
+      }
+      return date;
+  }
   useEffect(() => {
       /**
        * Function to get and set User's current location
@@ -45,7 +70,16 @@ function GobbleSelect(props) {
             }
             setLoading(false); 
       })();
-  }, []);
+  }, [isPickerShow, cuisinePreference, loading, distance, errorMsg]);
+
+  //isPickerShow, cuisinePreference, loading, distance, date, errorMsg, location
+
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener('focus', async() => {
+        setDate(new Date())
+    })
+    return unsubscribe;
+  }, [navigation, date])
 
   let text = 'Waiting'
   if (errorMsg) {
@@ -62,6 +96,7 @@ function GobbleSelect(props) {
 
   const onChange = (event, value) => {
     setDate(value);
+    setDateSelected(true)
     if (Platform.OS === 'android') {
       setIsPickerShow(false);
     }
@@ -115,15 +150,15 @@ function GobbleSelect(props) {
   };
     return (
         <SafeAreaView style={{flex: 1}}>
-            <ScrollView>
-            <View style={{marginTop: '5%'}}>
-                        <Text style={{...inputStyles.headerText, fontSize: 20, margin: '2%'}}>
+            <View style={{marginTop: '2%'}}>
+                        <Text style={{...inputStyles.headerText, fontSize: 20, marginHorizontal: '2%', marginBottom: '5%', fontWeight: '800'}}>
                                 Select your preferences and Gobble!
                         </Text>
             </View>  
+            <ScrollView>
             <View>
-                        <Text style={{...inputStyles.subHeader, marginTop: '0%'}}>Pick out your preferred Date & Time</Text>
-                        <Button title={`Chosen: ${date.toLocaleString([], {hour: 'numeric', minute:'2-digit'})} ${'\n'}Click me to ${pickerText()}`} onPress={showPicker} />
+                        <Text style={{...inputStyles.subHeader, marginTop: '0%', }}>Pick out your preferred Date & Time</Text>
+                        <Button title={`Chosen: ${calculateDefaultTime(date).toLocaleString([], {hour: 'numeric', minute:'2-digit'})} ${'\n'}Click me to ${pickerText()}`} onPress={showPicker} />
                         
                         {/* The date picker */}
                         {isPickerShow && (
@@ -140,29 +175,28 @@ function GobbleSelect(props) {
                             />
                         )}
             </View>
-            <View style={{...styles.container, marginTop: '0%'}}>
-                    {!isPickerShow && <Text style={{...inputStyles.subHeader, marginTop: '0%'}}>...And what are you in the mood for today?</Text>}
+            <View style={{...styles.container, marginTop: '5%'}}>
+                    {!isPickerShow && <Text style={{...inputStyles.subHeader, marginTop: '0%',}}>What are you in the mood for today?</Text>}
                     {!isPickerShow && <Picker
-                       
                         selectedValue={cuisinePreference}
                         onValueChange={(itemValue, itemIndex) => setCuisinePreference(itemValue)}>
                         {renderCuisines()}
                     </Picker>}
             </View>
             <View style={{...styles.container, marginTop: '0%'}}>
-                    <Text style={{...inputStyles.subHeader, marginTop: '0%'}}>How far are you willing to travel for a meal?</Text>
+                    <Text style={{...inputStyles.subHeader, marginTop: '0%',}}>How far are you willing to travel for a meal?</Text>
                     <Picker
                         selectedValue={distance}
                         onValueChange={(itemValue, itemIndex) => setDistance(itemValue)}>
                         {renderDistances()}
                     </Picker>
             </View>
-            <View style={{marginTop: '-10%', marginBottom: '2%'}}>
+            </ScrollView>
+            <View style={{marginTop: '3%', marginBottom: '2%'}}>
                 {!isPickerShow && <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '0%'}} onPress={submitGobble}>
                     <Text style={buttonStyles.loginButtonText}>Submit Gobble</Text>
                 </TouchableOpacity>}
             </View>
-            </ScrollView>
         </SafeAreaView>
     )
 }

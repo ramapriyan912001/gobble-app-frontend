@@ -17,7 +17,7 @@ import { INDUSTRY_CODES } from '../../constants/objects'
  * @param {*} props Props from previous screen
  * @returns MatchesHistory Render Method 
  */
-function MatchesHistory (props) {
+function MatchesHistory (props, {navigation}) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
     // const [loading, setLoading]= useState(true);
@@ -71,7 +71,14 @@ function MatchesHistory (props) {
           console.log('matchHistory clean up!');
           firebaseSvc.matchIDsOff();
         }
-    }, [])
+    }, [data, matchIDs])
+
+    useEffect(() => {
+      const unsubscribe = props.navigation.addListener('focus', async() => {
+          await loadAsync();
+      })
+      return unsubscribe;
+    }, [navigation])
     
     return (
       <SafeAreaView>
@@ -79,10 +86,10 @@ function MatchesHistory (props) {
             data={data}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={{borderBottomWidth:5, height: 160}}
+              containerStyle={{borderBottomWidth:5, height: 120}}
               key={index} 
               roundAvatar>
-                <Avatar size="large" source={{uri:item.otherUserAvatar}}/>
+                <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
                 <ListItem.Content>
                   <ListItem.Title>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
                   <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.datetime}`}</ListItem.Subtitle>

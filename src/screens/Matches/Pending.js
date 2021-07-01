@@ -12,23 +12,23 @@ import { FOOD_IMAGES_URIs } from '../../constants/objects'
 import { INDUSTRY_CODES } from '../../constants/objects'
 
 /**
- * Page to Load the Pending Matches Screen
+ * Page to Show previous Matches
  * 
  * @param {*} props Props from previous screen
- * @returns Matches Render Method 
+ * @returns MatchesHistory Render Method 
  */
-function Matches (props, {navigation}) {
+ function Pending (props, {navigation}) {
     const [data, setData] = useState([]);
-    // const [loading, setLoading]= useState(true);
     const [matchIDs, setMatchIDs] = useState({});
+    // const [loading, setLoading]= useState(true);
     
     /**
-     * Load Page Data Asynchronously
+     * Load Data Asynchronously
      */
     async function loadAsync() {
       await firebaseSvc
-            .getPendingMatchIDs(
-              snapshot => {
+            .getMatchIDs(
+              async(snapshot) => {
                 let ids = snapshot.val();
                 if (ids == null) {
                   //Do Nothing
@@ -39,27 +39,37 @@ function Matches (props, {navigation}) {
                     if(!(key in matchIDs)) {
                       matchIDs[key] = true;
                     }
-                    newData = newData.concat(value);
+                    let details = ids[key]
+                    let otherUserId = details.otherUserId
+                    let avatar, industry;
+
+                    await firebaseSvc
+                          .avatarRef(details.otherUserId)
+                          .once("value")
+                          .then(subsnap => {details = {...details, otherUserAvatar: subsnap.val()}})
+                          .catch(err => console.log('Error Loading Avatar:',err.message));
+                    await firebaseSvc
+                          .industryRef(details.otherUserId)
+                          .once("value")
+                          .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
+                          .catch(err => console.log('Error Loading Avatar:',err.message));
+
+                    newData = newData.concat(details);
                   }
                   setData(newData);
-                // console.log(data);
                 }
               },
               x => x,
-              err => {console.log(err.message)}
+              err => {console.log('Error Loading Matched IDs:',err.message)}
             )
         // setLoading(false);
-    }
-
-    const dateStringMaker = (date) => {
-      return date.slice(0, 24)
     }
 
     useEffect(() => {
         loadAsync();
         return () => {
-          console.log('pendingMatchID clean up!');
-          firebaseSvc.pendingMatchIDsOff();
+          console.log('matchHistory clean up!');
+          firebaseSvc.matchIDsOff();
         }
     }, [data, matchIDs])
 
@@ -69,7 +79,6 @@ function Matches (props, {navigation}) {
       })
       return unsubscribe;
     }, [navigation])
-    // const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     
     return (
       <SafeAreaView>
@@ -77,17 +86,13 @@ function Matches (props, {navigation}) {
             data={data}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={{borderBottomWidth:5, height: 110}}
+              containerStyle={{borderBottomWidth:5, height: 160}}
               key={index} 
               roundAvatar>
-                <Avatar size='large' avatarStyle={{borderRadius: 120}} source={{uri:FOOD_IMAGES_URIs[item.cuisinePreference]}} />
+                <Avatar size="large" source={{uri:item.otherUserAvatar}}/>
                 <ListItem.Content>
-                  <View>
-                  <ListItem.Title>{`${item.cuisinePreference} cuisine, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Title>
-                  </View>
-                  <View>
-                  <ListItem.Subtitle>{dateStringMaker(item.datetime)}</ListItem.Subtitle>
-                  </View>
+                  <ListItem.Title>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
+                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.datetime}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}
@@ -107,4 +112,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(Matches);
+export default connect(mapStateToProps, mapDispatchProps)(Pending);
