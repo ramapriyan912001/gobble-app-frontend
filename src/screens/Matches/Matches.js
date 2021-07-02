@@ -52,7 +52,7 @@ function Matches (props, {navigation}) {
     }
 
     const dateStringMaker = (date) => {
-      return date.slice(0, 24)
+      return date.slice(0, 21)
     }
 
     useEffect(() => {
@@ -83,7 +83,8 @@ function Matches (props, {navigation}) {
                 <Avatar size='large' avatarStyle={{borderRadius: 120}} source={{uri:FOOD_IMAGES_URIs[item.cuisinePreference]}} />
                 <ListItem.Content>
                   <View>
-                  <ListItem.Title>{`${item.cuisinePreference} cuisine, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Title>
+                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${item.cuisinePreference} Cuisine`}</ListItem.Title>
+                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${INDUSTRY_CODES[item.industry]} Industry`}</ListItem.Title>
                   </View>
                   <View>
                   <ListItem.Subtitle>{dateStringMaker(item.datetime)}</ListItem.Subtitle>
