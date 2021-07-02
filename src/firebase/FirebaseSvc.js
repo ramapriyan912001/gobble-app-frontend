@@ -537,8 +537,8 @@ makeGobbleRequest(ref, request, date) {
    * @param {*} request2Ref pending match ID of request2 in GobbleRequests and within the user object itself
    */
   async match(request1, request1Ref, request2, request2Ref) {
-    let request2UserDetails = this.getUserDetails(request2.userId)
-    let request1UserDetails = this.getUserDetails(request1.userId)
+    let request2UserDetails = await this.getUserDetails(request2.userId)
+    let request1UserDetails = await this.getUserDetails(request1.userId)
     const pendingMatchID = await this.gobbleRequestsRef().child('ANY').child('ANY').push().key;
     let updates = {}
 

@@ -52,7 +52,10 @@ function Awaiting (props, {navigation}) {
     }
 
     const dateStringMaker = (date) => {
-      return date.slice(0, 21)
+      return date.slice(0, 11) + timeStringMaker(date)
+    }
+    const timeStringMaker = (date) => {
+      return date.slice(16, 21)
     }
 
     useEffect(() => {

@@ -88,7 +88,7 @@ function MatchesHistory (props, {navigation}) {
             data={data}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={{borderBottomWidth:5, height: 120}}
+              containerStyle={{borderBottomWidth:5, height: 110}}
               key={index} 
               roundAvatar>
                 <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
