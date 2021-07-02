@@ -11,7 +11,8 @@ import { fetchAuthUser, fetchUserData } from '../redux/actions/actions'
 import { INDUSTRY_CODES } from '../constants/objects'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Avatar } from 'react-native-elements'
-import MealPreferences2 from './MealPreferences2'
+import AboutPerson from './AboutPerson'
+import PreviousMatches from './PreviousMatches'
 const Tab = createMaterialTopTabNavigator();
 
 /**
@@ -20,7 +21,7 @@ const Tab = createMaterialTopTabNavigator();
  * @param {*} props Props from previous screen
  * @returns Profile Render Method
  */
-function Profile(props) {
+function otherProfile(props) {
 
     const [userData, setUserData] = useState({})
     // Expecting an id to be passed over
@@ -61,12 +62,12 @@ function Profile(props) {
         <SafeAreaView style={{flex: 1}}>
             <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
             <StatusBar style="auto"/>
-            <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: props.currentUserData.avatar}}/>
-            <Text style={{...inputStyles.headerText, fontWeight:'400', marginBottom: '0%',fontSize: 26}}>{`${props.currentUserData.name}, ${getAge(props.currentUserData.dob)}`}</Text>
-            <Text style={{...inputStyles.headerText, fontWeight: '300', marginBottom: '2%',fontSize: 16}}>{`${INDUSTRY_CODES[props.currentUserData.industry]}`}</Text>
+            <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: userData.avatar}}/>
+            <Text style={{...inputStyles.headerText, fontWeight:'400', marginBottom: '0%',fontSize: 26}}>{`${userData.name}, ${getAge(userData.dob)}`}</Text>
+            <Text style={{...inputStyles.headerText, fontWeight: '300', marginBottom: '2%',fontSize: 16}}>{`${INDUSTRY_CODES[userData.industry]}`}</Text>
             <Tab.Navigator initialRouteName="Ongoing" style={{marginTop: '0%',paddingTop:'0%', backgroundColor:'white'}}>
-            <Tab.Screen name="Personal Details" component={AboutPerson} />
-            <Tab.Screen name="Meal Preferences" component={PreviousMatches} />
+            <Tab.Screen name="About" initialParams={{otherUser: userData}} component={AboutPerson} />
+            <Tab.Screen name="History" initialParams={{otherUser: userData}} component={PreviousMatches} />
             </Tab.Navigator>
             </ScrollView>
 
@@ -80,4 +81,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(Profile);
+export default connect(mapStateToProps, mapDispatchProps)(otherProfile);

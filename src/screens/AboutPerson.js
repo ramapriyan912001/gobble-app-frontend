@@ -20,7 +20,7 @@ To be decided tomorrow
 */
 export default function AboutPerson(props) {
     
-    let otherUser = route.state.params.otherUser
+    let otherUser = props.initialParams.otherUser
 
     return (
         <View style={styles.container}>
@@ -34,12 +34,17 @@ export default function AboutPerson(props) {
             </View>
             <View style={{marginLeft: '7.5%'}}>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
-                        props.navigation.navigate('ForgotPassword')}}>
+                        // TODO: Need to make blockUser functionality
+                        // blockUser();
+                        // props.navigation.navigate('Chatroom')
+                        }}>
                         <Text style={buttonStyles.loginButtonText}>Block User</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
-                        signOutUser();
-                        props.navigation.navigate('Login')}}>
+                        // TODO: Need to make reportUser functionality
+                        // reportUser();
+                        // props.navigation.navigate('ChatRoom')
+                    }}>
                         <Text style={buttonStyles.loginButtonText}>Report User</Text>
                     </TouchableOpacity>
             </View>
