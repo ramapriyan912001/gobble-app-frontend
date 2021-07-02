@@ -17,7 +17,7 @@ import { INDUSTRY_CODES } from '../../constants/objects'
  * @param {*} props Props from previous screen
  * @returns Matches Render Method 
  */
-function Matches (props, {navigation}) {
+function Awaiting (props, {navigation}) {
     const [data, setData] = useState([]);
     // const [loading, setLoading]= useState(true);
     const [matchIDs, setMatchIDs] = useState({});
@@ -27,7 +27,7 @@ function Matches (props, {navigation}) {
      */
     async function loadAsync() {
       await firebaseSvc
-            .getPendingMatchIDs(
+            .getAwaitingMatchIDs(
               snapshot => {
                 let ids = snapshot.val();
                 if (ids == null) {
@@ -58,10 +58,10 @@ function Matches (props, {navigation}) {
     useEffect(() => {
         loadAsync();
         return () => {
-          console.log('pendingMatchID clean up!');
-          firebaseSvc.pendingMatchIDsOff();
+          console.log('awaitingMatchID clean up!');
+          firebaseSvc.awaitingMatchIDsOff();
         }
-    }, [data, matchIDs])
+    }, [matchIDs])
 
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
@@ -108,4 +108,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(Matches);
+export default connect(mapStateToProps, mapDispatchProps)(Awaiting);

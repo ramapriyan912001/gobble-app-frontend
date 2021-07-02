@@ -2,7 +2,7 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import React from 'react'
 import { View, Text, SafeAreaView } from 'react-native';
 import { containerStyles } from '../../styles/LoginStyles';
-import Matches from './Matches';
+import Awaiting from './Awaiting';
 import MatchesHistory from './MatchesHistory';
 import Pending from './Pending'
 

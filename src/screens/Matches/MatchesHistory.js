@@ -21,7 +21,9 @@ function MatchesHistory (props, {navigation}) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
     // const [loading, setLoading]= useState(true);
-    
+    const dateStringMaker = (date) => {
+      return date.slice(0, 21)
+    }
     /**
      * Load Data Asynchronously
      */
@@ -71,7 +73,7 @@ function MatchesHistory (props, {navigation}) {
           console.log('matchHistory clean up!');
           firebaseSvc.matchIDsOff();
         }
-    }, [data, matchIDs])
+    }, [matchIDs])
 
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
@@ -91,8 +93,8 @@ function MatchesHistory (props, {navigation}) {
               roundAvatar>
                 <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
                 <ListItem.Content>
-                  <ListItem.Title>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.datetime}`}</ListItem.Subtitle>
+                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
+                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}

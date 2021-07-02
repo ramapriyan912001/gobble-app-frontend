@@ -27,7 +27,7 @@ import { INDUSTRY_CODES } from '../../constants/objects'
      */
     async function loadAsync() {
       await firebaseSvc
-            .getMatchIDs(
+            .getPendingMatchIDs(
               async(snapshot) => {
                 let ids = snapshot.val();
                 if (ids == null) {
@@ -69,7 +69,7 @@ import { INDUSTRY_CODES } from '../../constants/objects'
         loadAsync();
         return () => {
           console.log('matchHistory clean up!');
-          firebaseSvc.matchIDsOff();
+          firebaseSvc.pendingMatchIDsOff();
         }
     }, [data, matchIDs])
 
