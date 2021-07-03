@@ -16,18 +16,19 @@ import { EMPTY_AVATAR } from '../../constants/objects';
  * @returns RegisterPage2 Render Method
  */
 export default function RegisterPage2(props) {
-    const name = props.route.params.name;
-    ;
+
+    let user = props.route.params.user;
+    const emptyAvatar = 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc';
+
     // const user = initialState.user; User accessed from firebaseSvc
-    const [avatar, setAvatar] = useState('');
+    const [avatar, setAvatar] = useState(EMPTY_AVATAR);
     const [hasAvatar, setHasAvatar] = useState(false);
     const [confirmation, setConfirmation] = useState(false);
-    const [edit, setEdit] = useState(false);
 
     useEffect(() => {
         if(!hasAvatar) {
             setAvatar(EMPTY_AVATAR)
-        }
+        } 
     })
 
     /**
@@ -37,17 +38,7 @@ export default function RegisterPage2(props) {
      */
     const updateAvatar = (avatar) => {
         if (hasAvatar) {
-            firebaseSvc
-            .getCurrentUserCollection(
-                (snapshot) => snapshot.val(),
-                getError(props))
-            .then(userProfile => {
-                userProfile['avatar'] = avatar;
-                firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
-                firebaseSvc.updateAvatar(avatar);
-            })
-            .catch(getError(props));
-            props.navigation.navigate('RegisterPage3');
+            props.navigation.navigate('RegisterPage3', {...user, avatar: avatar});
         } else {
             //No Avatar selected
             //First we confirm choice
@@ -55,17 +46,8 @@ export default function RegisterPage2(props) {
                 Alert.alert('Proceeding with no avatar!', 'If so, tap ok and click next again. Otherwise please retry selecting an avatar');
                 setConfirmation(true);
             } else {
-                firebaseSvc
-                .getCurrentUserCollection(
-                    (snapshot) => snapshot.val(),
-                    getError(props))
-                .then(userProfile => {
-                    userProfile['avatar'] = EMPTY_AVATAR;
-                    firebaseSvc.updateCurrentUserCollection(userProfile, onSuccess('User Collection Update'), onFailure('User Collection Update'));
-                    firebaseSvc.updateAvatar(EMPTY_AVATAR);
-                })
-                .catch(getError(props));
-                props.navigation.navigate('RegisterPage3');
+                props.navigation.navigate('RegisterPage3', {...user, avatar: emptyAvatar});
+
             }
         }
     };
@@ -115,8 +97,9 @@ export default function RegisterPage2(props) {
                     firebaseSvc
                     .uploadImage(resizedUri)
                     .then(uploadURL => {
-                        setAvatar(uploadURL);
+                        console.log("Set pic")
                         setHasAvatar(true);
+                        setAvatar(uploadURL);
                         // firebaseSvc
                         // .updateAvatar(uploadURL)
                         // .then(() => console.log('Avatar Updated'))
@@ -124,7 +107,10 @@ export default function RegisterPage2(props) {
                     })
                     .catch(onFailure('URI Upload'))
                     })
-                .catch(onFailure('Image Picking'))
+                .catch((err) => {
+                    onFailure('Image Picking')
+                    setHasAvatar(false)
+                })
             })
             .catch(onFailure('Permissions'))
           } else {
@@ -139,15 +125,20 @@ export default function RegisterPage2(props) {
     return (
     <SafeAreaView style={{flex: 1}}>
         <Text style={inputStyles.headerText}>Complete your Profile!</Text> 
-        {!hasAvatar && <Text numberOfLines={2} style={styles.caption}>Select a profile picture, {name}!</Text>}
-        {hasAvatar && <Text numberOfLines={2} style={styles.caption}>Looking good, {name}!</Text>}
+        {!hasAvatar && <Text numberOfLines={2} style={styles.caption}>Select a profile picture, {user.name}!</Text>}
+        {hasAvatar && <Text numberOfLines={2} style={styles.caption}>Looking good, {user.name}!</Text>}
+        {hasAvatar && <Text numberOfLines={2} style={styles.loading}>{'(Image might take a few seconds to load)'}</Text>}
         <View style={{marginBottom: '10%', marginTop: '20%'}}>
             {(<Image style={{...styles.profilePic, borderRadius: 120}} source={{uri:avatar}}/>)}
             <TouchableOpacity style={{borderColor: '#000000'}} onPress={() => {
                 if(!hasAvatar) {
+                    setHasAvatar(true)
                     updateImage()
+                } else {
+                    setHasAvatar(false)
+
                 }
-                setHasAvatar(!hasAvatar)}}>
+                }}>
             <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color="#000000" style={styles.icon}></AntDesign>
             </TouchableOpacity>
         </View>
@@ -158,7 +149,8 @@ export default function RegisterPage2(props) {
         </TouchableOpacity> */}
         <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '20%'}} onPress={() => {
                 updateImage()
-                setHasAvatar(true)}}>
+                setHasAvatar(true)
+                }}>
             <Text style={buttonStyles.loginButtonText}>{hasAvatar ? 'Change Picture' : 'Select Picture'}</Text>
         </TouchableOpacity>
         <View style={containerStyles.buttonRow}>
@@ -191,6 +183,12 @@ export default function RegisterPage2(props) {
             margin: '0%',
             marginVertical: '0%',
             marginBottom: '5%'
+        },
+
+        loading: {
+            alignSelf: 'center',
+            margin: '0%',
+            marginVertical: '0%',
         },
 
         icon: {

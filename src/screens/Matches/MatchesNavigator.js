@@ -2,9 +2,8 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import React from 'react'
 import { View, Text, SafeAreaView } from 'react-native';
 import { containerStyles } from '../../styles/LoginStyles';
-import Awaiting from './Awaiting';
+import Matches from './Matches';
 import MatchesHistory from './MatchesHistory';
-import Pending from './Pending'
 
 const Tab = createMaterialTopTabNavigator();
 
