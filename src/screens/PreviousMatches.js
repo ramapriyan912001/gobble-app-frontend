@@ -17,47 +17,67 @@ import { INDUSTRY_CODES } from '../constants/objects'
  * @param {*} props Props from previous screen
  * @returns MatchesHistory Render Method 
  */
-function PreviousMatches (props, {navigation}) {
+ function PreviousMatches (props, {navigation}) {
     const [data, setData] = useState([]);
-    const [matchIDs, setMatchIDs] = useState({});
-    const [user, setOtherUser] = useState({})
-    // const [loading, setLoading]= useState(true);
-    
+    const [selectedID, setSelectedID] = useState(null)
+
+    function renderContent(item, index) {
+      const dateStringMaker = (date) => {
+          return date.slice(0, 10)
+      }
+      const timeStringMaker = (date) => {
+          return date.slice(16, 21)
+      }
+      return (
+          <ListItem
+                        containerStyle={{borderBottomWidth:5, height: 110}}
+                        key={props.index} 
+                        roundAvatar>
+                          <View style={{flexDirection: 'column', borderColor: '#000', paddingRight: '2.5%',borderRightWidth: 2}}>
+                          <ListItem.Subtitle style={{fontWeight: '500'}}>{`${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                          <ListItem.Subtitle style={{fontWeight: '300'}}>{`${timeStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                          </View>
+                          <ListItem.Content>
+                            <ListItem.Title style={{fontWeight: '500'}}>{`${INDUSTRY_CODES[item.otherUserIndustry]} Industry`}</ListItem.Title>
+                            <ListItem.Title style={{fontWeight: '300'}}>{`${item.cuisinePreference} Cuisine`}</ListItem.Title>
+                          </ListItem.Content>
+                        </ListItem>
+          )
+  }
     /**
      * Load Data Asynchronously
      */
     async function loadAsync() {
-      setOtherUser(props.route.params.otherUser)
-        firebaseSvc
+      await firebaseSvc
             .getMatchIDs(
               async(snapshot) => {
                 let ids = snapshot.val();
                 if (ids == null) {
-                  //Do Nothing
+                  setData([])
+                  setMatchIDs({})
                 } else  {
                   // console.log(ids, 'ids')
                   let newData = [];
                   for(let [key, value] of Object.entries(ids)) {
-                    if(!(key in matchIDs)) {
-                      matchIDs[key] = true;
-                    }
                     let details = ids[key]
-                    let otherUserId = details.otherUserId
-                    let avatar, industry;
-
-                    firebaseSvc
-                          .avatarRef(details.otherUserId)
-                          .once("value")
-                          .then(subsnap => {details = {...details, otherUserAvatar: subsnap.val()}})
-                          .catch(err => console.log('Error Loading Avatar:',err.message));
-                    firebaseSvc
-                          .industryRef(details.otherUserId)
-                          .once("value")
-                          .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
-                          .catch(err => console.log('Error Loading Avatar:',err.message));
-
+                      let otherUserId = details.otherUserId
+                      await firebaseSvc
+                            .avatarRef(otherUserId)
+                            .once("value")
+                            .then(subsnap => {details = {...details, otherUserAvatar: subsnap.val()}})
+                            .catch(err => console.log('Error Loading Avatar:',err.message));
+                      await firebaseSvc
+                            .industryRef(otherUserId)
+                            .once("value")
+                            .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
+                            .catch(err => console.log('Error Loading Avatar:',err.message));
                     newData = newData.concat(details);
                   }
+                  newData.sort(function (a, b) {
+                    let x = new Date(a.datetime)
+                    let y = new Date(b.datetime)
+                    return x <= y ? -1 : 1
+                  });
                   setData(newData);
                 }
               },
@@ -70,10 +90,10 @@ function PreviousMatches (props, {navigation}) {
     useEffect(() => {
         loadAsync();
         return () => {
-          // console.log('matchHistory clean up!');
+          console.log('pendingMatchID clean up!');
           firebaseSvc.matchIDsOff();
         }
-    }, [data, matchIDs])
+    },[])
 
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
@@ -86,18 +106,8 @@ function PreviousMatches (props, {navigation}) {
       <SafeAreaView>
           <FlatList
             data={data}
-            renderItem={({ item, index }) => (
-              <ListItem
-              containerStyle={{borderBottomWidth:5, height: 120}}
-              key={index} 
-              roundAvatar>
-                <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
-                <ListItem.Content>
-                  <ListItem.Title>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.datetime}`}</ListItem.Subtitle>
-                </ListItem.Content>
-              </ListItem>
-            )}
+            extraData={selectedID}
+            renderItem={({ item, index }) => renderContent(item, index)}
             keyExtractor={item => item.datetime}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
