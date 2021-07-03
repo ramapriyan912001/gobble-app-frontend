@@ -78,6 +78,7 @@ function GobbleSelect(props) {
 
   /**
    * Function to create a request and pass it to the next page
+   * Used for both editing and submitting gobble req
    */
   function submitGobble() {
       if (loading) {
