@@ -20,6 +20,7 @@ import { INDUSTRY_CODES } from '../../constants/objects'
 function MatchesHistory (props, {navigation}) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
+    const [selectedID, setSelectedID] = useState(null)
     // const [loading, setLoading]= useState(true);
     const dateStringMaker = (date) => {
       return date.slice(0, 21)
@@ -86,6 +87,7 @@ function MatchesHistory (props, {navigation}) {
       <SafeAreaView>
           <FlatList
             data={data}
+            extraData={selectedID}
             renderItem={({ item, index }) => (
               <ListItem
               containerStyle={{borderBottomWidth:5, height: 110}}
