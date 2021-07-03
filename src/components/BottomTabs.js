@@ -2,7 +2,7 @@ import React from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import {ProfileNavigator} from '../screens/Profile/ProfileNavigator'
 import {GobbleNavigator} from '../screens/Gobble/GobbleNavigator'
-import Matches from '../screens/Matches/Matches'
+import Awaiting from '../screens/Matches/Awaiting'
 import { ChatNavigator } from '../screens/Chats/ChatNavigator';
 import Ionicons from '@expo/vector-icons/Ionicons'
 import MatchesNavigator from '../screens/Matches/MatchesNavigator';
