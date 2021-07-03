@@ -215,7 +215,7 @@ function GobbleSelect(props, {navigation}) {
         }
         let result =  await firebaseSvc.findGobbleMate(gobbleRequest);
         // We need to do some load page
-        props.navigation.navigate('GobbleConfirm', {result: result})
+        props.navigation.navigate('BottomTabs', { screen: 'GobbleNavigator', params: { screen: 'GobbleConfirm', params: {result: result}} })
       }
   }
 
