@@ -43,6 +43,11 @@ function Awaiting (props, {navigation}) {
                     }
                     newData = newData.concat(value);
                   }
+                  newData.sort(function (a, b) {
+                    let x = new Date(a.datetime)
+                    let y = new Date(b.datetime)
+                    return x <= y ? -1 : 1
+                  });
                   setData(newData);
                 // console.log(data);
                 }
@@ -50,6 +55,7 @@ function Awaiting (props, {navigation}) {
               x => x,
               err => {console.log(err.message)}
             )
+            setSelectedID(Math.random())
         // setLoading(false);
     }
 

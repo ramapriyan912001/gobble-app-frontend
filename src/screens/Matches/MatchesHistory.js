@@ -59,6 +59,11 @@ function MatchesHistory (props, {navigation}) {
 
                     newData = newData.concat(details);
                   }
+                  newData.sort(function (a, b) {
+                    let x = new Date(a.datetime)
+                    let y = new Date(b.datetime)
+                    return x <= y ? -1 : 1
+                  });
                   setData(newData);
                 }
               },

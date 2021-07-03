@@ -148,6 +148,11 @@ import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCC
                             .catch(err => console.log('Error Loading Avatar:',err.message));
                     newData = newData.concat(details);
                   }
+                  newData.sort(function (a, b) {
+                    let x = new Date(a.datetime)
+                    let y = new Date(b.datetime)
+                    return x <= y ? -1 : 1
+                  });
                   setData(newData);
                 }
               },

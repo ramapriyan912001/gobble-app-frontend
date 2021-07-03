@@ -188,7 +188,7 @@ class FirebaseSvc {
   getAwaitingMatchIDs = (success, callback, failure) => this.userExists()
                                               ? this
                                                 .userRef(`${this.uid}/awaitingMatchIDs`)
-                                                .orderByChild('datetime')
+                                                .orderByChild('dietaryRestriction')
                                                 .on('value', (x) => callback(success(x)))
                                               : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
                                               
