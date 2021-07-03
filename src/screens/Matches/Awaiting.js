@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, SafeAreaView, Text, FlatList} from 'react-native'
+import {View, SafeAreaView, Text, FlatList, TouchableOpacity} from 'react-native'
 import { Avatar, ListItem, SearchBar } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -21,6 +21,7 @@ function Awaiting (props, {navigation}) {
     const [data, setData] = useState([]);
     // const [loading, setLoading]= useState(true);
     const [matchIDs, setMatchIDs] = useState({});
+    const [selectedID, setSelectedID] = useState(null)
     
     /**
      * Load Page Data Asynchronously
@@ -31,7 +32,8 @@ function Awaiting (props, {navigation}) {
               snapshot => {
                 let ids = snapshot.val();
                 if (ids == null) {
-                  //Do Nothing
+                  setData([])
+                  setMatchIDs({})
                 } else  {
                   // console.log(ids, 'ids')
                   let newData = [];
@@ -64,7 +66,7 @@ function Awaiting (props, {navigation}) {
           console.log('awaitingMatchID clean up!');
           firebaseSvc.awaitingMatchIDsOff();
         }
-    }, [matchIDs])
+    }, [])
 
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
@@ -77,6 +79,7 @@ function Awaiting (props, {navigation}) {
     return (
       <SafeAreaView>
           <FlatList
+            extraData={selectedID}
             data={data}
             renderItem={({ item, index }) => (
               <ListItem
@@ -93,6 +96,24 @@ function Awaiting (props, {navigation}) {
                   <ListItem.Subtitle>{dateStringMaker(item.datetime)}</ListItem.Subtitle>
                   </View>
                 </ListItem.Content>
+                <View style={{flexDirection: 'column'}}>
+                <TouchableOpacity onPress={async() => 
+                              {
+                                props.navigation.navigate('Edit Gobble Request', {edit: true, request: item})
+                                console.log('Edit awaiting')
+                              }}>
+                  <ListItem.Subtitle style={{color: '#c3990b'}}>{`Edit`}</ListItem.Subtitle>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={async() => 
+                              {
+                                let replacementSelectedID = Math.random()
+                                firebaseSvc.deleteAwaitingRequest(item);
+                                setSelectedID(replacementSelectedID)
+                                console.log('Delete awaiting')
+                              }}>
+                  <ListItem.Subtitle style={{color: 'red'}}>{`Delete`}</ListItem.Subtitle>
+                </TouchableOpacity>
+                </View>
               </ListItem>
             )}
             keyExtractor={item => item.datetime}

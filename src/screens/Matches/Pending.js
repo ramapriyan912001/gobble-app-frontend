@@ -10,6 +10,7 @@ import renderHeader from '../../components/renderHeader'
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { FOOD_IMAGES_URIs } from '../../constants/objects'
 import { INDUSTRY_CODES } from '../../constants/objects'
+import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCCESS, UNACCEPT_FAIL } from '../../constants/results'
 
 /**
  * Page to Show previous Matches
@@ -43,43 +44,71 @@ import { INDUSTRY_CODES } from '../../constants/objects'
                             <ListItem.Title style={{fontWeight: '300'}}>{`${item.cuisinePreference} Cuisine`}</ListItem.Title>
                           </ListItem.Content>
                           <View style={{flexDirection: 'column'}}>
-                            {!matchIDs[item.matchIDs] && 
-                            <TouchableOpacity onPress={() => 
+
+                            {!matchIDs[item.matchID] && 
+                            <TouchableOpacity onPress={async() => 
                               {
-                                let x = Object.assign({},matchIDs)
-                                x[item.matchIDs] = true;                      
-                                setMatchIDs(x)
-                                console.log("change to true")
-                                let res = firebaseSvc.matchConfirm(item)
-                                if(res) {
-                                  // handle deleting
-                                  // modal pop up perhaps
-                                  // props.navigation.navigate('MatchHistory')
-                                } else {
-                                  setSelectedID(index*10)
-                                }        
+                                let res = await firebaseSvc.matchConfirm(item)
+                                console.log(res)
+                                let replacementSelectedID = Math.random()
+                                switch(res) {
+                                  case(FINAL_SUCCESS):
+                                  // Logic for modal popping up
+                                  setSelectedID(replacementSelectedID)
+                                  props.navigation.navigate('Matched')
+                                  break;
+
+                                  case(CONFIRM_SUCCESS):
+                                  matchIDs[item.matchID] = true
+                                  setSelectedID(replacementSelectedID)
+                                  break;
+
+                                  case(FINAL_FAIL):
+                                  await firebaseSvc.matchDecline(item)
+                                  // logic for modal informing of inability to match and deletion
+                                  setSelectedID(replacementSelectedID)
+                                  break;
+
+                                  case(CONFIRM_FAIL):
+                                  await firebaseSvc.matchDecline(item)
+                                  // logic for modal informing of inability to match and deletion
+                                  setSelectedID(replacementSelectedID)
+                                  break;
+                                }    
                               }}>
                             <ListItem.Subtitle style={{color: 'green'}}>{`Accept`}</ListItem.Subtitle>
                             </TouchableOpacity>}
-                            {!matchIDs[item.matchIDs] &&
+                            
+                            {!matchIDs[item.matchID] &&
                             <TouchableOpacity onPress={() => {
-                              console.log('lol')
+                              let replacementSelectedID = Math.random();
+                              console.log('Declined')
                               firebaseSvc.matchDecline(item)
-                              setSelectedID(index*10) 
+                              setSelectedID(replacementSelectedID) 
                             }}>
                             <ListItem.Subtitle style={{color: 'red'}}>{`Decline`}</ListItem.Subtitle>
                             </TouchableOpacity>}
-                            {matchIDs[item.matchIDs] &&
+                            {matchIDs[item.matchID] &&
                             <ListItem.Subtitle style={{color: 'green'}}>{`Accepted!`}</ListItem.Subtitle>
                             }
-                            {matchIDs[item.matchIDs] &&
-                            <TouchableOpacity onPress={() => 
+                            {matchIDs[item.matchID] &&
+                            <TouchableOpacity onPress={async() => 
                               {
-                                let x = Object.assign({},matchIDs)
-                                x[item.matchIDs] = false;                      
-                                setMatchIDs(x)
-                                console.log("change to false")   
-                                setSelectedID(index*100)  
+                                let unacceptRes = await firebaseSvc.matchUnaccept(item)
+                                let replacementSelectedID = Math.random()
+                                switch(unacceptRes) {
+                                  case(UNACCEPT_SUCCESS):
+                                  matchIDs[item.matchID] = false;                    
+                                  console.log("Unaccepted")
+                                  setSelectedID(replacementSelectedID)
+                                  break
+
+                                  case(UNACCEPT_FAIL):
+                                  console.log('Force Decline')
+                                  firebaseSvc.matchDecline(item)
+                                  setSelectedID(replacementSelectedID) 
+                                  break
+                                } 
                               }}>
                             <ListItem.Subtitle style={{color: 'red'}}>{`Unaccept`}</ListItem.Subtitle>
                             </TouchableOpacity>
@@ -97,7 +126,8 @@ import { INDUSTRY_CODES } from '../../constants/objects'
               async(snapshot) => {
                 let ids = snapshot.val();
                 if (ids == null) {
-                  //Do Nothing
+                  setData([])
+                  setMatchIDs({})
                 } else  {
                   // console.log(ids, 'ids')
                   let newData = [];
@@ -131,7 +161,7 @@ import { INDUSTRY_CODES } from '../../constants/objects'
     useEffect(() => {
         loadAsync();
         return () => {
-          console.log('matchHistory clean up!');
+          console.log('pendingMatchID clean up!');
           firebaseSvc.pendingMatchIDsOff();
         }
     },[])

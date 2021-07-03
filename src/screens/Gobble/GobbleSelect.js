@@ -28,9 +28,14 @@ function GobbleSelect(props, {navigation}) {
   const MAX_DATE = new Date().setDate(MIN_DATE.getDate()+7)
   const [date, setDate] = useState(MIN_DATE)
   const [distance, setDistance] = useState(200);
+  const [edit, setEdit] = useState(true);
 
   function calculateDefaultTime(date) {
-      date = new Date(date)
+      if(props.route.params && edit) {
+        date = new Date(props.route.params.request.datetime)
+      } else {
+        date = new Date(date)
+      }
       let minutes = date.getMinutes();
       let hours = date.getHours();
       if(!dateSelected) {
@@ -53,6 +58,7 @@ function GobbleSelect(props, {navigation}) {
       }
       return date;
   }
+
   useEffect(() => {
       /**
        * Function to get and set User's current location
@@ -68,9 +74,15 @@ function GobbleSelect(props, {navigation}) {
                 let location = await Location.getCurrentPositionAsync({})
                 setLocation(location)  
             }
+            console.log(edit)
+            if(props.route.params && edit) {
+                setEdit(false)
+                setCuisinePreference(props.route.params.request.cuisinePreference)
+                setDistance(props.route.params.request.distance)
+            }
             setLoading(false); 
       })();
-  }, [isPickerShow, cuisinePreference, loading, distance, errorMsg]);
+  }, [isPickerShow, loading, distance, errorMsg]);
 
   //isPickerShow, cuisinePreference, loading, distance, date, errorMsg, location
 
@@ -128,15 +140,22 @@ function GobbleSelect(props, {navigation}) {
       } else if(location == null) {
           Alert.alert('We need Location Permission!', 'You can change permissions in your phone settings');
       } else {
-        const gobbleRequest = {
-            userId: firebaseSvc.currentUser().uid,
-            dietaryRestriction: props.currentUserData.diet,
-            industryPreference: props.currentUserData.crossIndustrial ? 12 : props.currentUserData.industry,
-            industry: props.currentUserData.industry,
-            cuisinePreference: cuisinePreference,
-            datetime: date.toString(),
-            location: location,
-            distance: distance,
+        let gobbleRequest;
+        if(props.route.params) {
+            gobbleRequest = {...props.route.params.request, datetime: date.toString(), distance: distance, cuisinePreference: cuisinePreference}
+            console.log(props.route.params.request)
+            firebaseSvc.deleteAwaitingRequest(props.route.params.request)
+        } else {
+            gobbleRequest = {
+                userId: firebaseSvc.currentUser().uid,
+                dietaryRestriction: props.currentUserData.diet,
+                industryPreference: props.currentUserData.crossIndustrial ? 12 : props.currentUserData.industry,
+                industry: props.currentUserData.industry,
+                cuisinePreference: cuisinePreference,
+                datetime: date.toString(),
+                location: location,
+                distance: distance,
+            }
         }
         let result =  await firebaseSvc.findGobbleMate(gobbleRequest);
         // We need to do some load page
