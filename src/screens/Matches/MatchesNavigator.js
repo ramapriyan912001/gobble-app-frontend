@@ -2,8 +2,9 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import React from 'react'
 import { View, Text, SafeAreaView } from 'react-native';
 import { containerStyles } from '../../styles/LoginStyles';
-import Matches from './Matches';
+import Awaiting from './Awaiting';
 import MatchesHistory from './MatchesHistory';
+import Pending from './Pending'
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -14,7 +15,7 @@ const Tab = createMaterialTopTabNavigator();
  */
 export default function MatchesNavigator() {
   return (
-        <Tab.Navigator initialRouteName="Awaiting" style={{paddingTop:'8%', backgroundColor:'white'}}>
+        <Tab.Navigator initialRouteName="Ongoing" style={{paddingTop:'8%', backgroundColor:'white'}}>
             <Tab.Screen name="Awaiting" component={Awaiting} />
             <Tab.Screen name="Pending" component={Pending} />
             <Tab.Screen name="Matched" component={MatchesHistory} />

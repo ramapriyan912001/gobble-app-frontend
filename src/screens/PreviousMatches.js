@@ -3,13 +3,13 @@ import {View, SafeAreaView, Text, FlatList} from 'react-native'
 import { Avatar, ListItem, SearchBar } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchUserData, clearData } from '../../redux/actions/actions'
-import { renderFooter } from '../../components/renderFooter'
-import renderSeparator from '../../components/renderSeparator'
-import renderHeader from '../../components/renderHeader'
-import firebaseSvc from '../../firebase/FirebaseSvc'
-import { FOOD_IMAGES_URIs } from '../../constants/objects'
-import { INDUSTRY_CODES } from '../../constants/objects'
+import { fetchUserData, clearData } from '../redux/actions/actions'
+import { renderFooter } from '../components/renderFooter'
+import renderSeparator from '../components/renderSeparator'
+import renderHeader from '../components/renderHeader'
+import firebaseSvc from '../firebase/FirebaseSvc'
+import { FOOD_IMAGES_URIs } from '../constants/objects'
+import { INDUSTRY_CODES } from '../constants/objects'
 
 /**
  * Page to Show previous Matches
@@ -17,18 +17,17 @@ import { INDUSTRY_CODES } from '../../constants/objects'
  * @param {*} props Props from previous screen
  * @returns MatchesHistory Render Method 
  */
-function MatchesHistory (props, {navigation}) {
+function PreviousMatches (props, {navigation}) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
-    const [selectedID, setSelectedID] = useState(null)
+    const [user, setOtherUser] = useState({})
     // const [loading, setLoading]= useState(true);
-    const dateStringMaker = (date) => {
-      return date.slice(0, 21)
-    }
+    
     /**
      * Load Data Asynchronously
      */
     async function loadAsync() {
+      setOtherUser(props.initialParams.otherUser)
       await firebaseSvc
             .getMatchIDs(
               async(snapshot) => {
@@ -59,11 +58,6 @@ function MatchesHistory (props, {navigation}) {
 
                     newData = newData.concat(details);
                   }
-                  newData.sort(function (a, b) {
-                    let x = new Date(a.datetime)
-                    let y = new Date(b.datetime)
-                    return x <= y ? -1 : 1
-                  });
                   setData(newData);
                 }
               },
@@ -79,7 +73,7 @@ function MatchesHistory (props, {navigation}) {
           console.log('matchHistory clean up!');
           firebaseSvc.matchIDsOff();
         }
-    }, [matchIDs])
+    }, [data, matchIDs])
 
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
@@ -92,16 +86,15 @@ function MatchesHistory (props, {navigation}) {
       <SafeAreaView>
           <FlatList
             data={data}
-            extraData={selectedID}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={{borderBottomWidth:5, height: 110}}
+              containerStyle={{borderBottomWidth:5, height: 120}}
               key={index} 
               roundAvatar>
                 <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
                 <ListItem.Content>
-                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                  <ListItem.Title>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
+                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.datetime}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}
@@ -121,4 +114,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(MatchesHistory);
+export default connect(mapStateToProps, mapDispatchProps)(PreviousMatches);
