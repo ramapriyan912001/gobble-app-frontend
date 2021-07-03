@@ -4,9 +4,8 @@ import { Avatar, ListItem, SearchBar } from 'react-native-elements'
 import { INDUSTRY_CODES } from '../constants/objects'
 
 
-export default function renderContent(props) {
+export default function renderPendingContent(props) {
 
-  const [thing, setThing] = useState(0)
     const dateStringMaker = (date) => {
         return date.slice(0, 10)
     }

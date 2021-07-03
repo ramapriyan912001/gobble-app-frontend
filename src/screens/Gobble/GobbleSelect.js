@@ -26,13 +26,14 @@ function GobbleSelect(props, {navigation}) {
   const [dateSelected, setDateSelected] = useState(false)
   const MIN_DATE = new Date();
   const MAX_DATE = new Date().setDate(MIN_DATE.getDate()+7)
-  const [date, setDate] = useState(MIN_DATE)
+  const [date, setDate] = useState(calculateDefaultTime(MIN_DATE))
   const [distance, setDistance] = useState(200);
   const [edit, setEdit] = useState(true);
 
   function calculateDefaultTime(date) {
       if(props.route.params && edit) {
         date = new Date(props.route.params.request.datetime)
+        return date;
       } else {
         date = new Date(date)
       }
@@ -41,22 +42,33 @@ function GobbleSelect(props, {navigation}) {
       if(!dateSelected) {
         if(minutes < 5) {
             date.setMinutes(15)
-        } else if (minutes < 20){
+        } else if (minutes < 25){
             date.setMinutes(30)
-        } else if (minutes < 35) {
+        } else if (minutes < 40) {
             date.setMinutes(45)
-        }
-        else if (hours == 23) {
-            date.setDate(date.getDate() +1)
-            date.setHours(0)
-            date.setMinutes(0)
         } else {
-            hours = hours +1
-            date.setHours(hours)
-            date.setMinutes(0)
+            if(hours == 23) {
+                date.setDate(date.getDate() +1)
+                date.setHours(0)
+                
+            } else {
+                hours = hours +1
+                date.setHours(hours)
+            }
+            if(minutes < 55) {
+                date.setMinutes(0)
+            } else {
+                date.setMinutes(15)
+            }
         }
       }
+      date.setSeconds(0)
+      date.setMilliseconds(0)
       return date;
+  }
+
+  const dateStringMaker = (date) => {
+    return date.slice(0,11) + date.slice(16,21)
   }
 
   useEffect(() => {
@@ -64,7 +76,6 @@ function GobbleSelect(props, {navigation}) {
        * Function to get and set User's current location
        */
       (async () => {
-          await props.fetchUserData();
             let {status} = await Location.requestForegroundPermissionsAsync();
             if (status !== 'granted') {
                 setErrorMsg('Permission Denied')
@@ -78,19 +89,23 @@ function GobbleSelect(props, {navigation}) {
                 setEdit(false)
                 setCuisinePreference(props.route.params.request.cuisinePreference)
                 setDistance(props.route.params.request.distance)
+                setDate(props.route.params.request.datetime)
+            } else {
+                setDate(calculateDefaultTime(MIN_DATE))
             }
+            console.log(date)
             setLoading(false); 
       })();
-  }, [isPickerShow, loading, distance, errorMsg]);
+  }, []);
 
   //isPickerShow, cuisinePreference, loading, distance, date, errorMsg, location
 
   useEffect(() => {
     const unsubscribe = props.navigation.addListener('focus', async() => {
-        setDate(new Date())
+        setDate(calculateDefaultTime(new Date()))
     })
     return unsubscribe;
-  }, [navigation, date])
+  }, [navigation])
 
   let text = 'Waiting'
   if (errorMsg) {
@@ -175,7 +190,7 @@ function GobbleSelect(props, {navigation}) {
             <ScrollView>
             <View>
                         <Text style={{...inputStyles.subHeader, marginTop: '0%', }}>Pick out your preferred Date & Time</Text>
-                        <Button title={`Chosen: ${calculateDefaultTime(date).toLocaleString([], {hour: 'numeric', minute:'2-digit'})} ${'\n'}Click me to ${pickerText()}`} onPress={showPicker} />
+                        <Button title={`Chosen: ${dateStringMaker(date.toString())} ${'\n'}Click me to ${pickerText()}`} onPress={showPicker} />
                         
                         {/* The date picker */}
                         {isPickerShow && (
