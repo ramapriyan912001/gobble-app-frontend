@@ -10,7 +10,6 @@ import { fetchAuthUser, fetchUserData } from '../redux/actions/actions'
 import { INDUSTRY_CODES } from '../constants/objects'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Avatar } from 'react-native-elements'
-import MealPreferences2 from './MealPreferences2'
 
 
 /*
