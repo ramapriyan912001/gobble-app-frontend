@@ -147,6 +147,7 @@ function GobbleSelect(props, {navigation}) {
 
   /**
    * Function to create a request and pass it to the next page
+   * Used for both editing and submitting gobble req
    */
   async function submitGobble() {
       if (loading) {
