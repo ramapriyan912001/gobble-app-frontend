@@ -27,6 +27,7 @@ export default function Reauthenticate(props) {
         const errorMessage = err.message;
         Alert.alert('Auth failed: ' + errorMessage);
     };
+    
 
     /**
      * Used to re-authenticate user if user goes offline for too long before performing any major action.
