@@ -44,7 +44,18 @@ function GobbleSelect2(props) {
     // We need to do some load page
     props.navigation.navigate('GobbleConfirm', {result: result});
   }
+  const showDatePicker = () => {
+    setDatePickerVisibility(true);
+  };
 
+  const hideDatePicker = () => {
+    setDatePickerVisibility(false);
+  };
+
+  const handleConfirm = (date) => {
+    setDate(date);
+    hideDatePicker();
+  };
     return (
         <SafeAreaView>
             <View style={styles.container}>
