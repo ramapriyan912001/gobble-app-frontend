@@ -188,6 +188,7 @@ class FirebaseSvc {
   getAwaitingMatchIDs = (success, callback, failure) => this.userExists()
                                               ? this
                                                 .userRef(`${this.uid}/awaitingMatchIDs`)
+                                                .orderByChild('datetime')
                                                 .on('value', (x) => callback(success(x)))
                                               : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
                                               
@@ -200,6 +201,7 @@ class FirebaseSvc {
   getPendingMatchIDs = (success, callback, failure) => this.userExists()
                                               ? this
                                                 .userRef(`${this.uid}/pendingMatchIDs`)
+                                                .orderByChild('datetime')
                                                 .on('value', (x) => callback(success(x)))
                                               : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
@@ -212,6 +214,7 @@ class FirebaseSvc {
   getMatchIDs = (success, callback, failure) => this.userExists()
                                       ? this
                                         .userRef(`${this.uid}/matchIDs`)
+                                        .orderByChild('datetime')
                                         .on('value', (x) => callback(success(x)))
                                       : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
@@ -803,6 +806,10 @@ makeGobbleRequest(ref, request, date) {
     } catch(err) {
       console.log('Delete Awaiting Request Error: ' + err)
     }
+  }
+
+  async getBlockedUsers(uid) {
+    firebase.database().ref(`/Users/${uid}/blockedUsers`);
   }
 
   /**
