@@ -14,8 +14,9 @@ const Tab = createMaterialTopTabNavigator();
  */
 export default function MatchesNavigator() {
   return (
-        <Tab.Navigator initialRouteName="Ongoing" style={{paddingTop:'8%', backgroundColor:'white'}}>
-            <Tab.Screen name="Pending" component={Matches} />
+        <Tab.Navigator initialRouteName="Awaiting" style={{paddingTop:'8%', backgroundColor:'white'}}>
+            <Tab.Screen name="Awaiting" component={Awaiting} />
+            <Tab.Screen name="Pending" component={Pending} />
             <Tab.Screen name="Matched" component={MatchesHistory} />
         </Tab.Navigator>
   );
