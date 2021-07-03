@@ -27,8 +27,8 @@ function PreviousMatches (props, {navigation}) {
      * Load Data Asynchronously
      */
     async function loadAsync() {
-      setOtherUser(props.initialParams.otherUser)
-      await firebaseSvc
+      setOtherUser(props.route.params.otherUser)
+        firebaseSvc
             .getMatchIDs(
               async(snapshot) => {
                 let ids = snapshot.val();
@@ -45,12 +45,12 @@ function PreviousMatches (props, {navigation}) {
                     let otherUserId = details.otherUserId
                     let avatar, industry;
 
-                    await firebaseSvc
+                    firebaseSvc
                           .avatarRef(details.otherUserId)
                           .once("value")
                           .then(subsnap => {details = {...details, otherUserAvatar: subsnap.val()}})
                           .catch(err => console.log('Error Loading Avatar:',err.message));
-                    await firebaseSvc
+                    firebaseSvc
                           .industryRef(details.otherUserId)
                           .once("value")
                           .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
@@ -70,7 +70,7 @@ function PreviousMatches (props, {navigation}) {
     useEffect(() => {
         loadAsync();
         return () => {
-          console.log('matchHistory clean up!');
+          // console.log('matchHistory clean up!');
           firebaseSvc.matchIDsOff();
         }
     }, [data, matchIDs])

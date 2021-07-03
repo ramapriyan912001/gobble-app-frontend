@@ -1,5 +1,6 @@
 import React, {useEffect, useState, useCallback} from 'react'
-import {Text, Image, TouchableOpacity, SafeAreaView, Alert, View, Button, ScrollView} from 'react-native'
+import {Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert, View, Button, ScrollView} from 'react-native'
+import {Input} from 'react-native-elements'
 import {StatusBar} from 'expo-status-bar'
 import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../styles/LoginStyles'
 import { getError, onSuccess, onFailure } from '../services/RegistrationHandlers'
@@ -18,8 +19,7 @@ Depending on that, we can have a tab nav in otherProfile, or just move the stuff
 To be decided tomorrow
 */
 export default function AboutPerson(props) {
-    
-    let otherUser = props.initialParams.otherUser
+    const [otherUser, setOtherUser] = useState(props.route.params.otherUser);
 
     return (
         <View style={styles.container}>
