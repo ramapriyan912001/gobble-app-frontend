@@ -213,7 +213,7 @@ function GobbleSelect(props, {navigation}) {
             </ScrollView>
             <View style={{marginTop: '3%', marginBottom: '2%'}}>
                 {!isPickerShow && <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '0%'}} onPress={submitGobble}>
-                    <Text style={buttonStyles.loginButtonText}>Submit Gobble</Text>
+                    <Text style={buttonStyles.loginButtonText}>{props.route.params ? `Edit Gobble` : `Submit Gobble`}</Text>
                 </TouchableOpacity>}
             </View>
         </SafeAreaView>

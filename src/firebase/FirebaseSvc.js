@@ -631,7 +631,7 @@ makeGobbleRequest(ref, request, date) {
     console.log('lol')
 
     updates[`/Users/${request.userId}/matchIDs/${request.matchID}`] = request
-    updates[`/Users/${request.otheruserId}/matchIDs/${request.matchID}`] = otherUserRequest
+    updates[`/Users/${request.otherUserId}/matchIDs/${request.matchID}`] = otherUserRequest
 
     updates[`/PendingMatchIDs/${request.matchID}`] = null
     updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
