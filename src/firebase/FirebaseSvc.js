@@ -612,7 +612,6 @@ makeGobbleRequest(ref, request, date) {
       try{
         // console.log('Updates',updates);
         await firebase.database().ref().update(updates);
-        console.log(UNACCEPT_SUCCESS)
         return UNACCEPT_SUCCESS
       } catch(err) {
         console.log('Match Confirm Error:', err.message);
@@ -627,8 +626,6 @@ makeGobbleRequest(ref, request, date) {
     let otherUserRequest = await firebase.database().ref(`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`)
     .once("value")
     .then(snapshot => snapshot.val())
-    console.log(otherUserRequest)
-    console.log('lol')
 
     updates[`/Users/${request.userId}/matchIDs/${request.matchID}`] = request
     updates[`/Users/${request.otherUserId}/matchIDs/${request.matchID}`] = otherUserRequest
@@ -646,6 +643,14 @@ makeGobbleRequest(ref, request, date) {
       console.log('Match Confirm Error:', err.message);
       return FINAL_FAIL;
     }
+  }
+
+
+  
+  async obtainStatusOfPendingMatch(matchID) {
+    return firebase.database().ref(`/PendingMatchIDs/${matchID}/${this.uid}`)
+    .once("value")
+    .then(snapshot => snapshot.val())
   }
 
   /**
@@ -708,7 +713,6 @@ makeGobbleRequest(ref, request, date) {
         updates[`/Chats/${req2.userId}/${req1.userId}/metadata/matchDateTime`] = req1.datetime;
       }
     }
-    console.log(updates)
     return updates;
           // .then (x => x)
           // .catch(err => console.log('Linking Chats Error:', err.message));

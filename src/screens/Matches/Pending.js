@@ -49,7 +49,6 @@ import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCC
                             <TouchableOpacity onPress={async() => 
                               {
                                 let res = await firebaseSvc.matchConfirm(item)
-                                console.log(res)
                                 let replacementSelectedID = Math.random()
                                 switch(res) {
                                   case(FINAL_SUCCESS):
@@ -99,12 +98,12 @@ import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCC
                                 switch(unacceptRes) {
                                   case(UNACCEPT_SUCCESS):
                                   matchIDs[item.matchID] = false;                    
-                                  console.log("Unaccepted")
+                                  console.log(UNACCEPT_SUCCESS)
                                   setSelectedID(replacementSelectedID)
                                   break
 
                                   case(UNACCEPT_FAIL):
-                                  console.log('Force Decline')
+                                  console.log(UNACCEPT_FAIL)
                                   firebaseSvc.matchDecline(item)
                                   setSelectedID(replacementSelectedID) 
                                   break
@@ -133,7 +132,7 @@ import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCC
                   let newData = [];
                   for(let [key, value] of Object.entries(ids)) {
                     if(!(key in matchIDs)) {
-                      matchIDs[key] = false;
+                      matchIDs[key] = await firebaseSvc.obtainStatusOfPendingMatch(key);
                     }
                     let details = ids[key]
                       let otherUserId = details.otherUserId

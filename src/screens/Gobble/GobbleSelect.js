@@ -74,7 +74,6 @@ function GobbleSelect(props, {navigation}) {
                 let location = await Location.getCurrentPositionAsync({})
                 setLocation(location)  
             }
-            console.log(edit)
             if(props.route.params && edit) {
                 setEdit(false)
                 setCuisinePreference(props.route.params.request.cuisinePreference)
@@ -143,7 +142,6 @@ function GobbleSelect(props, {navigation}) {
         let gobbleRequest;
         if(props.route.params) {
             gobbleRequest = {...props.route.params.request, datetime: date.toString(), distance: distance, cuisinePreference: cuisinePreference}
-            console.log(props.route.params.request)
             firebaseSvc.deleteAwaitingRequest(props.route.params.request)
         } else {
             gobbleRequest = {

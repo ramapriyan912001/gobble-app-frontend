@@ -41,7 +41,6 @@ function Profile(props) {
      * Asynchronous FUnction to load Profile Data
      */
     async function loadDataAsync () {
-        console.log(props.currentUserData)
         try {
             await props.fetchUserData();
             setUserInfo(props.currentUserData);
