@@ -6,7 +6,7 @@ const initialState = {
     currentUserData: {},
     loggedIn: false,
     isAdmin: false,
-    awaitingMatches: {},
+    pendingMatches: {},
     matches: {}
 }
 
@@ -47,7 +47,7 @@ export const userState = (state = initialState, action) => {
         case GET_PENDING_MATCHES_LIST:
             return {
                 ...state,
-                awaitingMatches: action.awaitingMatches
+                pendingMatches: action.pendingMatches
             }
         case GET_MATCHES_LIST:
             return {

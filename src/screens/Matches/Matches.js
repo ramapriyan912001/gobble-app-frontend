@@ -12,23 +12,23 @@ import { FOOD_IMAGES_URIs } from '../../constants/objects'
 import { INDUSTRY_CODES } from '../../constants/objects'
 
 /**
- * Page to Show previous Matches
+ * Page to Load the Pending Matches Screen
  * 
  * @param {*} props Props from previous screen
- * @returns MatchesHistory Render Method 
+ * @returns Matches Render Method 
  */
-function MatchesHistory (props) {
+function Matches (props) {
     const [data, setData] = useState([]);
-    const [matchIDs, setMatchIDs] = useState({});
     // const [loading, setLoading]= useState(true);
+    const [matchIDs, setMatchIDs] = useState({});
     
     /**
-     * Load Data Asynchronously
+     * Load Page Data Asynchronously
      */
     async function loadAsync() {
       await firebaseSvc
-            .getMatchIDs(
-              async(snapshot) => {
+            .getPendingMatchIDs(
+              snapshot => {
                 let ids = snapshot.val();
                 if (ids == null) {
                   //Do Nothing
@@ -39,28 +39,14 @@ function MatchesHistory (props) {
                     if(!(key in matchIDs)) {
                       matchIDs[key] = true;
                     }
-                    let details = ids[key]
-                    let otherUserId = details.otherUserId
-                    let avatar, industry;
-
-                    await firebaseSvc
-                          .avatarRef(details.otherUserId)
-                          .once("value")
-                          .then(subsnap => {details = {...details, otherUserAvatar: subsnap.val()}})
-                          .catch(err => console.log('Error Loading Avatar:',err.message));
-                    await firebaseSvc
-                          .industryRef(details.otherUserId)
-                          .once("value")
-                          .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
-                          .catch(err => console.log('Error Loading Avatar:',err.message));
-
-                    newData = newData.concat(details);
+                    newData = newData.concat(value);
                   }
                   setData(newData);
+                // console.log(data);
                 }
               },
               x => x,
-              err => {console.log('Error Loading Matched IDs:',err.message)}
+              err => {console.log(err.message)}
             )
         // setLoading(false);
     }
@@ -68,10 +54,11 @@ function MatchesHistory (props) {
     useEffect(() => {
         loadAsync();
         return () => {
-          console.log('matchHistory clean up!');
-          firebaseSvc.matchIDsOff();
+          console.log('pendingMatchID clean up!');
+          firebaseSvc.pendingMatchIDsOff();
         }
     }, [])
+    // const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     
     return (
       <SafeAreaView>
@@ -82,10 +69,10 @@ function MatchesHistory (props) {
               containerStyle={{borderBottomWidth:5, height: 160}}
               key={index} 
               roundAvatar>
-                <Avatar size="large" source={{uri:item.otherUserAvatar}}/>
+                <Avatar size='large' source={{uri:FOOD_IMAGES_URIs[item.cuisinePreference]}} />
                 <ListItem.Content>
-                  <ListItem.Title>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.datetime}`}</ListItem.Subtitle>
+                  <ListItem.Title>{item.datetime}</ListItem.Title>
+                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}
@@ -105,4 +92,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(MatchesHistory);
+export default connect(mapStateToProps, mapDispatchProps)(Matches);

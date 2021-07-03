@@ -13,7 +13,6 @@ import BottomTabs from './src/components/BottomTabs';
 import Reauthenticate from './src/screens/Reauthenticate';
 import {store} from './src/redux/store';
 import { Conversation } from './src/screens/Chats/Conversation';
-import GobbleSelect from './src/screens/Gobble/GobbleSelect';
 
 const Stack = createStackNavigator();
 
@@ -32,7 +31,6 @@ export default function App() {
             <Stack.Screen name="Welcome" options={{headerShown: false}} component={Welcome}></Stack.Screen>
             <Stack.Screen name="Reauthenticate" options={{headerShown: false}} component={Reauthenticate}></Stack.Screen>
             <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
-            <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen>
           </Stack.Navigator>
       </Provider> 
     </NavigationContainer>
