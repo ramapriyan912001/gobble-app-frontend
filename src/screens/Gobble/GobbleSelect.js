@@ -77,6 +77,14 @@ function GobbleSelect(props, {navigation}) {
        */
       (async () => {
             let {status} = await Location.requestForegroundPermissionsAsync();
+            if(props.route.params && edit) {
+                setEdit(false)
+                setCuisinePreference(props.route.params.request.cuisinePreference)
+                setDistance(props.route.params.request.distance)
+                setDate(props.route.params.request.datetime)
+            } else {
+                // setDate(calculateDefaultTime(MIN_DATE))
+            }
             if (status !== 'granted') {
                 setErrorMsg('Permission Denied')
                 console.log(errorMsg)
@@ -84,14 +92,6 @@ function GobbleSelect(props, {navigation}) {
             } else {
                 let location = await Location.getCurrentPositionAsync({})
                 setLocation(location)  
-            }
-            if(props.route.params && edit) {
-                setEdit(false)
-                setCuisinePreference(props.route.params.request.cuisinePreference)
-                setDistance(props.route.params.request.distance)
-                setDate(props.route.params.request.datetime)
-            } else {
-                setDate(calculateDefaultTime(MIN_DATE))
             }
             console.log(date)
             setLoading(false); 
@@ -216,12 +216,13 @@ function GobbleSelect(props, {navigation}) {
                     </Picker>}
             </View>
             <View style={{...styles.container, marginTop: '0%'}}>
-                    <Text style={{...inputStyles.subHeader, marginTop: '0%',}}>How far are you willing to travel for a meal?</Text>
-                    <Picker
+                    {!isPickerShow && <Text style={{...inputStyles.subHeader, marginTop: '0%',}}>How far are you willing to travel for a meal?</Text>}
+                    {!isPickerShow &&
+                        <Picker
                         selectedValue={distance}
                         onValueChange={(itemValue, itemIndex) => setDistance(itemValue)}>
                         {renderDistances()}
-                    </Picker>
+                    </Picker>}
             </View>
             </ScrollView>
             <View style={{marginTop: '3%', marginBottom: '2%'}}>
