@@ -553,7 +553,7 @@ makeGobbleRequest(ref, request, date) {
     updates[`/Users/${request1.userId}/pendingMatchIDs/${pendingMatchID}`] = {...request1, otherUserId: request2.userId, 
       otherUserCuisinePreference: request2.cuisinePreference, otherUserDietaryRestriction: request2UserDetails.diet, 
       otherUserDOB: request2UserDetails.dob, otherUserLocation: request2.location, otherUserIndustry: request2UserDetails.industry,
-      otherUserAvatar: request1UserDetails.avatar, otherUserName: request2UserDetails.name, matchID: pendingMatchID, lastMessage:'',}
+      otherUserAvatar: request2UserDetails.avatar, otherUserName: request2UserDetails.name, matchID: pendingMatchID, lastMessage:'',}
     updates[`/Users/${request2.userId}/pendingMatchIDs/${pendingMatchID}`] = {...request2, otherUserId: request1.userId,
       otherUserCuisinePreference: request1.cuisinePreference, otherUserDietaryRestriction: request1UserDetails.diet, 
       otherUserDOB: request1UserDetails.dob, otherUserLocation: request1.location, otherUserIndustry: request1UserDetails.industry, 
@@ -641,8 +641,8 @@ makeGobbleRequest(ref, request, date) {
 
     updates[`/PendingMatchIDs/${request.matchID}`] = null
     updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
-    updates[`/Users/${request.otheruserId}/pendingMatchIDs/${request.matchID}`] = null
-    updates = await this.linkChats(updates, request, otherUserRequest, request1UserDetails, request2UserDetails);
+    updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
+    updates = await this.linkChats(updates, request, otherUserRequest);
 
     try{
       // console.log('Updates',updates);
@@ -680,7 +680,7 @@ makeGobbleRequest(ref, request, date) {
   /**
    * Asynchronously create a chat for matched users
    */
-  async linkChats(updates, req1, req2, user1, user2) {
+  async linkChats(updates, req1, req2) {
 
     //Adding to Chats Table
     //If the User has never been matched before, add a new entry in each User's ref under this table
