@@ -17,8 +17,7 @@ const Stack = createStackNavigator();
  */
 export function ChatNavigator() {
     return (
-        <Stack.Navigator initialRouteName="ChatRoom"
-        headerMode={'none'}>
+        <Stack.Navigator initialRouteName="ChatRoom">
             <Stack.Screen name="ChatRoom" options={{headerShown:true, headerTitle: 'Chats', headerBackTitle: 'Chats'}} component={ChatRoom}></Stack.Screen>
             <Stack.Screen name="Conversation" options={({ route }) => ({ title: route.params.metadata.name})} component={Conversation}></Stack.Screen>
         </Stack.Navigator>
