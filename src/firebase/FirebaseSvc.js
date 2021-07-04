@@ -4,7 +4,9 @@ import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 import {DIETARY_ARRAYS} from '../constants/objects'
 import {firebaseDetails} from '../../FirebaseDetails'
-import {CONFIRM_SUCCESS, CONFIRM_FAIL, FINAL_SUCCESS, FINAL_FAIL, UNACCEPT_SUCCESS, UNACCEPT_FAIL} from '../constants/results'
+import {CONFIRM_SUCCESS, CONFIRM_FAIL, FINAL_SUCCESS, 
+  FINAL_FAIL, UNACCEPT_SUCCESS, UNACCEPT_FAIL, BLOCK_SUCCESS, 
+  BLOCK_FAILURE, UNBLOCK_SUCCESS, UNBLOCK_FAILURE} from '../constants/results'
 
 /**
  * Class which operates as a database object, whose functions are
@@ -815,7 +817,37 @@ makeGobbleRequest(ref, request, date) {
   }
 
   async getBlockedUsers(uid) {
-    firebase.database().ref(`/Users/${uid}/blockedUsers`);
+    return firebase.database().ref(`/Users/${uid}/blockedUsers`)
+    .once("value")
+    .then(snapshot => snapshot.val());
+  }
+
+  async blockUser(uid, otherUid) {
+    let updates = {}
+    updates[`/Users/${uid}/blockedUsers/${otherUid}`] = true
+    try {
+      firebase.database().update(updates)
+      return BLOCK_SUCCESS
+    } catch(err) {
+      console.log("Block user error: " + err)
+      return BLOCK_FAILURE
+    }
+  }
+
+  async isBlocked(uid, otherUid) {
+    return otherUid in Object.keys(this.getBlockedUsers(uid))
+  }
+
+  async unblockUser(uid, otherUid) {
+    let updates = {}
+    updates[`/Users/${uid}/blockedUsers/${otherUid}`] = null;
+    try {
+      firebase.database().update(updates)
+      return UNBLOCK_SUCCESS
+    } catch(err) {
+      console.log("Block user error: " + err)
+      return UNBLOCK_FAILURE
+    }
   }
 
   /**
