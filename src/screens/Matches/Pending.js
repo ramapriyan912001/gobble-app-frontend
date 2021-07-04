@@ -135,7 +135,7 @@ import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCC
                       matchIDs[key] = await firebaseSvc.obtainStatusOfPendingMatch(key);
                     }
                     let details = ids[key]
-                      let otherUserId = details.otherUserId
+                    let otherUserId = details.otherUserId
                       await firebaseSvc
                             .avatarRef(otherUserId)
                             .once("value")
@@ -183,7 +183,7 @@ import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCC
             data={data}
             extraData={selectedID}
             renderItem={({ item, index }) => renderPendingContent(item, index)}
-            keyExtractor={item => item.datetime}
+            keyExtractor={item => item.matchID}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
             // ListFooterComponent={renderFooter(loading)}

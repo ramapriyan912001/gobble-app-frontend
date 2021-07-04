@@ -16,10 +16,11 @@ import { INDUSTRY_CODES } from '../../constants/objects'
  * @param {*} props Props from previous screen
  * @returns ChatRoom Render Method 
  */
-function ChatRoom (props) {
+function ChatRoom (props, {navigation}) {
     const [data, setData] = useState([]);
     const [userIDs, setUserIDs] = useState({});
     const [loading, setLoading]= useState(true);
+    const [selectedID, setSelectedID] = useState(null)
     
     /**
      * Load Chats asynchronously
@@ -30,7 +31,7 @@ function ChatRoom (props) {
               snapshot => {
                 const chats = snapshot.val();
                 if (chats == null) {
-                  //Do Nothing
+                  setData([])
                 } else {
                   let newData = [];
                   for(let [key, value] of Object.entries(chats)) {
@@ -39,6 +40,7 @@ function ChatRoom (props) {
                     }
                     newData = newData.concat(value.metadata);
                   }
+                  console.log(newData)
                   setData(newData);
                 } 
               },
@@ -55,17 +57,27 @@ function ChatRoom (props) {
         }
     }, [])
 
+    useEffect(() => {
+      const unsubscribe = props.navigation.addListener('focus', async() => {
+        console.log('focus')
+        await loadAsync();
+        setSelectedID(Math.random())
+      return unsubscribe
+      })
+  }, [navigation])
+
     return (
       <SafeAreaView>
           <FlatList
             data={data}
+            extraData={selectedID}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={{borderBottomWidth:5, height: 160}}
+              containerStyle={{borderBottomWidth:5, height: 110}}
               key={index}
               onPress={() => props.navigation.navigate('Conversation', {metadata: item})}
               roundAvatar>
-                <Avatar size="large" source={{uri:item.otherUserAvatar}}/>
+                <Avatar size="large" avatarStyle={{borderRadius: 120}} source={{uri:item.otherUserAvatar}}/>
                 <ListItem.Content>
                   <ListItem.Title>{`${item.name}, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Title>
                   <ListItem.Subtitle>{`${item.lastMessage == '' ? 'Click here to start a chat!': item.lastMessage}`}</ListItem.Subtitle>

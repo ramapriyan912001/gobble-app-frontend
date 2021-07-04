@@ -30,9 +30,52 @@ function GobbleSelect(props, {navigation}) {
   const [distance, setDistance] = useState(200);
   const [edit, setEdit] = useState(true);
 
+  const months = {
+    'Jan' : '01',
+    'Feb' : '02',
+    'Mar' : '03',
+    'Apr' : '04',
+    'May' : '05',
+    'Jun' : '06',
+    'Jul' : '07',
+    'Aug' : '08',
+    'Sep' : '09',
+    'Oct' : '10',
+    'Nov' : '11',
+    'Dec' : '12'
+    };
+
   function calculateDefaultTime(date) {
       if(props.route.params && edit) {
-        date = new Date(props.route.params.request.datetime)
+          console.log(props.route.params.request.datetime, 'this');
+          const unformattedDate = props.route.params.request.datetime;
+        //   const y = unformattedDate.slice(10, 14);
+        //   const m = months[unformattedDate.slice(3, 6)];
+        //   const d = unformattedDate.slice(7,9);
+        //   const time = unformattedDate.slice(15,23);
+
+        // let reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
+        // let reMsAjax = /^\/Date\((d|-|.*)\)[\/|\\]$/;
+    
+        // JSON.dateParser = function (key, value) {
+        //     if (typeof value === 'string') {
+        //         let a = reISO.exec(value);
+        //         if (a) {
+        //             return new Date(value);
+        //         }
+        //         a = reMsAjax.exec(value);
+        //         if (a) {
+        //             let b = a[1].split(/[-+,.]/);
+        //             return new Date(b[0] ? +b[0] : 0 - +b[1]);
+        //         }
+        //     }
+        //     return value;
+        // };
+
+        // const date = JSON.parse(props.route.params.request.datetime ,JSON.dateParser);  
+        // console.log(date);
+
+        const date = new Date(unformattedDate);
         return date;
       } else {
         date = new Date(date)
@@ -77,6 +120,14 @@ function GobbleSelect(props, {navigation}) {
        */
       (async () => {
             let {status} = await Location.requestForegroundPermissionsAsync();
+            if(props.route.params && edit) {
+                setEdit(false)
+                setCuisinePreference(props.route.params.request.cuisinePreference)
+                setDistance(props.route.params.request.distance)
+                setDate(calculateDefaultTime(props.route.params.request.datetime));
+            } else {
+                // setDate(calculateDefaultTime(MIN_DATE))
+            }
             if (status !== 'granted') {
                 setErrorMsg('Permission Denied')
                 console.log(errorMsg)
@@ -85,15 +136,6 @@ function GobbleSelect(props, {navigation}) {
                 let location = await Location.getCurrentPositionAsync({})
                 setLocation(location)  
             }
-            if(props.route.params && edit) {
-                setEdit(false)
-                setCuisinePreference(props.route.params.request.cuisinePreference)
-                setDistance(props.route.params.request.distance)
-                setDate(props.route.params.request.datetime)
-            } else {
-                setDate(calculateDefaultTime(MIN_DATE))
-            }
-            console.log(date)
             setLoading(false); 
       })();
   }, []);
@@ -172,7 +214,7 @@ function GobbleSelect(props, {navigation}) {
         }
         let result =  await firebaseSvc.findGobbleMate(gobbleRequest);
         // We need to do some load page
-        props.navigation.navigate('GobbleConfirm', {result: result})
+        props.route.params ? props.navigation.navigate('BottomTabs', { screen: 'GobbleNavigator', params: { screen: 'GobbleConfirm', params: {result: result}} }) : props.navigation.navigate('GobbleConfirm')
       }
   }
 
@@ -216,12 +258,13 @@ function GobbleSelect(props, {navigation}) {
                     </Picker>}
             </View>
             <View style={{...styles.container, marginTop: '0%'}}>
-                    <Text style={{...inputStyles.subHeader, marginTop: '0%',}}>How far are you willing to travel for a meal?</Text>
-                    <Picker
+                    {!isPickerShow && <Text style={{...inputStyles.subHeader, marginTop: '0%',}}>How far are you willing to travel for a meal?</Text>}
+                    {!isPickerShow &&
+                        <Picker
                         selectedValue={distance}
                         onValueChange={(itemValue, itemIndex) => setDistance(itemValue)}>
                         {renderDistances()}
-                    </Picker>
+                    </Picker>}
             </View>
             </ScrollView>
             <View style={{marginTop: '3%', marginBottom: '2%'}}>
