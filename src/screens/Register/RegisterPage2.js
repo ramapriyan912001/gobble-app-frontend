@@ -25,15 +25,14 @@ export default function RegisterPage2(props) {
     const isLight = colorScheme === 'light';
 
     // const user = initialState.user; User accessed from firebaseSvc
-    const [avatar, setAvatar] = useState('');
+    const [avatar, setAvatar] = useState(EMPTY_AVATAR);
     const [hasAvatar, setHasAvatar] = useState(false);
     const [confirmation, setConfirmation] = useState(false);
-    const [edit, setEdit] = useState(false);
 
     useEffect(() => {
         if(!hasAvatar) {
             setAvatar(EMPTY_AVATAR)
-        }
+        } 
     })
 
     /**
@@ -102,8 +101,9 @@ export default function RegisterPage2(props) {
                     firebaseSvc
                     .uploadImage(resizedUri)
                     .then(uploadURL => {
-                        setAvatar(uploadURL);
+                        console.log("Set pic")
                         setHasAvatar(true);
+                        setAvatar(uploadURL);
                         // firebaseSvc
                         // .updateAvatar(uploadURL)
                         // .then(() => console.log('Avatar Updated'))
@@ -111,7 +111,10 @@ export default function RegisterPage2(props) {
                     })
                     .catch(onFailure('URI Upload'))
                     })
-                .catch(onFailure('Image Picking'))
+                .catch((err) => {
+                    onFailure('Image Picking')
+                    setHasAvatar(false)
+                })
             })
             .catch(onFailure('Permissions'))
           } else {
@@ -134,10 +137,14 @@ export default function RegisterPage2(props) {
             <TouchableOpacity style={[themes.buttonTheme(isLight)]} onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                 if(!hasAvatar) {
+                    setHasAvatar(true)
                     updateImage()
+                } else {
+                    setHasAvatar(false)
+
                 }
-                setHasAvatar(!hasAvatar)}}>
-            <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color={themes.oppositeTheme(isLight)} style={[specificStyles.icon, themes.textTheme(isLight)]}></AntDesign>
+                }}>
+            <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color="#000000" style={styles.icon}></AntDesign>
             </TouchableOpacity>
         </View>
         <TouchableOpacity style={[{...styles.longButton, marginTop: '20%'}, themes.buttonTheme(isLight)]} onPress={() => {

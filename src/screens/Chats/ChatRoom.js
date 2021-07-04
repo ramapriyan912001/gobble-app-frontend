@@ -61,11 +61,11 @@ function ChatRoom (props) {
             data={data}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={{borderBottomWidth:5, height: 160}}
+              containerStyle={{borderBottomWidth:5, height: 110}}
               key={index}
               onPress={() => props.navigation.navigate('Conversation', {metadata: item})}
               roundAvatar>
-                <Avatar size="large" source={{uri:item.otherUserAvatar}}/>
+                <Avatar size="large" avatarStyle={{borderRadius: 120}} source={{uri:item.otherUserAvatar}}/>
                 <ListItem.Content>
                   <ListItem.Title>{`${item.name}, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Title>
                   <ListItem.Subtitle>{`${item.lastMessage == '' ? 'Click here to start a chat!': item.lastMessage}`}</ListItem.Subtitle>

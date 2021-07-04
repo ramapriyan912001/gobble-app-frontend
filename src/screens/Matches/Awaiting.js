@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, SafeAreaView, Text, FlatList} from 'react-native'
+import {View, SafeAreaView, Text, FlatList, TouchableOpacity} from 'react-native'
 import { Avatar, ListItem, SearchBar } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -12,29 +12,28 @@ import { FOOD_IMAGES_URIs } from '../../constants/objects'
 import { INDUSTRY_CODES } from '../../constants/objects'
 
 /**
- * Page to Show previous Matches
+ * Page to Load the Pending Matches Screen
  * 
  * @param {*} props Props from previous screen
- * @returns MatchesHistory Render Method 
+ * @returns Matches Render Method 
  */
-function MatchesHistory (props, {navigation}) {
+function Awaiting (props, {navigation}) {
     const [data, setData] = useState([]);
+    // const [loading, setLoading]= useState(true);
     const [matchIDs, setMatchIDs] = useState({});
     const [selectedID, setSelectedID] = useState(null)
-    // const [loading, setLoading]= useState(true);
-    const dateStringMaker = (date) => {
-      return date.slice(0, 21)
-    }
+    
     /**
-     * Load Data Asynchronously
+     * Load Page Data Asynchronously
      */
     async function loadAsync() {
       await firebaseSvc
-            .getMatchIDs(
-              async(snapshot) => {
+            .getAwaitingMatchIDs(
+              snapshot => {
                 let ids = snapshot.val();
                 if (ids == null) {
-                  //Do Nothing
+                  setData([])
+                  setMatchIDs({})
                 } else  {
                   // console.log(ids, 'ids')
                   let newData = [];
@@ -42,22 +41,7 @@ function MatchesHistory (props, {navigation}) {
                     if(!(key in matchIDs)) {
                       matchIDs[key] = true;
                     }
-                    let details = ids[key]
-                    let otherUserId = details.otherUserId
-                    let avatar, industry;
-
-                    await firebaseSvc
-                          .avatarRef(details.otherUserId)
-                          .once("value")
-                          .then(subsnap => {details = {...details, otherUserAvatar: subsnap.val()}})
-                          .catch(err => console.log('Error Loading Avatar:',err.message));
-                    await firebaseSvc
-                          .industryRef(details.otherUserId)
-                          .once("value")
-                          .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
-                          .catch(err => console.log('Error Loading Avatar:',err.message));
-
-                    newData = newData.concat(details);
+                    newData = newData.concat(value);
                   }
                   newData.sort(function (a, b) {
                     let x = new Date(a.datetime)
@@ -65,21 +49,30 @@ function MatchesHistory (props, {navigation}) {
                     return x <= y ? -1 : 1
                   });
                   setData(newData);
+                // console.log(data);
                 }
               },
               x => x,
-              err => {console.log('Error Loading Matched IDs:',err.message)}
+              err => {console.log(err.message)}
             )
+            setSelectedID(Math.random())
         // setLoading(false);
+    }
+
+    const dateStringMaker = (date) => {
+      return date.slice(0, 11) + timeStringMaker(date)
+    }
+    const timeStringMaker = (date) => {
+      return date.slice(16, 21)
     }
 
     useEffect(() => {
         loadAsync();
         return () => {
-          console.log('matchHistory clean up!');
-          firebaseSvc.matchIDsOff();
+          console.log('awaitingMatchID clean up!');
+          firebaseSvc.awaitingMatchIDsOff();
         }
-    }, [matchIDs])
+    }, [])
 
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
@@ -87,22 +80,46 @@ function MatchesHistory (props, {navigation}) {
       })
       return unsubscribe;
     }, [navigation])
+    // const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     
     return (
       <SafeAreaView>
           <FlatList
-            data={data}
             extraData={selectedID}
+            data={data}
             renderItem={({ item, index }) => (
               <ListItem
               containerStyle={{borderBottomWidth:5, height: 110}}
               key={index} 
               roundAvatar>
-                <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
+                <Avatar size='large' avatarStyle={{borderRadius: 120}} source={{uri:FOOD_IMAGES_URIs[item.cuisinePreference]}} />
                 <ListItem.Content>
-                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                  <View>
+                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${item.cuisinePreference} Cuisine`}</ListItem.Title>
+                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${INDUSTRY_CODES[item.industry]} Industry`}</ListItem.Title>
+                  </View>
+                  <View>
+                  <ListItem.Subtitle>{dateStringMaker(item.datetime)}</ListItem.Subtitle>
+                  </View>
                 </ListItem.Content>
+                <View style={{flexDirection: 'column'}}>
+                <TouchableOpacity onPress={async() => 
+                              {
+                                props.navigation.navigate('Edit Gobble Request', {edit: true, request: item})
+                                console.log('Edit awaiting')
+                              }}>
+                  <ListItem.Subtitle style={{color: '#c3990b'}}>{`Edit`}</ListItem.Subtitle>
+                </TouchableOpacity>
+                <TouchableOpacity onPress={async() => 
+                              {
+                                let replacementSelectedID = Math.random()
+                                firebaseSvc.deleteAwaitingRequest(item);
+                                setSelectedID(replacementSelectedID)
+                                console.log('Delete awaiting')
+                              }}>
+                  <ListItem.Subtitle style={{color: 'red'}}>{`Delete`}</ListItem.Subtitle>
+                </TouchableOpacity>
+                </View>
               </ListItem>
             )}
             keyExtractor={item => item.datetime}
@@ -121,4 +138,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(MatchesHistory);
+export default connect(mapStateToProps, mapDispatchProps)(Awaiting);
