@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { SafeAreaView } from 'react-native';
-import { GiftedChat } from 'react-native-gifted-chat'
+import { Bubble, GiftedChat } from 'react-native-gifted-chat'
 import firebaseSvc from '../../firebase/FirebaseSvc';
 import { getError, onSuccess, onFailure, } from '../../services/RegistrationHandlers'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '../../styles/Themes';
+import {styles} from '../../styles/RegisterStyles';
 
 /**
  * Conversation Page between two matched users
@@ -15,6 +19,8 @@ export function Conversation(props) {
   const [user, setUser] = useState(metadata);
   const id = metadata.conversation;
   const [messages, setMessages] = useState([]);
+  const colorScheme = useColorScheme();
+  const isLight = colorScheme === 'light';
 
   /**
    * Asynchronously load message listeners
@@ -51,6 +57,18 @@ export function Conversation(props) {
     firebaseSvc.send(id, metadata.otherUserId, messageList);
   };
 
+  const bubble = (props) => (
+    <Bubble
+      {...props}
+      wrapperStyle={{
+        left: themes.containerTheme(!isLight)
+      }}
+      textStyle={{
+        left:themes.textTheme(!isLight)
+      }}
+      />
+  );
+
   useEffect(() => {
     loadChat();
     return () => {
@@ -63,10 +81,12 @@ export function Conversation(props) {
 
   return (
         <GiftedChat
+          messagesContainerStyle={themes.containerTheme(isLight)}
           messages={messages}
           onSend={updateMessages}
           user={user}
           showUserAvatar={true}
+          renderBubble={bubble}
         />
   );
 };

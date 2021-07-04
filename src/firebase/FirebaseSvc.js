@@ -4,6 +4,7 @@ import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 import {DIETARY_ARRAYS} from '../constants/objects'
 import {firebaseDetails} from '../../FirebaseDetails'
+import {CONFIRM_SUCCESS, CONFIRM_FAIL, FINAL_SUCCESS, FINAL_FAIL, UNACCEPT_SUCCESS, UNACCEPT_FAIL} from '../constants/results'
 
 /**
  * Class which operates as a database object, whose functions are
@@ -184,29 +185,42 @@ class FirebaseSvc {
 
 
   /**
-   * Get all IDs of pending matches
+   * Get all IDs of awaiting matches
    * @param {*} success 
    * @param {*} callback 
    * @param {*} failure 
    * @returns 
    */
+  getAwaitingMatchIDs = (success, callback, failure) => this.userExists()
+                                              ? this
+                                                .userRef(`${this.uid}/awaitingMatchIDs`)
+                                                .orderByChild('dietaryRestriction')
+                                                .on('value', (x) => callback(success(x)))
+                                              : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+                                              
+  awaitingMatchIDsOff = () => {if (this.userExists()){
+                                this
+                                .userRef(`${this.uid}/awaitingMatchIDs`)
+                                .off()
+                              }}                                            
+
   getPendingMatchIDs = (success, callback, failure) => this.userExists()
                                               ? this
                                                 .userRef(`${this.uid}/pendingMatchIDs`)
+                                                .orderByChild('datetime')
                                                 .on('value', (x) => callback(success(x)))
                                               : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
-  pendingMatchIDsOff = () => {if (this.userExists()){
+   pendingMatchIDsOff = () => {if (this.userExists()){
                                 this
-                                .userRef(`${this.uid}/pendingMatchIDs`)
+                                .userRef(`${this.uid}/awaitingMatchIDs`)
                                 .off()
-                              }}
-  
-   
+                              }}                                                
                                 
   getMatchIDs = (success, callback, failure) => this.userExists()
                                       ? this
                                         .userRef(`${this.uid}/matchIDs`)
+                                        .orderByChild('datetime')
                                         .on('value', (x) => callback(success(x)))
                                       : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
@@ -427,18 +441,15 @@ class FirebaseSvc {
    * @param {*} match request sent by user searching for gobble
    * @returns  Boolean depending on match found
    */
-  async findGobbleMate(gobbleRequest) {
+  async findGobbleMate(request) {
     console.log('Finding a match');
-    let request = gobbleRequest;
-    let datetime = this.getDatetime(gobbleRequest)
-    let date = new Date(datetime)
+    let date1 = this.getDatetime(request)
     let ref = this.gobbleRequestsRef()
-    .child(this.makeDateString(date))
+    .child(this.makeDateString(date1))
     //TODO: Stop users from entering matches with same datetime
     let tempRef;
     let coords1 = this.getCoords(request)
     let distance1 = this.getDistance(request)
-    let date1 = this.getDatetime(request)
     let time1 = this.convertTimeToMinutes(date1)
     let bestMatch = null;
     let bestMatchCompatibility = 5;
@@ -500,22 +511,6 @@ class FirebaseSvc {
     }
 }
 
-/**
- * Function called when match is not instantly found
- * Pending match ID generated and added to the pile
- * @param {*} ref Reference of date object within GobbleRequests object
- * @param {*} request Request sent by user searching for gobble
- * @param {*} date Date object of request
- */
-makeGobbleRequest(ref, request, date) {
-  const matchID = ref.child(`${request.dietaryRestriction}`).push().key;
-  let updates = {};
-  updates[`/Users/${request.userId}/pendingMatchIDs/${matchID}`] = request;
-  updates[`/GobbleRequests/${this.makeDateString(date)}/${request.dietaryRestriction}/${matchID}`] = request;
-  // Add more updates here
-  firebase.database().ref().update(updates);
-}
-
   /**
    * Getter for user details
    * @param {*} id user id
@@ -526,33 +521,54 @@ makeGobbleRequest(ref, request, date) {
   }
 
   /**
+ * Function called when match is not instantly found
+ * Pending match ID generated and added to the pile
+ * @param {*} ref Reference of date object within GobbleRequests object
+ * @param {*} request Request sent by user searching for gobble
+ * @param {*} date Date object of request
+ */
+makeGobbleRequest(ref, request, date) {
+  const matchID = ref.child(`${request.dietaryRestriction}`).push().key;
+  let updates = {};
+  updates[`/Users/${request.userId}/awaitingMatchIDs/${matchID}`] = {...request, matchID: matchID};
+  updates[`/GobbleRequests/${this.makeDateString(date)}/${request.dietaryRestriction}/${matchID}`] = {...request, matchID: matchID};
+  // Add more updates here
+  firebase.database().ref().update(updates);
+}
+
+  /**
    * Handling database operations when two users match
    * @param {*} request1 request sent by first user
    * @param {*} dietaryRef1 Useful for scheduled functions - TODO for phase 3
    * @param {*} request2 request sent by second user
    * @param {*} request2Ref pending match ID of request2 in GobbleRequests and within the user object itself
    */
-  async match(request1, dietaryRef1, request2, request2Ref) {
+  async match(request1, request1Ref, request2, request2Ref) {
     let request2UserDetails = await this.getUserDetails(request2.userId)
     let request1UserDetails = await this.getUserDetails(request1.userId)
-    const matchID = await this.gobbleRequestsRef().child('ANY').child('ANY').push().key;
+    const pendingMatchID = await this.gobbleRequestsRef().child('ANY').child('ANY').push().key;
     let updates = {}
 
     //The Match Updates
-    updates[`/Users/${request1.userId}/matchIDs/${matchID}`] = {...request1, otherUserId: request2.userId, 
+    updates[`/Users/${request1.userId}/pendingMatchIDs/${pendingMatchID}`] = {...request1, otherUserId: request2.userId, 
       otherUserCuisinePreference: request2.cuisinePreference, otherUserDietaryRestriction: request2UserDetails.diet, 
       otherUserDOB: request2UserDetails.dob, otherUserLocation: request2.location, otherUserIndustry: request2UserDetails.industry,
-      otherUserAvatar: request1UserDetails.avatar, otherUserName: request2UserDetails.name, matchID: matchID, lastMessage:'',}
-    updates[`/Users/${request2.userId}/matchIDs/${matchID}`] = {...request2, otherUserId: request1.userId,
+      otherUserAvatar: request2UserDetails.avatar, otherUserName: request2UserDetails.name, matchID: pendingMatchID, lastMessage:'',}
+    updates[`/Users/${request2.userId}/pendingMatchIDs/${pendingMatchID}`] = {...request2, otherUserId: request1.userId,
       otherUserCuisinePreference: request1.cuisinePreference, otherUserDietaryRestriction: request1UserDetails.diet, 
       otherUserDOB: request1UserDetails.dob, otherUserLocation: request1.location, otherUserIndustry: request1UserDetails.industry, 
-      otherUserAvatar: request1UserDetails.avatar, otherUserName: request1UserDetails.name, matchID: matchID, lastMessage:'',}
+      otherUserAvatar: request1UserDetails.avatar, otherUserName: request1UserDetails.name, matchID: pendingMatchID, lastMessage:'',}
 
     //Remove Respective Pending Matches
-    updates[`/Users/${request2.userId}/pendingMatchIDs/${request2Ref}`] = null;
+    // updates[`/Users/${request2.userId}/awaitingMatchIDs/${request1Ref}`] = null;
+    updates[`/Users/${request2.userId}/awaitingMatchIDs/${request2Ref}`] = null;
+
+    // updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request1))}/${request1.dietaryRestriction}/${request1Ref}`] = null;
     updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request2))}/${request2.dietaryRestriction}/${request2Ref}`] = null;
 
-    updates = await this.linkChats(updates, request1, request2, request1UserDetails, request2UserDetails);
+    updates[`/PendingMatchIDs/${pendingMatchID}/${request1.userId}`] = false
+    updates[`/PendingMatchIDs/${pendingMatchID}/${request2.userId}`] = false
+
     try{
       // console.log('Updates',updates);
       await firebase.database().ref().update(updates);
@@ -561,6 +577,89 @@ makeGobbleRequest(ref, request, date) {
     }
       // TODO: What if the user changes his/her profile picture?
       // Maybe we need to create another table of just user + profile pic so we don't need to load a lot of data every time
+  }
+
+  async matchConfirm(request) {
+    let result;
+    result = await firebase.database().ref(`/PendingMatchIDs/${request.matchID}/${request.otherUserId}`)
+    .once("value")
+    .then(snapshot => snapshot.val())
+    if(result) {
+      return this.matchFinalise(request)
+    } else {
+      let updates = {}
+      updates[`/PendingMatchIDs/${request.matchID}/${request.userId}`] = true;
+      try{
+        // console.log('Updates',updates);
+        await firebase.database().ref().update(updates);
+        return CONFIRM_SUCCESS
+      } catch(err) {
+        console.log('Match Confirm Error:', err.message);
+        return CONFIRM_FAIL
+      }
+    }
+  }
+
+  async matchDecline(request) {
+    let updates = {}
+    updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
+    updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
+    updates[`/PendingMatchIDs/${request.matchID}`] = null
+    try{
+      // console.log('Updates',updates);
+
+      await firebase.database().ref().update(updates);
+    } catch(err) {   
+      console.log('Match Confirm Error:', err.message);
+    }
+
+  }
+
+  async matchUnaccept(request) {
+      let updates = {}
+      updates[`/PendingMatchIDs/${request.matchID}/${request.userId}`] = false;
+      try{
+        // console.log('Updates',updates);
+        await firebase.database().ref().update(updates);
+        return UNACCEPT_SUCCESS
+      } catch(err) {
+        console.log('Match Confirm Error:', err.message);
+        return UNACCEPT_FAIL
+      }
+  }
+
+  async matchFinalise(request) {
+    let updates = {};
+    let request2UserDetails = await this.getUserDetails(request.otherUserId)
+    let request1UserDetails = await this.getUserDetails(request.userId)
+    let otherUserRequest = await firebase.database().ref(`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`)
+    .once("value")
+    .then(snapshot => snapshot.val())
+
+    updates[`/Users/${request.userId}/matchIDs/${request.matchID}`] = request
+    updates[`/Users/${request.otherUserId}/matchIDs/${request.matchID}`] = otherUserRequest
+
+    updates[`/PendingMatchIDs/${request.matchID}`] = null
+    updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
+    updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
+    updates = await this.linkChats(updates, request, otherUserRequest);
+
+    try{
+      // console.log('Updates',updates);
+      await firebase.database().ref().update(updates);
+      return FINAL_SUCCESS;
+    } catch(err) {
+      console.log('Match Confirm Error:', err.message);
+      return FINAL_FAIL;
+    }
+  }
+
+
+  
+  async obtainStatusOfPendingMatch(matchID) {
+    return firebase.database().ref(`/PendingMatchIDs/${matchID}/${this.uid}`)
+    .once("value")
+    .then(snapshot => snapshot.val())
   }
 
   /**
@@ -581,7 +680,8 @@ makeGobbleRequest(ref, request, date) {
   /**
    * Asynchronously create a chat for matched users
    */
-  async linkChats(updates, req1, req2, user1, user2) {
+  async linkChats(updates, req1, req2) {
+
     //Adding to Chats Table
     //If the User has never been matched before, add a new entry in each User's ref under this table
     //If they have been matched before, update matchDateTime
@@ -597,22 +697,22 @@ makeGobbleRequest(ref, request, date) {
         const conversationID = await this.conversationRef().push().key;  
         updates[`/Chats/${req1.userId}/${req2.userId}/metadata`] = {
                                                             _id: req1.userId,
-                                                            name: user2.name,
-                                                            avatar: user1.avatar,
+                                                            name: req1.otherUserName,
+                                                            avatar: req2.otherUserAvatar,
                                                             otherUserId: req2.userId,
                                                             industry: req2.industry,
-                                                            otherUserAvatar: user2.avatar,
+                                                            otherUserAvatar: req1.otherUserAvatar,
                                                             lastMessage: '',
                                                             conversation: conversationID,
                                                             matchDateTime: req1.datetime,
                                                           };
         updates[`/Chats/${req2.userId}/${req1.userId}/metadata`] = {
                                                             _id: req2.userId,
-                                                            name: user1.name,
-                                                            avatar: user2.avatar,
+                                                            name: req2.otherUserName,
+                                                            avatar: req1.otherUserAvatar,
                                                             otherUserId: req1.userId,
                                                             industry: req1.industry,
-                                                            otherUserAvatar: user1.avatar,
+                                                            otherUserAvatar: req2.otherUserAvatar,
                                                             lastMessage: '',
                                                             conversation: conversationID,
                                                             matchDateTime: req1.datetime,
@@ -622,7 +722,6 @@ makeGobbleRequest(ref, request, date) {
         updates[`/Chats/${req2.userId}/${req1.userId}/metadata/matchDateTime`] = req1.datetime;
       }
     }
-    console.log(updates)
     return updates;
           // .then (x => x)
           // .catch(err => console.log('Linking Chats Error:', err.message));
@@ -687,6 +786,36 @@ makeGobbleRequest(ref, request, date) {
    */
   isWithinTime(time1, time2) {
     return (Math.abs(time1-time2) <= 30)   
+  }
+
+  async deleteAwaitingRequest(request) {
+    let updates = {};
+    updates[`/Users/${request.userId}/awaitingMatchIDs/${request.matchID}`] = null;
+    let date = await this.getDatetime(request)
+    updates[`/GobbleRequests/${this.makeDateString(date)}/${request.dietaryRestriction}/${request.matchID}`] = null;
+    // Add more updates here
+    try {
+      await firebase.database().ref().update(updates);
+    } catch(err) {
+      console.log('Delete Awaiting Request Error: ' + err)
+    }
+  }
+
+  async editAwaitingRequest(request) {
+    let updates = {};
+    updates[`/Users/${request.userId}/awaitingMatchIDs/${request.matchID}`] = null;
+    let date = this.getDatetime(request)
+    updates[`/GobbleRequests/${this.makeDateString(date)}/${request.dietaryRestriction}/${request.matchID}`] = null;
+    // Add more updates here
+    try {
+      await firebase.database().ref().update(updates);
+    } catch(err) {
+      console.log('Delete Awaiting Request Error: ' + err)
+    }
+  }
+
+  async getBlockedUsers(uid) {
+    firebase.database().ref(`/Users/${uid}/blockedUsers`);
   }
 
   /**

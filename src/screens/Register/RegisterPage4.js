@@ -4,6 +4,10 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import {containerStyles, buttonStyles, pickerStyles, inputStyles} from '../../styles/LoginStyles'
 import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
 import firebaseSvc from '../../firebase/FirebaseSvc';
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '../../styles/Themes';
+import {styles} from '../../styles/RegisterStyles';
 
 /**
  * Last Page of Registration
@@ -17,6 +21,8 @@ export default function RegisterPage4(props) {
     const [date, setDate] = useState(new Date());
     const [isPickerShow, setIsPickerShow] = useState(false);
     const MAX_DATE = new Date();
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
 
     //Handlers for Action Failure:
 
@@ -54,8 +60,8 @@ export default function RegisterPage4(props) {
     const switchText = () => cross ? 'Yes!' : 'No!';
 
     return(
-    <SafeAreaView style={styles.container}>
-        <Text style={pickerStyles.text}>Would you like to be matched with other Industrial Backgrounds?{`${'\n'}`}Current Choice: {switchText()}</Text>
+    <SafeAreaView style={[specificStyles.container, themes.containerTheme(isLight)]}>
+        <Text style={[pickerStyles.text, themes.textTheme(isLight)]}>Would you like to be matched with other Industrial Backgrounds?{`${'\n'}`}Current Choice: {switchText()}</Text>
         {!isPickerShow &&
         <Switch 
             value={cross} 
@@ -63,8 +69,13 @@ export default function RegisterPage4(props) {
             style={pickerStyles.switch}
         />}
         <View>
-                        <Text style={{...inputStyles.subHeader, marginTop: '5%'}}>Tell us your Birthday!</Text>
-                        <Button title={`Chosen: ${date.toLocaleString().slice(0, 10)} ${'\n'}Click me to ${pickerText()}`} onPress={showPicker} />
+                        <Text style={[{...inputStyles.subHeader, marginTop: '5%'}, themes.textTheme(isLight)]}>Tell us your Birthday!</Text>
+                        <Button 
+                        color={themes.oppositeTheme(isLight)}
+                        title={`Chosen: ${date.toLocaleString().slice(0, 10)} ${'\n'}Click me to ${pickerText()}`} 
+                        onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                            showPicker();}} />
                         
                         {/* The date picker */}
                         {isPickerShow && (
@@ -74,15 +85,16 @@ export default function RegisterPage4(props) {
                             display={Platform.OS === 'ios' ? 'inline' : 'default'}
                             is24Hour={true}
                             onChange={onChange}
-                            style={styles.datePicker}
+                            style={specificStyles.datePicker}
                             maximumDate={MAX_DATE}
                             />
                         )}
             </View>
         {!isPickerShow &&
-        <TouchableOpacity style={buttonStyles.loginButton} 
+        <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} 
                         onPress={
                             () => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                                 if ((new Date().getFullYear() - date.getFullYear()) < 13) {
                                     Alert.alert('Too Young to Sign Up! Sorry');
                                 } else {
@@ -92,17 +104,19 @@ export default function RegisterPage4(props) {
                                 }
                             }
                         }>
-                    <Text style={buttonStyles.loginButtonText}>Finish</Text>
+                    <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Finish</Text>
         </TouchableOpacity>}
         {!isPickerShow &&
-        <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.goBack()}>
-            <Text style={buttonStyles.loginButtonText}>Back</Text>
+        <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            props.navigation.goBack();}}>
+            <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Back</Text>
         </TouchableOpacity>}
     </SafeAreaView>
     )
 };
 
-const styles = StyleSheet.create({
+const specificStyles = StyleSheet.create({
     pickedDateContainer: {
         padding: 20,
         backgroundColor: '#eee',

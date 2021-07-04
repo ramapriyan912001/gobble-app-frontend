@@ -7,6 +7,10 @@ import { fetchAuthUser, fetchUserData } from '../redux/actions/actions'
 import {inputStyles, buttonStyles} from '../styles/LoginStyles'
 import {INDUSTRY_CODES} from '../constants/objects'
 import firebaseSvc from '../firebase/FirebaseSvc'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '.././styles/Themes';
+import {styles, profileStylesAddition} from '.././styles/ProfileStyles';
 
 /**
  * Tab for User's Personal Details
@@ -20,6 +24,8 @@ function PersonalDetails(props) {
     const [email, setEmail] = useState('')
     const [dob, setDob] = useState('')
     const [dateJoined, setDateJoined] = useState('')
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
 
     useEffect(() => {
         setName(props.currentUserData.name)
@@ -43,44 +49,31 @@ function PersonalDetails(props) {
     
     const signOutUser = () => firebaseSvc.signOut(signOutSuccess, signOutFailure);
     return (
-        <View style={styles.container}>
-            <View style={{...styles.item}}>
-            <Input label='Name' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderBottomColor: 'black', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={name} editable={false}></Input>
-            <Input label='Email' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: 'black', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={email} editable={false}></Input>
+        <View style={[profileStylesAddition.container, themes.containerTheme(isLight)]}>
+            <View style={{...profileStylesAddition.item}}>
+            <Input label='Name' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={name} editable={false}></Input>
+            <Input label='Email' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={email} editable={false}></Input>
             </View>
-            <View style={styles.item}>
-            <Input label='Date of Birth' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={dob} editable={false}></Input>
-            <Input label='Date Joined' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={dateJoined} editable={false}></Input>
+            <View style={profileStylesAddition.item}>
+            <Input label='Date of Birth' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={dob} editable={false}></Input>
+            <Input label='Date Joined' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={dateJoined} editable={false}></Input>
             </View>
             <View style={{marginLeft: '7.5%'}}>
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
+                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                         props.navigation.navigate('ForgotPassword')}}>
-                        <Text style={buttonStyles.loginButtonText}>Reset Password</Text>
+                        <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Reset Password</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
+                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                         signOutUser();
                         props.navigation.navigate('Login')}}>
-                        <Text style={buttonStyles.loginButtonText}>Sign Out</Text>
+                        <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Sign Out</Text>
                     </TouchableOpacity>
             </View>
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      alignItems: 'flex-start' // if you want to fill rows left to right
-    },
-    item: {
-      width: '50%', // is 50% of container width
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: '5%'
-    }
-})
 
 const mapStateToProps = (store) => ({
     currentUserData: store.userState.currentUserData,
