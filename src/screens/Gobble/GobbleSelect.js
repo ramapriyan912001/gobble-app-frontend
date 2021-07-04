@@ -136,7 +136,6 @@ function GobbleSelect(props, {navigation}) {
                 let location = await Location.getCurrentPositionAsync({})
                 setLocation(location)  
             }
-            console.log(date)
             setLoading(false); 
       })();
   }, []);

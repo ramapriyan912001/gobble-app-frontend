@@ -87,37 +87,44 @@ function BlockedUsers (props, {navigation}) {
             }
         ]
         )
-    
-    return (
-      <SafeAreaView>
-          <FlatList
-            data={data}
-            extraData={selectedID}
-            renderItem={({ item, index }) => (
-              <ListItem
-              containerStyle={{borderBottomWidth:5, height: 110}}
-              key={index} 
-              roundAvatar>
-                <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.avatar}}/>
-                <ListItem.Content>
-                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${item.name}`}</ListItem.Title>
-                </ListItem.Content>
-                <TouchableOpacity onPress={() => {
-                  let text = `Are you sure you wish to unblock ${item.name}?`
-                    unblockAlert(text, item)
-                }}>
-                    <MaterialCommunityIcons name="account-off-outline" size={28}/>
-                </TouchableOpacity>
-              </ListItem>
-            )}
-            keyExtractor={item => item.id}
-            ItemSeparatorComponent={renderSeparator}
-            // ListHeaderComponent={renderHeader}
-            // ListFooterComponent={renderFooter(loading)}
-            onEndReachedThreshold={50}
-          />
-      </SafeAreaView>
-    );
+    if(data.length != 0) {
+      return (
+        <SafeAreaView>
+            <FlatList
+              data={data}
+              extraData={selectedID}
+              renderItem={({ item, index }) => (
+                <ListItem
+                containerStyle={{borderBottomWidth:5, height: 110}}
+                key={index} 
+                roundAvatar>
+                  <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.avatar}}/>
+                  <ListItem.Content>
+                    <ListItem.Title style={{fontWeight: 'bold'}}>{`${item.name}`}</ListItem.Title>
+                  </ListItem.Content>
+                  <TouchableOpacity onPress={() => {
+                    let text = `Are you sure you wish to unblock ${item.name}?`
+                      unblockAlert(text, item)
+                  }}>
+                      <MaterialCommunityIcons name="account-off-outline" size={28}/>
+                  </TouchableOpacity>
+                </ListItem>
+              )}
+              keyExtractor={item => item.id}
+              ItemSeparatorComponent={renderSeparator}
+              // ListHeaderComponent={renderHeader}
+              // ListFooterComponent={renderFooter(loading)}
+              onEndReachedThreshold={50}
+            />
+        </SafeAreaView>
+      );
+    } else {
+      return (
+        <SafeAreaView style={{flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'center'}}>
+          <Text style={{alignSelf: 'center'}}>You have no blocked users!</Text>
+        </SafeAreaView>
+      )
+    }
 }
 
 const mapStateToProps = (store) => ({

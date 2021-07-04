@@ -463,7 +463,7 @@ class FirebaseSvc {
       const dietaryOption = dietaryOptionsArray[counter];
       console.log('looking through ' + dietaryOption);
       tempRef = ref.child(`${dietaryOption}`);
-      await tempRef.once("value").then(snapshot => {//values in same day under dietaryOption
+      await tempRef.once("value").then(async(snapshot) => {//values in same day under dietaryOption
         let iterator, child;
         let time2, coords2, distance2, date2;
         let children = snapshot.val()
@@ -474,15 +474,20 @@ class FirebaseSvc {
           distance2 = this.getDistance(child)
           date2 = this.getDatetime(child)
           time2 = this.convertTimeToMinutes(date2)
-          if(!this.isWithinRange(coords1, distance1, coords2, distance2) || !this.isWithinTime(time1, time2) || request.userId === child.userId) {
-            console.log('out of range/time/ same user');
+          let isBlocked1 = await this.isBlocked(request.userId, child.userId)
+          let isBlocked2 = await this.isBlocked(child.userId, request.userId)
+          let isBlocked = isBlocked1 || isBlocked2
+          if(!this.isWithinRange(coords1, distance1, coords2, distance2) || 
+          !this.isWithinTime(time1, time2) || isBlocked ||
+          request.userId === child.userId) {
+            console.log('out of range/time/same user/blocked');
             continue;
           }
-          compatibility = this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
+          compatibility = await this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
           console.log(compatibility, 'compatiblity');
           if (compatibility >= this.getThreshold()) {//for now threshold is 18 arbitrarily
             console.log('greater than threshold');
-            this.match(request, null, child, iterator)
+            await this.match(request, null, child, iterator)
             result = true;
             console.log("EARLY TERMINATION")
             break;
@@ -851,6 +856,7 @@ makeGobbleRequest(ref, request, date) {
         console.log('YES')
         console.log(key)
         delete matches[key]
+        console.log(`/Users/${otherUid}/matchIDs/${key}`)
         updates[`/Users/${otherUid}/matchIDs/${key}`] = null
       }
     }
@@ -859,28 +865,54 @@ makeGobbleRequest(ref, request, date) {
   }
   blockUser(otherUid, otherUserNameAndAvatar, matches, pendingMatches) {
     let updates = {}
-    if(matches) {
-      this.removeBlockedUserMatches(otherUid, matches)
-    }
-    if(pendingMatches) {
-      this.removeBlockedUserPendingMatches(otherUid, pendingMatches)
-    }
-    updates[`/Users/${this.uid}/blockedUsers/${otherUid}`] = otherUserNameAndAvatar;
-    updates[`/Chats/${this.uid}/${otherUid}`] = null
-    updates[`/Chats/${otherUid}/${this.uid}`] = null
+    // if(matches) {
+    //   this.removeBlockedUserMatches(otherUid, matches)
+    //   console.log("blockedmatches")
+    // }
+    // if(pendingMatches) {
+    //   this.removeBlockedUserPendingMatches(otherUid, pendingMatches)
+    //   console.log("blockedpending")
+    // }
+    return firebase.database().ref(`Users/${this.uid}/pendingMatchIDs`)
+    .once("value")
+    .then(snapshot => {
+      if(snapshot.val()) {
+        this.removeBlockedUserPendingMatches(otherUid, snapshot.val())
+      }
+      firebase.database().ref(`Users/${this.uid}/matchIDs`)
+        .once("value")
+        .then(subsnap => {
+          if(subsnap.val()) {
+            this.removeBlockedUserMatches(otherUid, subsnap.val())
+          }
+        })
+        updates[`/Users/${this.uid}/blockedUsers/${otherUid}`] = otherUserNameAndAvatar;
+        updates[`/Chats/${this.uid}/${otherUid}`] = null
+        updates[`/Chats/${otherUid}/${this.uid}`] = null
+        try {
+          updates;
+          firebase.database().ref().update(updates)
+          return BLOCK_SUCCESS
+        } catch(err) {
+          console.log("Block user error: " + err)
+          return BLOCK_FAILURE
+        }
+      }
+    )
     // Deleting the chat and conversation + metadata
-    try {
-      updates;
-      firebase.database().ref().update(updates)
-      return BLOCK_SUCCESS
-    } catch(err) {
-      console.log("Block user error: " + err)
-      return BLOCK_FAILURE
-    }
+
   }
 
   async isBlocked(uid, otherUid) {
-    return otherUid in Object.keys(this.getBlockedUsers(uid))
+    let x = false;
+    x = await firebase.database().ref(`Users/${uid}/blockedUsers/${otherUid}`)
+    .once("value")
+    .then(snapshot => {
+      return snapshot.val() ? true : false}
+      )
+    .catch(err => console.log(err)
+    )
+    return x;
   }
 
   async unblockUser(otherUid) {

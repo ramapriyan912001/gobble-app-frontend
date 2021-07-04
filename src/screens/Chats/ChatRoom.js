@@ -46,7 +46,6 @@ function ChatRoom (props, {navigation}) {
               },
               err => {console.log(err.message)}
             )
-          console.log(Math.random())
         setLoading(false);
     }
 
