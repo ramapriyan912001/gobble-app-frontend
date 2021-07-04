@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react'
-import {Text, SafeAreaView, View, Image, TouchableOpacity, Button, StyleSheet} from 'react-native'
+import React, {useEffect, useState, useRef} from 'react'
+import {Text, SafeAreaView, View, Image, TouchableOpacity, Button, Animated, StyleSheet} from 'react-native'
 import { useColorScheme } from 'react-native-appearance'
 import {imageStyles, inputStyles, containerStyles, profileStyles, buttonStyles} from '../styles/LoginStyles'
 import { connect } from 'react-redux'
@@ -17,15 +17,65 @@ const dark = '#242C40';
  * @returns The Welcome Screen Render function
  */
 export function Welcome(props) {
+    
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
     const containerTheme = isLight ? styles.lightContainer : styles.darkContainer;
     const captionTheme = isLight ? styles.darkCaption : styles.lightCaption;
+     // fadeAnim will be used as the value for opacity. Initial Value: 0
+    const fadeAnim = useRef(new Animated.Value(0)).current;
+    const fadeAnimText = useRef(new Animated.Value(0)).current;
+
+    const fadeIn = () => {
+        // Will change fadeAnim value to 1 in 5 seconds
+        Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 5000,
+        }).start();
+    };
+
+    useEffect(() => {
+        Animated.sequence([
+            Animated.timing(
+                fadeAnim,
+                {
+                    toValue: 1,
+                    duration: 1000,
+                    useNativeDriver: true
+                }
+            ),
+            Animated.timing(
+                fadeAnimText,
+                {
+                    toValue: 1,
+                    duration: 1000,
+                    useNativeDriver: true
+                }
+            ),
+        ])
+        .start();
+    }, [fadeAnim]);
+
     return (
         <SafeAreaView style={[styles.container, containerTheme]}>
             <Image style={styles.image} source = {require('../images/gobble.png')}/>
-            <Text style={[styles.caption, captionTheme]}>Connecting People Over Food.</Text>
+            <Animated.View
+                style={[
+                styles.fadingContainer,
+                {
+                    opacity: fadeAnim, // Bind opacity to animated value
+                },
+                ]}>
+                <Text style={[styles.caption, captionTheme]}>Connecting People Over Food.</Text>
+            </Animated.View>
             {/* <View style={styles.buttonRow}> */}
+            <Animated.View
+                style={[
+                    styles.fadingContainer,
+                    {
+                        opacity: fadeAnimText
+                    }
+                ]}>
                 <Button
                     title={'Sign Up'}
                     onPress={() => {
@@ -45,6 +95,7 @@ export function Welcome(props) {
                     touchSoundDisabled={true}
                 />
             {/* </View> */}
+            </Animated.View>
         </SafeAreaView>
         );
 };
@@ -89,6 +140,10 @@ const styles = StyleSheet.create({
         flexDirection:'row',
         justifyContent:'space-between'//TODO: Put Space Between Buttons
     },
+    fadingContainer: {
+        paddingVertical: 8,
+        paddingHorizontal: 16,
+      },
 })
 
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, clearData }, dispatch);
