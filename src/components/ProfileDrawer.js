@@ -1,10 +1,11 @@
-import { DrawerItems, createAppContainer } from 'react-navigation'
+import {createAppContainer } from 'react-navigation'
+import { DrawerItems } from 'react-navigation-drawer';
 import {createDrawerNavigator} from 'react-navigation-drawer'
 import { Image, View, SafeAreaView, ScrollView, Text } from 'react-native'
 import Ionicons from '@expo/vector-icons/Ionicons';
 import Profile from '../screens/Profile/Profile';
 
-export default function CustomDrawerNavigation(props) {
+export default function ProfileDrawer(props) {
         return (
         <SafeAreaView style={{ flex: 1 }}>
         <View style={{ height: 250, backgroundColor: '#d2d2d2', opacity: 0.9 }}>
