@@ -4,6 +4,10 @@ import {StatusBar} from 'expo-status-bar'
 import {imageStyles, inputStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import firebaseSvc from '../firebase/FirebaseSvc';
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '.././styles/Themes';
+import {styles} from '.././styles/RegisterStyles';
 
 /**
  * The page to re-authenticate a user if required
@@ -15,6 +19,8 @@ export default function Reauthenticate(props) {
     const cleanup = props.route.params.cleanup;
     const [password, setPassword] = useState('');
     const user = firebaseSvc.currentUser();
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
 
     // Login Success/Fail handlers
     const authSuccess = (userCredential) => {
@@ -41,26 +47,30 @@ export default function Reauthenticate(props) {
     };
 
     return(
-                <KeyboardAwareScrollView contentContainerStyle={containerStyles.container} scrollEnabled={false}>
-                    <Text style={inputStyles.headerText}>Enter your Credentials</Text>
+                <KeyboardAwareScrollView contentContainerStyle={[styles.container, themes.containerTheme(isLight)]} scrollEnabled={false}>
+                    <Text style={[inputStyles.headerText, themes.textTheme(isLight)]}>Enter your Credentials</Text>
                     <Image style={imageStyles.gobbleImage} source = {require('../images/gobble.png')}/>
                     <StatusBar style="auto"/>
-                    <Text style={inputStyles.subText}>{user.email === null? 'Unknown Email' : user.email}</Text>
+                    <Text style={[inputStyles.subText, themes.textTheme(isLight)]}>{user.email === null? 'Unknown Email' : user.email}</Text>
                     <View style={inputStyles.inputView}>
                         <TextInput
                             autoCapitalize="none"
-                            style={inputStyles.TextInput}
+                            style={[inputStyles.TextInput, themes.textTheme(isLight)]}
                             placeholder="Password"
-                            placeholderTextColor="#003f5c"
+                            placeholderTextColor={themes.oppositeTheme(isLight)}
                             secureTextEntry={true}
                             onChangeText={(password) => setPassword(password)}
                         />
                     </View>
-                    <TouchableOpacity style={buttonStyles.forgotButton} onPress={()=> props.navigation.navigate('ForgotPassword')}>
-                    <Text style={buttonStyles.forgotButtonText}>Forgot Password?</Text>
+                    <TouchableOpacity style={[buttonStyles.forgotButton, themes.buttonTheme(isLight)]} onPress={()=> {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        props.navigation.navigate('ForgotPassword');}}>
+                    <Text style={[buttonStyles.forgotButtonText, themes.textTheme(!isLight)]}>Forgot Password?</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={onPressAuth}>
-                    <Text style={buttonStyles.loginButtonText}>Log In</Text>
+                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        onPressAuth();}}>
+                    <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Log In</Text>
                     </TouchableOpacity>
                 </KeyboardAwareScrollView>
     )
