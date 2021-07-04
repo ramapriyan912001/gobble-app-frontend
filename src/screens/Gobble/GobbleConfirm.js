@@ -9,8 +9,8 @@ import {buttonStyles, containerStyles, inputStyles} from '../../styles/LoginStyl
  * @returns GobbleConfirm Render Method
  */
 export function GobbleConfirm(props) {
-    let result = props.route.params.result;
-    if(result) {
+
+    if(props.route.params) {
         return(
             <View style={containerStyles.container}>
                 <Text style={inputStyles.headerText}>We found your Gobblemate!</Text>
