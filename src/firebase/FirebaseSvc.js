@@ -816,11 +816,18 @@ makeGobbleRequest(ref, request, date) {
     }
   }
 
-  async getBlockedUsers(uid) {
+  async getBlockedUsers2(uid) {
     return firebase.database().ref(`/Users/${uid}/blockedUsers`)
     .once("value")
     .then(snapshot => snapshot.val());
   }
+
+  getBlockedUsers = (success, callback, failure) => this.userExists()
+                                      ? firebase.database().ref(`Users/${uid}/blockedUsers`)
+                                        .on('value', (x) => callback(success(x)))
+                                      : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+
+  
 
   async blockUser(uid, otherUid) {
     let updates = {}

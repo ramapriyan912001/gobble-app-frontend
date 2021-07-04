@@ -1,34 +1,50 @@
 import {createAppContainer } from 'react-navigation'
 import { DrawerItems } from 'react-navigation-drawer';
-import {createDrawerNavigator} from 'react-navigation-drawer'
-import { Image, View, SafeAreaView, ScrollView, Text } from 'react-native'
-import Ionicons from '@expo/vector-icons/Ionicons';
+import {createDrawerNavigator} from '@react-navigation/drawer'
+import { Image, View, SafeAreaView, ScrollView, Text, Dimensions } from 'react-native'
+import { Ionicons } from '@expo/vector-icons';
 import Profile from '../screens/Profile/Profile';
+import MatchesHistory from '../screens/Matches/MatchesHistory';
+import React from 'react'
+import { ProfileNavigator } from '../screens/Profile/ProfileNavigator';
+import Test from './Test'
+import DrawerComponent from './DrawerComponent';
+import { Entypo } from '@expo/vector-icons';
 
+const {width} = Dimensions.get("window")
+const Drawer = createDrawerNavigator();
+
+//#008a49
 export default function ProfileDrawer(props) {
-        return (
-        <SafeAreaView style={{ flex: 1 }}>
-        <View style={{ height: 250, backgroundColor: '#d2d2d2', opacity: 0.9 }}>
-        <View style={{ height: 200, backgroundColor: 'Green', alignItems: 'center', justifyContent: 'center' }}>
-        <Image source={require('../../assets/Asian.jpg')} style={{ height: 150, width: 150, borderRadius: 60 }} />
-        </View>
-        <View style={{ height: 50, backgroundColor: 'Green', alignItems: 'center', justifyContent: 'center' }}>
-        <Text>John Doe</Text>
-        </View>
-        </View>
-        <ScrollView>
-        <DrawerItems {...props} />
-        </ScrollView>
-        <View style={{ alignItems: "center", bottom: 20 }}>
-        <View style={{ flexDirection: 'row' }}>
-        <View style={{ flexDirection: 'column', marginRight: 15 }}>
-        <Ionicons name="flask" style={{ fontSize: 24 }} onPress={() => console.log("Tıkladın")} />
-        </View>
-        <View style={{ flexDirection: 'column' }}>
-        <Ionicons name="call" style={{ fontSize: 24 }} onPress={() => console.log("Tıkladın")} />
-        </View>
-        </View>
-        </View>
-        </SafeAreaView>
-        );
-    }
+    return (
+    <Drawer.Navigator
+    initialRouteName="Profile"
+    drawerType="slide"
+    drawerStyle={{width: 2*width/3}}
+    drawerContent={(props) => <DrawerComponent {...props}></DrawerComponent>}
+    drawerContentOptions={{
+        activeTintColor: '#008a49',
+        itemStyle: { marginVertical: 6,},
+      }}
+    >
+        <Drawer.Screen options={{
+            title: "Profile",
+            drawerIcon: ({focused, size}) => {
+                return (
+                <Ionicons name="md-home-outline" size={size} color={focused ? '#008a49' : "#000"}/>)}}}
+                name="Profile" component={ProfileNavigator}></Drawer.Screen>
+        <Drawer.Screen
+        options={{
+            title: "Blocked Users",
+            drawerIcon: ({focused, size}) => {
+                return (
+                <Entypo name="block" size={size} color={focused ? '#008a49' : "#000"}/>)}}} name="Blocked Users" component={Test}></Drawer.Screen>
+        <Drawer.Screen
+        options={{
+            title: "Settings",
+            drawerIcon: ({focused, size}) => {
+                return (
+                <Ionicons name="settings" size={size} color={focused ? '#008a49' : "#000"}/>)}}} name="Settings" component={Test}></Drawer.Screen>
+    </Drawer.Navigator>
+    )
+}

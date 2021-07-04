@@ -24,10 +24,7 @@ export function ProfileNavigator() {
         <Stack.Navigator initialRouteName="Profile"
         headerMode={'none'}>
             <Stack.Screen name="Profile" component={Profile}></Stack.Screen>
-            <Stack.Screen name="UpdateProfile" component={UpdateProfile}></Stack.Screen>
             <Stack.Screen name="RegisterPage2" component={RegisterPage2}></Stack.Screen>
-            <Stack.Screen name="RegisterPage3" component={RegisterPage3}></Stack.Screen>
-            <Stack.Screen name="RegisterPage4" component={RegisterPage4}></Stack.Screen>
         </Stack.Navigator>
     )
 }
