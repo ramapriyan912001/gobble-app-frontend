@@ -11,7 +11,10 @@ import { fetchAuthUser, fetchUserData } from '../redux/actions/actions'
 import { INDUSTRY_CODES } from '../constants/objects'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import { Avatar } from 'react-native-elements'
-
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '.././styles/Themes';
+import {styles, profileStylesAddition} from '.././styles/ProfileStyles';
 
 /*
 Trying to decide whether to have two screens or one screen in otherProfile
@@ -19,49 +22,38 @@ Depending on that, we can have a tab nav in otherProfile, or just move the stuff
 To be decided tomorrow
 */
 export default function AboutPerson(props) {
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
     const [otherUser, setOtherUser] = useState(props.route.params.otherUser);
 
     return (
-        <View style={styles.container}>
-            <View style={{...styles.item}}>
-            <Input label='Name' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderBottomColor: 'black', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={otherUser.name} editable={false}></Input>
-            <Input label='Cuisine' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: 'black', borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={otherUser.cuisine} editable={false}></Input>
+        <View style={[profileStylesAddition.container, themes.containerTheme(isLight)]}>
+            <View style={{...profileStylesAddition.item}}>
+            <Input label='Name' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={otherUser.name} editable={false}></Input>
+            <Input label='Cuisine' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={otherUser.cuisine} editable={false}></Input>
             </View>
-            <View style={styles.item}>
-            <Input label='Industry' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={INDUSTRY_CODES[otherUser.industry]} editable={false}></Input>
-            <Input label='Diet' labelStyle={{justifyContent: 'center', color:'#000000', alignSelf: 'center', borderColor: "#000000", borderBottomWidth: 1}} style={{width: 5, margin:0, padding:0, textAlign:'center'}} value={otherUser.diet} editable={false}></Input>
+            <View style={profileStylesAddition.item}>
+            <Input label='Industry' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={INDUSTRY_CODES[otherUser.industry]} editable={false}></Input>
+            <Input label='Diet' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={otherUser.diet} editable={false}></Input>
             </View>
             <View style={{marginLeft: '7.5%'}}>
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
+                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                         // TODO: Need to make blockUser functionality
                         // blockUser();
                         // props.navigation.navigate('Chatroom')
                         }}>
-                        <Text style={buttonStyles.loginButtonText}>Block User</Text>
+                        <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Block User</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
+                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                         // TODO: Need to make reportUser functionality
                         // reportUser();
                         // props.navigation.navigate('ChatRoom')
                     }}>
-                        <Text style={buttonStyles.loginButtonText}>Report User</Text>
+                        <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Report User</Text>
                     </TouchableOpacity>
             </View>
         </View>
     )
 }
-
-const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      alignItems: 'flex-start' // if you want to fill rows left to right
-    },
-    item: {
-      width: '50%', // is 50% of container width
-      justifyContent: 'center',
-      alignItems: 'center',
-      marginTop: '5%'
-    }
-})

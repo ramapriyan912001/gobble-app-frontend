@@ -31,7 +31,7 @@ export function App() {
   return (
     <NavigationContainer>
       <Provider store={store}>
-          <Stack.Navigator initialRouteName="Welcome"
+          <Stack.Navigator initialRouteName="Welcome" 
           >
             <Stack.Screen name="Welcome" options={{headerShown: false}} component={Welcome}></Stack.Screen>
             <Stack.Screen name="Login" options={{headerShown: false}} component={Login}></Stack.Screen>

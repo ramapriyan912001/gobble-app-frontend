@@ -10,6 +10,10 @@ import renderHeader from '../../components/renderHeader'
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { FOOD_IMAGES_URIs } from '../../constants/objects'
 import { INDUSTRY_CODES } from '../../constants/objects'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '../../styles/Themes';
+import {styles} from '../../styles/RegisterStyles';
 
 /**
  * Page to Show previous Matches
@@ -21,6 +25,9 @@ function MatchesHistory (props, {navigation}) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
     const [selectedID, setSelectedID] = useState(null)
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
+
     // const [loading, setLoading]= useState(true);
     const dateStringMaker = (date) => {
       return date.slice(0, 21)
@@ -89,19 +96,20 @@ function MatchesHistory (props, {navigation}) {
     }, [navigation])
     
     return (
-      <SafeAreaView>
+      <SafeAreaView style={themes.containerTheme(isLight)}>
           <FlatList
             data={data}
+            style={themes.containerTheme(isLight)}
             extraData={selectedID}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={{borderBottomWidth:5, height: 110}}
+              containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
               key={index} 
               roundAvatar>
                 <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
                 <ListItem.Content>
-                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                  <ListItem.Title style={[{fontWeight: 'bold'}, themes.textTheme(isLight)]}>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
+                  <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${item.cuisinePreference} cuisine, ${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}

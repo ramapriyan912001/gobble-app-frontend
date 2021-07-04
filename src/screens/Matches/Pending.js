@@ -11,6 +11,10 @@ import firebaseSvc from '../../firebase/FirebaseSvc'
 import { FOOD_IMAGES_URIs } from '../../constants/objects'
 import { INDUSTRY_CODES } from '../../constants/objects'
 import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCCESS, UNACCEPT_FAIL } from '../../constants/results'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '../../styles/Themes';
+import {styles} from '../../styles/RegisterStyles';
 
 /**
  * Page to Show previous Matches
@@ -21,7 +25,9 @@ import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCC
  function Pending (props, {navigation}) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
-    const [selectedID, setSelectedID] = useState(null)
+    const [selectedID, setSelectedID] = useState(null);
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
 
     function renderPendingContent(item, index) {
       const dateStringMaker = (date) => {
@@ -32,22 +38,23 @@ import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCC
       }
       return (
           <ListItem
-                        containerStyle={{borderBottomWidth:5, height: 110}}
+                        containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
                         key={props.index} 
                         roundAvatar>
-                          <View style={{flexDirection: 'column', borderColor: '#000', paddingRight: '2.5%',borderRightWidth: 2}}>
-                          <ListItem.Subtitle style={{fontWeight: '500'}}>{`${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
-                          <ListItem.Subtitle style={{fontWeight: '300'}}>{`${timeStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                          <View style={{flexDirection: 'column', borderColor: themes.oppositeTheme(isLight), paddingRight: '2.5%',borderRightWidth: 2}}>
+                          <ListItem.Subtitle style={[{fontWeight: '500'}, themes.textTheme(isLight)]}>{`${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                          <ListItem.Subtitle style={[{fontWeight: '300'}, themes.textTheme(isLight)]}>{`${timeStringMaker(item.datetime)}`}</ListItem.Subtitle>
                           </View>
                           <ListItem.Content>
-                            <ListItem.Title style={{fontWeight: '500'}}>{`${INDUSTRY_CODES[item.otherUserIndustry]} Industry`}</ListItem.Title>
-                            <ListItem.Title style={{fontWeight: '300'}}>{`${item.cuisinePreference} Cuisine`}</ListItem.Title>
+                            <ListItem.Title style={[{fontWeight: '500'}, themes.textTheme(isLight)]}>{`${INDUSTRY_CODES[item.otherUserIndustry]} Industry`}</ListItem.Title>
+                            <ListItem.Title style={[{fontWeight: '300'}, themes.textTheme(isLight)]}>{`${item.cuisinePreference} Cuisine`}</ListItem.Title>
                           </ListItem.Content>
                           <View style={{flexDirection: 'column'}}>
 
                             {!matchIDs[item.matchID] && 
                             <TouchableOpacity onPress={async() => 
                               {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                                 let res = await firebaseSvc.matchConfirm(item)
                                 let replacementSelectedID = Math.random()
                                 switch(res) {
@@ -80,6 +87,7 @@ import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCC
                             
                             {!matchIDs[item.matchID] &&
                             <TouchableOpacity onPress={() => {
+                              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                               let replacementSelectedID = Math.random();
                               console.log('Declined')
                               firebaseSvc.matchDecline(item)
@@ -93,6 +101,7 @@ import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCC
                             {matchIDs[item.matchID] &&
                             <TouchableOpacity onPress={async() => 
                               {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                                 let unacceptRes = await firebaseSvc.matchUnaccept(item)
                                 let replacementSelectedID = Math.random()
                                 switch(unacceptRes) {
@@ -182,6 +191,7 @@ import { CONFIRM_SUCCESS, FINAL_FAIL, FINAL_SUCCESS, CONFIRM_FAIL, UNACCEPT_SUCC
           <FlatList
             data={data}
             extraData={selectedID}
+            style={themes.containerTheme(isLight)}
             renderItem={({ item, index }) => renderPendingContent(item, index)}
             keyExtractor={item => item.datetime}
             ItemSeparatorComponent={renderSeparator}

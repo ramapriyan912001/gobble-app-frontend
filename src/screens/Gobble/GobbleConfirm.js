@@ -1,6 +1,10 @@
 import React from 'react'
 import {View, Text, TouchableOpacity} from 'react-native'
 import {buttonStyles, containerStyles, inputStyles} from '../../styles/LoginStyles'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '../../styles/Themes';
+import {styles} from '../../styles/RegisterStyles';
 
 /**
  * Page to show confirmation of match request submission
@@ -9,28 +13,32 @@ import {buttonStyles, containerStyles, inputStyles} from '../../styles/LoginStyl
  * @returns GobbleConfirm Render Method
  */
 export function GobbleConfirm(props) {
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
     let result = props.route.params.result;
     if(result) {
         return(
-            <View style={containerStyles.container}>
-                <Text style={inputStyles.headerText}>We found your Gobblemate!</Text>
-                <Text style={inputStyles.headerText}>Click Done and head over to Matches to who you have matched with!</Text>
-                <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
-                    props.navigation.navigate('GobbleSelect')
+            <View style={[styles.container, themes.containerTheme(isLight)]}>
+                <Text style={[inputStyles.subHeader, themes.textTheme(isLight)]}>We found your Gobblemate!</Text>
+                <Text style={[inputStyles.subHeader, themes.textTheme(isLight)]}>Click Done and head over to Matches to who you have matched with!</Text>
+                <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    props.navigation.navigate('GobbleSelect');
                 }}>
-                    <Text style={buttonStyles.loginButtonText}>Done!</Text>
+                    <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Done!</Text>
                 </TouchableOpacity>
             </View>
         )
     } else {
         return (
-            <View style={containerStyles.container}>
-                <Text style={inputStyles.subHeader}>We have not found your Gobblemate just yet!</Text>
-                <Text style={inputStyles.subHeader}>Click Done and Head over to Matches to see your Gobble request!</Text>
-                <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
-                    props.navigation.navigate('GobbleSelect')
+            <View style={[styles.container, themes.containerTheme(isLight)]}>
+                <Text style={[inputStyles.subHeader, themes.textTheme(isLight)]}>We have not found your Gobblemate just yet!</Text>
+                <Text style={[inputStyles.subHeader, themes.textTheme(isLight)]}>Click Done and Head over to Matches to see your Gobble request!</Text>
+                <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    props.navigation.navigate('GobbleSelect');
                 }}>
-                    <Text style={buttonStyles.loginButtonText}>Done!</Text>
+                    <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Done!</Text>
                 </TouchableOpacity>
             </View>
         )
