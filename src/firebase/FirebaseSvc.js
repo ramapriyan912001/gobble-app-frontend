@@ -209,7 +209,6 @@ class FirebaseSvc {
   getPendingMatchIDs = (success, callback, failure) => this.userExists()
                                               ? this
                                                 .userRef(`${this.uid}/pendingMatchIDs`)
-                                                .orderByChild('datetime')
                                                 .on('value', (x) => callback(success(x)))
                                               : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
@@ -222,7 +221,6 @@ class FirebaseSvc {
   getMatchIDs = (success, callback, failure) => this.userExists()
                                       ? this
                                         .userRef(`${this.uid}/matchIDs`)
-                                        .orderByChild('datetime')
                                         .on('value', (x) => callback(success(x)))
                                       : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
@@ -555,7 +553,7 @@ makeGobbleRequest(ref, request, date) {
     updates[`/Users/${request1.userId}/pendingMatchIDs/${pendingMatchID}`] = {...request1, otherUserId: request2.userId, 
       otherUserCuisinePreference: request2.cuisinePreference, otherUserDietaryRestriction: request2UserDetails.diet, 
       otherUserDOB: request2UserDetails.dob, otherUserLocation: request2.location, otherUserIndustry: request2UserDetails.industry,
-      otherUserAvatar: request1UserDetails.avatar, otherUserName: request2UserDetails.name, matchID: pendingMatchID, lastMessage:'',}
+      otherUserAvatar: request2UserDetails.avatar, otherUserName: request2UserDetails.name, matchID: pendingMatchID, lastMessage:'',}
     updates[`/Users/${request2.userId}/pendingMatchIDs/${pendingMatchID}`] = {...request2, otherUserId: request1.userId,
       otherUserCuisinePreference: request1.cuisinePreference, otherUserDietaryRestriction: request1UserDetails.diet, 
       otherUserDOB: request1UserDetails.dob, otherUserLocation: request1.location, otherUserIndustry: request1UserDetails.industry, 
@@ -643,7 +641,7 @@ makeGobbleRequest(ref, request, date) {
 
     updates[`/PendingMatchIDs/${request.matchID}`] = null
     updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
-    updates[`/Users/${request.otheruserId}/pendingMatchIDs/${request.matchID}`] = null
+    updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
     updates = await this.linkChats(updates, request, otherUserRequest, request1UserDetails, request2UserDetails);
 
     try{
@@ -823,17 +821,57 @@ makeGobbleRequest(ref, request, date) {
   }
 
   getBlockedUsers = (success, callback, failure) => this.userExists()
-                                      ? firebase.database().ref(`Users/${uid}/blockedUsers`)
+                                      ? firebase.database().ref(`Users/${this.uid}/blockedUsers`)
                                         .on('value', (x) => callback(success(x)))
                                       : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
   
 
-  async blockUser(uid, otherUid) {
+  
+  removeBlockedUserPendingMatches(otherUid, pendingMatches) {
     let updates = {}
-    updates[`/Users/${uid}/blockedUsers/${otherUid}`] = true
+    for(let [key, value] of Object.entries(pendingMatches)) {
+      let id = value['otherUserId']
+      if(id == otherUid) {
+        delete pendingMatches[key]
+        console.log(key)
+        updates[`/PendingMatchIDs/${key}`] = null;
+        updates[`/Users/${otherUid}/pendingMatchIDs/${key}`] = null
+      }
+    }
+    updates[`/Users/${this.uid}/pendingMatchIDs`] = pendingMatches
+    firebase.database().ref().update(updates)
+  }      
+  
+  removeBlockedUserMatches(otherUid, matches) {
+    let updates = {}
+    for(let [key, value] of Object.entries(matches)) {
+      let id = value['otherUserId']
+      if(id == otherUid) {
+        console.log('YES')
+        console.log(key)
+        delete matches[key]
+        updates[`/Users/${otherUid}/matchIDs/${key}`] = null
+      }
+    }
+    updates[`/Users/${this.uid}/matchIDs`] = matches
+    firebase.database().ref().update(updates)
+  }
+  blockUser(otherUid, otherUserNameAndAvatar, matches, pendingMatches) {
+    let updates = {}
+    if(matches) {
+      this.removeBlockedUserMatches(otherUid, matches)
+    }
+    if(pendingMatches) {
+      this.removeBlockedUserPendingMatches(otherUid, pendingMatches)
+    }
+    updates[`/Users/${this.uid}/blockedUsers/${otherUid}`] = otherUserNameAndAvatar;
+    updates[`/Chats/${this.uid}/${otherUid}`] = null
+    updates[`/Chats/${otherUid}/${this.uid}`] = null
+    // Deleting the chat and conversation + metadata
     try {
-      firebase.database().update(updates)
+      updates;
+      firebase.database().ref().update(updates)
       return BLOCK_SUCCESS
     } catch(err) {
       console.log("Block user error: " + err)
@@ -845,11 +883,11 @@ makeGobbleRequest(ref, request, date) {
     return otherUid in Object.keys(this.getBlockedUsers(uid))
   }
 
-  async unblockUser(uid, otherUid) {
+  async unblockUser(otherUid) {
     let updates = {}
-    updates[`/Users/${uid}/blockedUsers/${otherUid}`] = null;
+    updates[`/Users/${this.uid}/blockedUsers/${otherUid}`] = null;
     try {
-      firebase.database().update(updates)
+      await firebase.database().ref().update(updates)
       return UNBLOCK_SUCCESS
     } catch(err) {
       console.log("Block user error: " + err)

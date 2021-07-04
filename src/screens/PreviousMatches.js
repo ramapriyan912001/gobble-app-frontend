@@ -20,6 +20,7 @@ import { INDUSTRY_CODES } from '../constants/objects'
  function PreviousMatches (props, {navigation}) {
     const [data, setData] = useState([]);
     const [selectedID, setSelectedID] = useState(null)
+    const [matchIDs, setMatchIDs] = useState({})
 
     function renderContent(item, index) {
       const dateStringMaker = (date) => {
@@ -108,7 +109,7 @@ import { INDUSTRY_CODES } from '../constants/objects'
             data={data}
             extraData={selectedID}
             renderItem={({ item, index }) => renderContent(item, index)}
-            keyExtractor={item => item.datetime}
+            keyExtractor={item => item.matchID}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
             // ListFooterComponent={renderFooter(loading)}

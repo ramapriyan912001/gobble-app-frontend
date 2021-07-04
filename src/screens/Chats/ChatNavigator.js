@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import { fetchAuthUser, clearData } from '../../redux/actions/actions'
 import {createStackNavigator} from '@react-navigation/stack'
 import ChatRoom from './ChatRoom'
-import otherProfile from '../otherProfile'
+import OtherProfile from '../OtherProfile'
 import { Conversation } from './Conversation'
 
 const Stack = createStackNavigator();
@@ -23,12 +23,12 @@ export function ChatNavigator() {
             <Stack.Screen name="Conversation" options={({ navigation, route }) => 
             ({  title: route.params.metadata.name,
                 headerRight: () => (<Button
-                                        onPress= {() => navigation.navigate('otherProfile', {otherUserID: route.params.metadata.otherUserId, name: route.params.metadata.name})}
+                                        onPress= {() => navigation.navigate('OtherProfile', {otherUserID: route.params.metadata.otherUserId, name: route.params.metadata.name})}
                                         title= 'Details' 
                                     />),
                 headerBackTitle:'Back'
             })} component={Conversation}></Stack.Screen>
-            <Stack.Screen name="otherProfile" options={({ route }) => ({headerShown:true, headerTitle: route.params.name})} component={otherProfile}></Stack.Screen>
+            <Stack.Screen name="OtherProfile" options={({ route }) => ({headerShown:true, headerTitle: route.params.name})} component={OtherProfile}></Stack.Screen>
         </Stack.Navigator>
     )
 }

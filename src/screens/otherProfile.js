@@ -21,7 +21,7 @@ const Tab = createMaterialTopTabNavigator();
  * @param {*} props Props from previous screen
  * @returns Profile Render Method
  */
-function otherProfile(props) {
+function OtherProfile(props) {
 
     const [userData, setUserData] = useState({})
     const [loading, setLoading] = useState(true)
@@ -46,7 +46,7 @@ function otherProfile(props) {
         try {
             // setOtherUserID(props.route.params.id)
             let data = await firebaseSvc.getUserCollection(otherUserID, snapshot => snapshot.val(), onFailure('otherUser Loading Error'))
-            setUserData(data);
+            setUserData({...data, id: otherUserID});
             if (userData == null) {
                 props.navigation.goBack();
             }
@@ -91,4 +91,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(otherProfile);
+export default connect(mapStateToProps, mapDispatchProps)(OtherProfile);

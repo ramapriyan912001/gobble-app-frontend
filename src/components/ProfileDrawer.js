@@ -10,6 +10,7 @@ import { ProfileNavigator } from '../screens/Profile/ProfileNavigator';
 import Test from './Test'
 import DrawerComponent from './DrawerComponent';
 import { Entypo } from '@expo/vector-icons';
+import BlockedUsers from '../screens/BlockedUsers';
 
 const {width} = Dimensions.get("window")
 const Drawer = createDrawerNavigator();
@@ -38,7 +39,7 @@ export default function ProfileDrawer(props) {
             title: "Blocked Users",
             drawerIcon: ({focused, size}) => {
                 return (
-                <Entypo name="block" size={size} color={focused ? '#008a49' : "#000"}/>)}}} name="Blocked Users" component={Test}></Drawer.Screen>
+                <Entypo name="block" size={size} color={focused ? '#008a49' : "#000"}/>)}}} name="Blocked Users" component={BlockedUsers}></Drawer.Screen>
         <Drawer.Screen
         options={{
             title: "Settings",

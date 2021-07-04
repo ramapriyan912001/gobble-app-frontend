@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, SafeAreaView, Text, FlatList} from 'react-native'
+import {View, SafeAreaView, Text, FlatList, Alert, TouchableOpacity} from 'react-native'
 import { Avatar, ListItem, SearchBar } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -10,6 +10,9 @@ import renderHeader from '../components/renderHeader'
 import firebaseSvc from '../firebase/FirebaseSvc'
 import { FOOD_IMAGES_URIs } from '../constants/objects'
 import { INDUSTRY_CODES } from '../constants/objects'
+import { MaterialCommunityIcons } from '@expo/vector-icons'
+import { blockAndUnblockAlert } from '../constants/alerts'
+import {UNBLOCK_SUCCESS } from '../constants/results'
 
 /**
  * Page to Show previous Matches
@@ -17,9 +20,8 @@ import { INDUSTRY_CODES } from '../constants/objects'
  * @param {*} props Props from previous screen
  * @returns MatchesHistory Render Method 
  */
-function MatchesHistory (props, {navigation}) {
+function BlockedUsers (props, {navigation}) {
     const [data, setData] = useState([]);
-    const [matchIDs, setMatchIDs] = useState({});
     const [selectedID, setSelectedID] = useState(null)
     // const [loading, setLoading]= useState(true);
     const dateStringMaker = (date) => {
@@ -34,36 +36,13 @@ function MatchesHistory (props, {navigation}) {
               async(snapshot) => {
                 let ids = snapshot.val();
                 if (ids == null) {
-                  //Do Nothing
+                  setData([])
                 } else  {
                   // console.log(ids, 'ids')
                   let newData = [];
-                  for(let key of Object.keys(ids)) {
-                    if(!(key in matchIDs)) {
-                      matchIDs[key] = true;
-                    }
-                    let details = ids[key]
-                    let otherUserId = details.otherUserId
-                    let avatar, industry;
-
-                    await firebaseSvc
-                          .avatarRef(details.otherUserId)
-                          .once("value")
-                          .then(subsnap => {details = {...details, otherUserAvatar: subsnap.val()}})
-                          .catch(err => console.log('Error Loading Avatar:',err.message));
-                    await firebaseSvc
-                          .industryRef(details.otherUserId)
-                          .once("value")
-                          .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
-                          .catch(err => console.log('Error Loading Avatar:',err.message));
-
-                    newData = newData.concat(details);
+                  for(let [key, value] of Object.entries(ids)) {
+                    newData = newData.concat(value);
                   }
-                  newData.sort(function (a, b) {
-                    let x = new Date(a.datetime)
-                    let y = new Date(b.datetime)
-                    return x <= y ? -1 : 1
-                  });
                   setData(newData);
                 }
               },
@@ -79,7 +58,7 @@ function MatchesHistory (props, {navigation}) {
           console.log('matchHistory clean up!');
           firebaseSvc.matchIDsOff();
         }
-    }, [matchIDs])
+    }, [])
 
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
@@ -87,6 +66,27 @@ function MatchesHistory (props, {navigation}) {
       })
       return unsubscribe;
     }, [navigation])
+
+    const unblockAlert = (text, item) =>
+        Alert.alert(
+            text, 'Your chat history will be lost forever.',
+        [
+            {
+            text: "No",
+            onPress: () => console.log("Cancel Pressed"),
+            style: "cancel"
+            },
+            { text: "Yes", onPress: async() => {
+                let res = await firebaseSvc.unblockUser(item.id)
+                if(res == UNBLOCK_SUCCESS) {
+                    setSelectedID(Math.random())
+                } else {
+                    Alert.alert("Sorry, user could not be unblocked.", "Try again later.")
+                }
+            }
+            }
+        ]
+        )
     
     return (
       <SafeAreaView>
@@ -98,14 +98,19 @@ function MatchesHistory (props, {navigation}) {
               containerStyle={{borderBottomWidth:5, height: 110}}
               key={index} 
               roundAvatar>
-                <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
+                <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.avatar}}/>
                 <ListItem.Content>
-                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${item.name}`}</ListItem.Title>
                 </ListItem.Content>
+                <TouchableOpacity onPress={() => {
+                  let text = `Are you sure you wish to unblock ${item.name}?`
+                    unblockAlert(text, item)
+                }}>
+                    <MaterialCommunityIcons name="account-off-outline" size={28}/>
+                </TouchableOpacity>
               </ListItem>
             )}
-            keyExtractor={item => item.datetime}
+            keyExtractor={item => item.id}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
             // ListFooterComponent={renderFooter(loading)}
@@ -121,4 +126,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(MatchesHistory);
+export default connect(mapStateToProps, mapDispatchProps)(BlockedUsers);
