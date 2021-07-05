@@ -16,6 +16,7 @@ import { Conversation } from './src/screens/Chats/Conversation';
 import GobbleSelect from './src/screens/Gobble/GobbleSelect';
 import ProfileDrawer from './src/components/ProfileDrawer';
 import Test from './src/components/Test';
+import DestinationSearch from './src/components/DestinationSearch';
 
 const Stack = createStackNavigator();
 
@@ -24,9 +25,16 @@ export default function App() {
   return (
     <NavigationContainer>
       <Provider store={store}>
-          <Stack.Navigator initialRouteName="Login"
+          <Stack.Navigator initialRouteName="search"
           >
-            <Stack.Screen name="Login" options={{headerShown: false}} component={Login}></Stack.Screen>
+            <Stack.Screen name="search" options={{headerShown: false}} component={DestinationSearch}></Stack.Screen>
+          </Stack.Navigator>
+      </Provider> 
+    </NavigationContainer>
+  );
+}
+
+{/* <Stack.Screen name="Login" options={{headerShown: false}} component={Login}></Stack.Screen>
             <Stack.Screen name="RegisterNavigator" options={{headerShown: false}} component={RegisterNavigator}></Stack.Screen>
             <Stack.Screen name="BottomTabs" options={{headerShown: false}} component={BottomTabs}></Stack.Screen>
             <Stack.Screen name="FinalStep" options={{headerShown: false}} component={FinalStep}></Stack.Screen>
@@ -35,10 +43,4 @@ export default function App() {
             <Stack.Screen name="Reauthenticate" options={{headerShown: false}} component={Reauthenticate}></Stack.Screen>
             <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
             <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen>
-            <Stack.Screen name="Test" component={Test}></Stack.Screen>
-          </Stack.Navigator>
-      </Provider> 
-    </NavigationContainer>
-  );
-}
-
+            <Stack.Screen name="Test" component={Test}></Stack.Screen> */}

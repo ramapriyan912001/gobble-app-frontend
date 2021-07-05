@@ -1,18 +1,36 @@
-import React from 'react';
-
-import { View, TextInput, StyleSheet } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import { SafeAreaView, View, TextInput, StyleSheet } from 'react-native';
+import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 
 
 export default function DestinationSearch(props) {
 
     const [locationText, setLocationText] = useState('');
+    const [location, setLocation] = useState({})
+
+    useEffect(() => {
+      if(location) {
+        console.log("redirect to result")
+      }
+    }, [location])
     return (
-    <View style={styles.container}>
-        <TextInput style={styles.textInput}
-        placeholder="Where will you be?"
-        value={locationText}
-        onChangeText={setLocationText}></TextInput>
-    </View>
+    <SafeAreaView>
+      <View style={styles.container}>
+        <GooglePlacesAutocomplete
+          placeholder='Where will you be?'
+          fetchDetails
+          styles={{textInput: styles.textInput}}
+          onPress={(data, details=null) => {
+            // 'details' is provided when fetchDetails = true
+            setLocation({data, details})
+          }}
+          query={{
+            key: 'AIzaSyC6h4poHiCJzIWZGNZ5JThvwpTjk0q7eWo',
+            language: 'en',
+          }}
+        />
+      </View>
+    </SafeAreaView>
     )
 }
 
