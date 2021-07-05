@@ -177,7 +177,7 @@ function MealPreferences(props) {
                 </View>
                 <View style={{marginLeft: '7.5%', marginTop: '5%'}}>
                         <TouchableOpacity style={[styles.longButton, themes.editButtonTheme(isLight)]} onPress={() => {
-                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             console.log("Changing Preferences");
                             props.updateCurrentUserCollection({...props.currentUserData, cuisine: cuisine, diet: diet, industry: industry, crossIndustrial: crossIndustrial})
                             setEdit(false);
@@ -185,7 +185,7 @@ function MealPreferences(props) {
                             <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Confirm</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[{...styles.longButton, marginBottom: '20%'}, themes.editButtonTheme(isLight)]} onPress={() => {
-                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                            setEdit(false);
                            setState();
                         }}>
@@ -207,7 +207,7 @@ function MealPreferences(props) {
                 </View>
                 <View style={{marginLeft: '7.5%', marginTop: '5%'}}>
                         <TouchableOpacity style={[styles.longButton, themes.editButtonTheme(isLight)]} onPress={() => {
-                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             console.log("Editing Preferences")
                             setEdit(true);
                             // props.navigation.navigate('UpdateProfile')
@@ -215,7 +215,7 @@ function MealPreferences(props) {
                             <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Edit Preferences</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={[{...styles.longButton, marginBottom: '20%'}, themes.editButtonTheme(isLight)]} onPress={() => {
-                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             signOutUser();
                             props.navigation.navigate('Login')}}>
                             <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Sign Out</Text>

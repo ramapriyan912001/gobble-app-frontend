@@ -1,5 +1,5 @@
 import React, {useState} from 'react'
-import {Text, View, SafeAreaView, TouchableOpacity, Button, StyleSheet} from 'react-native'
+import {Text, View, SafeAreaView, TouchableOpacity, Platform, StyleSheet} from 'react-native'
 import {Picker} from '@react-native-picker/picker'
 import {pickerStyles, buttonStyles, containerStyles} from '../../styles/LoginStyles'
 import firebaseSvc from '../../firebase/FirebaseSvc'
@@ -43,7 +43,7 @@ export default function RegisterPage3(props) {
      */
     const dietaryOptions = (() => {
         let i = 0;
-        return DIETS.map(diet => (<Picker.Item label={diet} color={themes.oppositeTheme(isLight)} value={diet} key={i++}/>));
+        return DIETS.map(diet => (<Picker.Item label={diet} color={Platform.OS === 'ios'? themes.oppositeTheme(isLight) : themes.oppositeTheme(!isLight)} value={diet} key={i++}/>));
     })();
 
     /**
@@ -53,7 +53,7 @@ export default function RegisterPage3(props) {
      */
     const cuisineOptions = (() => {
         let i = 0;
-        return CUISINES.map(cuisine => (<Picker.Item label={cuisine} color={themes.oppositeTheme(isLight)} value={cuisine} key={i++}/>));
+        return CUISINES.map(cuisine => (<Picker.Item label={cuisine} color={Platform.OS === 'ios'? themes.oppositeTheme(isLight) : themes.oppositeTheme(!isLight)} value={cuisine} key={i++}/>));
     })();
 
     /**
@@ -64,7 +64,7 @@ export default function RegisterPage3(props) {
      const industryLabels = (() => {
         let pickerItems = [];
         for (let [code, industryTitle] of Object.entries(industries)) {
-            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} color={themes.oppositeTheme(isLight)} value ={code}/>);
+            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} color={Platform.OS === 'ios'? themes.oppositeTheme(isLight) : themes.oppositeTheme(!isLight)} value ={code}/>);
         }
         return pickerItems;
     })();
@@ -77,52 +77,53 @@ export default function RegisterPage3(props) {
 
     return (
     <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
-        <Text style={[pickerStyles.text, themes.textTheme(isLight)]}>Dietary Preference is {`${diet}\n`}</Text>
+        <Text style={[pickerStyles.text, themes.textTheme(isLight)]}>Dietary Preference is {`${diet}`}</Text>
         {((!showCuisines && !showIndustries && !showDiets) || (showDiets)) &&
-            <Button
-            title={`Tap here to ${pickerText(showDiets)}`}
-            color={themes.oppositeTheme(isLight)}
+            <TouchableOpacity
             onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            showHideDiets();}}/>}
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+            showHideDiets();}}>
+                <Text style={[{fontSize:15},themes.textTheme(isLight)]}>{`Tap here to ${pickerText(showDiets)}`}</Text>
+            </TouchableOpacity>}
             {(showDiets && !showCuisines && !showIndustries) &&
             <Picker
                         selectedValue={diet}
                         onValueChange={(newDiet, itemIndex) => {setDietPreference(newDiet)}}
-                        style={pickerStyles.picker}
+                        style={{...pickerStyles.picker, color: themes.oppositeTheme(isLight)}}
                         enabled= {true}
                         >
                     {dietaryOptions}
             </Picker>}
         <Text style={[pickerStyles.text, themes.textTheme(isLight)]}>Cuisine Preference is {`${cuisine}`}</Text>
         {((!showCuisines && !showIndustries && !showDiets) || (showCuisines)) && 
-            <Button 
-            title={`Tap here to ${pickerText(showCuisines)}`}
-            color={themes.oppositeTheme(isLight)}
+            <TouchableOpacity
             onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            showHideCuisines();}}/>}
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+            showHideCuisines();}}>
+                <Text style={[{fontSize:15},themes.textTheme(isLight)]}>{`Tap here to ${pickerText(showCuisines)}`}</Text>
+            </TouchableOpacity>
+            }
             {(!showDiets && showCuisines && !showIndustries) &&
             <Picker
                 selectedValue={cuisine}
                 onValueChange={(newCuisineItem, itemIndex) => {setCuisinePreference(newCuisineItem)}}
-                style={pickerStyles.picker}
+                style={{...pickerStyles.picker, color: themes.oppositeTheme(isLight)}}
                 >
                 {cuisineOptions}
             </Picker>}
         <Text style={[pickerStyles.text, themes.textTheme(isLight)]}>Industry: {`${INDUSTRY_CODES[industry]}`}</Text>
         {((!showCuisines && !showIndustries && !showDiets) || (showIndustries)) && 
-            <Button 
-            title={`Tap here to ${pickerText(showIndustries)}`} 
-            color={themes.oppositeTheme(isLight)}
+            <TouchableOpacity
             onPress={() => {
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-            showHideIndustries();}}/>}
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+            showHideIndustries();}}>
+                <Text style={[{fontSize:15},themes.textTheme(isLight)]}>{`Tap here to ${pickerText(showIndustries)}`} </Text>
+            </TouchableOpacity>}
             {(!showDiets && !showCuisines && showIndustries) &&
             <Picker
                         selectedValue={industry}
                         onValueChange={(newIndustry, itemIndex) => {setIndustry(newIndustry)}}
-                        style={pickerStyles.individualPicker}
+                        style={{...pickerStyles.picker, color: themes.oppositeTheme(isLight)}}
                         enabled= {true}
                         >
                         {industryLabels}
@@ -130,7 +131,7 @@ export default function RegisterPage3(props) {
         {(!showDiets && !showCuisines && !showIndustries) &&
             <View style={containerStyles.buttonRow}>
             <TouchableOpacity style={[styles.tinyButton, themes.buttonTheme(isLight)]} onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                 props.navigation.goBack();}}>
                 <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Back</Text>
             </TouchableOpacity>
@@ -138,7 +139,7 @@ export default function RegisterPage3(props) {
                             onPress={
                                 () => {
                                         console.log('Register Page 3 done!');
-                                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                         updatePreferences(diet, cuisine, industry);
                                 }
                             }>

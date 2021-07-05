@@ -63,12 +63,12 @@ export default function Reauthenticate(props) {
                         />
                     </View>
                     <TouchableOpacity style={[buttonStyles.forgotButton, themes.buttonTheme(isLight)]} onPress={()=> {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         props.navigation.navigate('ForgotPassword');}}>
                     <Text style={[buttonStyles.forgotButtonText, themes.textTheme(!isLight)]}>Forgot Password?</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         onPressAuth();}}>
                     <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Log In</Text>
                     </TouchableOpacity>

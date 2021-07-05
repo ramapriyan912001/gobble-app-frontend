@@ -60,12 +60,12 @@ function PersonalDetails(props) {
             </View>
             <View style={{marginLeft: '7.5%'}}>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         props.navigation.navigate('ForgotPassword')}}>
                         <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Reset Password</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         signOutUser();
                         props.navigation.navigate('Login')}}>
                         <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Sign Out</Text>

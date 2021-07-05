@@ -42,13 +42,13 @@ export default function ForgotPassword(props) {
             />
             <Text style={[inputStyles.subText, themes.textTheme(isLight)]}>Note: If you have not registered before, no email will be sent</Text>
             <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                 resetPassword(email)
                 props.navigation.goBack()}}>
                 <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Send Reset Email</Text>
             </TouchableOpacity>
             <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                 props.navigation.goBack();}}>
                 <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Back</Text>
             </TouchableOpacity>

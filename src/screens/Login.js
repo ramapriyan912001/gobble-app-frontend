@@ -81,19 +81,19 @@ export default function Login(props) {
                         />
                     </View>
                     <TouchableOpacity style={buttonStyles.forgotButton} onPress={()=> {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         props.navigation.navigate('ForgotPassword');}}>
                         <Text style={[buttonStyles.forgotButtonText, themes.textTheme(isLight)]}>Forgot Password?</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         onPressLogin();
                         }}>
                         <Text style={[buttonStyles.loginButtonText, themes.oppositeTextTheme(isLight)]}>Log In</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]}
                     onPress={()=> {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         props.navigation.navigate('Welcome');}}>
                         <Text style={[buttonStyles.loginButtonText, themes.oppositeTextTheme(isLight)]}>Back</Text>
                     </TouchableOpacity>

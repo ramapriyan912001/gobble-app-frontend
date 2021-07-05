@@ -105,7 +105,7 @@ export const pickerStyles = StyleSheet.create({
         height: '28%',
         alignSelf:'center',
         width: '90%',
-        marginBottom:'5%'
+        marginBottom:'5%',
     },
     individualPicker:{
         height: '28%',
@@ -129,10 +129,11 @@ export const pickerStyles = StyleSheet.create({
     },
     text:{
         marginVertical:'3%',
-        fontSize: 15,
+        fontSize: 18,
         paddingHorizontal:'5%',
         fontWeight:'bold',
         alignSelf:'center',
+        textAlign:'center'
     },
     switch:{
         alignSelf:'center'
@@ -165,11 +166,11 @@ export const inputStyles = StyleSheet.create({
     },
 
     headerText: {
-        fontSize: 35,
+        fontSize: 28,
         fontWeight: 'bold',
         alignSelf:"center",
         textAlign: 'center',
-        marginBottom: '10%'
+        marginBottom: '5%'
     },
 
     subHeader: {

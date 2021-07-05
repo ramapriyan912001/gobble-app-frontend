@@ -84,4 +84,16 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         elevation: 5,
     },
+    image: {
+        width: '70%',
+        height: '40%',
+        marginTop: '0%'
+    },
+    caption: {
+        fontSize: 38,
+        fontWeight: 'bold',
+        marginBottom: '0%',
+        textAlign: 'left',
+        marginLeft:'1%'
+    },
 })

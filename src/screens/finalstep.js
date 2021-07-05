@@ -22,7 +22,7 @@ export default function FinalStep(props) {
                     <StatusBar style="auto"/>
                     <Text style={[inputStyles.headerText, themes.textTheme(isLight)]}>We're all Set Up.{"\n"}You can now log in to Gobble!</Text>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         props.navigation.navigate('Login');}}>
                         <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Log In</Text>
                     </TouchableOpacity>

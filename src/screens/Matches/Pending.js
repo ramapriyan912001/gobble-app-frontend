@@ -54,7 +54,7 @@ import {styles} from '../../styles/RegisterStyles';
                             {!matchIDs[item.matchID] && 
                             <TouchableOpacity onPress={async() => 
                               {
-                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                 let res = await firebaseSvc.matchConfirm(item)
                                 let replacementSelectedID = Math.random()
                                 switch(res) {
@@ -87,7 +87,7 @@ import {styles} from '../../styles/RegisterStyles';
                             
                             {!matchIDs[item.matchID] &&
                             <TouchableOpacity onPress={() => {
-                              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                               let replacementSelectedID = Math.random();
                               console.log('Declined')
                               firebaseSvc.matchDecline(item)
@@ -101,7 +101,7 @@ import {styles} from '../../styles/RegisterStyles';
                             {matchIDs[item.matchID] &&
                             <TouchableOpacity onPress={async() => 
                               {
-                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                 let unacceptRes = await firebaseSvc.matchUnaccept(item)
                                 let replacementSelectedID = Math.random()
                                 switch(unacceptRes) {

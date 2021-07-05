@@ -132,10 +132,10 @@ export default function RegisterPage2(props) {
         {!hasAvatar && <Text numberOfLines={2} style={[specificStyles.caption, themes.textTheme(isLight)]}>Select a profile picture, {user.name}!</Text>}
         {hasAvatar && <Text numberOfLines={2} style={[specificStyles.caption, themes.textTheme(isLight)]}>Looking good, {user.name}!</Text>}
         {hasAvatar && <Text numberOfLines={2} style={[specificStyles.loading, themes.textTheme(isLight)]}>{'(Image might take a few seconds to load)'}</Text>}
-        <View style={{marginBottom: '5%', marginTop: '20%'}}>
+        <View style={{marginBottom: '0%', marginTop: '13%'}}>
             {(<Image style={{...specificStyles.profilePic, borderRadius: 120}} source={{uri:avatar}}/>)}
-            <TouchableOpacity style={[themes.buttonTheme(isLight)]} onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            <TouchableOpacity onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                 if(!hasAvatar) {
                     setHasAvatar(true)
                     updateImage()
@@ -144,11 +144,11 @@ export default function RegisterPage2(props) {
 
                 }
                 }}>
-            <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color="#000000" style={styles.icon}></AntDesign>
+            <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color={themes.oppositeTheme(isLight)} style={specificStyles.icon}></AntDesign>
             </TouchableOpacity>
         </View>
-        <TouchableOpacity style={[{...styles.longButton, marginTop: '20%'}, themes.buttonTheme(isLight)]} onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+        <TouchableOpacity style={[{...styles.longButton, marginTop: '15%'}, themes.buttonTheme(isLight)]} onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                 updateImage()
                 setHasAvatar(true)
                 }}>
@@ -156,7 +156,7 @@ export default function RegisterPage2(props) {
         </TouchableOpacity>
         <View style={containerStyles.buttonRow}>
             <TouchableOpacity style={[styles.tinyButton, themes.buttonTheme(isLight)]} onPress={() => {
-                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                 props.navigation.goBack();
                 }}>
                 <Text style={[buttonStyles.loginButtonText, themes.oppositeTextTheme(isLight)]}>Back</Text>
@@ -164,7 +164,7 @@ export default function RegisterPage2(props) {
             <TouchableOpacity style={[styles.tinyButton, themes.buttonTheme(isLight)]} 
                             onPress={
                                 () => {
-                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                     console.log('Register Page 2 done!');
                                     updateAvatar(avatar);
                                 }
@@ -182,24 +182,21 @@ export default function RegisterPage2(props) {
             alignSelf: 'center',
         },
         caption: {
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: 'bold',
             alignSelf: 'center',
-            margin: '0%',
-            marginVertical: '0%',
-            marginBottom: '5%'
         },
 
         loading: {
             alignSelf: 'center',
-            margin: '0%',
-            marginVertical: '0%',
+            marginBottom:'-6%'
         },
 
         icon: {
             alignSelf: 'center',
             marginLeft: '45%',
-            marginBottom: '0%',
-            marginTop: '-12%'
+            marginRight:'2%',
+            marginBottom: '5%',
+            marginTop: '-5%'
         },
     })

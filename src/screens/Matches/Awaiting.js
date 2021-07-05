@@ -113,7 +113,7 @@ function Awaiting (props, {navigation}) {
                 <View style={{flexDirection: 'column'}}>
                 <TouchableOpacity onPress={async() => 
                               {
-                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                 props.navigation.navigate('Edit Gobble Request', {edit: true, request: item})
                                 console.log('Edit awaiting')
                               }}>
@@ -121,7 +121,7 @@ function Awaiting (props, {navigation}) {
                 </TouchableOpacity>
                 <TouchableOpacity onPress={async() => 
                               {
-                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                 let replacementSelectedID = Math.random()
                                 firebaseSvc.deleteAwaitingRequest(item);
                                 setSelectedID(replacementSelectedID)

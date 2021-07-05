@@ -22,7 +22,7 @@ export function GobbleConfirm(props) {
                 <Text style={[inputStyles.subHeader, themes.textTheme(isLight)]}>We found your Gobblemate!</Text>
                 <Text style={[inputStyles.subHeader, themes.textTheme(isLight)]}>Click Done and head over to Matches to who you have matched with!</Text>
                 <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                     props.navigation.navigate('GobbleSelect');
                 }}>
                     <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Done!</Text>
@@ -35,7 +35,7 @@ export function GobbleConfirm(props) {
                 <Text style={[inputStyles.subHeader, themes.textTheme(isLight)]}>We have not found your Gobblemate just yet!</Text>
                 <Text style={[inputStyles.subHeader, themes.textTheme(isLight)]}>Click Done and Head over to Matches to see your Gobble request!</Text>
                 <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                     props.navigation.navigate('GobbleSelect');
                 }}>
                     <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Done!</Text>

@@ -136,7 +136,7 @@ export default function register(props) {
 
                         onPress={() => {
                                 let user = createUserProfile();
-                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                 validateInput({...user, name: name, email: email, password: password});
                             }}
                     >
@@ -144,7 +144,7 @@ export default function register(props) {
 
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         props.navigation.navigate('Welcome');}}>
                         <Text style={[buttonStyles.longButtonText, themes.oppositeTextTheme(isLight)]}>Back</Text>
                     </TouchableOpacity>

@@ -38,7 +38,7 @@ export default function AboutPerson(props) {
             </View>
             <View style={{marginLeft: '7.5%'}}>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         // TODO: Need to make blockUser functionality
                         // blockUser();
                         // props.navigation.navigate('Chatroom')
@@ -46,7 +46,7 @@ export default function AboutPerson(props) {
                         <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Block User</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         // TODO: Need to make reportUser functionality
                         // reportUser();
                         // props.navigation.navigate('ChatRoom')

@@ -202,7 +202,7 @@ function GobbleSelect(props, {navigation}) {
                         <Button 
                             title={`Chosen: ${dateStringMaker(date.toString())} ${'\n'}Click me to ${pickerText()}`} 
                             onPress={() => {
-                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                 showPicker();}} 
                             color={themes.oppositeTheme(isLight)}/>
                         
@@ -242,7 +242,7 @@ function GobbleSelect(props, {navigation}) {
             <View style={{marginTop: '3%', marginBottom: '2%'}}>
                 {!isPickerShow && <TouchableOpacity style={[{...styles.longButton, marginTop: '0%'}, themes.buttonTheme(isLight)]} 
                     onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         submitGobble();
                         }}>
                     <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>{props.route.params ? `Edit Gobble` : `Submit Gobble`}</Text>
