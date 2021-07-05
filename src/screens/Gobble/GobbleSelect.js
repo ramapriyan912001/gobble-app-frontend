@@ -130,7 +130,11 @@ function GobbleSelect(props, {navigation}) {
   const pickerText = () => isPickerShow ? 'Close' : 'choose Date & Time';
 
   const onChange = (event, value) => {
-    setDate(value);
+    if (value == null) {
+
+    } else {
+        setDate(value);
+    }
     setDateSelected(true)
     if (Platform.OS === 'android') {
       setIsPickerShow(false);
@@ -185,13 +189,15 @@ function GobbleSelect(props, {navigation}) {
       }
   }
 
+  const topMargin = Platform.OS === 'ios' ? '2%':'12%';
+
   const handleConfirm = (date) => {
     setDate(date);
     hideDatePicker();
   };
     return (
         <SafeAreaView style={[{flex: 1}, themes.containerTheme(isLight)]}>
-            <View style={{marginTop: '2%'}}>
+            <View style={{marginTop: topMargin}}>
                         <Text style={[{...inputStyles.headerText, fontSize: 20, marginHorizontal: '2%', marginBottom: '5%', fontWeight: '800'}, themes.textTheme(isLight)]}>
                                 Select your preferences and Gobble!
                         </Text>
@@ -199,12 +205,13 @@ function GobbleSelect(props, {navigation}) {
             <ScrollView>
             <View>
                         <Text style={[{...inputStyles.subHeader, marginTop: '0%', }, themes.textTheme(isLight)]}>Pick out your preferred Date & Time</Text>
-                        <Button 
-                            title={`Chosen: ${dateStringMaker(date.toString())} ${'\n'}Click me to ${pickerText()}`} 
+                        <TouchableOpacity 
+                            style={{alignSelf:'center'}}
                             onPress={() => {
                                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                                showPicker();}} 
-                            color={themes.oppositeTheme(isLight)}/>
+                                showPicker();}}>
+                            <Text style={themes.textTheme(isLight)}>{`Chosen: ${dateStringMaker(date.toString())} ${'\n'}Click me to ${pickerText()}`} </Text>
+                        </TouchableOpacity>
                         
                         {/* The date picker */}
                         {isPickerShow && (

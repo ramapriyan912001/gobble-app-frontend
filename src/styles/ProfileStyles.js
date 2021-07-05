@@ -117,12 +117,13 @@ export const profileStylesAddition = StyleSheet.create({
       labelStyle: {
           justifyContent: 'center',
           alignSelf:'center',
-          borderBottomWidth: 1
+          borderBottomWidth: 1,
       },
       inputStyle: {
           width: 5,
           margin:0,
           padding:0,
           textAlign:'center',
+          fontSize:12,    
       },
 })

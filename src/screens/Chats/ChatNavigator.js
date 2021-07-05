@@ -1,5 +1,5 @@
 import React from 'react'
-import {View, Text, Button} from 'react-native'
+import {View, Text, TouchableOpacity} from 'react-native'
 import {containerStyles} from '../../styles/LoginStyles'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -43,10 +43,11 @@ export function ChatNavigator() {
                         backgroundColor: themes.oppositeTheme(!isLight),
                     },
                 headerTintColor:themes.oppositeTheme(isLight),
-                headerRight: () => (<Button
+                headerRight: () => (<TouchableOpacity
                                         onPress= {() => navigation.navigate('otherProfile', {otherUserID: route.params.metadata.otherUserId, name: route.params.metadata.name})}
-                                        title= 'Details' 
-                                    />),
+                                    >
+                                        <Text style={themes.textTheme(isLight)}>Details</Text>
+                                    </TouchableOpacity>),
                 headerBackTitle:'Back'
             })} component={Conversation}></Stack.Screen>
             <Stack.Screen name="otherProfile" options={({ route }) => ({headerShown:true, headerTitle: route.params.name,

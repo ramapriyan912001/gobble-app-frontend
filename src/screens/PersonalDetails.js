@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Platform } from 'react-native'
 import {Input} from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -32,6 +32,7 @@ function PersonalDetails(props) {
         setEmail(props.currentUserData.email)
         setDob(props.currentUserData.dob)
         setDateJoined(props.currentUserData.dateJoined)
+        
     })
 
     const signOutSuccess = () => {
@@ -46,6 +47,14 @@ function PersonalDetails(props) {
         console.log('Sign Out Error: ' + err.message);
         Alert.alert('Sign Out Error. Try Again Later');
     }
+
+    const getDate = (date) => {
+        if (date === ''|| date == null) {
+            return date;
+        } else {
+            return date.slice(0,15);
+        }
+    };
     
     const signOutUser = () => firebaseSvc.signOut(signOutSuccess, signOutFailure);
     return (
@@ -55,8 +64,8 @@ function PersonalDetails(props) {
             <Input label='Email' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={email} editable={false}></Input>
             </View>
             <View style={profileStylesAddition.item}>
-            <Input label='Date of Birth' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={dob} editable={false}></Input>
-            <Input label='Date Joined' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={dateJoined} editable={false}></Input>
+            <Input label='Date of Birth' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={getDate(dob)} editable={false}></Input>
+            <Input label='Date Joined' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={getDate(dateJoined)} editable={false}></Input>
             </View>
             <View style={{marginLeft: '7.5%'}}>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {

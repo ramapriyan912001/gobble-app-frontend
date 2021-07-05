@@ -155,6 +155,7 @@ import {styles} from '../../styles/RegisterStyles';
                             .once("value")
                             .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
                             .catch(err => console.log('Error Loading Avatar:',err.message));
+                      console.log(details);
                     newData = newData.concat(details);
                   }
                   newData.sort(function (a, b) {
