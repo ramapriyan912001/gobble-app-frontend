@@ -11,9 +11,15 @@ import { fetchAuthUser, fetchUserData } from '../../redux/actions/actions'
 import { INDUSTRY_CODES } from '../../constants/objects'
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import PersonalDetails from '../PersonalDetails'
-import MealPreferences from '../MealPreferences'
 import { Avatar } from 'react-native-elements'
-import MealPreferences2 from '../MealPreferences2'
+import MealPreferences from '../MealPreferences'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { Header } from 'react-native-elements'
+import { DrawerActions } from '@react-navigation/native';
+
+// props.navigation.dispatch(DrawerActions.closeDrawer());
+
+
 const Tab = createMaterialTopTabNavigator();
 
 /**
@@ -41,7 +47,6 @@ function Profile(props) {
      * Asynchronous FUnction to load Profile Data
      */
     async function loadDataAsync () {
-        console.log(props.currentUserData)
         try {
             await props.fetchUserData();
             setUserInfo(props.currentUserData);
@@ -61,15 +66,17 @@ function Profile(props) {
         <SafeAreaView style={{flex: 1}}>
             <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
             <StatusBar style="auto"/>
+            <TouchableOpacity onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
+                <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%'}} size={30}></Ionicons>
+            </TouchableOpacity>
             <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: props.currentUserData.avatar}}/>
             <Text style={{...inputStyles.headerText, fontWeight:'400', marginBottom: '0%',fontSize: 26}}>{`${props.currentUserData.name}, ${getAge(props.currentUserData.dob)}`}</Text>
             <Text style={{...inputStyles.headerText, fontWeight: '300', marginBottom: '2%',fontSize: 16}}>{`${INDUSTRY_CODES[props.currentUserData.industry]}`}</Text>
             <Tab.Navigator initialRouteName="Ongoing" style={{marginTop: '0%',paddingTop:'0%', backgroundColor:'white'}}>
             <Tab.Screen name="Personal Details" component={PersonalDetails} />
-            <Tab.Screen name="Meal Preferences" component={MealPreferences2} />
+            <Tab.Screen name="Meal Preferences" component={MealPreferences} />
             </Tab.Navigator>
             </ScrollView>
-
         </SafeAreaView>
     );  
 }
