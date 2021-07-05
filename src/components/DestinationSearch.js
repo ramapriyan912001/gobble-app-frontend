@@ -1,12 +1,24 @@
 import React, {useEffect, useState} from 'react';
-import { SafeAreaView, View, TextInput, StyleSheet } from 'react-native';
+import { SafeAreaView, View, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
-
+import { Ionicons } from '@expo/vector-icons';
+import PlaceRow from './PlaceRow';
+// navigator.geolocation = require('@react-native-community/geolocation');
+// navigator.geolocation = require('react-native-geolocation-service');
 
 export default function DestinationSearch(props) {
 
     const [locationText, setLocationText] = useState('');
     const [location, setLocation] = useState({})
+
+    const homePlace = {
+        description: 'Home',
+        geometry: { location: { lat: 48.8152937, lng: 2.4597668 } },
+      };
+      const workPlace = {
+        description: 'Work',
+        geometry: { location: { lat: 48.8496818, lng: 2.2940881 } },
+      };
 
     useEffect(() => {
       if(location) {
@@ -15,19 +27,42 @@ export default function DestinationSearch(props) {
     }, [location])
     return (
     <SafeAreaView>
-      <View style={styles.container}>
-        <GooglePlacesAutocomplete
-          placeholder='Where will you be?'
-          fetchDetails
-          styles={{textInput: styles.textInput}}
+      <View style={{...styles.container, flexDirection: 'row'}}>
+          <View
+          style={{marginTop: '0%'}}>
+              <TouchableOpacity onPress={() => {
+                  props.navigation.goBack()
+              }}>
+                <Ionicons style={{alignSelf: 'center'}} name="arrow-back" size={30}></Ionicons>
+              </TouchableOpacity>
+          </View>
+          <GooglePlacesAutocomplete
+          placeholder="Where will you be?"
           onPress={(data, details=null) => {
             // 'details' is provided when fetchDetails = true
             setLocation({data, details})
-          }}
-          query={{
+            console.log(data)
+            props.navigation.navigate('gobble', {location: location})
+        }}
+        query={{
             key: 'AIzaSyC6h4poHiCJzIWZGNZ5JThvwpTjk0q7eWo',
             language: 'en',
+            // components: 'country:sg'
+        }}
+          enablePoweredByContainer={false}
+          suppressDefaultStyles
+          currentLocation={true}
+          currentLocationLabel='Current location'
+          styles={{
+            textInput: styles.textInput,
+            container: styles.autocompleteContainer,
+            listView: styles.listView,
+            separator: styles.separator,
           }}
+          fetchDetails
+          renderRow={(data) => <PlaceRow data={data} />}
+          renderDescription={(data) => data.description || data.vicinity}
+        //   predefinedPlaces={[homePlace, workPlace]}
         />
       </View>
     </SafeAreaView>
@@ -42,8 +77,8 @@ const styles = StyleSheet.create({
     textInput: {
       padding: 10,
       backgroundColor: '#eee',
-      marginVertical: 5,
-      marginLeft: 20,
+      marginVertical: 0,
+      marginLeft: 10,
     },
   
     separator: {
@@ -51,54 +86,14 @@ const styles = StyleSheet.create({
       height: 1,
     },
     listView: {
-      position: 'absolute',
-        top: 105,
+        top: '2%',
     },
     autocompleteContainer: {
-      position: 'absolute',
       top: 0,
-      left: 10,
+      left: 0,
       right: 10,
-    },
-  
-    row: {
-      flexDirection: 'row',
-      alignItems: 'center',
-      marginVertical: 10,
-    },
-    iconContainer: {
-      backgroundColor: '#a2a2a2',
-      padding: 5,
-      borderRadius: 50,
-      marginRight: 15,
     },
     locationText: {
   
-    },
-  
-    circle: {
-      width: 5,
-      height: 5,
-      backgroundColor: 'black',
-      position: 'absolute',
-      top: 20,
-      left: 15,
-      borderRadius: 5,
-    },
-    line: {
-      width: 1,
-      height: 50,
-      backgroundColor: '#c4c4c4',
-      position: 'absolute',
-      top: 28,
-      left: 17,
-    },
-    square: {
-      width: 5,
-      height: 5,
-      backgroundColor: 'black',
-      position: 'absolute',
-      top: 80,
-      left: 15,
     },
   });

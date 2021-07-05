@@ -17,6 +17,9 @@ import GobbleSelect from './src/screens/Gobble/GobbleSelect';
 import ProfileDrawer from './src/components/ProfileDrawer';
 import Test from './src/components/Test';
 import DestinationSearch from './src/components/DestinationSearch';
+import MapSelect from './src/components/MapSelect';
+import SearchBox from './src/components/SearchBox';
+import GobbleSelect2 from './src/screens/Gobble/GobbleSelect2';
 
 const Stack = createStackNavigator();
 
@@ -25,9 +28,12 @@ export default function App() {
   return (
     <NavigationContainer>
       <Provider store={store}>
-          <Stack.Navigator initialRouteName="search"
+          <Stack.Navigator initialRouteName="gobble"
           >
             <Stack.Screen name="search" options={{headerShown: false}} component={DestinationSearch}></Stack.Screen>
+            <Stack.Screen name="map" options={{headerShown: false}} component={MapSelect}></Stack.Screen>
+            <Stack.Screen name="box" options={{headerShown: false}} component={SearchBox}></Stack.Screen>
+            <Stack.Screen name="gobble" options={{headerShown: false}} component={GobbleSelect2}></Stack.Screen>
           </Stack.Navigator>
       </Provider> 
     </NavigationContainer>
