@@ -863,16 +863,9 @@ makeGobbleRequest(ref, request, date) {
     updates[`/Users/${this.uid}/matchIDs`] = matches
     firebase.database().ref().update(updates)
   }
-  blockUser(otherUid, otherUserNameAndAvatar, matches, pendingMatches) {
+  blockUser(otherUid, otherUserNameAndAvatar) {
     let updates = {}
-    // if(matches) {
-    //   this.removeBlockedUserMatches(otherUid, matches)
-    //   console.log("blockedmatches")
-    // }
-    // if(pendingMatches) {
-    //   this.removeBlockedUserPendingMatches(otherUid, pendingMatches)
-    //   console.log("blockedpending")
-    // }
+
     return firebase.database().ref(`Users/${this.uid}/pendingMatchIDs`)
     .once("value")
     .then(snapshot => {

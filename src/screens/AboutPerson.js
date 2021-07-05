@@ -40,7 +40,7 @@ function AboutPerson(props, {navigation}) {
             style: "cancel"
             },
             { text: "Yes", onPress: async() => {
-                let res = await firebaseSvc.blockUser(otherUser.id, {name: otherUser.name, id: otherUser.id, avatar: otherUser.avatar}, props.currentUserData.matchIDs, props.currentUserData.pendingMatchIDs)
+                let res = await firebaseSvc.blockUser(otherUser.id, {name: otherUser.name, id: otherUser.id, avatar: otherUser.avatar})
                 if(res == BLOCK_SUCCESS) {
                     props.navigation.navigate('ChatRoom')
                 } else {
