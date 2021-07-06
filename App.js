@@ -38,16 +38,16 @@ export function App() {
       <Provider store={store}>
           <Stack.Navigator initialRouteName="Welcome" 
           >
-            <Stack.Screen name="Welcome" options={{headerShown: false}} component={Welcome}></Stack.Screen>
-            <Stack.Screen name="Login" options={{headerShown: false}} component={Login}></Stack.Screen>
-            <Stack.Screen name="RegisterNavigator" options={{headerShown: false}} component={RegisterNavigator}></Stack.Screen>
-            <Stack.Screen name="BottomTabs" options={{headerShown: false}} component={BottomTabs}></Stack.Screen>
-            <Stack.Screen name="FinalStep" options={{headerShown: false}} component={FinalStep}></Stack.Screen>
-            <Stack.Screen name="ForgotPassword" options={{headerShown: false}} component={ForgotPassword}></Stack.Screen>
-            <Stack.Screen name="Reauthenticate" options={{headerShown: false}} component={Reauthenticate}></Stack.Screen>
+            <Stack.Screen name="Welcome" options={{headerShown: false, gestureEnabled: false}} component={Welcome}></Stack.Screen>
+            <Stack.Screen name="Login" options={{headerShown: false, gestureEnabled: false}} component={Login}></Stack.Screen>
+            <Stack.Screen name="RegisterNavigator" options={{headerShown: false, gestureEnabled: false}} component={RegisterNavigator}></Stack.Screen>
+            <Stack.Screen name="BottomTabs" options={{headerShown: false, gestureEnabled: false}} component={BottomTabs}></Stack.Screen>
+            <Stack.Screen name="FinalStep" options={{headerShown: false, gestureEnabled: false}} component={FinalStep}></Stack.Screen>
+            <Stack.Screen name="ForgotPassword" options={{headerShown: false, gestureEnabled: false}} component={ForgotPassword}></Stack.Screen>
+            <Stack.Screen name="Reauthenticate" options={{headerShown: false, gestureEnabled: false}} component={Reauthenticate}></Stack.Screen>
             <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
             <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen>
-            <Stack.Screen name="Test" component={Test}></Stack.Screen>
+            <Stack.Screen name="Test" options={{headerShown: false, gestureEnabled: true}} component={Test}></Stack.Screen>
           </Stack.Navigator>
       </Provider> 
     </NavigationContainer>

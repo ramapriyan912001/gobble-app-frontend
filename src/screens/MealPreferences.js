@@ -177,7 +177,7 @@ function MealPreferences(props) {
                     items={industryLabels}
                 />
                 </View>
-                <View style={{marginLeft: '7.5%', marginTop: '5%'}}>
+                <View style={{marginLeft: '7.5%', marginTop: '3%'}}>
                         <TouchableOpacity style={[styles.longButton, themes.editButtonTheme(isLight)]} onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             console.log("Changing Preferences");
