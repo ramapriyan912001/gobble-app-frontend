@@ -28,6 +28,10 @@ export default function AppWrapper() {
 }
 import ProfileDrawer from './src/components/ProfileDrawer';
 import Test from './src/components/Test';
+import DestinationSearch from './src/components/DestinationSearch';
+import MapSelect from './src/components/MapSelect';
+import SearchBox from './src/components/SearchBox';
+import GobbleSelect2 from './src/screens/Gobble/GobbleSelect2';
 
 const Stack = createStackNavigator();
 
@@ -47,10 +51,10 @@ export function App() {
             <Stack.Screen name="Reauthenticate" options={{headerShown: false, gestureEnabled: false}} component={Reauthenticate}></Stack.Screen>
             <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
             <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen>
+            <Stack.Screen name="search" options={{headerShown: false}} component={DestinationSearch}></Stack.Screen>
             <Stack.Screen name="Test" options={{headerShown: false, gestureEnabled: true}} component={Test}></Stack.Screen>
           </Stack.Navigator>
       </Provider> 
     </NavigationContainer>
   );
 }
-
