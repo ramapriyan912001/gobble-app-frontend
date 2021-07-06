@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import { fetchAuthUser, clearData } from '../../redux/actions/actions'
 import {createStackNavigator} from '@react-navigation/stack'
 import ChatRoom from './ChatRoom'
-import otherProfile from '../otherProfile'
+import OtherProfile from '../OtherProfile'
 import { Conversation } from './Conversation'
 import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
@@ -47,19 +47,19 @@ export function ChatNavigator() {
                 },
                 headerTintColor:themes.oppositeTheme(isLight),
                 headerRight: () => (<TouchableOpacity
-                                        onPress= {() => navigation.navigate('otherProfile', {otherUserID: route.params.metadata.otherUserId, name: route.params.metadata.name})}
+                                        onPress= {() => navigation.navigate('OtherProfile', {otherUserID: route.params.metadata.otherUserId, name: route.params.metadata.name})}
                                         
                                     >
                                         <Text style={[themes.textTheme(isLight), {fontSize:17}]}>Details</Text>
                                     </TouchableOpacity>),
                 headerBackTitle:'Back'
             })} component={Conversation}></Stack.Screen>
-            <Stack.Screen name="otherProfile" options={({ route }) => ({headerShown:true, headerTitle: route.params.name,
+            <Stack.Screen name="OtherProfile" options={({ route }) => ({headerShown:true, headerTitle: route.params.name,
                 headerStyle:{
                         backgroundColor: themes.oppositeTheme(!isLight),
                     },
                     headerTintColor:themes.oppositeTheme(isLight)
-            })} component={otherProfile}></Stack.Screen>
+            })} component={OtherProfile}></Stack.Screen>
 
         </Stack.Navigator>
     )
