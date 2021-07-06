@@ -1,11 +1,15 @@
 import React, {useEffect, useState } from 'react'
-import {Text, View, TextInput, Alert, Image, TouchableOpacity, StatusBar} from 'react-native'
+import {Text, View, TextInput, Alert, Image, StyleSheet, TouchableOpacity, StatusBar} from 'react-native'
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../../styles/LoginStyles'
+import {styles} from '../../styles/RegisterStyles';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {MESSAGES} from '../../constants/messages'
 import firebaseSvc from '../../firebase/FirebaseSvc';
 import {onSuccess, onFailure, cancelRegistration, createUserProfile} from '../../services/RegistrationHandlers';
 import { EMPTY_AVATAR } from '../../constants/objects'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '../../styles/Themes';
 
 /**
  * The first page to register a new user
@@ -17,6 +21,8 @@ export default function register(props) {
     const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
     
     //Handlers for Action Failure:
     /**
@@ -78,65 +84,69 @@ export default function register(props) {
     };
 
     return(
-            <KeyboardAwareScrollView contentContainerStyle = {containerStyles.container} scrollEnabled={false}>
+            <KeyboardAwareScrollView contentContainerStyle = {[styles.container, themes.containerTheme(isLight)]} scrollEnabled={false}>
                     <Image style={imageStyles.gobbleImage} source = {require('../../images/gobble.png')}/>
                     <StatusBar style="auto"/>
-                    <Text style={inputStyles.headerText}>Introduce Yourself!</Text>
-                    <View style={inputStyles.inputView}>
+                    <Text style={[inputStyles.headerText, themes.textTheme(isLight)]}>Introduce Yourself!</Text>
+                    <View style={[styles.inputView, themes.viewTheme(isLight)]}>
                         <TextInput
                             autoCapitalize="none"
                             textContentType="username"
                             autoCompleteType="username"
-                            style={inputStyles.TextInput}
+                            style={[inputStyles.TextInput, themes.textTheme(isLight)]}
                             placeholder="Name"
-                            placeholderTextColor="#003f5c"
+                            placeholderTextColor={themes.oppositeTheme(isLight)}
                             onChangeText={(username) => setName(username)}
 
                         />
                     </View>
                         
-                    <View style={inputStyles.inputView}>
+                    <View style={[styles.inputView, themes.viewTheme(isLight)]}>
                         <TextInput
                             autoCapitalize="none"
                             textContentType="emailAddress"
                             autoCompleteType="email"
-                            style={inputStyles.TextInput}
+                            style={[inputStyles.TextInput, themes.textTheme(isLight)]}
                             placeholder="Email"
-                            placeholderTextColor="#003f5c"
+                            placeholderTextColor={themes.oppositeTheme(isLight)}
                             secureTextEntry={false}
-
                             onChangeText={(email) => setEmail(email)}
-
                         />
                     </View>
 
-                    <View style={inputStyles.inputView}>
+                    <View style={[inputStyles.inputView, themes.viewTheme(isLight)]}>
                         <TextInput
                             autoCapitalize="none"
                             passwordRules="minlength: 8; required: lower; required: upper; required: digit; required: [-];"
                             textContentType="password"
-                            style={inputStyles.TextInput}
+                            style={[inputStyles.TextInput, themes.textTheme(isLight)]}
                             placeholder="Password"
-                            placeholderTextColor="#003f5c"
-                            secureTextEntry={true}
-
-                            onChangeText={(password) => setPassword(password)}
-
-                        />
-                    </View>
-                    
-                    <TouchableOpacity style={buttonStyles.loginButton} 
-
-                        onPress={() => {
+                            returnKeyType='done'
+                            onSubmitEditing={() => {
                                 let user = createUserProfile();
                                 validateInput({...user, name: name, email: email, password: password});
                             }}
+                            placeholderTextColor={themes.oppositeTheme(isLight)}
+                            secureTextEntry={true}
+                            onChangeText={(password) => setPassword(password)}
+                        />
+                    </View>
+                    
+                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} 
+
+                        onPress={() => {
+                                let user = createUserProfile();
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                                validateInput({...user, name: name, email: email, password: password});
+                            }}
                     >
-                        <Text style={buttonStyles.loginButtonText}>Create Account</Text>
+                        <Text style={[buttonStyles.longButtonText, themes.oppositeTextTheme(isLight)]}>Create Account</Text>
 
                     </TouchableOpacity>
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.navigate('Login')}>
-                        <Text style={buttonStyles.loginButtonText}>Back to Login</Text>
+                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                        props.navigation.navigate('Welcome');}}>
+                        <Text style={[buttonStyles.longButtonText, themes.oppositeTextTheme(isLight)]}>Back</Text>
                     </TouchableOpacity>
             </KeyboardAwareScrollView>
     )

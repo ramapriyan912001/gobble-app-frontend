@@ -6,11 +6,17 @@ import Awaiting from '../screens/Matches/Awaiting'
 import { ChatNavigator } from '../screens/Chats/ChatNavigator';
 import Ionicons from '@expo/vector-icons/Ionicons'
 import MatchesNavigator from '../screens/Matches/MatchesNavigator';
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '.././styles/Themes';
+import {styles, profileStylesAddition} from '.././styles/ProfileStyles';
 import ProfileDrawer from './ProfileDrawer';
 
 const Tab = createBottomTabNavigator();
 
 export default function BottomTabs() {
+  const colorScheme = useColorScheme();
+  const isLight = colorScheme == 'light';
     return (
         <Tab.Navigator
         screenOptions={({ route }) => ({
@@ -37,12 +43,14 @@ export default function BottomTabs() {
         order={['Profile', 'Gobble', 'Matches', 'Chats']}
         backBehavior= "order"
         tabBarOptions= {{
-          activeBackgroundColor: "#0aa859",
-          inactiveBackgroundColor: "#b5fbd7",
-          activeTintColor: "#000000",
-          inactiveTintColor: "#000000",
-          labelPosition: 'below-icon',
+          activeBackgroundColor: themes.editTheme(isLight),
+          inactiveBackgroundColor: themes.oppositeTheme(!isLight),
+          activeTintColor: themes.oppositeTheme(isLight),
+          inactiveTintColor: themes.oppositeTheme(isLight),
+          // labelPosition: 'below-icon',
+          showLabel: false,
           adaptive: true,
+          style: themes.containerTheme(isLight)
         }}>
             <Tab.Screen options={{
                 title: "Profile"

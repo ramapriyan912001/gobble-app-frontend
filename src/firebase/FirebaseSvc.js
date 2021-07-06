@@ -647,7 +647,8 @@ makeGobbleRequest(ref, request, date) {
     updates[`/PendingMatchIDs/${request.matchID}`] = null
     updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
     updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
-    updates = await this.linkChats(updates, request, otherUserRequest, request1UserDetails, request2UserDetails);
+    updates = await this.linkChats(updates, request, otherUserRequest);
+
 
     try{
       // console.log('Updates',updates);
@@ -685,7 +686,7 @@ makeGobbleRequest(ref, request, date) {
   /**
    * Asynchronously create a chat for matched users
    */
-  async linkChats(updates, req1, req2, user1, user2) {
+  async linkChats(updates, req1, req2) {
 
     //Adding to Chats Table
     //If the User has never been matched before, add a new entry in each User's ref under this table
@@ -940,6 +941,18 @@ makeGobbleRequest(ref, request, date) {
       });
     } catch (err) {
       console.log('uploadImage error: ' + err.message); 
+    }
+  }
+
+  changeAvatar = async uri => {
+    let newImage = await this.uploadImage(uri);
+    let updates = {}
+    updates[`/Users/${this.uid}/avatar`] = newImage
+    updates[`/Avatars/${this.uid}`] = newImage
+    try {
+      await firebase.database().ref().update(updates)
+    } catch (err) {
+      console.log('changeimage error ' + err.message);
     }
   }
 

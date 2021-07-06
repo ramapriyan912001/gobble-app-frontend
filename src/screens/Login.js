@@ -1,11 +1,15 @@
 import React, {useState} from 'react'
-import {Text, View, TextInput, Image, TouchableOpacity, Alert} from 'react-native'
+import {Text, View, TextInput, Image, TouchableOpacity, StyleSheet, Alert} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
 import {imageStyles, inputStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
+import {styles} from '../styles/RegisterStyles'
+import themes from '../styles/Themes';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {API} from '../api'
 import firebaseSvc from '../firebase/FirebaseSvc';
 import BottomTabs from '../components/BottomTabs'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
 
 /**
  * Page for user to log in!
@@ -16,14 +20,17 @@ import BottomTabs from '../components/BottomTabs'
 export default function Login(props) {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
+    
     // Login Success/Fail handlers
     const loginSuccess = (userCredential) => {
         console.log('login successful');
         const user = userCredential.user;
-        user.lastSeen === null
-        ? props.navigation.navigate('Welcome')
-        : props.navigation.replace('BottomTabs');
+        // user.lastSeen === null
+        // ? props.navigation.navigate('Welcome')
+        // :
+        props.navigation.replace('BottomTabs');
     };
     const loginFailed = (err) => {
         // const errorCode = err.code;
@@ -40,50 +47,56 @@ export default function Login(props) {
         email: email,
         password: password,
         };
+        
         firebaseSvc
         .login(user, loginSuccess, loginFailed);
     };
 
     return(
-                <KeyboardAwareScrollView contentContainerStyle={containerStyles.container} scrollEnabled={false}>
+                <KeyboardAwareScrollView contentContainerStyle={[styles.container, themes.containerTheme(isLight)]} scrollEnabled={false}>
                     <Image style={imageStyles.gobbleImage} source = {require('../images/gobble.png')}/>
                     <StatusBar style="auto"/>
-                    <View style={inputStyles.inputView}> 
+                    <View style={[styles.inputView, themes.viewTheme(isLight)]}> 
                         <TextInput
                             autoCapitalize="none"
-                            style={inputStyles.TextInput}
+                            style={[inputStyles.TextInput, themes.textTheme(isLight)]}
                             placeholder="Email"
-                            placeholderTextColor="#003f5c"
+                            placeholderTextColor={themes.oppositeTheme(isLight)}
                             returnKeyType = 'done'
                             onSubmitEditing={(event) => onPressLogin()}
                             onChangeText={(email) => setEmail(email)}
                         />
                     </View>
                         
-                    <View style={inputStyles.inputView}>
+                    <View style={[styles.inputView, themes.viewTheme(isLight)]}>
                         <TextInput
                             autoCapitalize="none"
-                            style={inputStyles.TextInput}
+                            style={[inputStyles.TextInput, themes.textTheme(isLight)]}
                             placeholder="Password"
-                            placeholderTextColor="#003f5c"
+                            placeholderTextColor={themes.oppositeTheme(isLight)}
                             returnKeyType = 'done'
                             secureTextEntry={true}
                             onSubmitEditing={(event) => onPressLogin()}
                             onChangeText={(password) => setPassword(password)}
                         />
                     </View>
-                    <TouchableOpacity style={buttonStyles.forgotButton} onPress={()=> props.navigation.navigate('ForgotPassword')}>
-                    <Text style={buttonStyles.forgotButtonText}>Forgot Password?</Text>
+                    <TouchableOpacity style={buttonStyles.forgotButton} onPress={()=> {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                        props.navigation.navigate('ForgotPassword');}}>
+                        <Text style={[buttonStyles.forgotButtonText, themes.textTheme(isLight)]}>Forgot Password?</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={buttonStyles.loginButton} onPress={onPressLogin}>
-                    <Text style={buttonStyles.loginButtonText}>Log In</Text>
+                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                        onPressLogin();
+                        }}>
+                        <Text style={[buttonStyles.loginButtonText, themes.oppositeTextTheme(isLight)]}>Log In</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={buttonStyles.loginButton}
-                    onPress={()=> props.navigation.navigate('RegisterNavigator')}>
-                    <Text style={buttonStyles.loginButtonText}>Sign Up</Text>
+                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]}
+                    onPress={()=> {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                        props.navigation.navigate('Welcome');}}>
+                        <Text style={[buttonStyles.loginButtonText, themes.oppositeTextTheme(isLight)]}>Back</Text>
                     </TouchableOpacity>
                 </KeyboardAwareScrollView>
     )
 }
-
-

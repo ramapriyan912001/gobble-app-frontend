@@ -9,6 +9,10 @@ import renderSeparator from '../../components/renderSeparator'
 import renderHeader from '../../components/renderHeader'
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { INDUSTRY_CODES } from '../../constants/objects'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '../../styles/Themes';
+import {styles} from '../../styles/RegisterStyles';
 
 /**
  * List of all matched people/conversations
@@ -20,6 +24,8 @@ function ChatRoom (props, {navigation}) {
     const [data, setData] = useState([]);
     const [userIDs, setUserIDs] = useState({});
     const [loading, setLoading]= useState(true);
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
     const [selectedID, setSelectedID] = useState(null)
     
     /**
@@ -67,27 +73,28 @@ function ChatRoom (props, {navigation}) {
   }, [navigation])
 
     return (
-      <SafeAreaView>
+      <SafeAreaView style={themes.containerTheme(isLight)}>
           <FlatList
             data={data}
+            style={themes.containerTheme(isLight)}
             extraData={selectedID}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={{borderBottomWidth:5, height: 110}}
+              containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
               key={index}
               onPress={() => props.navigation.navigate('Conversation', {metadata: item})}
               roundAvatar>
                 <Avatar size="large" avatarStyle={{borderRadius: 120}} source={{uri:item.otherUserAvatar}}/>
                 <ListItem.Content>
-                  <ListItem.Title>{`${item.name}, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.lastMessage == '' ? 'Click here to start a chat!': item.lastMessage}`}</ListItem.Subtitle>
+                  <ListItem.Title style={themes.textTheme(isLight)}>{`${item.name}, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Title>
+                  <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${item.lastMessage == '' ? 'Click here to start a chat!': item.lastMessage}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}
             keyExtractor={item => item.matchDateTime}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
-            ListFooterComponent={renderFooter(loading)}
+            // ListFooterComponent={renderFooter(loading)}
             onEndReachedThreshold={50}
           />
       </SafeAreaView>

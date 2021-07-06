@@ -21,6 +21,13 @@ import { DrawerActions } from '@react-navigation/native';
 
 
 const Tab = createMaterialTopTabNavigator();
+import themes from '../../styles/Themes';
+import { styles } from '../../styles/ProfileStyles'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import { AntDesign } from '@expo/vector-icons'
+import * as ImagePicker from 'expo-image-picker';
+import * as ImageManipulator from 'expo-image-manipulator';
 
 /**
  * User Profile Page
@@ -31,6 +38,10 @@ const Tab = createMaterialTopTabNavigator();
 function Profile(props) {
 
     const [userInfo, setUserInfo] = useState({});
+    const [change, setChange] = useState(false);
+
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
     
     function getAge(dateString) {
         var today = new Date();
@@ -58,22 +69,98 @@ function Profile(props) {
         }
     }
 
+    const updateImage = () => {
+        ImagePicker
+        .requestMediaLibraryPermissionsAsync()
+        .then(cameraRollPerm => {
+          // only if user allows permission to camera roll
+          if (cameraRollPerm.granted) {
+            ImagePicker
+            .launchImageLibraryAsync({
+              allowsEditing: true,
+              aspect: [4, 3],
+            })
+            .then(pickerResult => {
+                // console.log(
+                // 'ready to upload... pickerResult json:\n' + JSON.stringify(pickerResult)
+                // );
+                let wantedMaxSize = 150;
+                let rawHeight = pickerResult.height;
+                let rawWidth = pickerResult.width;
+                let ratio = rawWidth / rawHeight;
+                let wantedWidth = wantedMaxSize;
+                let wantedHeight = wantedMaxSize/ratio;
+                // check vertical or horizontal
+                if(rawHeight > rawWidth){
+                    wantedWidth = wantedMaxSize*ratio;
+                    wantedHeight = wantedMaxSize;
+                }
+                ImageManipulator
+                .manipulateAsync(
+                    pickerResult.uri,
+                    [{crop:{
+                        originX: 0, 
+                        originY: 0 ,
+                        width: pickerResult.width,
+                        height: pickerResult.height,
+                    }}
+                ])
+                .then(async(resized) => {
+                    const resizedUri = resized.uri;
+                    await firebaseSvc
+                    .changeAvatar(resizedUri)
+                    setChange(!change);
+                })
+                .catch((err) => {
+                    onFailure('Image Picking')
+                })
+            })
+            .catch(onFailure('Permissions'))
+          } else {
+              Alert.alert('We need permission to go further!');
+          }
+        })
+        .catch(onFailure('Permission Retrieval Error'));
+      };
     useEffect(() => {
         loadDataAsync();
-    },[]);
+    },[change]);
 
     return(
-        <SafeAreaView style={{flex: 1}}>
+        <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
             <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
             <StatusBar style="auto"/>
-            <TouchableOpacity onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
+              <TouchableOpacity onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
                 <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%'}} size={30}></Ionicons>
             </TouchableOpacity>
-            <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: props.currentUserData.avatar}}/>
-            <Text style={{...inputStyles.headerText, fontWeight:'400', marginBottom: '0%',fontSize: 26}}>{`${props.currentUserData.name}, ${getAge(props.currentUserData.dob)}`}</Text>
-            <Text style={{...inputStyles.headerText, fontWeight: '300', marginBottom: '2%',fontSize: 16}}>{`${INDUSTRY_CODES[props.currentUserData.industry]}`}</Text>
-            <Tab.Navigator initialRouteName="Ongoing" style={{marginTop: '0%',paddingTop:'0%', backgroundColor:'white'}}>
-            <Tab.Screen name="Personal Details" component={PersonalDetails} />
+            <View style={{marginTop:'4%'}}>
+                <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: props.currentUserData.avatar}}/>
+                <TouchableOpacity onPress={() => {
+                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small)
+                    updateImage();
+                }}
+                    style={{alignSelf: 'center', marginLeft: '23%',
+                    marginRight:'1.8%',
+                    marginBottom: '1.5%',
+                    marginTop: '-6.5%'}}>
+                <AntDesign name='pluscircle' size={20} color={themes.oppositeTheme(isLight)}></AntDesign>
+                </TouchableOpacity>
+            </View>
+            <Text style={[{...inputStyles.headerText, fontWeight:'400', marginBottom: '0%',fontSize: 26}, themes.textTheme(isLight)]}>{`${props.currentUserData.name}, ${getAge(props.currentUserData.dob)}`}</Text>
+            <Text style={[{...inputStyles.headerText, fontWeight: '300', marginBottom: '2%',fontSize: 16}, themes.textTheme(isLight)]}>{`${INDUSTRY_CODES[props.currentUserData.industry]}`}</Text>
+            <Tab.Navigator 
+                initialRouteName="Ongoing" 
+                style={{marginTop: '0%',paddingTop:'0%', backgroundColor:themes.oppositeTheme(!isLight)}}
+                tabBarOptions={{
+                    activeTintColor:themes.oppositeTheme(isLight),
+                    inactiveTintColor:themes.editTheme(!isLight),
+                    style: {
+                        backgroundColor:'transparent',
+                        borderColor: 'transparent'
+                    }
+                }}
+            >
+            <Tab.Screen name="Personal Details" component={PersonalDetails}  />
             <Tab.Screen name="Meal Preferences" component={MealPreferences} />
             </Tab.Navigator>
             </ScrollView>
