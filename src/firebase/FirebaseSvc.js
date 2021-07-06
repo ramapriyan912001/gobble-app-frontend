@@ -841,6 +841,18 @@ makeGobbleRequest(ref, request, date) {
     }
   }
 
+  changeAvatar = async uri => {
+    let newImage = await this.uploadImage(uri);
+    let updates = {}
+    updates[`/Users/${this.uid}/avatar`] = newImage
+    updates[`/Avatars/${this.uid}`] = newImage
+    try {
+      await firebase.database().ref().update(updates)
+    } catch (err) {
+      console.log('changeimage error ' + err.message);
+    }
+  }
+
   updateAvatar = (url) => {
     //await this.setState({ avatar: url });
     let userf = this.currentUser();

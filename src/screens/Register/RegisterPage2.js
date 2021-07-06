@@ -129,8 +129,9 @@ export default function RegisterPage2(props, {navigation}) {
                 } else {
                     setHasAvatar(false)
                 }
-                }}>
-            <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color={themes.oppositeTheme(isLight)} style={specificStyles.icon}></AntDesign>
+                }}
+                style={specificStyles.icon}>
+            <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color={themes.oppositeTheme(isLight)}></AntDesign>
             </TouchableOpacity>
         </View>
         <TouchableOpacity style={[{...styles.longButton, marginTop: '15%'}, themes.buttonTheme(isLight)]} onPress={() => {
@@ -182,7 +183,7 @@ export default function RegisterPage2(props, {navigation}) {
             alignSelf: 'center',
             marginLeft: '45%',
             marginRight:'2%',
-            marginBottom: '5%',
-            marginTop: '-5%'
+            marginBottom: '7%',
+            marginTop: '-11%'
         },
     })
