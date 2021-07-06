@@ -2,11 +2,16 @@ import React, {useState, useEffect} from 'react'
 import {Text, View, SafeAreaView, TouchableOpacity, Alert, Image, ScrollView, StyleSheet} from 'react-native'
 import * as ImagePicker from 'expo-image-picker';
 import {pickerStyles, buttonStyles, containerStyles, inputStyles, imageStyles} from '../../styles/LoginStyles'
+import {styles} from '../../styles/RegisterStyles';
+import themes from '../../styles/Themes';
 import firebaseSvc from '../../firebase/FirebaseSvc';
 import {onSuccess, onFailure, cancelRegistration, getError} from '../../services/RegistrationHandlers';
 import ImageEditor from '@react-native-community/image-editor';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { AntDesign } from '@expo/vector-icons';
+import { EMPTY_AVATAR } from '../../constants/objects';
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
 
 /**
  * Second Page of Registration
@@ -16,17 +21,17 @@ import { AntDesign } from '@expo/vector-icons';
  */
 export default function RegisterPage2(props) {
     let user = props.route.params.user;
-    const emptyAvatar = 'https://firebasestorage.googleapis.com/v0/b/gobble-b3dfa.appspot.com/o/avatar%2Fempty_avatar.png?alt=media&token=c36c29b3-d90b-481f-a9d9-24bc73619ddc';
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
     // const user = initialState.user; User accessed from firebaseSvc
-    const [avatar, setAvatar] = useState('');
+    const [avatar, setAvatar] = useState(EMPTY_AVATAR);
     const [hasAvatar, setHasAvatar] = useState(false);
     const [confirmation, setConfirmation] = useState(false);
-    const [edit, setEdit] = useState(false);
 
     useEffect(() => {
         if(!hasAvatar) {
-            setAvatar(emptyAvatar)
-        }
+            setAvatar(EMPTY_AVATAR)
+        } 
     })
 
     /**
@@ -44,7 +49,7 @@ export default function RegisterPage2(props) {
                 Alert.alert('Proceeding with no avatar!', 'If so, tap ok and click next again. Otherwise please retry selecting an avatar');
                 setConfirmation(true);
             } else {
-                props.navigation.navigate('RegisterPage3', {...user, avatar: emptyAvatar});
+                props.navigation.navigate('RegisterPage3', {...user, avatar: EMPTY_AVATAR});
             }
         }
     };
@@ -94,8 +99,9 @@ export default function RegisterPage2(props) {
                     firebaseSvc
                     .uploadImage(resizedUri)
                     .then(uploadURL => {
-                        setAvatar(uploadURL);
+                        console.log("Set pic")
                         setHasAvatar(true);
+                        setAvatar(uploadURL);
                         // firebaseSvc
                         // .updateAvatar(uploadURL)
                         // .then(() => console.log('Avatar Updated'))
@@ -103,7 +109,10 @@ export default function RegisterPage2(props) {
                     })
                     .catch(onFailure('URI Upload'))
                     })
-                .catch(onFailure('Image Picking'))
+                .catch((err) => {
+                    onFailure('Image Picking')
+                    setHasAvatar(false)
+                })
             })
             .catch(onFailure('Permissions'))
           } else {
@@ -116,75 +125,76 @@ export default function RegisterPage2(props) {
     const whichText = hasAvatar => hasAvatar ? 'Nice Avatar!' : 'No avatar picked (Re-try if you have done so already)';
       
     return (
-    <SafeAreaView style={{flex: 1}}>
-        <Text style={inputStyles.headerText}>Complete your Profile!</Text> 
-        {!hasAvatar && <Text numberOfLines={2} style={styles.caption}>Select a profile picture, {user.name}!</Text>}
-        {hasAvatar && <Text numberOfLines={2} style={styles.caption}>Looking good, {user.name}!</Text>}
-        {hasAvatar && <Text numberOfLines={2} style={styles.loading}>{'(Image might take a few seconds to load)'}</Text>}
-        <View style={{marginBottom: '10%', marginTop: '20%'}}>
-            {(<Image style={{...styles.profilePic, borderRadius: 120}} source={{uri:avatar}}/>)}
-            <TouchableOpacity style={{borderColor: '#000000'}} onPress={() => {
+    <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
+        <Text style={[inputStyles.headerText, themes.textTheme(isLight)]}>Complete your Profile!</Text> 
+        {!hasAvatar && <Text numberOfLines={2} style={[specificStyles.caption, themes.textTheme(isLight)]}>Select a profile picture, {user.name}!</Text>}
+        {hasAvatar && <Text numberOfLines={2} style={[specificStyles.caption, themes.textTheme(isLight)]}>Looking good, {user.name}!</Text>}
+        {hasAvatar && <Text numberOfLines={2} style={[specificStyles.loading, themes.textTheme(isLight)]}>{'(Image might take a few seconds to load)'}</Text>}
+        <View style={{marginBottom: '0%', marginTop: '13%'}}>
+            {(<Image style={{...specificStyles.profilePic, borderRadius: 120}} source={{uri:avatar}}/>)}
+            <TouchableOpacity onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                 if(!hasAvatar) {
+                    setHasAvatar(true)
                     updateImage()
+                } else {
+                    setHasAvatar(false)
+
                 }
-                setHasAvatar(!hasAvatar)}}>
-            <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color="#000000" style={styles.icon}></AntDesign>
+                }}>
+            <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color={themes.oppositeTheme(isLight)} style={specificStyles.icon}></AntDesign>
             </TouchableOpacity>
         </View>
-
-        
-        {/* <TouchableOpacity style={buttonStyles.loginButton} onPress={setAvatar(emptyAvatar)}> //-> Cuasing 'Too many re-renders'! Need to fix 
-            <Text style={buttonStyles.loginButtonText}>Clear Picture</Text>
-        </TouchableOpacity> */}
-        <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '20%'}} onPress={() => {
+        <TouchableOpacity style={[{...styles.longButton, marginTop: '15%'}, themes.buttonTheme(isLight)]} onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                 updateImage()
                 setHasAvatar(true)
                 }}>
-            <Text style={buttonStyles.loginButtonText}>{hasAvatar ? 'Change Picture' : 'Select Picture'}</Text>
+            <Text style={[buttonStyles.loginButtonText, themes.oppositeTextTheme(isLight)]}>{hasAvatar ? 'Change Picture' : 'Select Picture'}</Text>
         </TouchableOpacity>
         <View style={containerStyles.buttonRow}>
-            <TouchableOpacity style={buttonStyles.tinyButton} onPress={() => props.navigation.goBack()}>
-                <Text style={buttonStyles.loginButtonText}>Back</Text>
+            <TouchableOpacity style={[styles.tinyButton, themes.buttonTheme(isLight)]} onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                props.navigation.goBack();
+                }}>
+                <Text style={[buttonStyles.loginButtonText, themes.oppositeTextTheme(isLight)]}>Back</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={buttonStyles.tinyButton} 
+            <TouchableOpacity style={[styles.tinyButton, themes.buttonTheme(isLight)]} 
                             onPress={
                                 () => {
+                                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                     console.log('Register Page 2 done!');
                                     updateAvatar(avatar);
                                 }
                             }>
-                <Text style={buttonStyles.loginButtonText}>Continue</Text>
+                <Text style={[buttonStyles.loginButtonText, themes.oppositeTextTheme(isLight)]}>Continue</Text>
             </TouchableOpacity>
         </View>
     </SafeAreaView>
     )};
 
-    const styles = StyleSheet.create({
+    const specificStyles = StyleSheet.create({
         profilePic: {
             width: 250,
             height: 250,
             alignSelf: 'center',
         },
         caption: {
-            fontSize: 20,
+            fontSize: 18,
             fontWeight: 'bold',
             alignSelf: 'center',
-            margin: '0%',
-            marginVertical: '0%',
-            marginBottom: '5%'
         },
 
         loading: {
             alignSelf: 'center',
-            margin: '0%',
-            marginVertical: '0%',
+            marginBottom:'-6%'
         },
 
         icon: {
-            color: '#0aa859', 
             alignSelf: 'center',
             marginLeft: '45%',
-            marginBottom: '0%',
-            marginTop: '-12%'
-        }
+            marginRight:'2%',
+            marginBottom: '5%',
+            marginTop: '-5%'
+        },
     })

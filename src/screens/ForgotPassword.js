@@ -3,6 +3,10 @@ import {TouchableOpacity, SafeAreaView, Text, TextInput} from 'react-native'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import firebaseSvc from '../firebase/FirebaseSvc';
 import {buttonStyles, containerStyles, inputStyles} from '../styles/LoginStyles'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '.././styles/Themes';
+import {styles} from '.././styles/RegisterStyles';
 
 /**
  * Page for users to send a reset password link
@@ -12,6 +16,8 @@ import {buttonStyles, containerStyles, inputStyles} from '../styles/LoginStyles'
  */
 export default function ForgotPassword(props) {
     const [email, setEmail] = useState('');
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
 
     //Handlers for reset Password success/failure:
     const resetAuthorized = () => console.log('Reset Password Email Sent');
@@ -24,24 +30,27 @@ export default function ForgotPassword(props) {
     const resetPassword = (email) => firebaseSvc.resetPassword(email, resetAuthorized, resetNotAuthorized);
 
     return (
-        <KeyboardAwareScrollView contentContainerStyle={containerStyles.container} scrollEnabled={false}>
-            <Text style={inputStyles.headerText}>So you forgot your Password?</Text>
-            <Text style={inputStyles.subHeader}>No Problem!{'\n'}Leave your e-mail behind{'\n'}We'll tell you what to do next</Text>
+        <KeyboardAwareScrollView contentContainerStyle={[styles.container, themes.containerTheme(isLight)]} scrollEnabled={false}>
+            <Text style={[inputStyles.headerText, themes.textTheme(isLight)]}>So you forgot your Password?</Text>
+            <Text style={[inputStyles.subHeader, themes.textTheme(isLight)]}>No Problem!{'\n'}Leave your e-mail behind{'\n'}We'll tell you what to do next</Text>
             <TextInput
-                style={inputStyles.resetTextInput}
+                style={[inputStyles.resetTextInput, themes.textTheme(isLight)]}
                 placeholder="Enter your Email here"
-                placeholderTextColor="#003f5c"
+                placeholderTextColor={themes.oppositeTheme(isLight)}
                 autoCapitalize="none"
                 onChangeText={(email) => setEmail(email)}
             />
-            <Text style={inputStyles.subText}>Note: If you have not registered before, no email will be sent</Text>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => {
+            <Text style={[inputStyles.subText, themes.textTheme(isLight)]}>Note: If you have not registered before, no email will be sent</Text>
+            <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                 resetPassword(email)
-                props.navigation.navigate('Login')}}>
-                <Text style={buttonStyles.loginButtonText}>Send Reset Email</Text>
+                props.navigation.goBack()}}>
+                <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Send Reset Email</Text>
             </TouchableOpacity>
-            <TouchableOpacity style={buttonStyles.loginButton} onPress={() => props.navigation.goBack()}>
-                <Text style={buttonStyles.loginButtonText}>Back</Text>
+            <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                props.navigation.goBack();}}>
+                <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Back</Text>
             </TouchableOpacity>
         </KeyboardAwareScrollView>
     )

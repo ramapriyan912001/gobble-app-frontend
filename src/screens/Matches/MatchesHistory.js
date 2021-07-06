@@ -10,6 +10,10 @@ import renderHeader from '../../components/renderHeader'
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { FOOD_IMAGES_URIs } from '../../constants/objects'
 import { INDUSTRY_CODES } from '../../constants/objects'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '../../styles/Themes';
+import {styles} from '../../styles/RegisterStyles';
 
 /**
  * Page to Show previous Matches
@@ -17,11 +21,17 @@ import { INDUSTRY_CODES } from '../../constants/objects'
  * @param {*} props Props from previous screen
  * @returns MatchesHistory Render Method 
  */
-function MatchesHistory (props) {
+function MatchesHistory (props, {navigation}) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
+    const [selectedID, setSelectedID] = useState(null)
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
+
     // const [loading, setLoading]= useState(true);
-    
+    const dateStringMaker = (date) => {
+      return date.slice(0, 21)
+    }
     /**
      * Load Data Asynchronously
      */
@@ -56,6 +66,11 @@ function MatchesHistory (props) {
 
                     newData = newData.concat(details);
                   }
+                  newData.sort(function (a, b) {
+                    let x = new Date(a.datetime)
+                    let y = new Date(b.datetime)
+                    return x <= y ? -1 : 1
+                  });
                   setData(newData);
                 }
               },
@@ -71,21 +86,30 @@ function MatchesHistory (props) {
           console.log('matchHistory clean up!');
           firebaseSvc.matchIDsOff();
         }
-    }, [])
+    }, [matchIDs])
+
+    useEffect(() => {
+      const unsubscribe = props.navigation.addListener('focus', async() => {
+          await loadAsync();
+      })
+      return unsubscribe;
+    }, [navigation])
     
     return (
-      <SafeAreaView>
+      <SafeAreaView style={themes.containerTheme(isLight)}>
           <FlatList
             data={data}
+            style={themes.containerTheme(isLight)}
+            extraData={selectedID}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={{borderBottomWidth:5, height: 160}}
+              containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
               key={index} 
               roundAvatar>
-                <Avatar size="large" source={{uri:item.otherUserAvatar}}/>
+                <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
                 <ListItem.Content>
-                  <ListItem.Title>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
-                  <ListItem.Subtitle>{`${item.cuisinePreference} cuisine, ${item.datetime}`}</ListItem.Subtitle>
+                  <ListItem.Title style={[{fontWeight: 'bold'}, themes.textTheme(isLight)]}>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
+                  <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${item.cuisinePreference} cuisine, ${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
                 </ListItem.Content>
               </ListItem>
             )}
