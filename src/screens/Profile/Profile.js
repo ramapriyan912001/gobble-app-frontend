@@ -31,7 +31,7 @@ import * as ImageManipulator from 'expo-image-manipulator';
 function Profile(props) {
 
     const [userInfo, setUserInfo] = useState({});
-    const [change, setChange] = useState(false);
+    const [change, setChange] = useState(null);
 
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';

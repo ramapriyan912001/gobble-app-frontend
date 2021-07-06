@@ -245,6 +245,31 @@ class FirebaseSvc {
                     }
                   }
 
+  isAdmin() {
+    return firebase
+    .database()
+    .ref(`ReportCount/${this.uid}`)
+    .once("value")
+    .then(snapshot => snapshot.val() != null)
+  }
+
+  getReports = (success, callback, failure) => 
+  this.userExists()
+  ? firebase
+  .database()
+  .ref(`Reports/${this.uid}`)
+  .on('value', (x) => callback(success(x)))
+  : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+
+  reportsOff = () => {
+                if (this.userExists()) {
+                  firebase
+                  .database()
+                  .ref(`Reports/${this.uid}`)
+                  .off();
+                }
+  }
+
   /**
    * Getter for current user
    * @returns current user
