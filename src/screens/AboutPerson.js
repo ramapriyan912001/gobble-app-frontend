@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useCallback} from 'react'
-import {Text, Image, TouchableOpacity, StyleSheet, SafeAreaView, Alert, View, Button, ScrollView} from 'react-native'
+import {Text, Image, TouchableOpacity, StyleSheet, Platform, Alert, View, Button, ScrollView} from 'react-native'
 import {Input} from 'react-native-elements'
 import {StatusBar} from 'expo-status-bar'
 import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../styles/LoginStyles'
@@ -26,6 +26,8 @@ export default function AboutPerson(props) {
     const isLight = colorScheme === 'light';
     const [otherUser, setOtherUser] = useState(props.route.params.otherUser);
 
+    const buttonMargins = Platform.OS === 'ios' ? '7.5%' : '10%';
+
     return (
         <View style={[profileStylesAddition.container, themes.containerTheme(isLight)]}>
             <View style={{...profileStylesAddition.item}}>
@@ -36,7 +38,7 @@ export default function AboutPerson(props) {
             <Input label='Industry' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={INDUSTRY_CODES[otherUser.industry]} editable={false}></Input>
             <Input label='Diet' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={otherUser.diet} editable={false}></Input>
             </View>
-            <View style={{marginLeft: '7.5%'}}>
+            <View style={{marginLeft: buttonMargins}}>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         // TODO: Need to make blockUser functionality

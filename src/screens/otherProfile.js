@@ -61,6 +61,8 @@ function otherProfile(props) {
         }
     }
 
+    const buttonMargins = Platform.OS === 'ios' ? '7.5%' : '10%';
+
     useEffect(() => {
         loadDataAsync();
     },[]);
@@ -68,7 +70,7 @@ function otherProfile(props) {
     if (loading) {
         return (
             <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
-                <Text style={themes.textTheme(isLight)}>Loading...</Text>
+                <Text style={[themes.textTheme(isLight), {fontSize:25, fontWeight:'bold', alignSelf:'center'}]}>Loading...</Text>
             </SafeAreaView>
         );
     } else {

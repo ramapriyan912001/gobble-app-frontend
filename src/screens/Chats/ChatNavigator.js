@@ -42,11 +42,15 @@ export function ChatNavigator() {
                 headerStyle:{
                         backgroundColor: themes.oppositeTheme(!isLight),
                     },
+                headerRightContainerStyle:{
+                    marginRight:'2%'
+                },
                 headerTintColor:themes.oppositeTheme(isLight),
                 headerRight: () => (<TouchableOpacity
                                         onPress= {() => navigation.navigate('otherProfile', {otherUserID: route.params.metadata.otherUserId, name: route.params.metadata.name})}
+                                        
                                     >
-                                        <Text style={themes.textTheme(isLight)}>Details</Text>
+                                        <Text style={[themes.textTheme(isLight), {fontSize:17}]}>Details</Text>
                                     </TouchableOpacity>),
                 headerBackTitle:'Back'
             })} component={Conversation}></Stack.Screen>

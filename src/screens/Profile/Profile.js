@@ -123,7 +123,7 @@ function Profile(props) {
         <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
             <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
             <StatusBar style="auto"/>
-            <View>
+            <View style={{marginTop:'4%'}}>
                 <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: props.currentUserData.avatar}}/>
                 <TouchableOpacity onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small)

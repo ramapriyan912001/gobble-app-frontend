@@ -1,5 +1,5 @@
 import React, {useEffect, useState, useRef} from 'react'
-import {Text, SafeAreaView, View, Image, TouchableOpacity, Button, Animated, StyleSheet} from 'react-native'
+import {Text, SafeAreaView, View, Image, TouchableOpacity, Platform, Animated, StyleSheet} from 'react-native'
 import { useColorScheme } from 'react-native-appearance'
 import {imageStyles, inputStyles, containerStyles, profileStyles, buttonStyles} from '../styles/LoginStyles'
 import { connect } from 'react-redux'
@@ -54,6 +54,8 @@ export function Welcome(props) {
         .start();
     }, [fadeAnim]);
 
+    const captionMargin = Platform.OS === 'ios' ? '1%' : '5%';
+
     return (
         <SafeAreaView style={[{...styles.container, justifyContent: 'space-evenly',}, themes.containerTheme(isLight)]}>
             <Image style={styles.image} source = {require('../images/gobble.png')}/>
@@ -64,7 +66,7 @@ export function Welcome(props) {
                     opacity: fadeAnim, // Bind opacity to animated value
                 },
                 ]}>
-                <Text style={[styles.caption, themes.textTheme(isLight)]}>Connecting People Over Food.</Text>
+                <Text style={[{...styles.caption, marginLeft:captionMargin}, themes.textTheme(isLight)]}>Connecting People Over Food.</Text>
             </Animated.View>
             {/* <View style={styles.buttonRow}> */}
             <Animated.View

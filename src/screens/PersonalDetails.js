@@ -57,6 +57,8 @@ function PersonalDetails(props) {
     };
     
     const signOutUser = () => firebaseSvc.signOut(signOutSuccess, signOutFailure);
+
+    const buttonMargins = Platform.OS === 'ios' ? '7.5%' : '10%';
     return (
         <View style={[profileStylesAddition.container, themes.containerTheme(isLight)]}>
             <View style={{...profileStylesAddition.item}}>
@@ -67,13 +69,13 @@ function PersonalDetails(props) {
             <Input label='Date of Birth' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={getDate(dob)} editable={false}></Input>
             <Input label='Date Joined' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={getDate(dateJoined)} editable={false}></Input>
             </View>
-            <View style={{marginLeft: '7.5%'}}>
+            <View style={{marginLeft:buttonMargins}}>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         props.navigation.navigate('ForgotPassword')}}>
                         <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Reset Password</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                    <TouchableOpacity style={[{...styles.longButton, marginBottom: '20%'}, themes.buttonTheme(isLight)]} onPress={() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         signOutUser();
                         props.navigation.navigate('Login')}}>

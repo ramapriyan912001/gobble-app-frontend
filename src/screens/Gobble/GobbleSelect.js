@@ -228,7 +228,7 @@ function GobbleSelect(props, {navigation}) {
                             />
                         )}
             </View>
-            <View style={{...specificStyles.container, marginTop: '5%'}}>
+            <View style={{...specificStyles.container, marginTop: '7%'}}>
                     {!isPickerShow && <Text style={[{...inputStyles.subHeader, marginTop: '0%',}, themes.textTheme(isLight)]}>What are you in the mood for today?</Text>}
                     {!isPickerShow && <Picker
                         selectedValue={cuisinePreference}
@@ -236,7 +236,7 @@ function GobbleSelect(props, {navigation}) {
                         {renderCuisines()}
                     </Picker>}
             </View>
-            <View style={{...specificStyles.container, marginTop: '0%'}}>
+            <View style={{...specificStyles.container, marginTop: '7%'}}>
                     {!isPickerShow && <Text style={[{...inputStyles.subHeader, marginTop: '0%',}, themes.textTheme(isLight)]}>How far are you willing to travel for a meal?</Text>}
                     {!isPickerShow &&
                         <Picker
