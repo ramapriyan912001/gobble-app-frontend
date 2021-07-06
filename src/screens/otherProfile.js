@@ -16,8 +16,8 @@ import PreviousMatches from './PreviousMatches'
 const Tab = createMaterialTopTabNavigator();
 import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
-import themes from '.././styles/Themes';
-import {styles} from '.././styles/ProfileStyles';
+import themes from '../styles/Themes';
+import {styles} from '../styles/ProfileStyles';
 
 /**
  * User Profile Page
@@ -25,7 +25,7 @@ import {styles} from '.././styles/ProfileStyles';
  * @param {*} props Props from previous screen
  * @returns Profile Render Method
  */
-function otherProfile(props) {
+function OtherProfile(props) {
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
     const [userData, setUserData] = useState({})
