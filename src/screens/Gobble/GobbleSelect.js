@@ -102,7 +102,6 @@ function GobbleSelect(props, {navigation}) {
                 let location = await Location.getCurrentPositionAsync({})
                 setLocation(location)  
             }
-            console.log(date)
             setLoading(false); 
       })();
   }, []);
@@ -185,7 +184,7 @@ function GobbleSelect(props, {navigation}) {
         }
         let result =  await firebaseSvc.findGobbleMate(gobbleRequest);
         // We need to do some load page
-        props.navigation.navigate('BottomTabs', { screen: 'GobbleNavigator', params: { screen: 'GobbleConfirm', params: {result: result}} })
+        props.route.params ? props.navigation.navigate('BottomTabs', { screen: 'GobbleNavigator', params: { screen: 'GobbleConfirm', params: {result: result}} }) : props.navigation.navigate('GobbleConfirm')
       }
   }
 

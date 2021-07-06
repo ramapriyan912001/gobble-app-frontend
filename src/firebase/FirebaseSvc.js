@@ -4,7 +4,9 @@ import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 import {DIETARY_ARRAYS} from '../constants/objects'
 import {firebaseDetails} from '../../FirebaseDetails'
-import {CONFIRM_SUCCESS, CONFIRM_FAIL, FINAL_SUCCESS, FINAL_FAIL, UNACCEPT_SUCCESS, UNACCEPT_FAIL} from '../constants/results'
+import {CONFIRM_SUCCESS, CONFIRM_FAIL, FINAL_SUCCESS, 
+  FINAL_FAIL, UNACCEPT_SUCCESS, UNACCEPT_FAIL, BLOCK_SUCCESS, 
+  BLOCK_FAILURE, UNBLOCK_SUCCESS, UNBLOCK_FAILURE} from '../constants/results'
 
 /**
  * Class which operates as a database object, whose functions are
@@ -207,7 +209,6 @@ class FirebaseSvc {
   getPendingMatchIDs = (success, callback, failure) => this.userExists()
                                               ? this
                                                 .userRef(`${this.uid}/pendingMatchIDs`)
-                                                .orderByChild('datetime')
                                                 .on('value', (x) => callback(success(x)))
                                               : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
@@ -220,7 +221,6 @@ class FirebaseSvc {
   getMatchIDs = (success, callback, failure) => this.userExists()
                                       ? this
                                         .userRef(`${this.uid}/matchIDs`)
-                                        .orderByChild('datetime')
                                         .on('value', (x) => callback(success(x)))
                                       : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
@@ -463,7 +463,7 @@ class FirebaseSvc {
       const dietaryOption = dietaryOptionsArray[counter];
       console.log('looking through ' + dietaryOption);
       tempRef = ref.child(`${dietaryOption}`);
-      await tempRef.once("value").then(snapshot => {//values in same day under dietaryOption
+      await tempRef.once("value").then(async(snapshot) => {//values in same day under dietaryOption
         let iterator, child;
         let time2, coords2, distance2, date2;
         let children = snapshot.val()
@@ -474,15 +474,20 @@ class FirebaseSvc {
           distance2 = this.getDistance(child)
           date2 = this.getDatetime(child)
           time2 = this.convertTimeToMinutes(date2)
-          if(!this.isWithinRange(coords1, distance1, coords2, distance2) || !this.isWithinTime(time1, time2) || request.userId === child.userId) {
-            console.log('out of range/time/ same user');
+          let isBlocked1 = await this.isBlocked(request.userId, child.userId)
+          let isBlocked2 = await this.isBlocked(child.userId, request.userId)
+          let isBlocked = isBlocked1 || isBlocked2
+          if(!this.isWithinRange(coords1, distance1, coords2, distance2) || 
+          !this.isWithinTime(time1, time2) || isBlocked ||
+          request.userId === child.userId) {
+            console.log('out of range/time/same user/blocked');
             continue;
           }
-          compatibility = this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
+          compatibility = await this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
           console.log(compatibility, 'compatiblity');
           if (compatibility >= this.getThreshold()) {//for now threshold is 18 arbitrarily
             console.log('greater than threshold');
-            this.match(request, null, child, iterator)
+            await this.match(request, null, child, iterator)
             result = true;
             console.log("EARLY TERMINATION")
             break;
@@ -643,6 +648,7 @@ makeGobbleRequest(ref, request, date) {
     updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
     updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
     updates = await this.linkChats(updates, request, otherUserRequest);
+
 
     try{
       // console.log('Updates',updates);
@@ -814,8 +820,105 @@ makeGobbleRequest(ref, request, date) {
     }
   }
 
-  async getBlockedUsers(uid) {
-    firebase.database().ref(`/Users/${uid}/blockedUsers`);
+  async getBlockedUsers2(uid) {
+    return firebase.database().ref(`/Users/${uid}/blockedUsers`)
+    .once("value")
+    .then(snapshot => snapshot.val());
+  }
+
+  getBlockedUsers = (success, callback, failure) => this.userExists()
+                                      ? firebase.database().ref(`Users/${this.uid}/blockedUsers`)
+                                        .on('value', (x) => callback(success(x)))
+                                      : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+
+  
+
+  
+  removeBlockedUserPendingMatches(otherUid, pendingMatches) {
+    let updates = {}
+    for(let [key, value] of Object.entries(pendingMatches)) {
+      let id = value['otherUserId']
+      if(id == otherUid) {
+        delete pendingMatches[key]
+        console.log(key)
+        updates[`/PendingMatchIDs/${key}`] = null;
+        updates[`/Users/${otherUid}/pendingMatchIDs/${key}`] = null
+      }
+    }
+    updates[`/Users/${this.uid}/pendingMatchIDs`] = pendingMatches
+    firebase.database().ref().update(updates)
+  }      
+  
+  removeBlockedUserMatches(otherUid, matches) {
+    let updates = {}
+    for(let [key, value] of Object.entries(matches)) {
+      let id = value['otherUserId']
+      if(id == otherUid) {
+        console.log('YES')
+        console.log(key)
+        delete matches[key]
+        console.log(`/Users/${otherUid}/matchIDs/${key}`)
+        updates[`/Users/${otherUid}/matchIDs/${key}`] = null
+      }
+    }
+    updates[`/Users/${this.uid}/matchIDs`] = matches
+    firebase.database().ref().update(updates)
+  }
+  blockUser(otherUid, otherUserNameAndAvatar) {
+    let updates = {}
+
+    return firebase.database().ref(`Users/${this.uid}/pendingMatchIDs`)
+    .once("value")
+    .then(snapshot => {
+      if(snapshot.val()) {
+        this.removeBlockedUserPendingMatches(otherUid, snapshot.val())
+      }
+      firebase.database().ref(`Users/${this.uid}/matchIDs`)
+        .once("value")
+        .then(subsnap => {
+          if(subsnap.val()) {
+            this.removeBlockedUserMatches(otherUid, subsnap.val())
+          }
+        })
+        updates[`/Users/${this.uid}/blockedUsers/${otherUid}`] = otherUserNameAndAvatar;
+        updates[`/Chats/${this.uid}/${otherUid}`] = null
+        updates[`/Chats/${otherUid}/${this.uid}`] = null
+        try {
+          updates;
+          firebase.database().ref().update(updates)
+          return BLOCK_SUCCESS
+        } catch(err) {
+          console.log("Block user error: " + err)
+          return BLOCK_FAILURE
+        }
+      }
+    )
+    // Deleting the chat and conversation + metadata
+
+  }
+
+  async isBlocked(uid, otherUid) {
+    let x = false;
+    x = await firebase.database().ref(`Users/${uid}/blockedUsers/${otherUid}`)
+    .once("value")
+    .then(snapshot => {
+      return snapshot.val() ? true : false}
+      )
+    .catch(err => console.log(err)
+    )
+    return x;
+  }
+
+  async unblockUser(otherUid) {
+    let updates = {}
+    updates[`/Users/${this.uid}/blockedUsers/${otherUid}`] = null;
+    try {
+      await firebase.database().ref().update(updates)
+      return UNBLOCK_SUCCESS
+    } catch(err) {
+      console.log("Block user error: " + err)
+      return UNBLOCK_FAILURE
+    }
   }
 
   /**

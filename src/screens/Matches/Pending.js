@@ -144,7 +144,7 @@ import {styles} from '../../styles/RegisterStyles';
                       matchIDs[key] = await firebaseSvc.obtainStatusOfPendingMatch(key);
                     }
                     let details = ids[key]
-                      let otherUserId = details.otherUserId
+                    let otherUserId = details.otherUserId
                       await firebaseSvc
                             .avatarRef(otherUserId)
                             .once("value")
@@ -194,7 +194,7 @@ import {styles} from '../../styles/RegisterStyles';
             extraData={selectedID}
             style={themes.containerTheme(isLight)}
             renderItem={({ item, index }) => renderPendingContent(item, index)}
-            keyExtractor={item => item.datetime}
+            keyExtractor={item => item.matchID}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
             // ListFooterComponent={renderFooter(loading)}

@@ -26,6 +26,8 @@ export default function AppWrapper() {
     </AppearanceProvider>
   );
 }
+import ProfileDrawer from './src/components/ProfileDrawer';
+import Test from './src/components/Test';
 
 const Stack = createStackNavigator();
 
@@ -45,6 +47,7 @@ export function App() {
             <Stack.Screen name="Reauthenticate" options={{headerShown: false}} component={Reauthenticate}></Stack.Screen>
             <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
             <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen>
+            <Stack.Screen name="Test" component={Test}></Stack.Screen>
           </Stack.Navigator>
       </Provider> 
     </NavigationContainer>

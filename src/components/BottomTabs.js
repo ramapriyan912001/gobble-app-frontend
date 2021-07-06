@@ -10,6 +10,7 @@ import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
 import themes from '.././styles/Themes';
 import {styles, profileStylesAddition} from '.././styles/ProfileStyles';
+import ProfileDrawer from './ProfileDrawer';
 
 const Tab = createBottomTabNavigator();
 
@@ -22,7 +23,7 @@ export default function BottomTabs() {
             tabBarIcon: ({ focused, color, size }) => {
               let iconName;
   
-              if (route.name === 'ProfileNavigator') {
+              if (route.name === 'ProfileDrawer') {
                 iconName = focused
                   ? 'person'
                   : 'person-outline';
@@ -53,7 +54,7 @@ export default function BottomTabs() {
         }}>
             <Tab.Screen options={{
                 title: "Profile"
-            }} name="ProfileNavigator" component={ProfileNavigator}></Tab.Screen>
+            }} name="ProfileDrawer" component={ProfileDrawer}></Tab.Screen>
             <Tab.Screen options={{
                 title: "Gobble"
                 }} name="GobbleNavigator" component={GobbleNavigator}></Tab.Screen>

@@ -13,6 +13,13 @@ import { createMaterialTopTabNavigator } from '@react-navigation/material-top-ta
 import PersonalDetails from '../PersonalDetails'
 import { Avatar } from 'react-native-elements'
 import MealPreferences from '../MealPreferences'
+import Ionicons from '@expo/vector-icons/Ionicons'
+import { Header } from 'react-native-elements'
+import { DrawerActions } from '@react-navigation/native';
+
+// props.navigation.dispatch(DrawerActions.closeDrawer());
+
+
 const Tab = createMaterialTopTabNavigator();
 import themes from '../../styles/Themes';
 import { styles } from '../../styles/ProfileStyles'
@@ -123,6 +130,9 @@ function Profile(props) {
         <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
             <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
             <StatusBar style="auto"/>
+              <TouchableOpacity onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
+                <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%'}} size={30}></Ionicons>
+            </TouchableOpacity>
             <View style={{marginTop:'4%'}}>
                 <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: props.currentUserData.avatar}}/>
                 <TouchableOpacity onPress={() => {
@@ -154,7 +164,6 @@ function Profile(props) {
             <Tab.Screen name="Meal Preferences" component={MealPreferences} />
             </Tab.Navigator>
             </ScrollView>
-
         </SafeAreaView>
     );  
 }
