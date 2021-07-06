@@ -10,6 +10,10 @@ import { CUISINES } from '../../constants/objects';
 import {fetchUserData, updateUserDetails, clearData} from '../../redux/actions/actions'
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '../../styles/Themes';
+import {styles} from '../../styles/RegisterStyles';
 
 /**
  * Page to search for a new Match
@@ -29,51 +33,13 @@ function GobbleSelect(props, {navigation}) {
   const [date, setDate] = useState(calculateDefaultTime(MIN_DATE))
   const [distance, setDistance] = useState(200);
   const [edit, setEdit] = useState(true);
-
-  const months = {
-    'Jan' : '01',
-    'Feb' : '02',
-    'Mar' : '03',
-    'Apr' : '04',
-    'May' : '05',
-    'Jun' : '06',
-    'Jul' : '07',
-    'Aug' : '08',
-    'Sep' : '09',
-    'Oct' : '10',
-    'Nov' : '11',
-    'Dec' : '12'
-    };
+  const colorScheme = useColorScheme();
+  const isLight = colorScheme === 'light';
 
   function calculateDefaultTime(date) {
       if(props.route.params && edit) {
           console.log(props.route.params.request.datetime, 'this');
           const unformattedDate = props.route.params.request.datetime;
-        //   const y = unformattedDate.slice(10, 14);
-        //   const m = months[unformattedDate.slice(3, 6)];
-        //   const d = unformattedDate.slice(7,9);
-        //   const time = unformattedDate.slice(15,23);
-
-        // let reISO = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2}(?:\.\d*))(?:Z|(\+|-)([\d|:]*))?$/;
-        // let reMsAjax = /^\/Date\((d|-|.*)\)[\/|\\]$/;
-    
-        // JSON.dateParser = function (key, value) {
-        //     if (typeof value === 'string') {
-        //         let a = reISO.exec(value);
-        //         if (a) {
-        //             return new Date(value);
-        //         }
-        //         a = reMsAjax.exec(value);
-        //         if (a) {
-        //             let b = a[1].split(/[-+,.]/);
-        //             return new Date(b[0] ? +b[0] : 0 - +b[1]);
-        //         }
-        //     }
-        //     return value;
-        // };
-
-        // const date = JSON.parse(props.route.params.request.datetime ,JSON.dateParser);  
-        // console.log(date);
 
         const date = new Date(unformattedDate);
         return date;
@@ -163,7 +129,11 @@ function GobbleSelect(props, {navigation}) {
   const pickerText = () => isPickerShow ? 'Close' : 'choose Date & Time';
 
   const onChange = (event, value) => {
-    setDate(value);
+    if (value == null) {
+
+    } else {
+        setDate(value);
+    }
     setDateSelected(true)
     if (Platform.OS === 'android') {
       setIsPickerShow(false);
@@ -177,14 +147,14 @@ function GobbleSelect(props, {navigation}) {
    */
   const renderCuisines = () => {
       let cuisineID = 0;
-      return CUISINES.map(cuisine => (<Picker.Item label={cuisine} value={cuisine} key={cuisineID++}/>))
+      return CUISINES.map(cuisine => (<Picker.Item label={cuisine} value={cuisine} key={cuisineID++} color={themes.oppositeTheme(isLight)}/>))
   };
 
   const renderDistances = () => {
     const distances = [1, 2, 5, 10, 200];
     let distanceID = 0;
 
-    return distances.map(distance => (<Picker.Item label={distance == 200 ? 'No Preference' : `${distance} km`} value={distance} key={distanceID++}/>))
+    return distances.map(distance => (<Picker.Item label={distance == 200 ? 'No Preference' : `${distance} km`} value={distance} key={distanceID++} color={themes.oppositeTheme(isLight)}/>))
   };
 
   /**
@@ -218,21 +188,29 @@ function GobbleSelect(props, {navigation}) {
       }
   }
 
+  const topMargin = Platform.OS === 'ios' ? '2%':'12%';
+
   const handleConfirm = (date) => {
     setDate(date);
     hideDatePicker();
   };
     return (
-        <SafeAreaView style={{flex: 1}}>
-            <View style={{marginTop: '2%'}}>
-                        <Text style={{...inputStyles.headerText, fontSize: 20, marginHorizontal: '2%', marginBottom: '5%', fontWeight: '800'}}>
+        <SafeAreaView style={[{flex: 1}, themes.containerTheme(isLight)]}>
+            <View style={{marginTop: topMargin}}>
+                        <Text style={[{...inputStyles.headerText, fontSize: 20, marginHorizontal: '2%', marginBottom: '5%', fontWeight: '800'}, themes.textTheme(isLight)]}>
                                 Select your preferences and Gobble!
                         </Text>
             </View>  
             <ScrollView>
             <View>
-                        <Text style={{...inputStyles.subHeader, marginTop: '0%', }}>Pick out your preferred Date & Time</Text>
-                        <Button title={`Chosen: ${dateStringMaker(date.toString())} ${'\n'}Click me to ${pickerText()}`} onPress={showPicker} />
+                        <Text style={[{...inputStyles.subHeader, marginTop: '0%', }, themes.textTheme(isLight)]}>Pick out your preferred Date & Time</Text>
+                        <TouchableOpacity 
+                            style={{alignSelf:'center'}}
+                            onPress={() => {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                                showPicker();}}>
+                            <Text style={themes.textTheme(isLight)}>{`Chosen: ${dateStringMaker(date.toString())} ${'\n'}Click me to ${pickerText()}`} </Text>
+                        </TouchableOpacity>
                         
                         {/* The date picker */}
                         {isPickerShow && (
@@ -242,23 +220,23 @@ function GobbleSelect(props, {navigation}) {
                             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                             is24Hour={true}
                             onChange={onChange}
-                            style={styles.datePicker}
+                            style={specificStyles.datePicker}
                             maximumDate={MAX_DATE}
                             minimumDate={MIN_DATE}
                             minuteInterval={15}
                             />
                         )}
             </View>
-            <View style={{...styles.container, marginTop: '5%'}}>
-                    {!isPickerShow && <Text style={{...inputStyles.subHeader, marginTop: '0%',}}>What are you in the mood for today?</Text>}
+            <View style={{...specificStyles.container, marginTop: '7%'}}>
+                    {!isPickerShow && <Text style={[{...inputStyles.subHeader, marginTop: '0%',}, themes.textTheme(isLight)]}>What are you in the mood for today?</Text>}
                     {!isPickerShow && <Picker
                         selectedValue={cuisinePreference}
                         onValueChange={(itemValue, itemIndex) => setCuisinePreference(itemValue)}>
                         {renderCuisines()}
                     </Picker>}
             </View>
-            <View style={{...styles.container, marginTop: '0%'}}>
-                    {!isPickerShow && <Text style={{...inputStyles.subHeader, marginTop: '0%',}}>How far are you willing to travel for a meal?</Text>}
+            <View style={{...specificStyles.container, marginTop: '7%'}}>
+                    {!isPickerShow && <Text style={[{...inputStyles.subHeader, marginTop: '0%',}, themes.textTheme(isLight)]}>How far are you willing to travel for a meal?</Text>}
                     {!isPickerShow &&
                         <Picker
                         selectedValue={distance}
@@ -268,18 +246,21 @@ function GobbleSelect(props, {navigation}) {
             </View>
             </ScrollView>
             <View style={{marginTop: '3%', marginBottom: '2%'}}>
-                {!isPickerShow && <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '0%'}} onPress={submitGobble}>
-                    <Text style={buttonStyles.loginButtonText}>{props.route.params ? `Edit Gobble` : `Submit Gobble`}</Text>
+                {!isPickerShow && <TouchableOpacity style={[{...styles.longButton, marginTop: '0%'}, themes.buttonTheme(isLight)]} 
+                    onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                        submitGobble();
+                        }}>
+                    <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>{props.route.params ? `Edit Gobble` : `Submit Gobble`}</Text>
                 </TouchableOpacity>}
             </View>
         </SafeAreaView>
     )
 }
 
-const styles = StyleSheet.create({
+const specificStyles = StyleSheet.create({
     pickedDateContainer: {
         padding: 20,
-        backgroundColor: '#eee',
         borderRadius: 10,
     },
     pickedDate: {

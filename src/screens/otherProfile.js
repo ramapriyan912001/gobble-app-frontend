@@ -14,6 +14,10 @@ import { Avatar } from 'react-native-elements'
 import AboutPerson from './AboutPerson'
 import PreviousMatches from './PreviousMatches'
 const Tab = createMaterialTopTabNavigator();
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '.././styles/Themes';
+import {styles} from '.././styles/ProfileStyles';
 
 /**
  * User Profile Page
@@ -21,8 +25,9 @@ const Tab = createMaterialTopTabNavigator();
  * @param {*} props Props from previous screen
  * @returns Profile Render Method
  */
-function OtherProfile(props) {
-
+function otherProfile(props) {
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
     const [userData, setUserData] = useState({})
     const [loading, setLoading] = useState(true)
     // Expecting an id to be passed over
@@ -56,25 +61,40 @@ function OtherProfile(props) {
         }
     }
 
+    const buttonMargins = Platform.OS === 'ios' ? '7.5%' : '10%';
+
     useEffect(() => {
         loadDataAsync();
     },[]);
 
     if (loading) {
         return (
-            <SafeAreaView>
-                <Text>Loading...</Text>
+            <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
+                <Text style={[themes.textTheme(isLight), {fontSize:25, fontWeight:'bold', alignSelf:'center'}]}>Loading...</Text>
             </SafeAreaView>
         );
     } else {
         return(
-            <SafeAreaView style={{flex: 1}}>
+            <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
                 <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
                 <StatusBar style="auto"/>
                 <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: userData.avatar}}/>
-                <Text style={{...inputStyles.headerText, fontWeight:'400', marginBottom: '0%',fontSize: 26}}>{`${userData.name}, ${getAge(userData.dob)}`}</Text>
-                <Text style={{...inputStyles.headerText, fontWeight: '300', marginBottom: '2%',fontSize: 16}}>{`${INDUSTRY_CODES[userData.industry]}`}</Text>
-                <Tab.Navigator initialRouteName="Ongoing" style={{marginTop: '0%',paddingTop:'0%', backgroundColor:'white'}}>
+                <Text style={[{...inputStyles.headerText, fontWeight:'400', marginBottom: '0%',fontSize: 26}, themes.textTheme(isLight)]}>{`${userData.name}, ${getAge(userData.dob)}`}</Text>
+                <Text style={[{...inputStyles.headerText, fontWeight: '300', marginBottom: '2%',fontSize: 16}, themes.textTheme(isLight)]}>{`${INDUSTRY_CODES[userData.industry]}`}</Text>
+                <Tab.Navigator initialRouteName="Ongoing" 
+                style={{
+                    marginTop: '0%',
+                    paddingTop:'0%',
+                    backgroundColor:themes.oppositeTheme(!isLight)
+                    }}
+                tabBarOptions={{
+                    activeTintColor:themes.oppositeTheme(isLight),
+                    inactiveTintColor:themes.editTheme(!isLight),
+                    style: {
+                        backgroundColor:'transparent',
+                        borderColor: 'transparent'
+                    }}}
+                >
                 <Tab.Screen name="About" initialParams={{otherUser: userData}} component={AboutPerson} />
                 <Tab.Screen name="History" initialParams={{otherUser: userData}} component={PreviousMatches} />
                 </Tab.Navigator>
@@ -91,4 +111,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(OtherProfile);
+export default connect(mapStateToProps, mapDispatchProps)(otherProfile);

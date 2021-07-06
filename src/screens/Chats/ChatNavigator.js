@@ -1,13 +1,17 @@
 import React from 'react'
-import {View, Text, Button} from 'react-native'
+import {View, Text, TouchableOpacity} from 'react-native'
 import {containerStyles} from '../../styles/LoginStyles'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchAuthUser, clearData } from '../../redux/actions/actions'
 import {createStackNavigator} from '@react-navigation/stack'
 import ChatRoom from './ChatRoom'
-import OtherProfile from '../OtherProfile'
+import otherProfile from '../otherProfile'
 import { Conversation } from './Conversation'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '../../styles/Themes';
+import {styles} from '../../styles/RegisterStyles';
 
 const Stack = createStackNavigator();
 
@@ -17,18 +21,46 @@ const Stack = createStackNavigator();
  * @returns Stack Navigator
  */
 export function ChatNavigator() {
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
     return (
         <Stack.Navigator initialRouteName="ChatRoom">
-            <Stack.Screen name="ChatRoom" options={{headerShown:true, headerTitle: 'Chats', headerBackTitle: 'Chats'}} component={ChatRoom}></Stack.Screen>
+            <Stack.Screen name="ChatRoom" options={
+                {
+                    headerLeft: () => null,
+                    headerShown:true,
+                    headerBackTitleVisible: false, 
+                    headerTitle: 'Chats', 
+                    headerBackTitle: 'Chats', 
+                    headerStyle:{
+                        backgroundColor: themes.oppositeTheme(!isLight),
+                    },
+                    headerTintColor:themes.oppositeTheme(isLight)
+            }} component={ChatRoom}></Stack.Screen>
             <Stack.Screen name="Conversation" options={({ navigation, route }) => 
             ({  title: route.params.metadata.name,
-                headerRight: () => (<Button
-                                        onPress= {() => navigation.navigate('OtherProfile', {otherUserID: route.params.metadata.otherUserId, name: route.params.metadata.name})}
-                                        title= 'Details' 
-                                    />),
+                headerStyle:{
+                        backgroundColor: themes.oppositeTheme(!isLight),
+                    },
+                headerRightContainerStyle:{
+                    marginRight:'2%'
+                },
+                headerTintColor:themes.oppositeTheme(isLight),
+                headerRight: () => (<TouchableOpacity
+                                        onPress= {() => navigation.navigate('otherProfile', {otherUserID: route.params.metadata.otherUserId, name: route.params.metadata.name})}
+                                        
+                                    >
+                                        <Text style={[themes.textTheme(isLight), {fontSize:17}]}>Details</Text>
+                                    </TouchableOpacity>),
                 headerBackTitle:'Back'
             })} component={Conversation}></Stack.Screen>
-            <Stack.Screen name="OtherProfile" options={({ route }) => ({headerShown:true, headerTitle: route.params.name})} component={OtherProfile}></Stack.Screen>
+            <Stack.Screen name="otherProfile" options={({ route }) => ({headerShown:true, headerTitle: route.params.name,
+                headerStyle:{
+                        backgroundColor: themes.oppositeTheme(!isLight),
+                    },
+                    headerTintColor:themes.oppositeTheme(isLight)
+            })} component={otherProfile}></Stack.Screen>
+
         </Stack.Navigator>
     )
 }

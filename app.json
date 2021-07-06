@@ -4,6 +4,7 @@
     "slug": "gobble-app",
     "version": "1.0.0",
     "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
     "icon": "./assets/icon.png",
     "splash": {
       "image": "./assets/splash.png",
@@ -31,7 +32,8 @@
         "googleMaps": {
           "apiKey": "AIzaSyC6h4poHiCJzIWZGNZ5JThvwpTjk0q7eWo"
         }
-      }
+      },
+      "userInterfaceStyle": "automatic"
     },
     "web": {
       "favicon": "./assets/favicon.png"

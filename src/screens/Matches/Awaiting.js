@@ -10,6 +10,10 @@ import renderHeader from '../../components/renderHeader'
 import firebaseSvc from '../../firebase/FirebaseSvc'
 import { FOOD_IMAGES_URIs } from '../../constants/objects'
 import { INDUSTRY_CODES } from '../../constants/objects'
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '../../styles/Themes';
+import {styles} from '../../styles/RegisterStyles';
 
 /**
  * Page to Load the Pending Matches Screen
@@ -18,6 +22,8 @@ import { INDUSTRY_CODES } from '../../constants/objects'
  * @returns Matches Render Method 
  */
 function Awaiting (props, {navigation}) {
+  const colorScheme = useColorScheme();
+  const isLight = colorScheme === 'light';
     const [data, setData] = useState([]);
     // const [loading, setLoading]= useState(true);
     const [matchIDs, setMatchIDs] = useState({});
@@ -83,35 +89,39 @@ function Awaiting (props, {navigation}) {
     // const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     
     return (
-      <SafeAreaView>
+      <SafeAreaView style={themes.containerTheme(isLight)}>
           <FlatList
             extraData={selectedID}
             data={data}
+            contentContainerStyle={themes.containerEditTheme(isLight)}
+            style={themes.containerTheme(isLight)}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={{borderBottomWidth:5, height: 110}}
+              containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
               key={index} 
               roundAvatar>
                 <Avatar size='large' avatarStyle={{borderRadius: 120}} source={{uri:FOOD_IMAGES_URIs[item.cuisinePreference]}} />
                 <ListItem.Content>
                   <View>
-                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${item.cuisinePreference} Cuisine`}</ListItem.Title>
-                  <ListItem.Title style={{fontWeight: 'bold'}}>{`${INDUSTRY_CODES[item.industry]} Industry`}</ListItem.Title>
+                  <ListItem.Title style={[{fontWeight: 'bold'}, themes.textTheme(isLight)]}>{`${item.cuisinePreference} Cuisine`}</ListItem.Title>
+                  <ListItem.Title style={[{fontWeight: 'bold'}, themes.textTheme(isLight)]}>{`${INDUSTRY_CODES[item.industry]} Industry`}</ListItem.Title>
                   </View>
                   <View>
-                  <ListItem.Subtitle>{dateStringMaker(item.datetime)}</ListItem.Subtitle>
+                  <ListItem.Subtitle style={themes.textTheme(isLight)}>{dateStringMaker(item.datetime)}</ListItem.Subtitle>
                   </View>
                 </ListItem.Content>
                 <View style={{flexDirection: 'column'}}>
                 <TouchableOpacity onPress={async() => 
                               {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                 props.navigation.navigate('Edit Gobble Request', {edit: true, request: item})
                                 console.log('Edit awaiting')
                               }}>
-                  <ListItem.Subtitle style={{color: '#c3990b'}}>{`Edit`}</ListItem.Subtitle>
+                  <ListItem.Subtitle style={{color: themes.editLabelTheme(isLight)}}>{`Edit`}</ListItem.Subtitle>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={async() => 
                               {
+                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                 let replacementSelectedID = Math.random()
                                 firebaseSvc.deleteAwaitingRequest(item);
                                 setSelectedID(replacementSelectedID)
@@ -125,7 +135,7 @@ function Awaiting (props, {navigation}) {
             keyExtractor={item => item.matchID}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
-            // ListFooterComponent={renderFooter(loading)}
+            // ListFooterComponent={renderFooter(isLight)}
             onEndReachedThreshold={50}
           />
       </SafeAreaView>
