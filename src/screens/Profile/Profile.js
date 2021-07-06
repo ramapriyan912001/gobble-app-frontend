@@ -1,6 +1,6 @@
 
 import React, {useEffect, useState, useCallback} from 'react'
-import {Text, Image, TouchableOpacity, SafeAreaView, Alert, View, Button, ScrollView} from 'react-native'
+import {Text, Image, TouchableOpacity, SafeAreaView, Alert, View, Platform, ScrollView} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
 import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../../styles/LoginStyles'
 import { getError, onSuccess, onFailure } from '../../services/RegistrationHandlers'
@@ -126,14 +126,16 @@ function Profile(props) {
         loadDataAsync();
     },[change]);
 
+    const drawerMargin = Platform.OS === 'ios' ? '2%' : '10%';
+
     return(
         <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
             <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
             <StatusBar style="auto"/>
-              <TouchableOpacity onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
-                <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%'}} size={30}></Ionicons>
+            <TouchableOpacity style={{marginTop: drawerMargin}} onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
+                <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
             </TouchableOpacity>
-            <View style={{marginTop:'4%'}}>
+            <View style={{marginTop:'-6%'}}>
                 <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: props.currentUserData.avatar}}/>
                 <TouchableOpacity onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small)
@@ -143,7 +145,7 @@ function Profile(props) {
                     marginRight:'1.8%',
                     marginBottom: '1.5%',
                     marginTop: '-6.5%'}}>
-                <AntDesign name='pluscircle' size={20} color={themes.oppositeTheme(isLight)}></AntDesign>
+                <AntDesign name='pluscircle' style={{marginLeft:'4%'}} size={20} color={themes.oppositeTheme(isLight)}></AntDesign>
                 </TouchableOpacity>
             </View>
             <Text style={[{...inputStyles.headerText, fontWeight:'400', marginBottom: '0%',fontSize: 26}, themes.textTheme(isLight)]}>{`${props.currentUserData.name}, ${getAge(props.currentUserData.dob)}`}</Text>

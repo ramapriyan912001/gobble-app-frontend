@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, SafeAreaView, Text, FlatList, Alert, TouchableOpacity} from 'react-native'
+import {Platform, SafeAreaView, Text, FlatList, Alert, TouchableOpacity} from 'react-native'
 import { Avatar, ListItem, SearchBar } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -13,6 +13,10 @@ import { INDUSTRY_CODES } from '../constants/objects'
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { blockAndUnblockAlert } from '../constants/alerts'
 import {UNBLOCK_SUCCESS } from '../constants/results'
+import themes from '../styles/Themes';
+import { useColorScheme } from 'react-native-appearance';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { DrawerActions } from '@react-navigation/native';
 
 /**
  * Page to Show previous Matches
@@ -22,7 +26,11 @@ import {UNBLOCK_SUCCESS } from '../constants/results'
  */
 function BlockedUsers (props, {navigation}) {
     const [data, setData] = useState([]);
-    const [selectedID, setSelectedID] = useState(null)
+    const [selectedID, setSelectedID] = useState(null);
+
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme === 'light';
+    const drawerTopMargin = Platform.OS === 'ios' ? '-87%' : '-70%';
     // const [loading, setLoading]= useState(true);
     const dateStringMaker = (date) => {
       return date.slice(0, 21)
@@ -89,7 +97,10 @@ function BlockedUsers (props, {navigation}) {
         )
     if(data.length != 0) {
       return (
-        <SafeAreaView>
+        <SafeAreaView style={themes.containerTheme(isLight)}>
+            <TouchableOpacity onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
+                <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
+            </TouchableOpacity>
             <FlatList
               data={data}
               extraData={selectedID}
@@ -120,8 +131,11 @@ function BlockedUsers (props, {navigation}) {
       );
     } else {
       return (
-        <SafeAreaView style={{flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'center'}}>
-          <Text style={{alignSelf: 'center'}}>You have no blocked users!</Text>
+        <SafeAreaView style={[{flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'center'}, themes.containerTheme(isLight)]}>
+          <TouchableOpacity style={{alignSelf: 'flex-start', marginBottom:'80%', marginTop:drawerTopMargin}} onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
+                <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
+            </TouchableOpacity>
+          <Text style={[{alignSelf: 'center', fontWeight:'bold'}, themes.textTheme(isLight)]}>You have no blocked users!</Text>
         </SafeAreaView>
       )
     }
