@@ -15,6 +15,9 @@ import Reauthenticate from './src/screens/Reauthenticate';
 import {store} from './src/redux/store';
 import { Conversation } from './src/screens/Chats/Conversation';
 import GobbleSelect from './src/screens/Gobble/GobbleSelect';
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['Setting a timer']);
+
 
 export default function AppWrapper() {
   return (

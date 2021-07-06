@@ -3,8 +3,8 @@ import {Text, SafeAreaView, View, Image, TouchableOpacity, StatusBar} from 'reac
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../styles/LoginStyles'
 import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
-import themes from '.././styles/Themes';
-import {styles} from '.././styles/RegisterStyles';
+import themes from '../styles/Themes';
+import {styles} from '../styles/RegisterStyles';
 
 /**
  * Once user finishes registration

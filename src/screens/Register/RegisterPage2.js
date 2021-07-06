@@ -19,7 +19,7 @@ import { useColorScheme } from 'react-native-appearance';
  * @param {*} props Props from previous screen
  * @returns RegisterPage2 Render Method
  */
-export default function RegisterPage2(props) {
+export default function RegisterPage2(props, {navigation}) {
     let user = props.route.params.user;
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
@@ -32,7 +32,7 @@ export default function RegisterPage2(props) {
         if(!hasAvatar) {
             setAvatar(EMPTY_AVATAR)
         } 
-    })
+    }, [navigation, avatar, hasAvatar])
 
     /**
      * Updates the given avatar (if any)
@@ -95,19 +95,8 @@ export default function RegisterPage2(props) {
                 ])
                 .then(resized => {
                     const resizedUri = resized.uri;
-                    // setAvatar(resizedUri);
-                    firebaseSvc
-                    .uploadImage(resizedUri)
-                    .then(uploadURL => {
-                        console.log("Set pic")
+                        setAvatar(resizedUri);
                         setHasAvatar(true);
-                        setAvatar(uploadURL);
-                        // firebaseSvc
-                        // .updateAvatar(uploadURL)
-                        // .then(() => console.log('Avatar Updated'))
-                        // .catch(onFailure('Upload Image'))
-                    })
-                    .catch(onFailure('URI Upload'))
                     })
                 .catch((err) => {
                     onFailure('Image Picking')
@@ -139,7 +128,6 @@ export default function RegisterPage2(props) {
                     updateImage()
                 } else {
                     setHasAvatar(false)
-
                 }
                 }}>
             <AntDesign name={hasAvatar ? 'closecircle' : 'pluscircle'} size={36} color={themes.oppositeTheme(isLight)} style={specificStyles.icon}></AntDesign>

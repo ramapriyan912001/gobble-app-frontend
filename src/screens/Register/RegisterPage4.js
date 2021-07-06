@@ -29,7 +29,13 @@ export default function RegisterPage4(props) {
     const authUpdateSuccess = () => firebaseSvc.updateCurrentUserCollection({...user, crossIndustrial: cross, dob: date.toString(), password: null, dateJoined: new Date().toString()}, onSuccess('User Collection Update'), onFailure('User Collection Update'));
     const authUpdateFailure = (err) => {Alert.alert('Profile cannot be created!', err.message)};
 
-    const authCreationSuccess = (userCredential) => firebaseSvc.updateUserProfile({displayName: user.name, photoURL: user.avatar}, authUpdateSuccess, authUpdateFailure);
+    const authCreationSuccess = async(userCredential) => {
+        await firebaseSvc
+        .uploadImage(user.avatar)
+        .then(uploadImage => {
+            user.avatar = uploadImage
+        }).catch(err => console.log('image upload ' + err))
+        firebaseSvc.updateUserProfile({displayName: user.name, photoURL: user.avatar}, authUpdateSuccess, authUpdateFailure)};
     const authCreationFailure = (err) => Alert.alert('Account cannot be created!', err.message);  
 
     /**
