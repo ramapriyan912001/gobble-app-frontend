@@ -56,7 +56,7 @@ export default function MakeReport(props) {
                     },
                     { text: "Yes", onPress: async() => {
                         let date = new Date()
-                        firebaseSvc.makeReport(otherUser.id, {description: text, reason: reason}, date.toString())
+                        await firebaseSvc.makeReport(otherUser.id, {description: text, reason: reason}, date.toString())
                         let res = await firebaseSvc.blockUser(otherUser.id, {name: otherUser.name, id: otherUser.id, avatar: otherUser.avatar})
                         if(res == BLOCK_SUCCESS) {
                             await Alert.alert('Gobble takes your complaint very seriously.', 'Our admins are reviewing your complaint and will take appropriate action.')

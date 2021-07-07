@@ -338,20 +338,20 @@ class FirebaseSvc {
   async getNumberOfReports() {
     let res;
     await firebase.database().ref(`/ReportCount/${this.uid}`)
-    .on('value', snapshot => res = snapshot.val())
-    firebase.database().ref(`/ReportCount/${this.uid}`).off()
+    .once('value', snapshot => {
+      res = snapshot.val()
+    })
     return res;
   }
 
   async deleteReport(reportID) {
     let updates = {}
     let numReports = await this.getNumberOfReports()
-
+    let x = numReports-1;
     updates[`/Reports/${this.uid}/${reportID}`] = null;
-    updates[`/ReportCount/${this.uid}/${reportID}`] = numReports-1;
-    
+    updates[`/ReportCount/${this.uid}`] = x;
     try {
-      await firebase.update(updates);
+      await firebase.database().ref().update(updates);
     } catch(err) {
       console.log("delete report error " + err);
     }

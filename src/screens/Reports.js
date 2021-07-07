@@ -75,6 +75,7 @@ function Reports (props, {navigation}) {
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
           await loadAsync();
+          console.log('change')
       })
       return unsubscribe;
     }, [navigation])

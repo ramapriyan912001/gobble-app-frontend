@@ -87,9 +87,9 @@ export default function ReportDetails(props) {
                     { text: "Yes", onPress: async() => {
                         console.log("No action taken")
                         // Not tested yet
-                        // firebaseSvc.deleteReport(props.route.params.id);
-                        // await Alert.alert('Report Deleted.', 'No action taken.');
-                        // props.navigation.navigate('Reports')
+                        await firebaseSvc.deleteReport(props.route.params.id);
+                        await Alert.alert('Report Deleted.', 'No action taken.');
+                        props.navigation.navigate('Reports')
                     }
                     }
                 ])
