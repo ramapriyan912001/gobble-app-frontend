@@ -16,7 +16,7 @@ export function GobbleConfirm(props) {
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
     let result = props.route.params.result;
-    if(props.route.params) {
+    if(result) {
         return(
             <View style={[styles.container, themes.containerTheme(isLight)]}>
                 <Text style={[inputStyles.subHeader, themes.textTheme(isLight)]}>We found your Gobblemate!</Text>

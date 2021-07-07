@@ -249,7 +249,26 @@ function GobbleSelect(props, {navigation}) {
                 {!isPickerShow && <TouchableOpacity style={[{...styles.longButton, marginTop: '0%'}, themes.buttonTheme(isLight)]} 
                     onPress={() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                        submitGobble();
+                        let gobbleRequest
+                        // submitGobble();
+                        if(props.route.params) {
+                            gobbleRequest = {...props.route.params.request, datetime: date.toString(), distance: distance, cuisinePreference: cuisinePreference}
+                            // firebaseSvc.deleteAwaitingRequest(props.route.params.request)
+                        } else {
+                            gobbleRequest = {
+                                userId: firebaseSvc.currentUser().uid,
+                                dietaryRestriction: props.currentUserData.diet,
+                                industryPreference: props.currentUserData.crossIndustrial ? 12 : props.currentUserData.industry,
+                                industry: props.currentUserData.industry,
+                                cuisinePreference: cuisinePreference,
+                                datetime: date.toString(),
+                                location: location,
+                                distance: distance,
+                            }
+                        }
+                        const param = props.route.params ? true : false;
+                        param ? props.navigation.navigate('Edit Location', {request: gobbleRequest, edit: param, oldRequest: props.route.params.request})
+                        : props.navigation.navigate('Edit Location', {request: gobbleRequest, edit: param})
                         }}>
                     <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>{props.route.params ? `Edit Gobble` : `Submit Gobble`}</Text>
                 </TouchableOpacity>}
