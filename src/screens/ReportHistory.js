@@ -22,7 +22,7 @@ import { REASONS } from '../constants/objects'
  * @param {*} props Props from previous screen
  * @returns Matches Render Method 
  */
-function Reports (props, {navigation}) {
+function ReportHistory (props, {navigation}) {
   const colorScheme = useColorScheme();
   const isLight = colorScheme === 'light';
     const [data, setData] = useState([]);
@@ -36,7 +36,7 @@ function Reports (props, {navigation}) {
     async function loadAsync() {
         console.log('hey')
       await firebaseSvc
-            .getReports(
+            .getReportHistory(
               snapshot => {
                 let ids = snapshot.val();
                 console.log(ids)
@@ -67,8 +67,8 @@ function Reports (props, {navigation}) {
     useEffect(() => {
         loadAsync();
         return () => {
-          console.log('Reports clean up!');
-          firebaseSvc.reportsOff();
+          console.log('Report History clean up!');
+          firebaseSvc.reportHistoryOff();
         }
     }, [])
 
@@ -91,7 +91,7 @@ function Reports (props, {navigation}) {
             renderItem={({ item, index }) => (
               <TouchableOpacity
               onPress={() => {
-                props.navigation.navigate('Report Details', {...item, buttons: true})
+                props.navigation.navigate('Report Details', {...item, buttons: false})
               }}>
               <ListItem
               containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
@@ -126,4 +126,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(Reports);
+export default connect(mapStateToProps, mapDispatchProps)(ReportHistory);

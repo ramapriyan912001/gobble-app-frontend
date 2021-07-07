@@ -10,7 +10,7 @@ export default function ReportDetails(props) {
 
     const [text, setText] = useState(props.route.params.complaint.description)
     const [reason, setReason] = useState(REASONS[props.route.params.complaint.reason])
-    const [flip, setFlip] = useState(false)
+    const [buttons, setButtons] = useState(props.route.params.buttons)
 
     const dateStringMaker = (date) => {
         return date.slice(4, 15)
@@ -18,7 +18,6 @@ export default function ReportDetails(props) {
 
     return (
         <SafeAreaView>
-            {!flip&&
             <View style={Platform.OS == 'ios' ? {marginTop: '3%',} : {marginTop: '1%'}}>
                 <Text style={specificStyles.headerText}>Why do you wish to report the user?</Text>
                 <TextInput
@@ -32,8 +31,6 @@ export default function ReportDetails(props) {
                 value={reason}
                 />
             </View>
-            }
-            {!flip&&
             <View style={Platform.OS == 'ios' ? {marginTop: '-8%', marginLeft:'0%', marginRight: '1%'} : {marginTop: '-8%', paddingRight: '5%'}}>
                 <Text style={specificStyles.headerText}>Please describe why you wish to report this user.</Text>
                 <TextInput
@@ -47,15 +44,13 @@ export default function ReportDetails(props) {
                 value={text}
                 />
             </View>
-            }
-            {
-                !flip&&
+            {buttons &&
                 <View style={{marginTop: '-20%'}}>
                     <Text style={{...specificStyles.headerText,marginLeft:'3%',  fontSize:20, marginTop: '-10%'}}>
                         {`This user has had ${props.route.params.complaintCount} complaints against them since joining Gobble in ${dateStringMaker(props.route.params.datetime)}`}</Text>
                 </View>
             }
-            {!flip&&
+            {buttons &&
             <View>
             <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '0%'}} onPress={() => {
                 Alert.alert(`Are you sure you wish to delete the user's account?`, 'This action is irreversible.', [
@@ -75,7 +70,7 @@ export default function ReportDetails(props) {
             </TouchableOpacity>
             </View>
             }
-            {!flip&&
+            {buttons &&
             <View>
             <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '3%'}} onPress={() => {
                 Alert.alert(`Are you sure you wish to report the user?`, 'The user will be blocked automatically.', [

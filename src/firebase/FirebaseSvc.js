@@ -268,15 +268,34 @@ class FirebaseSvc {
   }
 
   getReports = (success, callback, failure) => 
-  this.userExists()
+  this.isAdmin()
   ? firebase
   .database()
   .ref(`Reports/${this.uid}`)
   .on('value', (x) => callback(success(x)))
   : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
+  getReportHistory(otherUserId, success, callback, failure) {
+    this.isAdmin()
+  ? firebase
+  .database()
+  .ref(`ReportHistory/${otherUserId}`)
+  .on('value', (x) => callback(success(x)))
+  : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+  }
+
+  reportHistoryOff = (otherUserId) => {
+    if (this.isAdmin()) {
+      firebase
+      .database()
+      .ref(`ReportHistory/${otherUserId}`)
+      .off();
+    }
+  }
+ 
+
   reportsOff = () => {
-                if (this.userExists()) {
+                if (this.isAdmin()) {
                   firebase
                   .database()
                   .ref(`Reports/${this.uid}`)
