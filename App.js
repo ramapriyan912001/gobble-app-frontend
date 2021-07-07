@@ -30,6 +30,10 @@ export default function AppWrapper() {
 }
 import ProfileDrawer from './src/components/ProfileDrawer';
 import Test from './src/components/Test';
+import DestinationSearch from './src/components/DestinationSearch';
+import MapSelect from './src/components/MapSelect';
+import SearchBox from './src/components/SearchBox';
+import GobbleSelect2 from './src/screens/Gobble/GobbleSelect2';
 
 const Stack = createStackNavigator();
 
@@ -40,21 +44,22 @@ export function App() {
       <Provider store={store}>
           <Stack.Navigator initialRouteName="Login" 
           >
-            <Stack.Screen name="Welcome" options={{headerShown: false}} component={Welcome}></Stack.Screen>
-            <Stack.Screen name="Login" options={{headerShown: false}} component={Login}></Stack.Screen>
-            <Stack.Screen name="RegisterNavigator" options={{headerShown: false}} component={RegisterNavigator}></Stack.Screen>
-            <Stack.Screen name="BottomTabs" options={{headerShown: false}} component={BottomTabs}></Stack.Screen>
-            <Stack.Screen name="FinalStep" options={{headerShown: false}} component={FinalStep}></Stack.Screen>
-            <Stack.Screen name="ForgotPassword" options={{headerShown: false}} component={ForgotPassword}></Stack.Screen>
-            <Stack.Screen name="Reauthenticate" options={{headerShown: false}} component={Reauthenticate}></Stack.Screen>
+            <Stack.Screen name="Welcome" options={{headerShown: false, gestureEnabled: false}} component={Welcome}></Stack.Screen>
+            <Stack.Screen name="Login" options={{headerShown: false, gestureEnabled: false}} component={Login}></Stack.Screen>
+            <Stack.Screen name="RegisterNavigator" options={{headerShown: false, gestureEnabled: false}} component={RegisterNavigator}></Stack.Screen>
+            <Stack.Screen name="BottomTabs" options={{headerShown: false, gestureEnabled: false}} component={BottomTabs}></Stack.Screen>
+            <Stack.Screen name="FinalStep" options={{headerShown: false, gestureEnabled: false}} component={FinalStep}></Stack.Screen>
+            <Stack.Screen name="ForgotPassword" options={{headerShown: false, gestureEnabled: false}} component={ForgotPassword}></Stack.Screen>
+            <Stack.Screen name="Reauthenticate" options={{headerShown: false, gestureEnabled: false}} component={Reauthenticate}></Stack.Screen>
             <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
-            <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen> 
             <Stack.Screen options={{header: () => null}} name="MakeReport" component={MakeReport}></Stack.Screen>
+            <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen>
+            <Stack.Screen name="Edit Location" options={{headerShown: false}}  component={DestinationSearch}></Stack.Screen>
+            <Stack.Screen name="Confirm Request" component={GobbleSelect2}></Stack.Screen>
+            <Stack.Screen name="search" component={DestinationSearch}></Stack.Screen>
+            <Stack.Screen name="Test" options={{headerShown: false, gestureEnabled: true}} component={Test}></Stack.Screen>
           </Stack.Navigator>
       </Provider> 
     </NavigationContainer>
   );
 }
-
-
-

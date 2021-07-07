@@ -112,7 +112,7 @@ export const profileStylesAddition = StyleSheet.create({
         width: '50%', // is 50% of container width
         justifyContent: 'center',
         alignItems: 'center',
-        marginTop: '5%'
+        marginTop: '2%'
       },
       labelStyle: {
           justifyContent: 'center',

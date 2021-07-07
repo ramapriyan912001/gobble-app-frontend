@@ -472,6 +472,7 @@ class FirebaseSvc {
    * @returns 
    */
   getDatetime(request) {
+    console.log(request)
     return new Date(request['datetime'])
   }
 
@@ -501,6 +502,7 @@ class FirebaseSvc {
    */
   async findGobbleMate(request) {
     console.log('Finding a match');
+    console.log(request)
     let date1 = this.getDatetime(request)
     let ref = this.gobbleRequestsRef()
     .child(this.makeDateString(date1))
