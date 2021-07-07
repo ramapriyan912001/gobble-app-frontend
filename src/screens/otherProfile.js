@@ -16,8 +16,8 @@ import PreviousMatches from './PreviousMatches'
 const Tab = createMaterialTopTabNavigator();
 import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
-import themes from '.././styles/Themes';
-import {styles} from '.././styles/ProfileStyles';
+import themes from '../styles/Themes';
+import {styles} from '../styles/ProfileStyles';
 
 /**
  * User Profile Page
@@ -25,7 +25,7 @@ import {styles} from '.././styles/ProfileStyles';
  * @param {*} props Props from previous screen
  * @returns Profile Render Method
  */
-function otherProfile(props) {
+function OtherProfile(props) {
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
     const [userData, setUserData] = useState({})
@@ -51,7 +51,7 @@ function otherProfile(props) {
         try {
             // setOtherUserID(props.route.params.id)
             let data = await firebaseSvc.getUserCollection(otherUserID, snapshot => snapshot.val(), onFailure('otherUser Loading Error'))
-            setUserData(data);
+            setUserData({...data, id: otherUserID});
             if (userData == null) {
                 props.navigation.goBack();
             }
@@ -61,6 +61,8 @@ function otherProfile(props) {
         }
     }
 
+    const buttonMargins = Platform.OS === 'ios' ? '7.5%' : '10%';
+
     useEffect(() => {
         loadDataAsync();
     },[]);
@@ -68,7 +70,7 @@ function otherProfile(props) {
     if (loading) {
         return (
             <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
-                <Text style={themes.textTheme(isLight)}>Loading...</Text>
+                <Text style={[themes.textTheme(isLight), {fontSize:25, fontWeight:'bold', alignSelf:'center'}]}>Loading...</Text>
             </SafeAreaView>
         );
     } else {
@@ -109,4 +111,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(otherProfile);
+export default connect(mapStateToProps, mapDispatchProps)(OtherProfile);

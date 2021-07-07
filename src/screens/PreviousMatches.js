@@ -26,6 +26,7 @@ import {styles} from '.././styles/ProfileStyles';
    const isLight = colorScheme === 'light';
     const [data, setData] = useState([]);
     const [selectedID, setSelectedID] = useState(null)
+    const [matchIDs, setMatchIDs] = useState({})
 
     function renderContent(item, index) {
       const dateStringMaker = (date) => {
@@ -114,7 +115,7 @@ import {styles} from '.././styles/ProfileStyles';
             data={data}
             extraData={selectedID}
             renderItem={({ item, index }) => renderContent(item, index)}
-            keyExtractor={item => item.datetime}
+            keyExtractor={item => item.matchID}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
             // ListFooterComponent={renderFooter(loading)}

@@ -102,7 +102,6 @@ function GobbleSelect(props, {navigation}) {
                 let location = await Location.getCurrentPositionAsync({})
                 setLocation(location)  
             }
-            console.log(date)
             setLoading(false); 
       })();
   }, []);
@@ -185,7 +184,7 @@ function GobbleSelect(props, {navigation}) {
         }
         let result =  await firebaseSvc.findGobbleMate(gobbleRequest);
         // We need to do some load page
-        props.navigation.navigate('BottomTabs', { screen: 'GobbleNavigator', params: { screen: 'GobbleConfirm', params: {result: result}} })
+        props.route.params ? props.navigation.navigate('BottomTabs', { screen: 'GobbleNavigator', params: { screen: 'GobbleConfirm', params: {result: result}} }) : props.navigation.navigate('GobbleConfirm')
       }
   }
 
@@ -228,7 +227,7 @@ function GobbleSelect(props, {navigation}) {
                             />
                         )}
             </View>
-            <View style={{...specificStyles.container, marginTop: '5%'}}>
+            <View style={{...specificStyles.container, marginTop: '7%'}}>
                     {!isPickerShow && <Text style={[{...inputStyles.subHeader, marginTop: '0%',}, themes.textTheme(isLight)]}>What are you in the mood for today?</Text>}
                     {!isPickerShow && <Picker
                         selectedValue={cuisinePreference}
@@ -236,7 +235,7 @@ function GobbleSelect(props, {navigation}) {
                         {renderCuisines()}
                     </Picker>}
             </View>
-            <View style={{...specificStyles.container, marginTop: '0%'}}>
+            <View style={{...specificStyles.container, marginTop: '7%'}}>
                     {!isPickerShow && <Text style={[{...inputStyles.subHeader, marginTop: '0%',}, themes.textTheme(isLight)]}>How far are you willing to travel for a meal?</Text>}
                     {!isPickerShow &&
                         <Picker

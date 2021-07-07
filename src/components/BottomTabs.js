@@ -18,6 +18,7 @@ import { fetchUserData, giveAdminAccess, removeAdminAccess } from '../redux/acti
 import { loadAsync } from 'expo-font';
 import AdminNavigator from '../screens/AdminNavigator';
 import firebaseSvc from '../firebase/FirebaseSvc';
+import ProfileDrawer from './ProfileDrawer';
 
 const Tab = createBottomTabNavigator();
 
@@ -49,7 +50,7 @@ function BottomTabs(props, {navigation}) {
             tabBarIcon: ({ focused, color, size }) => {
               let iconName;
   
-              if (route.name === 'ProfileNavigator') {
+              if (route.name === 'ProfileDrawer') {
                 iconName = focused
                   ? 'person'
                   : 'person-outline';
@@ -83,7 +84,7 @@ function BottomTabs(props, {navigation}) {
         }}>
             <Tab.Screen options={{
                 title: "Profile"
-            }} name="ProfileNavigator" component={ProfileNavigator}></Tab.Screen>
+            }} name="ProfileDrawer" component={ProfileDrawer}></Tab.Screen>
             <Tab.Screen options={{
                 title: "Gobble"
                 }} name="GobbleNavigator" component={GobbleNavigator}></Tab.Screen>

@@ -132,7 +132,7 @@ function Awaiting (props, {navigation}) {
                 </View>
               </ListItem>
             )}
-            keyExtractor={item => item.datetime}
+            keyExtractor={item => item.matchID}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
             // ListFooterComponent={renderFooter(isLight)}

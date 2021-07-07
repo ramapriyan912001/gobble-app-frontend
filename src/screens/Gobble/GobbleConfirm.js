@@ -16,7 +16,7 @@ export function GobbleConfirm(props) {
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
     let result = props.route.params.result;
-    if(result) {
+    if(props.route.params) {
         return(
             <View style={[styles.container, themes.containerTheme(isLight)]}>
                 <Text style={[inputStyles.subHeader, themes.textTheme(isLight)]}>We found your Gobblemate!</Text>
@@ -37,6 +37,7 @@ export function GobbleConfirm(props) {
                 <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                     props.navigation.navigate('GobbleSelect');
+
                 }}>
                     <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Done!</Text>
                 </TouchableOpacity>

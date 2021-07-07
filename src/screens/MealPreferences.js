@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native'
 import {Input} from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -86,6 +86,8 @@ function MealPreferences(props) {
         console.log('Sign Out Error: ' + err.message);
         Alert.alert('Sign Out Error. Try Again Later');
     }
+
+    const buttonMargins = Platform.OS === 'ios' ? '7.5%' : '10%';
 
     const signOutUser = () => firebaseSvc.signOut(signOutSuccess, signOutFailure);
     if (edit) {
@@ -205,8 +207,8 @@ function MealPreferences(props) {
                 <Input label='Industry Choice' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={industryPreference} editable={false}></Input>
                 <Input label='Industry' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={INDUSTRY_CODES[industry]} editable={false}></Input>
                 </View>
-                <View style={{marginLeft: '7.5%', marginTop: '5%'}}>
-                        <TouchableOpacity style={[styles.longButton, themes.editButtonTheme(isLight)]} onPress={() => {
+                <View style={{marginLeft: buttonMargins}}>
+                        <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             console.log("Editing Preferences")
                             setEdit(true);
@@ -214,7 +216,7 @@ function MealPreferences(props) {
                         }}>
                             <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Edit Preferences</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={[{...styles.longButton, marginBottom: '20%'}, themes.editButtonTheme(isLight)]} onPress={() => {
+                        <TouchableOpacity style={[{...styles.longButton, marginBottom: '20%'}, themes.buttonTheme(isLight)]} onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             signOutUser();
                             props.navigation.navigate('Login')}}>

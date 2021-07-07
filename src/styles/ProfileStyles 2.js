@@ -2,13 +2,12 @@ import {StyleSheet} from 'react-native'
 
 const light = '#ffe';
 const dark = '#242C40';
+const lighterDark = '#2e374f';
+const darkerLight = '#ededd8';
 
 export const styles = StyleSheet.create({
     container: {
             flex: 1,
-            flexDirection:'column',
-            alignItems: 'center',
-            justifyContent: 'center',
     },
     darkContainer: {
         backgroundColor: dark
@@ -84,15 +83,47 @@ export const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         elevation: 5,
     },
-    image: {
-        width: '70%',
-        height: '40%',
-        marginTop: '0%'
+});
+
+export const profileStylesAddition = StyleSheet.create({
+    darkEditButton: {
+        backgroundColor: lighterDark,
+        shadowColor: lighterDark,
+        shadowRadius: 3.84,
     },
-    caption: {
-        fontSize: 38,
-        fontWeight: 'bold',
-        marginBottom: '0%',
-        textAlign: 'left',
+    lightEditButton: {
+        backgroundColor: darkerLight,
+        shadowColor: darkerLight,
+        shadowRadius: 0.1,
     },
+    darkEditContainer: {
+        backgroundColor: lighterDark
+    },
+    lightEditContainer: {
+        backgroundColor: darkerLight
+    },
+    container: {
+        flex: 1,
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        alignItems: 'flex-start' // if you want to fill rows left to right
+      },
+      item: {
+        width: '50%', // is 50% of container width
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginTop: '5%'
+      },
+      labelStyle: {
+          justifyContent: 'center',
+          alignSelf:'center',
+          borderBottomWidth: 1,
+      },
+      inputStyle: {
+          width: 5,
+          margin:0,
+          padding:0,
+          textAlign:'center',
+          fontSize:12,    
+      },
 })

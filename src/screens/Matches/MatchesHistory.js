@@ -41,7 +41,8 @@ function MatchesHistory (props, {navigation}) {
               async(snapshot) => {
                 let ids = snapshot.val();
                 if (ids == null) {
-                  //Do Nothing
+                  setData([])
+                  setMatchIDs({})
                 } else  {
                   // console.log(ids, 'ids')
                   let newData = [];
@@ -51,19 +52,16 @@ function MatchesHistory (props, {navigation}) {
                     }
                     let details = ids[key]
                     let otherUserId = details.otherUserId
-                    let avatar, industry;
-
                     await firebaseSvc
-                          .avatarRef(details.otherUserId)
+                          .avatarRef(otherUserId)
                           .once("value")
                           .then(subsnap => {details = {...details, otherUserAvatar: subsnap.val()}})
                           .catch(err => console.log('Error Loading Avatar:',err.message));
                     await firebaseSvc
-                          .industryRef(details.otherUserId)
+                          .industryRef(otherUserId)
                           .once("value")
                           .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
                           .catch(err => console.log('Error Loading Avatar:',err.message));
-
                     newData = newData.concat(details);
                   }
                   newData.sort(function (a, b) {
@@ -86,11 +84,12 @@ function MatchesHistory (props, {navigation}) {
           console.log('matchHistory clean up!');
           firebaseSvc.matchIDsOff();
         }
-    }, [matchIDs])
+    }, [])
 
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
           await loadAsync();
+          setSelectedID(Math.random())
       })
       return unsubscribe;
     }, [navigation])
@@ -113,7 +112,7 @@ function MatchesHistory (props, {navigation}) {
                 </ListItem.Content>
               </ListItem>
             )}
-            keyExtractor={item => item.datetime}
+            keyExtractor={item => item.matchID}
             ItemSeparatorComponent={renderSeparator}
             // ListHeaderComponent={renderHeader}
             // ListFooterComponent={renderFooter(loading)}

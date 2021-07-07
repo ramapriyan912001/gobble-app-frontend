@@ -68,7 +68,8 @@ export default function RegisterPage4(props) {
         
     const pickerText = () => isPickerShow ? 'Close' : 'choose Date & Time';
     const switchText = () => cross ? 'Yes!' : 'No!';
-    const lastButtonMargin = Platform.OS === 'android'?'65%':'85%';
+    const lastButtonMargin = Platform.OS === 'android'?'35%':'85%';
+    const birthdayMargin = Platform.OS === 'android' ? '35%' : '10%';
 
     return(
     <SafeAreaView style={[specificStyles.container, themes.containerTheme(isLight)]}>
@@ -79,7 +80,7 @@ export default function RegisterPage4(props) {
             onValueChange={() => {setCrossIndustryPreference(!cross)}} 
             style={pickerStyles.switch}
         />}
-        <View style={{marginTop:'10%'}}>
+        <View style={{paddingTop:birthdayMargin}}>
                         <Text style={[{...inputStyles.subHeader, marginTop: '5%'}, themes.textTheme(isLight)]}>Tell us your Birthday!</Text>
                         <TouchableOpacity 
                         onPress={() => {

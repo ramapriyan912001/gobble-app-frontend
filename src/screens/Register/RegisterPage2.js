@@ -180,7 +180,6 @@ export default function RegisterPage2(props, {navigation}) {
         },
 
         icon: {
-            alignSelf: 'center',
             marginLeft: '45%',
             marginRight:'2%',
             marginBottom: '7%',
