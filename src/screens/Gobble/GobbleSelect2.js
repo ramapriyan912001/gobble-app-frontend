@@ -11,6 +11,7 @@ import { bindActionCreators } from 'redux'
 import { StatusBar } from 'expo-status-bar';
 import MapSelect from '../../components/MapSelect';
 import SearchBox from '../../components/SearchBox';
+import DestinationSearch from '../../components/DestinationSearch';
 
 /**
  * Final Page before submitting a new Match Request
@@ -22,13 +23,32 @@ export default function GobbleSelect2(props) {
   /**
    * Asynchronously submits a new match request
    */
+  async function submitGobble(request) {
+      if(props.route.params.edit) {
+        await firebaseSvc.deleteAwaitingRequest(props.route.params.oldRequest)
+      }
+      let result =  await firebaseSvc.findGobbleMate(request);
+      console.log(result)
+      // We need to do some load page
+      props.navigation.navigate('BottomTabs', { screen: 'GobbleNavigator', params: { screen: 'GobbleConfirm', params: {result: result}} })
+  }
 
     return (
         <View style={styles.container}>
-          <View style={{height: Dimensions.get('window').height*0.7, width: '100%'}}>
-            <MapSelect></MapSelect>
+          <Text style={inputStyles.headerText}>Confirm your Gobble!</Text>
+          <Text>{`${props.route.params.request.cuisinePreference}`}</Text>
+          <Text>{`${props.route.params.request.datetime}`}</Text>
+          <Text>{`${props.route.params.request.distance} km`}</Text>
+          <Text>{`${props.route.params.description}`}</Text>
+          <View>
+            <TouchableOpacity onPress={() => {
+              console.log(props.route.params.request)
+              let request = props.route.params.request
+              submitGobble(request);
+            }}>
+              <Text>Confirm Gobble!</Text>
+            </TouchableOpacity>
           </View>
-          <SearchBox></SearchBox>
         </View>
     )
 }
@@ -36,7 +56,7 @@ export default function GobbleSelect2(props) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: '-8%',
+    marginTop: '0%',
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center'

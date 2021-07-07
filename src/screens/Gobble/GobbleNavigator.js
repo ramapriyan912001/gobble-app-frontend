@@ -5,6 +5,8 @@ import { fetchAuthUser, clearData } from '../../redux/actions/actions'
 import {createStackNavigator} from '@react-navigation/stack'
 import GobbleSelect from './GobbleSelect'
 import {GobbleConfirm} from './GobbleConfirm'
+import GobbleSelect2 from './GobbleSelect2'
+import DestinationSearch from '../../components/DestinationSearch'
 
 const Stack = createStackNavigator();
 
@@ -17,6 +19,7 @@ export function GobbleNavigator() {
     return (
         <Stack.Navigator initialRouteName="GobbleSelect">
             <Stack.Screen name="GobbleSelect" options={{headerShown:false}} component={GobbleSelect}></Stack.Screen>
+            <Stack.Screen name="Search" options={{headerShown:false}} component={DestinationSearch}></Stack.Screen>
             <Stack.Screen name="GobbleConfirm" options={{headerShown:false}} component={GobbleConfirm}></Stack.Screen>
         </Stack.Navigator>
     )

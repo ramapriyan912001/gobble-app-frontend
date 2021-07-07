@@ -30,10 +30,10 @@ export default function DestinationSearch(props) {
       <View style={{...styles.container, flexDirection: 'row'}}>
           <View
           style={{marginTop: '0%'}}>
-              <TouchableOpacity onPress={() => {
+              <TouchableOpacity style={{paddingRight: '4%'}} onPress={() => {
                   props.navigation.goBack()
               }}>
-                <Ionicons style={{alignSelf: 'center'}} name="arrow-back" size={30}></Ionicons>
+                <Ionicons name="arrow-back" size={30}></Ionicons>
               </TouchableOpacity>
           </View>
           <GooglePlacesAutocomplete
@@ -41,8 +41,12 @@ export default function DestinationSearch(props) {
           onPress={(data, details=null) => {
             // 'details' is provided when fetchDetails = true
             setLocation({data, details})
-            console.log(data)
-            props.navigation.navigate('gobble', {location: location})
+            console.log(data.description)
+            console.log(details.geometry.location)
+            let request = props.route.params.request;
+            request['location'] = {'coords': {'latitude': details.geometry.location['lat'], 'longitude': details.geometry.location['lng']}}
+            const nav = 'Confirm Request'
+            props.navigation.navigate(nav, {request: request,  edit: props.route.params.edit, description: data.description, oldRequest: props.route.params.oldRequest})
         }}
         query={{
             key: 'AIzaSyC6h4poHiCJzIWZGNZ5JThvwpTjk0q7eWo',
@@ -75,10 +79,10 @@ const styles = StyleSheet.create({
       height: '100%',
     },
     textInput: {
-      padding: 10,
+      padding: '3%',
       backgroundColor: '#eee',
       marginVertical: 0,
-      marginLeft: 10,
+      width: '100%'
     },
   
     separator: {
@@ -91,7 +95,8 @@ const styles = StyleSheet.create({
     autocompleteContainer: {
       top: 0,
       left: 0,
-      right: 10,
+      right: 0,
+      width: '85%'
     },
     locationText: {
   
