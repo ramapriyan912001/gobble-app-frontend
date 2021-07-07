@@ -17,7 +17,7 @@ export default function AdminNavigator(props) {
             <Stack.Screen options={{
               headerLeft: () => null
             }} name="Reports" component={Reports}></Stack.Screen>
-            <Stack.Screen name="ReportDetails" component={ReportDetails}></Stack.Screen>
+            <Stack.Screen name="Report Details" component={ReportDetails}></Stack.Screen>
         </Stack.Navigator>
     )
 }

@@ -6,7 +6,7 @@ import { bindActionCreators } from 'redux'
 import { fetchAuthUser, clearData } from '../../redux/actions/actions'
 import {createStackNavigator} from '@react-navigation/stack'
 import ChatRoom from './ChatRoom'
-import otherProfile from '../otherProfile'
+import OtherProfile from '../OtherProfile'
 import { Conversation } from './Conversation'
 import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';

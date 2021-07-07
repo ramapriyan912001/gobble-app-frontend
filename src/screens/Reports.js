@@ -14,6 +14,7 @@ import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
 import themes from '../styles/Themes';
 import {styles} from '../styles/RegisterStyles';
+import { REASONS } from '../constants/objects'
 
 /**
  * Page to Load the Pending Matches Screen
@@ -57,11 +58,11 @@ function Reports (props, {navigation}) {
     }
 
     const dateStringMaker = (date) => {
-      return date.slice(0, 11) + timeStringMaker(date)
-    }
-    const timeStringMaker = (date) => {
+      return date.slice(0, 10)
+  }
+  const timeStringMaker = (date) => {
       return date.slice(16, 21)
-    }
+  }
 
     useEffect(() => {
         loadAsync();
@@ -87,41 +88,26 @@ function Reports (props, {navigation}) {
             contentContainerStyle={themes.containerEditTheme(isLight)}
             style={themes.containerTheme(isLight)}
             renderItem={({ item, index }) => (
+              <TouchableOpacity
+              onPress={() => {
+                props.navigation.navigate('Report Details', item)
+              }}>
               <ListItem
               containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
               key={index} 
               roundAvatar>
-                <Avatar size='large' avatarStyle={{borderRadius: 120}} source={{uri:FOOD_IMAGES_URIs[item.cuisinePreference]}} />
+                <View style={{flexDirection: 'column', borderColor: themes.oppositeTheme(isLight), paddingRight: '2.5%',borderRightWidth: 2}}>
+                          <ListItem.Subtitle style={[{fontWeight: '500'}, themes.textTheme(isLight)]}>{`${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                          <ListItem.Subtitle style={[{fontWeight: '300'}, themes.textTheme(isLight)]}>{`${timeStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                </View>
                 <ListItem.Content>
                   <View>
-                  <ListItem.Title style={[{fontWeight: 'bold'}, themes.textTheme(isLight)]}>{`${item.cuisinePreference} Cuisine`}</ListItem.Title>
-                  <ListItem.Title style={[{fontWeight: 'bold'}, themes.textTheme(isLight)]}>{`${INDUSTRY_CODES[item.industry]} Industry`}</ListItem.Title>
-                  </View>
-                  <View>
-                  <ListItem.Subtitle style={themes.textTheme(isLight)}>{dateStringMaker(item.datetime)}</ListItem.Subtitle>
+                  <ListItem.Title style={[{fontWeight: 'bold'}, themes.textTheme(isLight)]}>{`${REASONS[item.complaint.reason]}`}</ListItem.Title>
                   </View>
                 </ListItem.Content>
-                <View style={{flexDirection: 'column'}}>
-                <TouchableOpacity onPress={async() => 
-                              {
-                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                                props.navigation.navigate('Edit Gobble Request', {edit: true, request: item})
-                                console.log('Edit awaiting')
-                              }}>
-                  <ListItem.Subtitle style={{color: themes.editLabelTheme(isLight)}}>{`Edit`}</ListItem.Subtitle>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={async() => 
-                              {
-                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                                let replacementSelectedID = Math.random()
-                                firebaseSvc.deleteAwaitingRequest(item);
-                                setSelectedID(replacementSelectedID)
-                                console.log('Delete awaiting')
-                              }}>
-                  <ListItem.Subtitle style={{color: 'red'}}>{`Delete`}</ListItem.Subtitle>
-                </TouchableOpacity>
-                </View>
               </ListItem>
+              </TouchableOpacity>
+              
             )}
             keyExtractor={item => item.datetime}
             ItemSeparatorComponent={renderSeparator}
@@ -129,7 +115,6 @@ function Reports (props, {navigation}) {
             // ListFooterComponent={renderFooter(isLight)}
             onEndReachedThreshold={50}
           />
-          <Text>Reports</Text>
       </SafeAreaView>
     );
 }

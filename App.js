@@ -52,7 +52,7 @@ export function App() {
             <Stack.Screen name="ForgotPassword" options={{headerShown: false, gestureEnabled: false}} component={ForgotPassword}></Stack.Screen>
             <Stack.Screen name="Reauthenticate" options={{headerShown: false, gestureEnabled: false}} component={Reauthenticate}></Stack.Screen>
             <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
-            <Stack.Screen options={{header: () => null}} name="MakeReport" component={MakeReport}></Stack.Screen>
+            <Stack.Screen name="Report" component={MakeReport}></Stack.Screen>
             <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen>
             <Stack.Screen name="Edit Location" options={{headerShown: false}}  component={DestinationSearch}></Stack.Screen>
             <Stack.Screen name="Confirm Request" component={GobbleSelect2}></Stack.Screen>

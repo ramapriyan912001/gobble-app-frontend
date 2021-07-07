@@ -82,6 +82,20 @@ class FirebaseSvc {
     }
   }
 
+  deleteAnotherUser(otherUserId) {
+    try {
+      if(this.isAdmin()) {
+        let updates = {}
+        updates[`/Users/${otherUserId}`] = null;
+        updates[`/Avatars/${otherUserId}`] = null;
+        updates[`/Industry/${otherUserId}`] = null;
+        return firebase.database().update(updates);
+      } 
+    } catch(err) {
+      console.log("delete another user " + err);
+    }
+  }
+
   /**
    * Function to re-authenticate a user
    * 
@@ -275,7 +289,6 @@ class FirebaseSvc {
     let sortedAdmins = [];
     await firebase.database()
     .ref('ReportCount')
-    .orderByChild('count')
     .on("value", (snapshot) => {
       admins = snapshot.val()
     })
@@ -285,21 +298,61 @@ class FirebaseSvc {
     await sortedAdmins.sort(function(a, b) {
       return a[1] - b[1];
     });
+    firebase.database().ref('ReportCount').off();
     return sortedAdmins[0];
   }
 
+  async getNumberOfComplaints(otherUserId) {
+    let res; 
+    await firebase.database().ref(`ComplaintCount/${otherUserId}`)
+    .once("value", snapshot => snapshot.val() ? res = snapshot.val() : res = 0)
+    return res;
+  }
 
+  async getDateJoined(otherUserId) {
+    let res;
+    await firebase.database().ref(`Users/${otherUserId}/dateJoined`)
+    .once("value").then(snapshot => res = snapshot.val()).catch(err => console.log(err))
+    return res;
+  }
 
-  async makeReport(otherUserId, complaint) {
+  async makeReport(otherUserId, complaint, datetime) {
     let updates = {}
-    let minimumReportAdmin = await this.getMinimumReportAdmin()
+    let minimumReportAdmin = await this.getMinimumReportAdmin();
+    let numComplaints = await this.getNumberOfComplaints(otherUserId);
+    let dateJoined = await this.getDateJoined(otherUserId)
     let key = await firebase.database().ref().push().key
-    updates[`Reports/${minimumReportAdmin[0]}/${key}`] = {...complaint, plaintiff: this.uid, defendant: otherUserId}
+
+    updates[`Reports/${minimumReportAdmin[0]}/${key}`] = {complaint: complaint, datetime: datetime, plaintiff: this.uid, defendant: otherUserId, dateJoined: dateJoined, complaintCount: numComplaints+1}
     updates[`ReportCount/${minimumReportAdmin[0]}`] = minimumReportAdmin[1]+1;
+    updates[`ComplaintCount/${otherUserId}`] = numComplaints+1;
+
     try {
-      return firebase.database().update(updates)
+      return firebase.database().ref().update(updates)
     } catch(err) {
       console.log("makeReport error: " + err)
+    }
+  }
+
+  async getNumberOfReports() {
+    let res;
+    await firebase.database().ref(`/ReportCount/${this.uid}`)
+    .on('value', snapshot => res = snapshot.val())
+    firebase.database().ref(`/ReportCount/${this.uid}`).off()
+    return res;
+  }
+
+  async deleteReport(reportID) {
+    let updates = {}
+    let numReports = await this.getNumberOfReports()
+
+    updates[`/Reports/${this.uid}/${reportID}`] = null;
+    updates[`/ReportCount/${this.uid}/${reportID}`] = numReports-1;
+    
+    try {
+      await firebase.update(updates);
+    } catch(err) {
+      console.log("delete report error " + err);
     }
   }
 
@@ -925,8 +978,9 @@ makeGobbleRequest(ref, request, date) {
     firebase.database().ref().update(updates)
   }
   blockUser(otherUid, otherUserNameAndAvatar) {
+    console.log('otheruid', otherUid)
+    console.log(otherUserNameAndAvatar)
     let updates = {}
-
     return firebase.database().ref(`Users/${this.uid}/pendingMatchIDs`)
     .once("value")
     .then(snapshot => {

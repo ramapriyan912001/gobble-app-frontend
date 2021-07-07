@@ -6,11 +6,12 @@ import { REASONS } from '../constants/objects';
 import themes from '../styles/Themes';
 import {styles} from '../styles/RegisterStyles';
 import { buttonStyles } from '../styles/LoginStyles';
+import { BLOCK_SUCCESS } from '../constants/results';
 
 
 export default function MakeReport(props) {
     const [reason, setReason] = useState(2);
-    const [otherUser, setOtherUser] = useState({});
+    const [otherUser, setOtherUser] = useState(props.route.params.otherUser);
     const [isPickerShow, setIsPickerShow] = useState(false)
     const [text, setText] = useState('')
 
@@ -46,17 +47,19 @@ export default function MakeReport(props) {
                 />
             </View>
             <View>
-            <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '-25%'}} onPress={() => {
+            <TouchableOpacity style={Platform.OS == 'ios'? {...buttonStyles.loginButton, marginTop: '-25%'} : {...buttonStyles.loginButton, marginTop: '-10%'}} onPress={() => {
                 Alert.alert(`Are you sure you wish to report the user?`, 'The user will be blocked automatically.', [
                     {
                     text: "No",
-                    onPress: () => firebaseSvc.getMinimumReportAdmin(),
+                    onPress: () => console.log('cancel pressed'),
                     style: "cancel"
                     },
                     { text: "Yes", onPress: async() => {
-                        firebaseSvc.makeReport(otherUser.id, text, reason)
+                        let date = new Date()
+                        firebaseSvc.makeReport(otherUser.id, {description: text, reason: reason}, date.toString())
                         let res = await firebaseSvc.blockUser(otherUser.id, {name: otherUser.name, id: otherUser.id, avatar: otherUser.avatar})
                         if(res == BLOCK_SUCCESS) {
+                            await Alert.alert('Gobble takes your complaint very seriously.', 'Our admins are reviewing your complaint and will take appropriate action.')
                             props.navigation.navigate('ChatRoom')
                         } else {
                             Alert.alert("Sorry, user could not be reported.", "Try again later.")

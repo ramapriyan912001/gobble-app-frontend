@@ -25,7 +25,7 @@ Trying to decide whether to have two screens or one screen in otherProfile
 Depending on that, we can have a tab nav in otherProfile, or just move the stuff from this component to the otherProfile Component
 To be decided tomorrow
 */
-function AboutPerson(props) {
+function AboutPerson(props, {navigation}) {
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
     const [otherUser, setOtherUser] = useState(props.route.params.otherUser);
@@ -80,7 +80,7 @@ function AboutPerson(props) {
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                        props.navigation.navigate('MakeReport', {otherUser: otherUser})
+                        props.navigation.navigate('Report', {otherUser: otherUser})
                     }}>
                         <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Report User</Text>
                     </TouchableOpacity>
