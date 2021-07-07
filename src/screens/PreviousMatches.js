@@ -67,7 +67,10 @@ import {styles} from '.././styles/ProfileStyles';
                   let newData = [];
                   for(let [key, value] of Object.entries(ids)) {
                     let details = ids[key]
-                      let otherUserId = details.otherUserId
+                    let otherUserId = details.otherUserId
+                    if(otherUserId != props.route.params.otherUser.id) {
+                      continue;
+                    }
                       await firebaseSvc
                             .avatarRef(otherUserId)
                             .once("value")
@@ -83,7 +86,7 @@ import {styles} from '.././styles/ProfileStyles';
                   newData.sort(function (a, b) {
                     let x = new Date(a.datetime)
                     let y = new Date(b.datetime)
-                    return x <= y ? -1 : 1
+                    return x <= y ? 1 : -1
                   });
                   setData(newData);
                 }
