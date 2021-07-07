@@ -327,6 +327,7 @@ class FirebaseSvc {
     updates[`/Reports/${minimumReportAdmin[0]}/${key}`] = {complaint: complaint, datetime: datetime, plaintiff: this.uid, defendant: otherUserId, dateJoined: dateJoined, complaintCount: numComplaints+1}
     updates[`/ReportCount/${minimumReportAdmin[0]}`] = minimumReportAdmin[1]+1;
     updates[`/ComplaintCount/${otherUserId}`] = numComplaints+1;
+    updates[`/ReportHistory/${otherUserId}/${key}`] = {complaint: complaint, datetime: datetime, plaintiff: this.uid, defendant: otherUserId}
 
     try {
       return firebase.database().ref().update(updates)
