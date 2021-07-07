@@ -21,11 +21,11 @@ import { BLOCK_CONFIRM } from '../constants/results'
 
 
 /*
-Trying to decide whether to have two screens or one screen in otherProfile
-Depending on that, we can have a tab nav in otherProfile, or just move the stuff from this component to the otherProfile Component
+Trying to decide whether to have two screens or one screen in OtherProfile
+Depending on that, we can have a tab nav in OtherProfile, or just move the stuff from this component to the OtherProfile Component
 To be decided tomorrow
 */
-function AboutPerson(props, {navigation}) {
+function AboutPerson(props, { navigation }) {
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
     const [otherUser, setOtherUser] = useState(props.route.params.otherUser);
