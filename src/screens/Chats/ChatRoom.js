@@ -34,7 +34,7 @@ function ChatRoom (props, {navigation}) {
     async function loadAsync() {
       await firebaseSvc
             .getChats(
-              snapshot => {
+              async snapshot => {
                 const chats = snapshot.val();
                 if (chats == null) {
                   setData([])
@@ -44,9 +44,16 @@ function ChatRoom (props, {navigation}) {
                     if(!(key in userIDs)) {
                       userIDs[key] = true;
                     }
-                    newData = newData.concat(value.metadata);
+                    let details = value.metadata;
+                    const otherUserId = details.otherUserId
+                    await firebaseSvc
+                          .avatarRef(otherUserId)
+                          .once("value")
+                          .then(subsnap => {details = {...details, otherUserAvatar: subsnap.val()};})
+                          .catch(err => console.log('Error Loading Avatar:',err.message));
+                    
+                    newData = newData.concat(details);
                   }
-                  console.log(newData)
                   setData(newData);
                 } 
               },

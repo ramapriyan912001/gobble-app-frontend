@@ -12,6 +12,10 @@ import { StatusBar } from 'expo-status-bar';
 import MapSelect from '../../components/MapSelect';
 import SearchBox from '../../components/SearchBox';
 import DestinationSearch from '../../components/DestinationSearch';
+import * as Haptics from 'expo-haptics';
+import { useColorScheme } from 'react-native-appearance';
+import themes from '../../styles/Themes';
+import {styles} from '../../styles/RegisterStyles';
 
 /**
  * Final Page before submitting a new Match Request
@@ -20,6 +24,9 @@ import DestinationSearch from '../../components/DestinationSearch';
  * @returns GobbleSelect2 Render Method
  */
 export default function GobbleSelect2(props) {
+  const colorScheme = useColorScheme();
+  const isLight = colorScheme === 'light';
+
   /**
    * Asynchronously submits a new match request
    */
@@ -34,31 +41,36 @@ export default function GobbleSelect2(props) {
   }
 
     return (
-        <View style={styles.container}>
-          <Text style={inputStyles.headerText}>Confirm your Gobble!</Text>
-          <Text>{`${props.route.params.request.cuisinePreference}`}</Text>
-          <Text>{`${props.route.params.request.datetime}`}</Text>
-          <Text>{`${props.route.params.request.distance} km`}</Text>
-          <Text>{`${props.route.params.description}`}</Text>
-          <View>
-            <TouchableOpacity onPress={() => {
+        <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
+          <Text style={[inputStyles.headerText, themes.textTheme(isLight)]}>Verify your Gobble!</Text>
+          <Text style={[{fontSize:17, fontWeight:'bold'},themes.textTheme(isLight)]}>Your Preferred Cuisine is</Text>
+          <Text style={[inputStyles.detailText, themes.textTheme(isLight)]}>{`${props.route.params.request.cuisinePreference}`}</Text>
+          <Text style={[{fontSize:17, marginTop:'6%', fontWeight:'bold'},themes.textTheme(isLight)]}>At</Text>
+          <Text style={[inputStyles.detailText, themes.textTheme(isLight)]}>{`${props.route.params.request.datetime.slice(0,21)}`}</Text>
+          <Text style={[{fontSize:17, marginTop:'6%', fontWeight:'bold'},themes.textTheme(isLight)]}>Within</Text>
+          <Text style={[inputStyles.detailText, themes.textTheme(isLight)]}>{`${props.route.params.request.distance} km`}</Text>
+          <Text style={[{fontSize:17, marginTop:'6%', fontWeight:'bold'},themes.textTheme(isLight)]}>Around</Text>
+          <Text style={[inputStyles.detailText, themes.textTheme(isLight)]}>{`${props.route.params.description}`}</Text>
+          <View style={{marginTop:'5%'}}>
+            <TouchableOpacity 
+              style={[themes.buttonTheme(isLight), styles.longButton]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
               console.log(props.route.params.request)
               let request = props.route.params.request
               submitGobble(request);
             }}>
-              <Text>Confirm Gobble!</Text>
+              <Text style={themes.textTheme(!isLight)}>Confirm Gobble!</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={[themes.buttonTheme(isLight), styles.longButton]}
+              onPress={() => {
+                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+              props.navigation.goBack();
+            }}>
+              <Text style={themes.textTheme(!isLight)}>Go Back</Text>
             </TouchableOpacity>
           </View>
-        </View>
+        </SafeAreaView>
     )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginTop: '0%',
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  }
-})

@@ -39,6 +39,7 @@ function Profile(props) {
 
     const [userInfo, setUserInfo] = useState({});
     const [change, setChange] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
@@ -60,6 +61,7 @@ function Profile(props) {
     async function loadDataAsync () {
         try {
             await props.fetchUserData();
+            setLoading(false);
             setUserInfo(props.currentUserData);
             if (userInfo === null) {
                 props.navigation.goBack();
@@ -127,8 +129,14 @@ function Profile(props) {
     },[change]);
 
     const drawerMargin = Platform.OS === 'ios' ? '2%' : '10%';
-
-    return(
+if (loading) {
+    return (
+        <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
+            <Text style={[themes.textTheme(isLight), {fontWeight:'bold', fontSize:25}]}>Hang on a sec</Text>
+        </SafeAreaView>
+    );
+} else {
+        return(
         <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
             <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
             <StatusBar style="auto"/>
@@ -167,7 +175,7 @@ function Profile(props) {
             </Tab.Navigator>
             </ScrollView>
         </SafeAreaView>
-    );  
+    );  }
 }
 
 const mapStateToProps = (store) => ({

@@ -50,10 +50,10 @@ export function App() {
             <Stack.Screen name="ForgotPassword" options={{headerShown: false, gestureEnabled: false}} component={ForgotPassword}></Stack.Screen>
             <Stack.Screen name="Reauthenticate" options={{headerShown: false, gestureEnabled: false}} component={Reauthenticate}></Stack.Screen>
             <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
-            <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen>
+            <Stack.Screen name="Edit Gobble Request" options={{headerShown: false}} component={GobbleSelect}></Stack.Screen>
             <Stack.Screen name="Edit Location" options={{headerShown: false}}  component={DestinationSearch}></Stack.Screen>
-            <Stack.Screen name="Confirm Request" component={GobbleSelect2}></Stack.Screen>
-            <Stack.Screen name="search" component={DestinationSearch}></Stack.Screen>
+            <Stack.Screen name="Confirm Request" options={{headerShown: false}} component={GobbleSelect2}></Stack.Screen>
+            <Stack.Screen name="search" options={{headerShown: false}} component={DestinationSearch}></Stack.Screen>
             <Stack.Screen name="Test" options={{headerShown: false, gestureEnabled: true}} component={Test}></Stack.Screen>
           </Stack.Navigator>
       </Provider> 

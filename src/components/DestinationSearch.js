@@ -1,13 +1,17 @@
 import React, {useEffect, useState} from 'react';
-import { SafeAreaView, View, TouchableOpacity, TextInput, StyleSheet } from 'react-native';
+import { SafeAreaView, View, TouchableOpacity, Text, StyleSheet } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
+import { ListItem } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
 import PlaceRow from './PlaceRow';
+import themes from '../styles/Themes';
+import { useColorScheme } from 'react-native-appearance';
 // navigator.geolocation = require('@react-native-community/geolocation');
 // navigator.geolocation = require('react-native-geolocation-service');
 
 export default function DestinationSearch(props) {
-
+  const colorScheme = useColorScheme();
+  const isLight = colorScheme === 'light';
     const [locationText, setLocationText] = useState('');
     const [location, setLocation] = useState({})
 
@@ -26,18 +30,29 @@ export default function DestinationSearch(props) {
       }
     }, [location])
     return (
-    <SafeAreaView>
+    <SafeAreaView style={themes.containerTheme(isLight)}>
       <View style={{...styles.container, flexDirection: 'row'}}>
           <View
           style={{marginTop: '0%'}}>
               <TouchableOpacity style={{paddingRight: '4%'}} onPress={() => {
                   props.navigation.goBack()
               }}>
-                <Ionicons name="arrow-back" size={30}></Ionicons>
+                <Ionicons name="arrow-back" style={themes.textTheme(isLight)} size={30}></Ionicons>
               </TouchableOpacity>
           </View>
           <GooglePlacesAutocomplete
-          placeholder="Where will you be?"
+          textInputProps={{ 
+            placeholderTextColor: themes.oppositeTheme(isLight),
+            selectionColor:themes.oppositeTheme(isLight),
+            color:themes.oppositeTheme(isLight),
+            clearButtonMode: 'never',
+          }}
+          styles={{
+            textInput: {...styles.textInput, backgroundColor: themes.oppositeTheme(!isLight)},
+            container: styles.autocompleteContainer,
+            listView: styles.listView,
+            separator: {...styles.separator, backgroundColor:themes.oppositeTheme(isLight)},
+          }}
           onPress={(data, details=null) => {
             // 'details' is provided when fetchDetails = true
             setLocation({data, details})
@@ -53,19 +68,24 @@ export default function DestinationSearch(props) {
             language: 'en',
             // components: 'country:sg'
         }}
-          enablePoweredByContainer={false}
-          suppressDefaultStyles
-          currentLocation={true}
-          currentLocationLabel='Current location'
-          styles={{
-            textInput: styles.textInput,
-            container: styles.autocompleteContainer,
-            listView: styles.listView,
-            separator: styles.separator,
-          }}
-          fetchDetails
-          renderRow={(data) => <PlaceRow data={data} />}
-          renderDescription={(data) => data.description || data.vicinity}
+        placeholder='Type in your address'
+        enablePoweredByContainer={false}
+        suppressDefaultStyles
+        currentLocation={true}
+        currentLocationLabel='Current location'
+        fetchDetails
+        renderRow={(data) => {
+          const title = data.description;
+            return (
+             <ListItem containerStyle={[themes.containerTheme(isLight)]}>
+              <Ionicons name='location-outline' color={themes.oppositeTheme(isLight)} size={15}></Ionicons>
+              <ListItem.Content  style={{backgroundColor:'transparent'}}>
+                <ListItem.Title style={[themes.textTheme(isLight), {fontSize: 13, fontWeight:'bold'}]}>{data.description}</ListItem.Title>
+              </ListItem.Content>
+             </ListItem>
+             );
+        }}
+        renderDescription={(data) => data.description || data.vicinity}
         //   predefinedPlaces={[homePlace, workPlace]}
         />
       </View>
@@ -80,13 +100,11 @@ const styles = StyleSheet.create({
     },
     textInput: {
       padding: '3%',
-      backgroundColor: '#eee',
       marginVertical: 0,
       width: '100%'
     },
   
     separator: {
-      backgroundColor: '#efefef',
       height: 1,
     },
     listView: {

@@ -177,6 +177,15 @@ export const inputStyles = StyleSheet.create({
         fontSize: 22,
         // alignSelf: 'center',
         margin: '5%',
+        alignSelf:'center',
+        textAlign: 'center'
+    },
+
+    detailText: {
+        fontSize: 22,
+        margin:'2%',
+        alignSelf:'center',
+        textAlign: 'center'
     },
 
     subText: {
