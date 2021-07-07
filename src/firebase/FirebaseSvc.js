@@ -284,22 +284,22 @@ class FirebaseSvc {
                 }
   }
 
-  async getMinimumReportAdmin() {
+  async getMinimumReportAdmin(otherUserId) {
     let admins;
     let sortedAdmins = [];
+    let involvedParties = [this.uid, otherUserId]
     await firebase.database()
     .ref('ReportCount')
-    .on("value", (snapshot) => {
+    .once("value", (snapshot) => {
       admins = snapshot.val()
-    })
-    for (let admin in admins) {
-      sortedAdmins.push([admin, admins[admin]]);
-    }
-    await sortedAdmins.sort(function(a, b) {
-      return a[1] - b[1];
     });
-    firebase.database().ref('ReportCount').off();
-    return sortedAdmins[0];
+    let minimumReportAdmin = ['', 2000000];
+    for (let admin in admins) {
+      if(admins[admin] < minimumReportAdmin[1] && !involvedParties.includes(admin)) {
+        minimumReportAdmin = [admin, admins[admin]];
+      }
+    }
+    return minimumReportAdmin;
   }
 
   async getNumberOfComplaints(otherUserId) {
@@ -319,13 +319,14 @@ class FirebaseSvc {
   async makeReport(otherUserId, complaint, datetime) {
     let updates = {}
     let minimumReportAdmin = await this.getMinimumReportAdmin();
+    console.log(minimumReportAdmin)
     let numComplaints = await this.getNumberOfComplaints(otherUserId);
     let dateJoined = await this.getDateJoined(otherUserId)
     let key = await firebase.database().ref().push().key
 
-    updates[`Reports/${minimumReportAdmin[0]}/${key}`] = {complaint: complaint, datetime: datetime, plaintiff: this.uid, defendant: otherUserId, dateJoined: dateJoined, complaintCount: numComplaints+1}
-    updates[`ReportCount/${minimumReportAdmin[0]}`] = minimumReportAdmin[1]+1;
-    updates[`ComplaintCount/${otherUserId}`] = numComplaints+1;
+    updates[`/Reports/${minimumReportAdmin[0]}/${key}`] = {complaint: complaint, datetime: datetime, plaintiff: this.uid, defendant: otherUserId, dateJoined: dateJoined, complaintCount: numComplaints+1}
+    updates[`/ReportCount/${minimumReportAdmin[0]}`] = minimumReportAdmin[1]+1;
+    updates[`/ComplaintCount/${otherUserId}`] = numComplaints+1;
 
     try {
       return firebase.database().ref().update(updates)
@@ -967,8 +968,6 @@ makeGobbleRequest(ref, request, date) {
     for(let [key, value] of Object.entries(matches)) {
       let id = value['otherUserId']
       if(id == otherUid) {
-        console.log('YES')
-        console.log(key)
         delete matches[key]
         console.log(`/Users/${otherUid}/matchIDs/${key}`)
         updates[`/Users/${otherUid}/matchIDs/${key}`] = null
@@ -978,8 +977,6 @@ makeGobbleRequest(ref, request, date) {
     firebase.database().ref().update(updates)
   }
   blockUser(otherUid, otherUserNameAndAvatar) {
-    console.log('otheruid', otherUid)
-    console.log(otherUserNameAndAvatar)
     let updates = {}
     return firebase.database().ref(`Users/${this.uid}/pendingMatchIDs`)
     .once("value")
