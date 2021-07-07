@@ -82,6 +82,20 @@ class FirebaseSvc {
     }
   }
 
+  deleteAnotherUser(otherUserId) {
+    try {
+      if(this.isAdmin()) {
+        let updates = {}
+        updates[`/Users/${otherUserId}`] = null;
+        updates[`/Avatars/${otherUserId}`] = null;
+        updates[`/Industry/${otherUserId}`] = null;
+        return firebase.database().update(updates);
+      } 
+    } catch(err) {
+      console.log("delete another user " + err);
+    }
+  }
+
   /**
    * Function to re-authenticate a user
    * 
@@ -244,6 +258,124 @@ class FirebaseSvc {
                         .off();
                     }
                   }
+
+  isAdmin() {
+    return firebase
+    .database()
+    .ref(`ReportCount/${this.uid}`)
+    .once("value")
+    .then(snapshot => snapshot.val() != null)
+  }
+
+  getReports = (success, callback, failure) => 
+  this.isAdmin()
+  ? firebase
+  .database()
+  .ref(`Reports/${this.uid}`)
+  .on('value', (x) => callback(success(x)))
+  : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+
+  getReportHistory(otherUserId, success, callback, failure) {
+    this.isAdmin()
+  ? firebase
+  .database()
+  .ref(`ReportHistory/${otherUserId}`)
+  .on('value', (x) => callback(success(x)))
+  : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+  }
+
+  reportHistoryOff = (otherUserId) => {
+    if (this.isAdmin()) {
+      firebase
+      .database()
+      .ref(`ReportHistory/${otherUserId}`)
+      .off();
+    }
+  }
+ 
+
+  reportsOff = () => {
+                if (this.isAdmin()) {
+                  firebase
+                  .database()
+                  .ref(`Reports/${this.uid}`)
+                  .off();
+                }
+  }
+
+  async getMinimumReportAdmin(otherUserId) {
+    let admins;
+    let sortedAdmins = [];
+    let involvedParties = [this.uid, otherUserId]
+    await firebase.database()
+    .ref('ReportCount')
+    .once("value", (snapshot) => {
+      admins = snapshot.val()
+    });
+    let minimumReportAdmin = ['', 2000000];
+    for (let admin in admins) {
+      if(admins[admin] < minimumReportAdmin[1] && !involvedParties.includes(admin)) {
+        minimumReportAdmin = [admin, admins[admin]];
+      }
+    }
+    return minimumReportAdmin;
+  }
+
+  async getNumberOfComplaints(otherUserId) {
+    let res; 
+    await firebase.database().ref(`ComplaintCount/${otherUserId}`)
+    .once("value", snapshot => snapshot.val() ? res = snapshot.val() : res = 0)
+    return res;
+  }
+
+  async getDateJoined(otherUserId) {
+    let res;
+    await firebase.database().ref(`Users/${otherUserId}/dateJoined`)
+    .once("value").then(snapshot => res = snapshot.val()).catch(err => console.log(err))
+    return res;
+  }
+
+  async makeReport(otherUserId, complaint, datetime) {
+    let updates = {}
+    let minimumReportAdmin = await this.getMinimumReportAdmin();
+    console.log(minimumReportAdmin)
+    let numComplaints = await this.getNumberOfComplaints(otherUserId);
+    let dateJoined = await this.getDateJoined(otherUserId)
+    let key = await firebase.database().ref().push().key
+
+    updates[`/Reports/${minimumReportAdmin[0]}/${key}`] = {complaint: complaint, datetime: datetime, plaintiff: this.uid, defendant: otherUserId, dateJoined: dateJoined, complaintCount: numComplaints+1}
+    updates[`/ReportCount/${minimumReportAdmin[0]}`] = minimumReportAdmin[1]+1;
+    updates[`/ComplaintCount/${otherUserId}`] = numComplaints+1;
+    updates[`/ReportHistory/${otherUserId}/${key}`] = {complaint: complaint, datetime: datetime, plaintiff: this.uid, defendant: otherUserId}
+
+    try {
+      return firebase.database().ref().update(updates)
+    } catch(err) {
+      console.log("makeReport error: " + err)
+    }
+  }
+
+  async getNumberOfReports() {
+    let res;
+    await firebase.database().ref(`/ReportCount/${this.uid}`)
+    .once('value', snapshot => {
+      res = snapshot.val()
+    })
+    return res;
+  }
+
+  async deleteReport(reportID) {
+    let updates = {}
+    let numReports = await this.getNumberOfReports()
+    let x = numReports-1;
+    updates[`/Reports/${this.uid}/${reportID}`] = null;
+    updates[`/ReportCount/${this.uid}`] = x;
+    try {
+      await firebase.database().ref().update(updates);
+    } catch(err) {
+      console.log("delete report error " + err);
+    }
+  }
 
   /**
    * Getter for current user
@@ -856,8 +988,6 @@ makeGobbleRequest(ref, request, date) {
     for(let [key, value] of Object.entries(matches)) {
       let id = value['otherUserId']
       if(id == otherUid) {
-        console.log('YES')
-        console.log(key)
         delete matches[key]
         console.log(`/Users/${otherUid}/matchIDs/${key}`)
         updates[`/Users/${otherUid}/matchIDs/${key}`] = null
@@ -868,7 +998,6 @@ makeGobbleRequest(ref, request, date) {
   }
   blockUser(otherUid, otherUserNameAndAvatar) {
     let updates = {}
-
     return firebase.database().ref(`Users/${this.uid}/pendingMatchIDs`)
     .once("value")
     .then(snapshot => {

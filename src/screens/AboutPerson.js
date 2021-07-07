@@ -80,9 +80,7 @@ function AboutPerson(props, { navigation }) {
                     </TouchableOpacity>
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                        // TODO: Need to make reportUser functionality
-                        // reportUser();
-                        // props.navigation.navigate('ChatRoom')
+                        props.navigation.navigate('Report', {otherUser: otherUser})
                     }}>
                         <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Report User</Text>
                     </TouchableOpacity>

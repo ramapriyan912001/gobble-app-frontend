@@ -15,7 +15,9 @@ import Reauthenticate from './src/screens/Reauthenticate';
 import {store} from './src/redux/store';
 import { Conversation } from './src/screens/Chats/Conversation';
 import GobbleSelect from './src/screens/Gobble/GobbleSelect';
+import MakeReport from './src/screens/MakeReport';
 import { LogBox } from 'react-native';
+
 LogBox.ignoreLogs(['Setting a timer']);
 
 
@@ -40,7 +42,7 @@ export function App() {
   return (
     <NavigationContainer>
       <Provider store={store}>
-          <Stack.Navigator initialRouteName="Welcome" 
+          <Stack.Navigator initialRouteName="Login" 
           >
             <Stack.Screen name="Welcome" options={{headerShown: false, gestureEnabled: false}} component={Welcome}></Stack.Screen>
             <Stack.Screen name="Login" options={{headerShown: false, gestureEnabled: false}} component={Login}></Stack.Screen>
@@ -50,7 +52,8 @@ export function App() {
             <Stack.Screen name="ForgotPassword" options={{headerShown: false, gestureEnabled: false}} component={ForgotPassword}></Stack.Screen>
             <Stack.Screen name="Reauthenticate" options={{headerShown: false, gestureEnabled: false}} component={Reauthenticate}></Stack.Screen>
             <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
-            <Stack.Screen name="Edit Gobble Request" options={{headerShown: false}} component={GobbleSelect}></Stack.Screen>
+            <Stack.Screen name="Report" component={MakeReport}></Stack.Screen>
+            <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen>
             <Stack.Screen name="Edit Location" options={{headerShown: false}}  component={DestinationSearch}></Stack.Screen>
             <Stack.Screen name="Confirm Request" options={{headerShown: false}} component={GobbleSelect2}></Stack.Screen>
             <Stack.Screen name="search" options={{headerShown: false}} component={DestinationSearch}></Stack.Screen>

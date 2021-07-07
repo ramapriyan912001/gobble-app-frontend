@@ -30,6 +30,7 @@ export const INDUSTRY_CODES = {
 }
 
 export const CUISINES = ['Western', 'Indian', 'Asian', 'Food Court', 'Any']
+export const REASONS = ['Spam', 'Inappropriate', 'Harassment', 'Sexual Harassment', 'Others']
 
 export const DIETS = ['Halal', 'Vegetarian', 'Vegan', 'Any']
 
