@@ -270,6 +270,39 @@ class FirebaseSvc {
                 }
   }
 
+  async getMinimumReportAdmin() {
+    let admins;
+    let sortedAdmins = [];
+    await firebase.database()
+    .ref('ReportCount')
+    .orderByChild('count')
+    .on("value", (snapshot) => {
+      admins = snapshot.val()
+    })
+    for (let admin in admins) {
+      sortedAdmins.push([admin, admins[admin]]);
+    }
+    await sortedAdmins.sort(function(a, b) {
+      return a[1] - b[1];
+    });
+    return sortedAdmins[0];
+  }
+
+
+
+  async makeReport(otherUserId, complaint) {
+    let updates = {}
+    let minimumReportAdmin = await this.getMinimumReportAdmin()
+    let key = await firebase.database().ref().push().key
+    updates[`Reports/${minimumReportAdmin[0]}/${key}`] = {...complaint, plaintiff: this.uid, defendant: otherUserId}
+    updates[`ReportCount/${minimumReportAdmin[0]}`] = minimumReportAdmin[1]+1;
+    try {
+      return firebase.database().update(updates)
+    } catch(err) {
+      console.log("makeReport error: " + err)
+    }
+  }
+
   /**
    * Getter for current user
    * @returns current user

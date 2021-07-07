@@ -9,14 +9,15 @@ import { buttonStyles } from '../styles/LoginStyles';
 
 
 export default function MakeReport(props) {
-    const [reason, setReason] = useState(0);
+    const [reason, setReason] = useState(2);
     const [otherUser, setOtherUser] = useState({});
     const [isPickerShow, setIsPickerShow] = useState(false)
     const [text, setText] = useState('')
 
     const renderReasons = () => {
         let reasonID = 0;
-        return REASONS.map(reason => (<Picker.Item label={reason} value={reason} key={reasonID++}/>))
+        let reasonIDDuplicate = 0;
+        return REASONS.map(reason => (<Picker.Item label={reason} value={reasonID++} key={reasonIDDuplicate++}/>))
     };
     return (
         <SafeAreaView>
@@ -25,7 +26,9 @@ export default function MakeReport(props) {
             {!isPickerShow && <Picker
             style={Platform.OS == 'android' ? {marginLeft: '3%'} : {}}
                         selectedValue={reason}
-                        onValueChange={(itemValue, itemIndex) => setReason(itemValue)}>
+                        onValueChange={(itemValue, itemIndex) => {
+                            console.log(itemValue)
+                            setReason(itemValue)}}>
                         {renderReasons()}
                 </Picker>}
             </View>
@@ -34,7 +37,7 @@ export default function MakeReport(props) {
                 <TextInput
                 style={specificStyles.input}
                 textAlignVertical='top'
-                autoCapitalize
+                autoCapitalize='sentences'
                 multiline
                 placeholder='Give a short description of why you believe the user should be reported.'
                 style={{alignSelf: 'center', height: '45%', width: '90%', borderColor: 'gray', borderWidth: 1 }}
@@ -47,10 +50,11 @@ export default function MakeReport(props) {
                 Alert.alert(`Are you sure you wish to report the user?`, 'The user will be blocked automatically.', [
                     {
                     text: "No",
-                    onPress: () => console.log("Cancel Pressed"),
+                    onPress: () => firebaseSvc.getMinimumReportAdmin(),
                     style: "cancel"
                     },
                     { text: "Yes", onPress: async() => {
+                        firebaseSvc.makeReport(otherUser.id, text, reason)
                         let res = await firebaseSvc.blockUser(otherUser.id, {name: otherUser.name, id: otherUser.id, avatar: otherUser.avatar})
                         if(res == BLOCK_SUCCESS) {
                             props.navigation.navigate('ChatRoom')

@@ -38,16 +38,9 @@ export function App() {
   return (
     <NavigationContainer>
       <Provider store={store}>
-          <Stack.Navigator initialRouteName="MakeReport" 
+          <Stack.Navigator initialRouteName="Login" 
           >
-            <Stack.Screen options={{header: () => null}} name="MakeReport" component={MakeReport}></Stack.Screen>
-          </Stack.Navigator>
-      </Provider> 
-    </NavigationContainer>
-  );
-}
-
-{/* <Stack.Screen name="Welcome" options={{headerShown: false}} component={Welcome}></Stack.Screen>
+            <Stack.Screen name="Welcome" options={{headerShown: false}} component={Welcome}></Stack.Screen>
             <Stack.Screen name="Login" options={{headerShown: false}} component={Login}></Stack.Screen>
             <Stack.Screen name="RegisterNavigator" options={{headerShown: false}} component={RegisterNavigator}></Stack.Screen>
             <Stack.Screen name="BottomTabs" options={{headerShown: false}} component={BottomTabs}></Stack.Screen>
@@ -55,5 +48,13 @@ export function App() {
             <Stack.Screen name="ForgotPassword" options={{headerShown: false}} component={ForgotPassword}></Stack.Screen>
             <Stack.Screen name="Reauthenticate" options={{headerShown: false}} component={Reauthenticate}></Stack.Screen>
             <Stack.Screen name="Conversation" component={Conversation}></Stack.Screen>
-            <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen> */}
+            <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen> 
+            <Stack.Screen options={{header: () => null}} name="MakeReport" component={MakeReport}></Stack.Screen>
+          </Stack.Navigator>
+      </Provider> 
+    </NavigationContainer>
+  );
+}
+
+
 
