@@ -14,6 +14,7 @@ import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
 import themes from '../../styles/Themes';
 import {styles} from '../../styles/RegisterStyles';
+import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 
 /**
  * Page to Show previous Matches
@@ -110,8 +111,10 @@ function MatchesHistory (props, {navigation}) {
                   <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
                   <ListItem.Content>
                     <ListItem.Title style={[{fontWeight: 'bold'}, themes.textTheme(isLight)]}>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
-                    <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${item.cuisinePreference} cuisine, ${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                    <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${item.cuisinePreference} cuisine`}</ListItem.Subtitle>
+                    <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
                   </ListItem.Content>
+                  <MaterialIcons size={28} name='restaurant-menu'></MaterialIcons>
                 </ListItem>
               </TouchableOpacity>
             )}
