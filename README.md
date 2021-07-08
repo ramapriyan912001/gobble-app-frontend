@@ -1,4 +1,5 @@
 # gobble-app-frontend
 
-Frontend made using React Native and Expo for our Gobble app
+Expo React Native Firebase App named Gobble
+
 - For Orbital 2021
