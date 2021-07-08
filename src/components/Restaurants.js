@@ -48,7 +48,7 @@ function Restaurants(props) {
             let queryString = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
             let API_KEY = 'AIzaSyC6h4poHiCJzIWZGNZ5JThvwpTjk0q7eWo'
             queryString = queryString + `location=${myLocation.lat},${myLocation.lng}&`
-            queryString = queryString + `radius=${match.distance*1000}&`
+            queryString = queryString + `radius=${Math.min(15000, (match.distance+1)*1000)}&`
             queryString = queryString + `type=Restaurants&`
             queryString = queryString + `key=${API_KEY}`
             let data = await API.get(queryString);
