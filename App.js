@@ -31,11 +31,11 @@ export default function AppWrapper() {
 import ProfileDrawer from './src/components/ProfileDrawer';
 import Test from './src/components/Test';
 import DestinationSearch from './src/components/DestinationSearch';
-import MapSelect from './src/components/MapSelect';
 import SearchBox from './src/components/SearchBox';
 import GobbleSelect2 from './src/screens/Gobble/GobbleSelect2';
-import ReportHistory from './src/screens/ReportHistory';
+import ComplaintHistory from './src/screens/ComplaintHistory';
 import ReportDetails from './src/screens/ReportDetails';
+import Restaurants from './src/components/Restaurants';
 
 const Stack = createStackNavigator();
 
@@ -59,8 +59,9 @@ export function App() {
             <Stack.Screen name="Edit Location" options={{headerShown: false}}  component={DestinationSearch}></Stack.Screen>
             <Stack.Screen name="Confirm Request" options={{headerShown: false}} component={GobbleSelect2}></Stack.Screen>
             <Stack.Screen name="Test" options={{headerShown: false, gestureEnabled: true}} component={Test}></Stack.Screen>
-            <Stack.Screen name="User History" options={{gestureEnabled: true, headerBackTitle: 'Back'}} component={ReportHistory}></Stack.Screen>
+            <Stack.Screen name="User History" options={{gestureEnabled: true, headerBackTitle: 'Back'}} component={ComplaintHistory}></Stack.Screen>
             <Stack.Screen name="Complaint Details" options={{gestureEnabled: true}} component={ReportDetails}></Stack.Screen>
+            <Stack.Screen name="Restaurants" options={{gestureEnabled: true}} component={Restaurants}></Stack.Screen>
           </Stack.Navigator>
       </Provider> 
     </NavigationContainer>

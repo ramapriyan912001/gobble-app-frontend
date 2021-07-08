@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, SafeAreaView, Text, FlatList} from 'react-native'
+import {View, SafeAreaView, Text, FlatList, TouchableOpacity} from 'react-native'
 import { Avatar, ListItem, SearchBar } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -101,16 +101,19 @@ function MatchesHistory (props, {navigation}) {
             style={themes.containerTheme(isLight)}
             extraData={selectedID}
             renderItem={({ item, index }) => (
-              <ListItem
-              containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
-              key={index} 
-              roundAvatar>
-                <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
-                <ListItem.Content>
-                  <ListItem.Title style={[{fontWeight: 'bold'}, themes.textTheme(isLight)]}>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
-                  <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${item.cuisinePreference} cuisine, ${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
-                </ListItem.Content>
-              </ListItem>
+              <TouchableOpacity
+              onPress={() => props.navigation.navigate('Restaurants', {item: item})}>
+                <ListItem
+                containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
+                key={index} 
+                roundAvatar>
+                  <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
+                  <ListItem.Content>
+                    <ListItem.Title style={[{fontWeight: 'bold'}, themes.textTheme(isLight)]}>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
+                    <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${item.cuisinePreference} cuisine, ${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                  </ListItem.Content>
+                </ListItem>
+              </TouchableOpacity>
             )}
             keyExtractor={item => item.matchID}
             ItemSeparatorComponent={renderSeparator}

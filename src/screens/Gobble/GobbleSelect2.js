@@ -9,7 +9,6 @@ import {fetchUserData, updateUserDetails, clearData} from '../../redux/actions/a
 import {connect} from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { StatusBar } from 'expo-status-bar';
-import MapSelect from '../../components/MapSelect';
 import SearchBox from '../../components/SearchBox';
 import DestinationSearch from '../../components/DestinationSearch';
 import * as Haptics from 'expo-haptics';

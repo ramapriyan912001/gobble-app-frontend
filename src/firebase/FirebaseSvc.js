@@ -75,7 +75,7 @@ class FirebaseSvc {
         updates[`/Avatars/${this.uid}`] = null
         updates[`/Industry/${this.uid}`] = null
         updates[`/Users/${this.uid}`] = null
-        updates[`ReportHistory/${this.uid}`] = null
+        updates[`ComplaintHistory/${this.uid}`] = null
         updates[`ComplaintCount/${this.uid}`] = null
         if(this.isAdmin()) {
           updates[`ReportCount/${this.uid}`] = null
@@ -285,20 +285,20 @@ class FirebaseSvc {
   .on('value', (x) => callback(success(x)))
   : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
-  getReportHistory(otherUserId, success, callback, failure) {
+  getComplaintHistory(otherUserId, success, callback, failure) {
     this.isAdmin()
   ? firebase
   .database()
-  .ref(`ReportHistory/${otherUserId}`)
+  .ref(`ComplaintHistory/${otherUserId}`)
   .on('value', (x) => callback(success(x)))
   : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
   }
 
-  reportHistoryOff = (otherUserId) => {
+  complaintHistoryOff = (otherUserId) => {
     if (this.isAdmin()) {
       firebase
       .database()
-      .ref(`ReportHistory/${otherUserId}`)
+      .ref(`ComplaintHistory/${otherUserId}`)
       .off();
     }
   }
@@ -356,7 +356,7 @@ class FirebaseSvc {
     updates[`/Reports/${minimumReportAdmin[0]}/${key}`] = {complaint: complaint, datetime: datetime, plaintiff: this.uid, defendant: otherUserId, dateJoined: dateJoined, complaintCount: numComplaints+1}
     updates[`/ReportCount/${minimumReportAdmin[0]}`] = minimumReportAdmin[1]+1;
     updates[`/ComplaintCount/${otherUserId}`] = numComplaints+1;
-    updates[`/ReportHistory/${otherUserId}/${key}`] = {complaint: complaint, datetime: datetime, plaintiff: this.uid, defendant: otherUserId}
+    updates[`/ComplaintHistory/${otherUserId}/${key}`] = {complaint: complaint, datetime: datetime, plaintiff: this.uid, defendant: otherUserId}
 
     try {
       return firebase.database().ref().update(updates)
@@ -703,11 +703,11 @@ makeGobbleRequest(ref, request, date) {
     updates[`/Users/${request1.userId}/pendingMatchIDs/${pendingMatchID}`] = {...request1, otherUserId: request2.userId, 
       otherUserCuisinePreference: request2.cuisinePreference, otherUserDietaryRestriction: request2UserDetails.diet, 
       otherUserDOB: request2UserDetails.dob, otherUserLocation: request2.location, otherUserIndustry: request2UserDetails.industry,
-      otherUserAvatar: request2UserDetails.avatar, otherUserName: request2UserDetails.name, matchID: pendingMatchID, lastMessage:'',}
+      otherUserAvatar: request2UserDetails.avatar, otherUserDistance: request2.distance, otherUserName: request2UserDetails.name, matchID: pendingMatchID, lastMessage:'',}
     updates[`/Users/${request2.userId}/pendingMatchIDs/${pendingMatchID}`] = {...request2, otherUserId: request1.userId,
       otherUserCuisinePreference: request1.cuisinePreference, otherUserDietaryRestriction: request1UserDetails.diet, 
       otherUserDOB: request1UserDetails.dob, otherUserLocation: request1.location, otherUserIndustry: request1UserDetails.industry, 
-      otherUserAvatar: request1UserDetails.avatar, otherUserName: request1UserDetails.name, matchID: pendingMatchID, lastMessage:'',}
+      otherUserAvatar: request1UserDetails.avatar, otherUserDistance: request1.distance, otherUserName: request1UserDetails.name, matchID: pendingMatchID, lastMessage:'',}
 
     //Remove Respective Pending Matches
     // updates[`/Users/${request2.userId}/awaitingMatchIDs/${request1Ref}`] = null;
@@ -845,7 +845,7 @@ makeGobbleRequest(ref, request, date) {
     let isNewMatch = false;
     await this.chatsRef(`${req1.userId}/${req2.userId}`)
                           .once('value', snapshot => {isNewMatch = !snapshot.exists()});
-    console.log(isNewMatch, 'BOOL');
+
     if (isNewMatch == null){
       //Do Nothing
       console.log('Nothing is done to link chats');
@@ -1023,6 +1023,8 @@ makeGobbleRequest(ref, request, date) {
         console.log(key)
         updates[`/PendingMatchIDs/${key}`] = null;
         updates[`/Users/${otherUid}/pendingMatchIDs/${key}`] = null
+        updates[`/UserRequests/${this.uid}/${value.matchID}`] = null
+        updates[`/UserRequests/${otherUid}/${value.matchID}`] = null
       }
     }
     updates[`/Users/${this.uid}/pendingMatchIDs`] = pendingMatches
@@ -1035,8 +1037,9 @@ makeGobbleRequest(ref, request, date) {
       let id = value['otherUserId']
       if(id == otherUid) {
         delete matches[key]
-        console.log(`/Users/${otherUid}/matchIDs/${key}`)
         updates[`/Users/${otherUid}/matchIDs/${key}`] = null
+        updates[`/UserRequests/${this.uid}/${value.matchID}`] = null
+        updates[`/UserRequests/${otherUid}/${value.matchID}`] = null
       }
     }
     updates[`/Users/${this.uid}/matchIDs`] = matches

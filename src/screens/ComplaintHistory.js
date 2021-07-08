@@ -22,7 +22,7 @@ import { REASONS } from '../constants/objects'
  * @param {*} props Props from previous screen
  * @returns Matches Render Method 
  */
-function ReportHistory (props, {navigation}) {
+function ComplaintHistory (props, {navigation}) {
   const colorScheme = useColorScheme();
   const isLight = colorScheme === 'light';
     const [data, setData] = useState([]);
@@ -36,7 +36,7 @@ function ReportHistory (props, {navigation}) {
     async function loadAsync() {
         console.log('hey')
       await firebaseSvc
-            .getReportHistory(
+            .getComplaintHistory(
               props.route.params.defendant
               ,
               snapshot => {
@@ -70,7 +70,7 @@ function ReportHistory (props, {navigation}) {
         loadAsync();
         return () => {
           console.log('Report History clean up!');
-          firebaseSvc.reportHistoryOff();
+          firebaseSvc.complaintHistoryOff();
         }
     }, [])
 
@@ -128,4 +128,4 @@ const mapStateToProps = (store) => ({
     isAdmin: store.userState.isAdmin
 })
 const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(ReportHistory);
+export default connect(mapStateToProps, mapDispatchProps)(ComplaintHistory);
