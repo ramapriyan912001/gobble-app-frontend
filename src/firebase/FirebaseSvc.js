@@ -678,6 +678,7 @@ makeGobbleRequest(ref, request, date) {
   let updates = {};
   updates[`/Users/${request.userId}/awaitingMatchIDs/${matchID}`] = {...request, matchID: matchID};
   updates[`/GobbleRequests/${this.makeDateString(date)}/${request.dietaryRestriction}/${matchID}`] = {...request, matchID: matchID};
+  updates[`/UserRequests/${this.uid}/${matchID}`] = request.datetime;
   // Add more updates here
   firebase.database().ref().update(updates);
 }
@@ -708,7 +709,9 @@ makeGobbleRequest(ref, request, date) {
     //Remove Respective Pending Matches
     // updates[`/Users/${request2.userId}/awaitingMatchIDs/${request1Ref}`] = null;
     updates[`/Users/${request2.userId}/awaitingMatchIDs/${request2Ref}`] = null;
-
+    updates[`/UserRequests/${this.uid}/${request2Ref}`] = null;
+    updates[`/UserRequests/${request1.userId}/${pendingMatchID}`] = request1.datetime;
+    updates[`/UserRequests/${request2.userId}/${pendingMatchID}`] = request2.datetime;
     // updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request1))}/${request1.dietaryRestriction}/${request1Ref}`] = null;
     updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request2))}/${request2.dietaryRestriction}/${request2Ref}`] = null;
 
@@ -750,6 +753,8 @@ makeGobbleRequest(ref, request, date) {
     let updates = {}
     updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
     updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
+    updates[`/UserRequests/${request.userId}/${request.matchID}`] = null;
+    updates[`/UserRequests/${request.otherUserId}/${request.matchID}`] = null;
     updates[`/PendingMatchIDs/${request.matchID}`] = null
     try{
       // console.log('Updates',updates);
@@ -788,6 +793,7 @@ makeGobbleRequest(ref, request, date) {
     updates[`/PendingMatchIDs/${request.matchID}`] = null
     updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
     updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
+
     updates = await this.linkChats(updates, request, otherUserRequest);
 
 
@@ -923,6 +929,26 @@ makeGobbleRequest(ref, request, date) {
    */
   isWithinRange(coords1, distance1, coords2, distance2) {//was Bug
     return (distance1 + distance2) >= this.calculateDistance(coords1, coords2)
+  }
+
+  async validateRequest(datetime) {
+    let existingRequestDatetimes;
+    await firebase.database()
+    .ref(`UserRequests/${this.uid}`)
+    .on('value', (snapshot) => {
+      existingRequestDatetimes = snapshot.val()
+    })
+    for(let key in Object.entries(existingRequestDatetimes)) {
+      if(doesTimeClash(existingRequestDatetimes[key], datetime)) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  doesTimeClash(existingTime, datetime) {
+    const ACCEPTABLE_TIME_DIFF = 7200000
+    return Math.abs(new Date(existingTime) - new Date(datetime)) > ACCEPTABLE_TIME_DIFF
   }
 
   /**
