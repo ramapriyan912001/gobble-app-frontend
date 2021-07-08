@@ -34,6 +34,8 @@ import DestinationSearch from './src/components/DestinationSearch';
 import MapSelect from './src/components/MapSelect';
 import SearchBox from './src/components/SearchBox';
 import GobbleSelect2 from './src/screens/Gobble/GobbleSelect2';
+import ReportHistory from './src/screens/ReportHistory';
+import ReportDetails from './src/screens/ReportDetails';
 
 const Stack = createStackNavigator();
 
@@ -58,6 +60,8 @@ export function App() {
             <Stack.Screen name="Confirm Request" options={{headerShown: false}} component={GobbleSelect2}></Stack.Screen>
             <Stack.Screen name="search" options={{headerShown: false}} component={DestinationSearch}></Stack.Screen>
             <Stack.Screen name="Test" options={{headerShown: false, gestureEnabled: true}} component={Test}></Stack.Screen>
+            <Stack.Screen name="User History" options={{gestureEnabled: true, headerBackTitle: 'Back'}} component={ReportHistory}></Stack.Screen>
+            <Stack.Screen name="Complaint Details" options={{gestureEnabled: true}} component={ReportDetails}></Stack.Screen>
           </Stack.Navigator>
       </Provider> 
     </NavigationContainer>
