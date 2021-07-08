@@ -37,6 +37,8 @@ function ReportHistory (props, {navigation}) {
         console.log('hey')
       await firebaseSvc
             .getReportHistory(
+              props.route.params.defendant
+              ,
               snapshot => {
                 let ids = snapshot.val();
                 console.log(ids)
@@ -91,7 +93,7 @@ function ReportHistory (props, {navigation}) {
             renderItem={({ item, index }) => (
               <TouchableOpacity
               onPress={() => {
-                props.navigation.navigate('Report Details', {...item, buttons: false})
+                props.navigation.navigate('Complaint Details', {...item, buttons: false})
               }}>
               <ListItem
               containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}

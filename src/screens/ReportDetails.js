@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import { Text, View, SafeAreaView, Alert, TextInput, TouchableOpacity, StyleSheet } from 'react-native'
 import { buttonStyles } from '../styles/LoginStyles'
 import { REASONS } from '../constants/objects'
@@ -11,6 +11,10 @@ export default function ReportDetails(props) {
     const [text, setText] = useState(props.route.params.complaint.description)
     const [reason, setReason] = useState(REASONS[props.route.params.complaint.reason])
     const [buttons, setButtons] = useState(props.route.params.buttons)
+
+    useEffect(() => {
+        setButtons(props.route.params.buttons)
+    }, [])
 
     const dateStringMaker = (date) => {
         return date.slice(4, 15)
@@ -47,7 +51,7 @@ export default function ReportDetails(props) {
             {buttons &&
                 <View style={{marginTop: '-20%'}}>
                     <Text style={{...specificStyles.headerText,marginLeft:'3%',  fontSize:20, marginTop: '-10%'}}>
-                        {`This user has had ${props.route.params.complaintCount} complaints against them since joining Gobble in ${dateStringMaker(props.route.params.datetime)}`}</Text>
+                        {`This user has had ${props.route.params.complaintCount} complaints against them since joining in ${dateStringMaker(props.route.params.datetime)}`}</Text>
                 </View>
             }
             {buttons &&
@@ -93,6 +97,15 @@ export default function ReportDetails(props) {
             </TouchableOpacity>
             </View>
             }
+            {buttons &&
+            <View>
+            <TouchableOpacity style={{...buttonStyles.loginButton, marginTop: '3%'}} onPress={() => {
+                props.navigation.navigate('User History', {defendant: props.route.params.defendant})
+            }}>
+                <Text>History</Text>
+            </TouchableOpacity>
+            </View>
+            }
         </SafeAreaView>
     )
 }
@@ -116,3 +129,5 @@ const specificStyles = StyleSheet.create({
         margin: '5%',
     },
   });
+
+  
