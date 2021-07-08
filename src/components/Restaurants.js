@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps'
-import { View, Text } from 'react-native'
-import { EMPTY_AVATAR } from '../constants/objects'
+import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps'
+import { View, Text, Dimensions } from 'react-native'
+import { EMPTY_AVATAR, MAP_DARK_MODE } from '../constants/objects'
 import { Ionicons } from '@expo/vector-icons'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchAuthUser, fetchUserData } from '../redux/actions/actions'
 import { Avatar, ListItem, SearchBar } from 'react-native-elements'
 import { API } from '../api'
+import CustomCallout from './CustomCallout'
 
 function Restaurants(props) {
 
@@ -49,7 +50,7 @@ function Restaurants(props) {
             let API_KEY = 'AIzaSyC6h4poHiCJzIWZGNZ5JThvwpTjk0q7eWo'
             queryString = queryString + `location=${myLocation.lat},${myLocation.lng}&`
             queryString = queryString + `radius=${Math.min(15000, (match.distance+1)*1000)}&`
-            queryString = queryString + `type=Restaurants&`
+            queryString = queryString + `keyword=food+restaurant&`
             queryString = queryString + `key=${API_KEY}`
             let data = await API.get(queryString);
                     //https://maps.googleapis.com/maps/api/place/nearbysearch/
@@ -65,21 +66,23 @@ function Restaurants(props) {
             // Filter restaurants such that they are within range of
             // the other user and are operational
             restaurants = await restaurants.filter(restaurant => {
-                return (restaurant.business_status == 'OPERATIONAL') && (calculateDistance(restaurant.geometry.location,otherUserLocation) <= otherUserDistance+1)
+                return (restaurant.business_status == 'OPERATIONAL') && (calculateDistance(restaurant.geometry.location,otherUserLocation) <= otherUserDistance+1) && (restaurant.photos != null)
             })
 
             //map the details to get rid of unnecessary data
             restaurants = await restaurants.map(restaurant => {
                 return {place_id: restaurant.place_id, name: restaurant.name,
-                    location:{latitude: restaurant.geometry.location.lat, longitude: restaurant.geometry.location.lng}}
+                    location:{latitude: restaurant.geometry.location.lat, 
+                        longitude: restaurant.geometry.location.lng},
+                    photo_reference: restaurant['photos'][0]['photo_reference'], user_ratings_total: restaurant.user_ratings_total,
+                    rating: restaurant.rating, address: restaurant.vicinity, 
+                    opening_hours: restaurant.opening_hours, }
             })
             setRestaurantList(restaurants)
         }
     }
 
     // {place_id: restaurant.place_id, name: restaurant.name, 
-    //     rating: restaurant.rating, address: restaurant.vicinity, 
-    //     opening_hours: restaurant.opening_hours, 
     //     location:{latitude: restaurant.geometry.location.lat, longitude: restaurant.geometry.location.lng},
     // }
 
@@ -100,6 +103,7 @@ function Restaurants(props) {
             alignItems: 'center'
         }}>
             <MapView
+                customMapStyle={MAP_DARK_MODE}
                 showsUserLocation
                 style={{height: '100%', width: '100%'}}
                 provider={PROVIDER_GOOGLE}
@@ -113,20 +117,23 @@ function Restaurants(props) {
                 longitudeDelta: 0.0421,
                 }}
             >
-                {restaurantList.map((restaurant, index) => (
+                {restaurantList.map((restaurant, index) => {
+                    console.log(restaurant)
+                    return (
                         <Marker
+                        tracksViewChanges={false}
                         key={index}
                         title={`${restaurant.name}`}
                         coordinate={restaurant.location}>
-                            <Ionicons name='fast-food-sharp' size={22}></Ionicons>
+                            <Callout>
+                                <CustomCallout {...{...props, restaurant: restaurant}}></CustomCallout>
+                            </Callout>
                         </Marker>
                     )
+                }
                 )}
             <Marker
             title='You'
-            onPress={() => {
-                
-            }}
             coordinate={{latitude: myLocation.lat, longitude: myLocation.lng}}>
                 <Avatar avatarStyle={{borderRadius: 120}} size="small" source={{uri:props.currentUserData.avatar}}/>
             </Marker>

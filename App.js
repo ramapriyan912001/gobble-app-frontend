@@ -61,7 +61,7 @@ export function App() {
             <Stack.Screen name="Test" options={{headerShown: false, gestureEnabled: true}} component={Test}></Stack.Screen>
             <Stack.Screen name="User History" options={{gestureEnabled: true, headerBackTitle: 'Back'}} component={ComplaintHistory}></Stack.Screen>
             <Stack.Screen name="Complaint Details" options={{gestureEnabled: true}} component={ReportDetails}></Stack.Screen>
-            <Stack.Screen name="Restaurants" options={{gestureEnabled: true}} component={Restaurants}></Stack.Screen>
+            <Stack.Screen name="Restaurants" options={{headerBackTitle: 'Matches',gestureEnabled: true}} component={Restaurants}></Stack.Screen>
           </Stack.Navigator>
       </Provider> 
     </NavigationContainer>
