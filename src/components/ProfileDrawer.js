@@ -1,10 +1,6 @@
-import {createAppContainer } from 'react-navigation'
-import { DrawerItems } from 'react-navigation-drawer';
 import {createDrawerNavigator} from '@react-navigation/drawer'
-import { Image, View, SafeAreaView, ScrollView, Text, Dimensions } from 'react-native'
+import { Dimensions } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
-import Profile from '../screens/Profile/Profile';
-import MatchesHistory from '../screens/Matches/MatchesHistory';
 import React from 'react'
 import { ProfileNavigator } from '../screens/Profile/ProfileNavigator';
 import Test from './Test'
@@ -13,6 +9,7 @@ import { Entypo } from '@expo/vector-icons';
 import BlockedUsers from '../screens/BlockedUsers';
 import themes from '../styles/Themes';
 import { useColorScheme } from 'react-native-appearance';
+import { AntDesign } from '@expo/vector-icons';
 
 const {width} = Dimensions.get("window")
 const Drawer = createDrawerNavigator();
@@ -54,6 +51,12 @@ export default function ProfileDrawer(props) {
             drawerIcon: ({focused, size}) => {
                 return (
                 <Ionicons name="settings" size={size} color={focused ? themes.editTheme(!isLight) : themes.oppositeTheme(isLight)}/>)}}} name="Settings" component={Test}></Drawer.Screen>
+        <Drawer.Screen
+        options={{
+            title: "Delete Account",
+            drawerIcon: ({focused, size}) => {
+                return (
+                <AntDesign name="deleteuser" size={size} color={focused ? themes.editTheme(!isLight) : themes.oppositeTheme(isLight)}/>)}}} name="Settings" component={Test}></Drawer.Screen>
     </Drawer.Navigator>
     )
 }

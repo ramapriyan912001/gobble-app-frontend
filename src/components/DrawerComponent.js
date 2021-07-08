@@ -40,11 +40,11 @@ function DrawerComponent(props) {
         <DrawerItemList {...props} />
 
         {/* Adding a nav to go outside of the bottom tabs*/}
-        <DrawerItem
+        {/* <DrawerItem
         icon= {({ focused, color, size }) => <Ionicons color={themes.oppositeTheme(isLight)} size={size} name={focused ? 'information-circle' : 'information-circle-outline'} />}
         label="Test" labelStyle={{color:themes.oppositeTheme(isLight)}}
         onPress={() => props.navigation.navigate('Test')}
-        />
+        /> */}
       </DrawerContentScrollView>
     );
 }

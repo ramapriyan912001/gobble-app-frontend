@@ -69,18 +69,25 @@ class FirebaseSvc {
    * @param {*} success 
    * @param {*} failure 
    */
-  deleteUser = (success, failure) => {
-    // let deletionSuccess = false;
-    if (this.userExists()) {
+  deleteUser() {
+    if(this.userExists()) {
+      let updates = {}
+        updates[`/Avatars/${this.uid}`] = null
+        updates[`/Industry/${this.uid}`] = null
+        updates[`/Users/${this.uid}`] = null
+        updates[`ReportHistory/${this.uid}`] = null
+        updates[`ComplaintCount/${this.uid}`] = null
+        // Need to delete any awaiting requests he has or
+        // set a this.userExists() condition in the matching
+        // function
+      firebase.database().update(updates)
       this
       .currentUser()
       .delete()
-      .then(success)
-      .catch(failure);
-    } else {
-      console.log('No User Found to Delete');
+      .catch(err => console.log('delete user ' + err))
     }
   }
+
 
   deleteAnotherUser(otherUserId) {
     try {
