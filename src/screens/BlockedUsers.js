@@ -63,8 +63,8 @@ function BlockedUsers (props, {navigation}) {
     useEffect(() => {
         loadAsync();
         return () => {
-          console.log('matchHistory clean up!');
-          firebaseSvc.matchIDsOff();
+          console.log('Blocked users clean up!');
+          firebaseSvc.blockedUsersOff();
         }
     }, [])
 

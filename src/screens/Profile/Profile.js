@@ -1,6 +1,6 @@
 
 import React, {useEffect, useState, useCallback} from 'react'
-import {Text, Image, TouchableOpacity, SafeAreaView, Alert, View, Platform, ScrollView} from 'react-native'
+import {Text, Image, TouchableOpacity, TouchableHighlight, SafeAreaView, Alert, View, Platform, ScrollView} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
 import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../../styles/LoginStyles'
 import { getError, onSuccess, onFailure } from '../../services/RegistrationHandlers'
@@ -140,7 +140,8 @@ if (loading) {
         <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
             <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
             <StatusBar style="auto"/>
-            <TouchableOpacity style={{marginTop: drawerMargin}} onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
+            <TouchableOpacity style={{marginTop: drawerMargin}} onPress={() => {
+                props.navigation.dispatch(DrawerActions.openDrawer)}}>
                 <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
             </TouchableOpacity>
             <View style={{marginTop:'-6%'}}>

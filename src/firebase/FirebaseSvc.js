@@ -77,6 +77,9 @@ class FirebaseSvc {
         updates[`/Users/${this.uid}`] = null
         updates[`ReportHistory/${this.uid}`] = null
         updates[`ComplaintCount/${this.uid}`] = null
+        if(this.isAdmin()) {
+          updates[`ReportCount/${this.uid}`] = null
+        }
         // Need to delete any awaiting requests he has or
         // set a this.userExists() condition in the matching
         // function
@@ -1003,6 +1006,10 @@ makeGobbleRequest(ref, request, date) {
                                       ? firebase.database().ref(`Users/${this.uid}/blockedUsers`)
                                         .on('value', (x) => callback(success(x)))
                                       : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+
+  blockedUsersOff() {
+    firebase.database().ref(`Users/${this.uid}`).off();
+  }
 
   
 
