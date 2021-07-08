@@ -157,43 +157,8 @@ function GobbleSelect(props, {navigation}) {
     return distances.map(distance => (<Picker.Item label={distance == 200 ? 'No Preference' : `${distance} km`} value={distance} key={distanceID++} color={themes.oppositeTheme(isLight)}/>))
   };
 
-  /**
-   * Function to create a request and pass it to the next page
-   */
-  async function submitGobble() {
-      if (loading) {
-          Alert.alert('Hang on for a sec!', 'We\'re still getting your location');
-      } else if(location == null) {
-          Alert.alert('We need Location Permission!', 'You can change permissions in your phone settings');
-      } else {
-        let gobbleRequest;
-        if(props.route.params) {
-            gobbleRequest = {...props.route.params.request, datetime: date.toString(), distance: distance, cuisinePreference: cuisinePreference}
-            firebaseSvc.deleteAwaitingRequest(props.route.params.request)
-        } else {
-            gobbleRequest = {
-                userId: firebaseSvc.currentUser().uid,
-                dietaryRestriction: props.currentUserData.diet,
-                industryPreference: props.currentUserData.crossIndustrial ? 12 : props.currentUserData.industry,
-                industry: props.currentUserData.industry,
-                cuisinePreference: cuisinePreference,
-                datetime: date.toString(),
-                location: location,
-                distance: distance,
-            }
-        }
-        let result =  await firebaseSvc.findGobbleMate(gobbleRequest);
-        // We need to do some load page
-        props.route.params ? props.navigation.navigate('BottomTabs', { screen: 'GobbleNavigator', params: { screen: 'GobbleConfirm', params: {result: result}} }) : props.navigation.navigate('GobbleConfirm')
-      }
-  }
-
   const topMargin = Platform.OS === 'ios' ? '2%':'12%';
 
-  const handleConfirm = (date) => {
-    setDate(date);
-    hideDatePicker();
-  };
     return (
         <SafeAreaView style={[{flex: 1}, themes.containerTheme(isLight)]}>
             <View style={{marginTop: topMargin}}>
@@ -247,13 +212,11 @@ function GobbleSelect(props, {navigation}) {
             </ScrollView>
             <View style={{marginTop: '3%', marginBottom: '2%'}}>
                 {!isPickerShow && <TouchableOpacity style={[{...styles.longButton, marginTop: '0%'}, themes.buttonTheme(isLight)]} 
-                    onPress={() => {
+                    onPress={async() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                        let gobbleRequest
-                        // submitGobble();
+                        let gobbleRequest;
                         if(props.route.params) {
                             gobbleRequest = {...props.route.params.request, datetime: date.toString(), distance: distance, cuisinePreference: cuisinePreference}
-                            // firebaseSvc.deleteAwaitingRequest(props.route.params.request)
                         } else {
                             gobbleRequest = {
                                 userId: firebaseSvc.currentUser().uid,
@@ -267,9 +230,16 @@ function GobbleSelect(props, {navigation}) {
                             }
                         }
                         const param = props.route.params ? true : false;
-                        param ? props.navigation.navigate('Edit Location', {request: gobbleRequest, edit: param, oldRequest: props.route.params.request})
-                        : props.navigation.navigate('Edit Location', {request: gobbleRequest, edit: param})
-                        }}>
+                        const exemptedTime = param ? props.route.params.request.datetime : null
+                        const validRequest = await firebaseSvc.validateRequest(gobbleRequest.datetime, exemptedTime);
+                        if(validRequest) {
+                            console.log('test')
+                            param ? props.navigation.navigate('Edit Location', {request: gobbleRequest, edit: param, oldRequest: props.route.params.request})
+                            : props.navigation.navigate('Edit Location', {request: gobbleRequest, edit: param})
+                        } else {
+                            Alert.alert('This match time clashes with another existing match time!', 'Change the time of your request so that there is not time clashes between your matches!')
+                        }
+                    }}>
                     <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>{props.route.params ? `Edit Gobble` : `Submit Gobble`}</Text>
                 </TouchableOpacity>}
             </View>

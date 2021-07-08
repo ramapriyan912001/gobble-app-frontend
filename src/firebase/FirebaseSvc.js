@@ -709,7 +709,8 @@ makeGobbleRequest(ref, request, date) {
     //Remove Respective Pending Matches
     // updates[`/Users/${request2.userId}/awaitingMatchIDs/${request1Ref}`] = null;
     updates[`/Users/${request2.userId}/awaitingMatchIDs/${request2Ref}`] = null;
-    updates[`/UserRequests/${this.uid}/${request2Ref}`] = null;
+    console.log(request2Ref)
+    updates[`/UserRequests/${request2.userId}/${request2Ref}`] = null;
     updates[`/UserRequests/${request1.userId}/${pendingMatchID}`] = request1.datetime;
     updates[`/UserRequests/${request2.userId}/${pendingMatchID}`] = request2.datetime;
     // updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request1))}/${request1.dietaryRestriction}/${request1Ref}`] = null;
@@ -931,15 +932,19 @@ makeGobbleRequest(ref, request, date) {
     return (distance1 + distance2) >= this.calculateDistance(coords1, coords2)
   }
 
-  async validateRequest(datetime) {
+  async validateRequest(datetime, exemptedTime) {
     let existingRequestDatetimes;
     await firebase.database()
     .ref(`UserRequests/${this.uid}`)
     .on('value', (snapshot) => {
       existingRequestDatetimes = snapshot.val()
     })
-    for(let key in Object.entries(existingRequestDatetimes)) {
-      if(doesTimeClash(existingRequestDatetimes[key], datetime)) {
+    for(let key in existingRequestDatetimes) {
+      let existingTime = existingRequestDatetimes[key]
+      if(exemptedTime != null && exemptedTime == existingTime) {
+        continue;
+      }
+      if(this.doesTimeClash(existingTime, datetime)) {
         return false;
       }
     }
@@ -948,7 +953,7 @@ makeGobbleRequest(ref, request, date) {
 
   doesTimeClash(existingTime, datetime) {
     const ACCEPTABLE_TIME_DIFF = 7200000
-    return Math.abs(new Date(existingTime) - new Date(datetime)) > ACCEPTABLE_TIME_DIFF
+    return Math.abs(new Date(existingTime) - new Date(datetime)) < ACCEPTABLE_TIME_DIFF
   }
 
   /**
@@ -966,6 +971,7 @@ makeGobbleRequest(ref, request, date) {
     updates[`/Users/${request.userId}/awaitingMatchIDs/${request.matchID}`] = null;
     let date = await this.getDatetime(request)
     updates[`/GobbleRequests/${this.makeDateString(date)}/${request.dietaryRestriction}/${request.matchID}`] = null;
+    updates[`/UserRequests/${request.userId}/${request.matchID}`] = null
     // Add more updates here
     try {
       await firebase.database().ref().update(updates);

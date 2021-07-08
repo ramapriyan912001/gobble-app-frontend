@@ -10,6 +10,7 @@ import BlockedUsers from '../screens/BlockedUsers';
 import themes from '../styles/Themes';
 import { useColorScheme } from 'react-native-appearance';
 import { AntDesign } from '@expo/vector-icons';
+import DeleteAccount from '../screens/DeleteAccount'
 
 const {width} = Dimensions.get("window")
 const Drawer = createDrawerNavigator();
@@ -56,7 +57,7 @@ export default function ProfileDrawer(props) {
             title: "Delete Account",
             drawerIcon: ({focused, size}) => {
                 return (
-                <AntDesign name="deleteuser" size={size} color={focused ? themes.editTheme(!isLight) : themes.oppositeTheme(isLight)}/>)}}} name="Settings" component={Test}></Drawer.Screen>
+                <AntDesign name="deleteuser" size={size} color={focused ? themes.editTheme(!isLight) : themes.oppositeTheme(isLight)}/>)}}} name="Delete Account" component={DeleteAccount}></Drawer.Screen>
     </Drawer.Navigator>
     )
 }
