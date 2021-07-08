@@ -37,7 +37,6 @@ export function GobbleConfirm(props) {
                 <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                     props.navigation.navigate('GobbleSelect');
-
                 }}>
                     <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Done!</Text>
                 </TouchableOpacity>

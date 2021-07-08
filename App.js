@@ -58,7 +58,6 @@ export function App() {
             <Stack.Screen name="Edit Gobble Request" component={GobbleSelect}></Stack.Screen>
             <Stack.Screen name="Edit Location" options={{headerShown: false}}  component={DestinationSearch}></Stack.Screen>
             <Stack.Screen name="Confirm Request" options={{headerShown: false}} component={GobbleSelect2}></Stack.Screen>
-            <Stack.Screen name="search" options={{headerShown: false}} component={DestinationSearch}></Stack.Screen>
             <Stack.Screen name="Test" options={{headerShown: false, gestureEnabled: true}} component={Test}></Stack.Screen>
             <Stack.Screen name="User History" options={{gestureEnabled: true, headerBackTitle: 'Back'}} component={ReportHistory}></Stack.Screen>
             <Stack.Screen name="Complaint Details" options={{gestureEnabled: true}} component={ReportDetails}></Stack.Screen>

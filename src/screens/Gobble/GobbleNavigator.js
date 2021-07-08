@@ -19,7 +19,6 @@ export function GobbleNavigator() {
     return (
         <Stack.Navigator initialRouteName="GobbleSelect">
             <Stack.Screen name="GobbleSelect" options={{headerShown:false}} component={GobbleSelect}></Stack.Screen>
-            <Stack.Screen name="Search" options={{headerShown:false}} component={DestinationSearch}></Stack.Screen>
             <Stack.Screen name="GobbleConfirm" options={{headerShown:false}} component={GobbleConfirm}></Stack.Screen>
         </Stack.Navigator>
     )

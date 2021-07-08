@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { SafeAreaView, View, TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { SafeAreaView, View, TouchableOpacity, Text, StyleSheet, Platform } from 'react-native';
 import { GooglePlacesAutocomplete } from 'react-native-google-places-autocomplete';
 import { ListItem } from 'react-native-elements';
 import { Ionicons } from '@expo/vector-icons';
@@ -15,15 +15,6 @@ export default function DestinationSearch(props) {
     const [locationText, setLocationText] = useState('');
     const [location, setLocation] = useState({})
 
-    const homePlace = {
-        description: 'Home',
-        geometry: { location: { lat: 48.8152937, lng: 2.4597668 } },
-      };
-      const workPlace = {
-        description: 'Work',
-        geometry: { location: { lat: 48.8496818, lng: 2.2940881 } },
-      };
-
     useEffect(() => {
       if(location) {
         console.log("redirect to result")
@@ -31,9 +22,9 @@ export default function DestinationSearch(props) {
     }, [location])
     return (
     <SafeAreaView style={themes.containerTheme(isLight)}>
-      <View style={{...styles.container, flexDirection: 'row'}}>
+      <View style={Platform.OS == 'ios' ? {...styles.container, flexDirection: 'row'} : {...styles.container, flexDirection: 'row', marginTop: '7%'}}>
           <View
-          style={{marginTop: '0%'}}>
+          style={Platform.OS == 'ios' ? {marginTop: '0%'} : {marginTop: '2%'}}>
               <TouchableOpacity style={{paddingRight: '4%'}} onPress={() => {
                   props.navigation.goBack()
               }}>
