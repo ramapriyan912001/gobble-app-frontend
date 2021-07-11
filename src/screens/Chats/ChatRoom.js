@@ -72,7 +72,7 @@ function ChatRoom (props, {navigation}) {
 
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
-        console.log('focus')
+        console.log('Going to Load Chats...')
         await loadAsync();
         setSelectedID(Math.random())
       return unsubscribe

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Platform, Alert, TouchableOpacity } from 'react-native'
 import {Input} from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'

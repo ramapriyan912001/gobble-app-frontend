@@ -34,12 +34,12 @@ function Reports (props, {navigation}) {
      * Load Page Data Asynchronously
      */
     async function loadAsync() {
-        console.log('hey')
+      console.log('Loading Reports...')
       await firebaseSvc
             .getReports(
               snapshot => {
                 let ids = snapshot.val();
-                console.log(ids)
+                console.log('ids: ',ids)
                 if (ids == null) {
                   setData([])
                   setReportIDs({})
@@ -75,7 +75,7 @@ function Reports (props, {navigation}) {
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
           await loadAsync();
-          console.log('change')
+          console.log('Reports Loaded.');
       })
       return unsubscribe;
     }, [navigation])

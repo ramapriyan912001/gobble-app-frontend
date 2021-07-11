@@ -21,7 +21,7 @@ export function Conversation(props) {
   const [messages, setMessages] = useState([]);
   const colorScheme = useColorScheme();
   const isLight = colorScheme === 'light';
-
+  console.log(metadata);
   /**
    * Asynchronously load message listeners
    */

@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+require('firebase/functions');
 import { Alert } from 'react-native';
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
@@ -92,14 +93,24 @@ class FirebaseSvc {
   }
 
 
-  deleteAnotherUser(otherUserId) {
+  adminDeleteAnotherUser(otherUserId) {
     try {
       if(this.isAdmin()) {
-        let updates = {}
-        updates[`/Users/${otherUserId}`] = null;
-        updates[`/Avatars/${otherUserId}`] = null;
-        updates[`/Industry/${otherUserId}`] = null;
-        return firebase.database().update(updates);
+        // let updates = {}
+        // updates[`/Users/${otherUserId}`] = null;
+        // updates[`/Avatars/${otherUserId}`] = null;
+        // updates[`/Industry/${otherUserId}`] = null;
+        // firebase.database().update(updates);
+        const deleteFunction = firebase.functions().httpsCallable(`deleteUser`);
+        deleteFunction({uid: otherUserId}, {})
+        .then(result => {
+          console.log('result of deletion: ', result);
+          if (!result.data.success) {
+            console.log('Delete Other User Error: ' + result.data.message);
+          } else {
+            console.log(result.data.message);
+          }
+        })
       } 
     } catch(err) {
       console.log("delete another user " + err);

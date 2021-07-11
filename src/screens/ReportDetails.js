@@ -7,7 +7,7 @@ import firebaseSvc from '../firebase/FirebaseSvc'
 
 
 export default function ReportDetails(props) {
-
+    const [defendant, setDefendant] = useState(props.route.params.defendant);
     const [text, setText] = useState(props.route.params.complaint.description)
     const [reason, setReason] = useState(REASONS[props.route.params.complaint.reason])
     const [buttons, setButtons] = useState(props.route.params.buttons)
@@ -65,7 +65,9 @@ export default function ReportDetails(props) {
                     },
                     { text: "Yes", onPress: async() => {
                         // TODO VISHNU
-                        // firebaseSvc.deleteAnotherUser()
+                        firebaseSvc.adminDeleteAnotherUser(defendant);
+                        await firebaseSvc.deleteReport(props.route.params.id);
+                        props.navigation.navigate('Reports')
                     }
                     }
                 ])

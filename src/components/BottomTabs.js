@@ -28,6 +28,7 @@ function BottomTabs(props, {navigation}) {
   async function loadDataAsync() {
     try{
       let isAdmin = await firebaseSvc.isAdmin();
+      console.log('isAdmin: ', isAdmin);
       if(isAdmin) {
         props.giveAdminAccess();
       } else {
