@@ -63,11 +63,7 @@ class FirebaseSvc {
   }
 
   /**
-   * Used in registration process in case user decides to quit
-   * registration half way. Will also be used to implement delete
-   * functionality.
-   * @param {*} success 
-   * @param {*} failure 
+   * Used as a delete functionality.
    */
   deleteUser() {
     if(this.userExists()) {
@@ -274,7 +270,7 @@ class FirebaseSvc {
     .database()
     .ref(`ReportCount/${this.uid}`)
     .once("value")
-    .then(snapshot => snapshot.val() != null)
+    .then(snapshot => snapshot.exists())
   }
 
   getReports = (success, callback, failure) => 
