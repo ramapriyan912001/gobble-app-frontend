@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Platform } from 'react-native'
+import { View, Text, StyleSheet, TextInput, Alert, TouchableOpacity, Platform } from 'react-native'
 import {Input} from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -39,13 +39,13 @@ function PersonalDetails(props) {
         console.log('Signed Out');
         props.navigation.reset({
             index: 0,
-            routes: [{name: 'Login'}],
+            routes: [{name: 'Welcome'}],
         });
     }
 
     const signOutFailure = (err) => {
         console.log('Sign Out Error: ' + err.message);
-        Alert.alert('Sign Out Error. Try Again Later');
+        Alert.alert('Sign Out Error. Try Again Later', '');
     }
 
     const getDate = (date) => {
