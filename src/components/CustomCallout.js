@@ -26,11 +26,24 @@ export default function CustomCallout({restaurant}) {
         loadDataAsync();
     }, [data])
     return (
-        <View style={{height: 250, width: 300, alignItems: 'center'}}>
-                <Avatar size='xlarge' avatarStyle={{alignSelf: 'center'}} source={{uri: giveUrl()}}></Avatar>
-                <Text style={{alignSelf:'center'}}>{`${restaurant.name}`}</Text>
-                <Text style={{alignSelf:'center'}}>{`This restaurant has a ${restaurant.rating} star rating`}</Text>
-                {/* <Rating
+        <View style={{height: 150, width: 300,}}>
+            <View style={{flexDirection: 'row'}}>
+                <View style={{flex: 2}}>
+                <Avatar avatarStyle={{
+                    shadowColor: "#000",
+                    shadowOffset: {
+                        width: 8,
+                        height: 8,
+                    },
+                    shadowOpacity: 0.3,
+                    shadowRadius: 9,
+                    elevation: 5,
+                }} size='xlarge' avatarStyle={{}} source={{uri: giveUrl()}}></Avatar>
+                </View>
+                <View style={{flexWrap: 'nowrap', flexDirection: 'column', marginLeft: '50%', justifyContent: 'center'}}>
+                <Text style={{fontWeight: '800', marginBottom: '3%'}}>{`${restaurant.name}`}</Text>
+                <Text style={{fontWeight: '600', marginBottom: '3%'}}>{`${restaurant.address}`}</Text>
+                <Rating
                 type='star'
                 ratingImage='star'
                 ratingColor='#3498db'
@@ -39,8 +52,11 @@ export default function CustomCallout({restaurant}) {
                 startingValue={restaurant.rating}
                 imageSize={20}
                 readonly
-                style={{ paddingHorizontal: 1 }}
-                /> */}
+                style={{ paddingHorizontal: 1, paddingVertical: 2 }}
+                />
+                </View>
+                
+            </View>
         </View>
     )
 }

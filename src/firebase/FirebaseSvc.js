@@ -304,7 +304,7 @@ class FirebaseSvc {
                 if (this.isAdmin()) {
                   firebase
                   .database()
-                  .ref(`Reports/${this.uid}`)
+                  .ref(`Reports`)
                   .off();
                 }
   }
@@ -1019,8 +1019,8 @@ makeGobbleRequest(ref, request, date) {
         console.log(key)
         updates[`/PendingMatchIDs/${key}`] = null;
         updates[`/Users/${otherUid}/pendingMatchIDs/${key}`] = null
-        updates[`/UserRequests/${this.uid}/${value.matchID}`] = null
-        updates[`/UserRequests/${otherUid}/${value.matchID}`] = null
+        updates[`/UserRequests/${this.uid}/${key}`] = null
+        updates[`/UserRequests/${otherUid}/${key}`] = null
       }
     }
     updates[`/Users/${this.uid}/pendingMatchIDs`] = pendingMatches
@@ -1034,8 +1034,8 @@ makeGobbleRequest(ref, request, date) {
       if(id == otherUid) {
         delete matches[key]
         updates[`/Users/${otherUid}/matchIDs/${key}`] = null
-        updates[`/UserRequests/${this.uid}/${value.matchID}`] = null
-        updates[`/UserRequests/${otherUid}/${value.matchID}`] = null
+        updates[`/UserRequests/${this.uid}/${key}`] = null
+        updates[`/UserRequests/${otherUid}/${key}`] = null
       }
     }
     updates[`/Users/${this.uid}/matchIDs`] = matches
