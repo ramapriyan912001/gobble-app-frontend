@@ -1023,8 +1023,8 @@ makeGobbleRequest(ref, request, date) {
         console.log(key)
         updates[`/PendingMatchIDs/${key}`] = null;
         updates[`/Users/${otherUid}/pendingMatchIDs/${key}`] = null
-        updates[`/UserRequests/${this.uid}/${value.matchID}`] = null
-        updates[`/UserRequests/${otherUid}/${value.matchID}`] = null
+        updates[`/UserRequests/${this.uid}/${key}`] = null
+        updates[`/UserRequests/${otherUid}/${key}`] = null
       }
     }
     updates[`/Users/${this.uid}/pendingMatchIDs`] = pendingMatches
