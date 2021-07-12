@@ -1038,8 +1038,8 @@ makeGobbleRequest(ref, request, date) {
       if(id == otherUid) {
         delete matches[key]
         updates[`/Users/${otherUid}/matchIDs/${key}`] = null
-        updates[`/UserRequests/${this.uid}/${value.matchID}`] = null
-        updates[`/UserRequests/${otherUid}/${value.matchID}`] = null
+        updates[`/UserRequests/${this.uid}/${key}`] = null
+        updates[`/UserRequests/${otherUid}/${key}`] = null
       }
     }
     updates[`/Users/${this.uid}/matchIDs`] = matches
