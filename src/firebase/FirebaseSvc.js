@@ -1,4 +1,5 @@
 import firebase from 'firebase';
+require('firebase/functions');
 import { Alert } from 'react-native';
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
@@ -88,18 +89,83 @@ class FirebaseSvc {
   }
 
 
-  deleteAnotherUser(otherUserId) {
+  // deleteAnotherUser(otherUserId) {
+  //   try {
+  //     if(this.isAdmin()) {
+  //       let updates = {}
+  //       updates[`/Users/${otherUserId}`] = null;
+  //       updates[`/Avatars/${otherUserId}`] = null;
+  //       updates[`/Industry/${otherUserId}`] = null;
+  //       return firebase.database().update(updates);
+  //     } 
+  //   } catch(err) {
+  //     console.log("delete another user " + err);
+  //   }
+  // }
+  async adminDeleteAnotherUser(otherUserId) {
     try {
       if(this.isAdmin()) {
-        let updates = {}
-        updates[`/Users/${otherUserId}`] = null;
-        updates[`/Avatars/${otherUserId}`] = null;
-        updates[`/Industry/${otherUserId}`] = null;
-        return firebase.database().update(updates);
-      } 
+        // let updates = {}
+        // updates[`/Avatars/${otherUserId}`] = null;
+        // updates[`/Industry/${otherUserId}`] = null;
+        // firebase.database().update(updates);
+        
+        return this.currentUser().getIdToken(/* forceRefresh */ true).then(function(idToken) {
+          console.log('Token: ', idToken);
+          // Send token to your backend via HTTPS
+          // ...
+          const deleteFunction = firebase.functions().httpsCallable(`deleteUser`);
+          console.log('UID:',otherUserId);
+          return deleteFunction({uid: otherUserId, token:idToken})
+          .then(result => {
+            console.log('result of deletion: ', result);
+            if (!result.data.success) {
+              console.log('Delete Other User Failure: ' + result.data.message);
+              return false;
+            } else {
+              console.log(result.data.message);
+              return true;
+            }
+          })
+          .catch(err => {
+            console.log('DELETE OTHER USER ERROR: ', err.message);
+            return false;
+          });
+
+        }).catch(function(error) {
+          // Handle error
+          console.log('TOKEN RETRIEVAL ERROR: ', error.message);
+          return false;
+        });
+       
+      } else {
+        console.log('Not an Admin');
+        return false;
+      }
     } catch(err) {
-      console.log("delete another user " + err);
+      console.log("Delete another user failed: " , err.message);
+      return false;
     }
+  }
+
+  async promoteCurrentUserToAdmin() {
+    console.log('start');
+    const promoteFunction = await firebase.functions().httpsCallable('promoteUserToAdmin');
+    return await promoteFunction({uid: this.uid})
+    .then(result => {
+      console.log('Result: ', result);
+      if (!result.data.success) {
+        console.log('Promotion Failure', result.data.message);
+        return result.data.message;
+      } else {
+        console.log(result.data.message);
+        return result.data.message;
+      }
+    })
+    .catch(err => {
+      console.log('PROMOTION API CALL ERROR', err.message);
+      return err.message;
+    });
   }
 
   /**
@@ -265,12 +331,12 @@ class FirebaseSvc {
                     }
                   }
 
-  isAdmin() {
+  isAdmin = () => {
     return firebase
     .database()
     .ref(`ReportCount/${this.uid}`)
     .once("value")
-    .then(snapshot => snapshot.exists())
+    .then(snapshot => snapshot.exists());
   }
 
   getReports = (success, callback, failure) => 

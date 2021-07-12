@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {View, SafeAreaView, Text, FlatList, TouchableOpacity} from 'react-native'
+import {View, SafeAreaView, Text, FlatList, TouchableOpacity, Alert} from 'react-native'
 import { Avatar, ListItem, SearchBar } from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
@@ -13,7 +13,7 @@ import { INDUSTRY_CODES } from '../constants/objects'
 import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
 import themes from '../styles/Themes';
-import {styles} from '../styles/RegisterStyles';
+import {styles} from '../styles/ProfileStyles';
 import { REASONS } from '../constants/objects'
 
 /**
@@ -116,6 +116,12 @@ function Reports (props, {navigation}) {
             // ListFooterComponent={renderFooter(isLight)}
             onEndReachedThreshold={50}
           />
+          <TouchableOpacity style={styles.longButton} onPress={
+            async () => {const message = await firebaseSvc.promoteCurrentUserToAdmin();
+            Alert.alert('Done!',message);
+          }}>
+              <Text style={{color:'#5e5'}}>Promote to Admin</Text>
+          </TouchableOpacity>
       </SafeAreaView>
     );
 }
