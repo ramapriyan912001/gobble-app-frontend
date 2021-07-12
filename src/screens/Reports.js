@@ -67,9 +67,8 @@ function Reports (props, {navigation}) {
     useEffect(() => {
         loadAsync();
         return () => {
-          console.log('Reports clean up!');
           // firebaseSvc.reportsOff();
-          console.log("past reportsoff")
+          console.log("Reports clean up!")
         }
     }, [navigation])
 
