@@ -107,9 +107,6 @@ function Restaurants(props) {
                 showsUserLocation
                 style={{height: '100%', width: '100%'}}
                 provider={PROVIDER_GOOGLE}
-                onPress={() => {
-                    console.log("press")
-                }}
                 initialRegion={{
                 latitude: mapFocusLocation.lat,
                 longitude: mapFocusLocation.lng,
@@ -118,7 +115,6 @@ function Restaurants(props) {
                 }}
             >
                 {restaurantList.map((restaurant, index) => {
-                    console.log(restaurant)
                     return (
                         <Marker
                         tracksViewChanges={false}

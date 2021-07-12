@@ -308,7 +308,7 @@ class FirebaseSvc {
                 if (this.isAdmin()) {
                   firebase
                   .database()
-                  .ref(`Reports/${this.uid}`)
+                  .ref(`Reports`)
                   .off();
                 }
   }

@@ -67,10 +67,10 @@ function Reports (props, {navigation}) {
     useEffect(() => {
         loadAsync();
         return () => {
-          console.log('Reports clean up!');
-          firebaseSvc.reportsOff();
+          // firebaseSvc.reportsOff();
+          console.log("Reports clean up!")
         }
-    }, [])
+    }, [navigation])
 
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
