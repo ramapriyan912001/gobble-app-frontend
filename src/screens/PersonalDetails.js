@@ -46,6 +46,7 @@ function PersonalDetails(props) {
     const signOutFailure = (err) => {
         console.log('Sign Out Error: ' + err.message);
         Alert.alert('Sign Out Error. Try Again Later');
+        props.navigation.goBack();
     }
 
     const getDate = (date) => {

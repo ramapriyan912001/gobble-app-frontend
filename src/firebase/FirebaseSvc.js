@@ -93,7 +93,7 @@ class FirebaseSvc {
   }
 
 
-  adminDeleteAnotherUser(otherUserId) {
+  async adminDeleteAnotherUser(otherUserId) {
     try {
       if(this.isAdmin()) {
         // let updates = {}
@@ -101,16 +101,31 @@ class FirebaseSvc {
         // updates[`/Avatars/${otherUserId}`] = null;
         // updates[`/Industry/${otherUserId}`] = null;
         // firebase.database().update(updates);
-        const deleteFunction = firebase.functions().httpsCallable(`deleteUser`);
-        deleteFunction({uid: otherUserId}, {})
-        .then(result => {
-          console.log('result of deletion: ', result);
-          if (!result.data.success) {
-            console.log('Delete Other User Error: ' + result.data.message);
-          } else {
-            console.log(result.data.message);
-          }
-        })
+        console.log('Deleting: ', otherUserId);
+        
+        this.currentUser().getIdToken(/* forceRefresh */ true).then(function(idToken) {
+        console.log('Token: ', idToken);
+          // Send token to your backend via HTTPS
+          // ...
+          const deleteFunction = firebase.functions().httpsCallable(`deleteUser`);
+          deleteFunction({uid: otherUserId, token:idToken})
+          .then(result => {
+            console.log('result of deletion: ', result);
+            if (!result.data.success) {
+              console.log('Delete Other User Failure: ' + result.data.message);
+            } else {
+              console.log(result.data.message);
+            }
+          })
+          .catch(err => {
+            console.log('DELETE OTHER USER ERROR: ', err.message);
+          });
+
+        }).catch(function(error) {
+          // Handle error
+          console.log('TOKEN RETRIEVAL ERROR: ', error.message);
+        });
+       
       } 
     } catch(err) {
       console.log("delete another user " + err);
@@ -982,6 +997,7 @@ makeGobbleRequest(ref, request, date) {
 
   async deleteAwaitingRequest(request) {
     let updates = {};
+    console.log('mid',request.matchID);
     updates[`/Users/${request.userId}/awaitingMatchIDs/${request.matchID}`] = null;
     let date = await this.getDatetime(request)
     updates[`/GobbleRequests/${this.makeDateString(date)}/${request.dietaryRestriction}/${request.matchID}`] = null;
