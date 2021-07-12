@@ -39,7 +39,7 @@ function PersonalDetails(props) {
         console.log('Signed Out');
         props.navigation.reset({
             index: 0,
-            routes: [{name: 'Welcome'}],
+            routes: [{name: 'Login'}],
         });
     }
 

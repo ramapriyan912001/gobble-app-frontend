@@ -22,12 +22,22 @@ export default function AdminNavigator(props) {
     return (
         <Stack.Navigator initialRouteName="Reports">
             <Stack.Screen options={{
-              headerLeft: () => null
+                headerLeft: () => null,
+                headerTitle: 'Reports', 
+                headerBackTitle: 'Reports', 
+                headerStyle:{
+                    backgroundColor: themes.oppositeTheme(!isLight),
+                },
+                headerTintColor:themes.oppositeTheme(isLight)
             }} name="Reports" component={Reports}></Stack.Screen>
             <Stack.Screen name="Report Details" options={({navigation, route}) => ({
                 headerRightContainerStyle:{
                     marginRight:'2%'
                 },
+                headerStyle:{
+                    backgroundColor: themes.oppositeTheme(!isLight),
+                },
+                headerTintColor:themes.oppositeTheme(isLight),
                 headerRight: () => (<TouchableOpacity
                                         onPress= {() => props.navigation.navigate('User History', {defendant: route.params.defendant})}
                                     >

@@ -34,7 +34,7 @@ function Reports (props, {navigation}) {
      * Load Page Data Asynchronously
      */
     async function loadAsync() {
-        console.log('hey')
+        console.log('Loading Reports...');
       await firebaseSvc
             .getReports(
               snapshot => {
@@ -82,7 +82,7 @@ function Reports (props, {navigation}) {
     // const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     
     return (
-      <SafeAreaView style={themes.containerTheme(isLight)}>
+      <SafeAreaView style={[themes.containerTheme(isLight), styles.container]}>
           <FlatList
             extraData={selectedID}
             data={data}
@@ -116,11 +116,14 @@ function Reports (props, {navigation}) {
             // ListFooterComponent={renderFooter(isLight)}
             onEndReachedThreshold={50}
           />
-          <TouchableOpacity style={styles.longButton} onPress={
-            async () => {const message = await firebaseSvc.promoteCurrentUserToAdmin();
-            Alert.alert('Done!',message);
+          <TouchableOpacity
+            style={[{...styles.longButton, marginBottom:'4%'}, themes.buttonTheme(isLight)]}
+            onPress={async () => {
+              Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+              const message = await firebaseSvc.promoteCurrentUserToAdmin();
+              Alert.alert('Done!',message);
           }}>
-              <Text style={{color:'#5e5'}}>Promote to Admin</Text>
+              <Text style={themes.textTheme(!isLight)}>Promote to Admin</Text>
           </TouchableOpacity>
       </SafeAreaView>
     );
