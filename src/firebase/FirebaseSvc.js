@@ -841,9 +841,11 @@ makeGobbleRequest(ref, request, date) {
       .auth()
       .currentUser
       .getIdToken(true)
-      .then(idToken => {
-        const matchDeclneFunction = firebase.functions().httpsCallable('matchDecline')
-        return matchDeclneFunction({request: request, idToken: idToken})
+      .then(async idToken => {
+        const matchDeclineFunction = await firebase.functions().httpsCallable('matchDecline')
+        let response = await matchDeclineFunction({request: request, idToken: idToken})
+        console.log(response)
+        return response;
       })
     } catch(e) {
       console.log('Match Confirm Error:', err.message);
