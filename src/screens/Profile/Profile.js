@@ -1,5 +1,5 @@
 
-import React, {useEffect, useState, useCallback} from 'react'
+import React, {useEffect, useState, useRef} from 'react'
 import {Text, Image, TouchableOpacity, TouchableHighlight, SafeAreaView, Alert, View, Platform, ScrollView} from 'react-native'
 import {StatusBar} from 'expo-status-bar'
 import {inputStyles, buttonStyles, profileStyles, containerStyles} from '../../styles/LoginStyles'
@@ -16,6 +16,8 @@ import MealPreferences from '../MealPreferences'
 import Ionicons from '@expo/vector-icons/Ionicons'
 import { Header } from 'react-native-elements'
 import { DrawerActions } from '@react-navigation/native';
+import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
 
 // props.navigation.dispatch(DrawerActions.closeDrawer());
 
@@ -35,8 +37,18 @@ import * as ImageManipulator from 'expo-image-manipulator';
  * @param {*} props Props from previous screen
  * @returns Profile Render Method
  */
-function Profile(props) {
-
+function Profile(props, {navigation}) {
+    Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+          shouldPlaySound: true,
+          shouldSetBadge: false,
+        }),
+    });
+    const [expoPushToken, setExpoPushToken] = useState('');
+    const [notification, setNotification] = useState(false);
+    const notificationListener = useRef();
+    const responseListener = useRef();
     const [userInfo, setUserInfo] = useState({});
     const [change, setChange] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -124,9 +136,60 @@ function Profile(props) {
         })
         .catch(onFailure('Permission Retrieval Error'));
       };
+
+      async function registerForPushNotificationsAsync() {
+        let token;
+        if (Constants.isDevice) {
+          const { status: existingStatus } = await Notifications.getPermissionsAsync();
+          let finalStatus = existingStatus;
+          if (existingStatus !== 'granted') {
+            const { status } = await Notifications.requestPermissionsAsync();
+            finalStatus = status;
+          }
+          if (finalStatus !== 'granted') {
+            alert('Failed to get push token for push notification!');
+            return;
+          }
+          token = (await Notifications.getExpoPushTokenAsync()).data;
+          console.log(token);
+        } else {
+          alert('Must use physical device for Push Notifications');
+        }
+      
+        if (Platform.OS === 'android') {
+          Notifications.setNotificationChannelAsync('default', {
+            name: 'default',
+            importance: Notifications.AndroidImportance.MAX,
+            vibrationPattern: [0, 250, 250, 250],
+            lightColor: '#FF231F7C',
+          });
+        }
+      
+        return token;
+      }
     useEffect(() => {
         loadDataAsync();
-    },[change]);
+        registerForPushNotificationsAsync().then(token => {
+            setExpoPushToken(token)
+            firebaseSvc.addPushToken(token);
+            console.log("after adding push token")
+        });
+      
+          // This listener is fired whenever a notification is received while the app is foregrounded
+          notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+            setNotification(notification);
+          });
+      
+          // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+          responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+            console.log(response);
+          });
+      
+          return () => {
+            Notifications.removeNotificationSubscription(notificationListener.current);
+            Notifications.removeNotificationSubscription(responseListener.current);
+          };
+    },[change, navigation]);
 
     const drawerMargin = Platform.OS === 'ios' ? '2%' : '10%';
 if (loading) {

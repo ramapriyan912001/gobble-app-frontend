@@ -1,6 +1,6 @@
 import firebase from 'firebase';
-require('firebase/functions');
 import { Alert } from 'react-native';
+require('firebase/functions');
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 import {DIETARY_ARRAYS} from '../constants/objects'
@@ -86,6 +86,26 @@ class FirebaseSvc {
       .delete()
       .catch(err => console.log('delete user ' + err))
     }
+  }
+
+  addPushToken(pushToken) {
+    this
+    .currentUser()
+    .getIdToken(true)
+    .then(async idToken => {
+      console.log("before func initial")
+      const addPushTokenFunction = await firebase.functions().httpsCallable(`addPushTokenToDatabase`);
+      console.log("after func initialisation")
+      await addPushTokenFunction({idToken: idToken, pushToken: pushToken})
+      .then(res => console.log(res.data.success, res.data.message)).catch(err =>{
+        console.log(err);
+        console.log('damnnnn')
+      }
+      );
+    }).catch(err => {
+      console.log("error!!")
+      console.log(err)
+    })
   }
 
 
@@ -816,20 +836,32 @@ makeGobbleRequest(ref, request, date) {
   }
 
   async matchDecline(request) {
-    let updates = {}
-    updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
-    updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
-    updates[`/UserRequests/${request.userId}/${request.matchID}`] = null;
-    updates[`/UserRequests/${request.otherUserId}/${request.matchID}`] = null;
-    updates[`/PendingMatchIDs/${request.matchID}`] = null
-    try{
-      // console.log('Updates',updates);
-
-      await firebase.database().ref().update(updates);
-    } catch(err) {   
+    try {
+      return firebase
+      .auth()
+      .currentUser
+      .getIdToken(true)
+      .then(idToken => {
+        const matchDeclneFunction = firebase.functions().httpsCallable('matchDecline')
+        return matchDeclneFunction({request: request, idToken: idToken})
+      })
+    } catch(e) {
       console.log('Match Confirm Error:', err.message);
     }
 
+    // let updates = {}
+    // updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
+    // updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
+    // updates[`/UserRequests/${request.userId}/${request.matchID}`] = null;
+    // updates[`/UserRequests/${request.otherUserId}/${request.matchID}`] = null;
+    // updates[`/PendingMatchIDs/${request.matchID}`] = null
+    
+    // try{
+    //   // console.log('Updates',updates);
+    //   await firebase.database().ref().update(updates);
+    // } catch(err) {   
+    //   console.log('Match Confirm Error:', err.message);
+    // }
   }
 
   async matchUnaccept(request) {
