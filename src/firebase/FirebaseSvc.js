@@ -815,12 +815,15 @@ makeGobbleRequest(ref, request, date) {
   }
 
   async matchConfirm(request) {
-    let result;
-    result = await firebase.database().ref(`/PendingMatchIDs/${request.matchID}/${request.otherUserId}`)
+    let result = await firebase.database().ref(`/PendingMatchIDs/${request.matchID}/${request.otherUserId}`)
     .once("value")
     .then(snapshot => snapshot.val())
+    .catch(err => {
+      console.log(err.message);
+      return {};
+    });
     if(result) {
-      return this.matchFinalise(request)
+      return this.matchFinalise(request);
     } else {
       let updates = {}
       updates[`/PendingMatchIDs/${request.matchID}/${request.userId}`] = true;

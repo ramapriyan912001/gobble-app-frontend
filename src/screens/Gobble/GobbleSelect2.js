@@ -33,8 +33,9 @@ export default function GobbleSelect2(props) {
       if(props.route.params.edit) {
         await firebaseSvc.deleteAwaitingRequest(props.route.params.oldRequest)
       }
-      let result =  await firebaseSvc.findGobbleMate(request);
-      console.log(result)
+      let response =  await firebaseSvc.findGobbleMate(request);
+      const result = response.data.success;
+      console.log(response.data.message);
       // We need to do some load page
       props.navigation.navigate('BottomTabs', { screen: 'GobbleNavigator', params: { screen: 'GobbleConfirm', params: {result: result}} })
   }
