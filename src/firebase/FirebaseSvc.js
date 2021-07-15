@@ -604,6 +604,10 @@ class FirebaseSvc {
     return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
   }
 
+  makeDateTimeString(date) {
+    return `${date.getFullYear()}-${date.getMonth()}-${date.getDate()}-${date.getHours()}-${date.getMinutes()}`;
+  }
+
   /**
    * Get datetime string from request sent by user
    * @param {*} request match request sent by user searching for gobble
@@ -677,9 +681,9 @@ class FirebaseSvc {
     }
   }
 
-  async obtainStatusOfPendingMatch(matchID) {
-    return firebase.database().ref(`/PendingMatchIDs/${matchID}/${this.uid}`)
-    .once("value")
+  async obtainStatusOfPendingMatch(matchID, datetime) {
+    return firebase.database().ref(`/PendingMatchIDs/${this.makeDateString(new Date(datetime))}/${matchID}/${this.uid}`)
+    .once("value")  
     .then(snapshot => snapshot.val())
   }
 
@@ -710,8 +714,10 @@ class FirebaseSvc {
   async deleteAwaitingRequest(request) {
     let updates = {};
     updates[`/Users/${request.userId}/awaitingMatchIDs/${request.matchID}`] = null;
-    let date = await this.getDatetime(request)
-    updates[`/GobbleRequests/${this.makeDateString(date)}/${request.dietaryRestriction}/${request.matchID}`] = null;
+    let dateString = this.makeDateString(this.getDatetime(request))
+    let dateTimeString = await this.makeDateTimeString(this.getDatetime(request))
+    updates[`/GobbleRequests/${dateString}/${request.dietaryRestriction}/${request.matchID}`] = null;
+    updates[`/AwaitingPile/${dateTimeString}/${request.matchID}`] = null;
     updates[`/UserRequests/${request.userId}/${request.matchID}`] = null
     // Add more updates here
     try {
@@ -721,17 +727,8 @@ class FirebaseSvc {
     }
   }
 
-  async editAwaitingRequest(request) {
-    let updates = {};
-    updates[`/Users/${request.userId}/awaitingMatchIDs/${request.matchID}`] = null;
-    let date = this.getDatetime(request)
-    updates[`/GobbleRequests/${this.makeDateString(date)}/${request.dietaryRestriction}/${request.matchID}`] = null;
-    // Add more updates here
-    try {
-      await firebase.database().ref().update(updates);
-    } catch(err) {
-      console.log('Delete Awaiting Request Error: ' + err)
-    }
+  getPendingTime(request) {
+    return new Date(request['datetime'])
   }
 
   removeBlockedUserPendingMatches(otherUid, pendingMatches) {
@@ -741,7 +738,7 @@ class FirebaseSvc {
       if(id == otherUid) {
         delete pendingMatches[key]
         console.log(key)
-        updates[`/PendingMatchIDs/${key}`] = null;
+        updates[`/PendingMatchIDs/${this.makeDateTimeString(this.getPendingTime(value))}/${key}`] = null;
         updates[`/Users/${otherUid}/pendingMatchIDs/${key}`] = null
         updates[`/UserRequests/${this.uid}/${key}`] = null
         updates[`/UserRequests/${otherUid}/${key}`] = null

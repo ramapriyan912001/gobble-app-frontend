@@ -48,7 +48,7 @@ export default function DestinationSearch(props) {
             // 'details' is provided when fetchDetails = true
             setLocation({data, details})
             let request = props.route.params.request;
-            request['description'] = description;
+            request['description'] = data.description;
             request['location'] = {'coords': {'latitude': details.geometry.location['lat'], 'longitude': details.geometry.location['lng']}}
             const nav = 'Confirm Request'
             props.navigation.navigate(nav, {request: request,  edit: props.route.params.edit, description: data.description, oldRequest: props.route.params.oldRequest})

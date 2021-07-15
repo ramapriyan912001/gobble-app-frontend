@@ -144,7 +144,7 @@ import { Alert } from 'react-native'
                   let newData = [];
                   for(let [key, value] of Object.entries(ids)) {
                     if(!(key in matchIDs)) {
-                      matchIDs[key] = await firebaseSvc.obtainStatusOfPendingMatch(key);
+                      matchIDs[key] = await firebaseSvc.obtainStatusOfPendingMatch(key, value.pendingTime);
                     }
                     let details = ids[key]
                     let otherUserId = details.otherUserId
