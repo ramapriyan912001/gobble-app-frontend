@@ -595,24 +595,6 @@ class FirebaseSvc {
   }
 
   /**
-   * Get the reference to object within the matches object within the database
-   * @param {*} params id of object
-   * @returns reference
-   */
-  matchesRef(params) {
-    return firebase.database().ref(`Matches/${params}`);
-  }
-
-  /**
-   * Get the reference to object within the GobbleRequests object within the database
-   * @param {*} params id of object
-   * @returns reference
-   */
-  gobbleRequestsRef() {
-    return firebase.database().ref(`GobbleRequests`)
-  }
-
-  /**
    * Converts the date object into a readable string
    * So that it can be stored in the database easily
    * @param {*} date Date object
@@ -623,39 +605,12 @@ class FirebaseSvc {
   }
 
   /**
-   * Get coordinates of the user's location
-   * @param {*} request match request sent by user searching for gobble
-   * @returns 
-   */
-  getCoords(request) {
-    return request['location']['coords']
-  }
-
-  /**
    * Get datetime string from request sent by user
    * @param {*} request match request sent by user searching for gobble
    * @returns 
    */
   getDatetime(request) {
     return new Date(request['datetime'])
-  }
-
-  /**
-   * Get preferred distance for meal from request sent by user
-   * @param {*} request match request sent by user searching for gobble
-   * @returns 
-   */
-  getDistance(request) {
-    return request['distance']
-  }
-
-  /**
-   * Convert time into minutes to easily evaluate time difference
-   * @param {*} date date object
-   * @returns 
-   */
-  convertTimeToMinutes(date) {
-    return date.getHours()*60 + date.getMinutes()
   }
 
   /**
@@ -684,51 +639,6 @@ class FirebaseSvc {
     return this.getUserCollection(id, snapshot => snapshot.val(), err => console.log(err))
   }
 
-  /**
-   * Handling database operations when two users match
-   * @param {*} request1 request sent by first user
-   * @param {*} dietaryRef1 Useful for scheduled functions - TODO for phase 3
-   * @param {*} request2 request sent by second user
-   * @param {*} request2Ref pending match ID of request2 in GobbleRequests and within the user object itself
-   */
-  async match(request1, request1Ref, request2, request2Ref) {
-    let request2UserDetails = await this.getUserDetails(request2.userId)
-    let request1UserDetails = await this.getUserDetails(request1.userId)
-    const pendingMatchID = await this.gobbleRequestsRef().child('ANY').child('ANY').push().key;
-    let updates = {}
-
-    //The Match Updates
-    updates[`/Users/${request1.userId}/pendingMatchIDs/${pendingMatchID}`] = {...request1, otherUserId: request2.userId, 
-      otherUserCuisinePreference: request2.cuisinePreference, otherUserDietaryRestriction: request2UserDetails.diet, 
-      otherUserDOB: request2UserDetails.dob, otherUserLocation: request2.location, otherUserIndustry: request2UserDetails.industry,
-      otherUserAvatar: request2UserDetails.avatar, otherUserDistance: request2.distance, otherUserName: request2UserDetails.name, matchID: pendingMatchID, lastMessage:'',}
-    updates[`/Users/${request2.userId}/pendingMatchIDs/${pendingMatchID}`] = {...request2, otherUserId: request1.userId,
-      otherUserCuisinePreference: request1.cuisinePreference, otherUserDietaryRestriction: request1UserDetails.diet, 
-      otherUserDOB: request1UserDetails.dob, otherUserLocation: request1.location, otherUserIndustry: request1UserDetails.industry, 
-      otherUserAvatar: request1UserDetails.avatar, otherUserDistance: request1.distance, otherUserName: request1UserDetails.name, matchID: pendingMatchID, lastMessage:'',}
-
-    //Remove Respective Pending Matches
-    // updates[`/Users/${request2.userId}/awaitingMatchIDs/${request1Ref}`] = null;
-    updates[`/Users/${request2.userId}/awaitingMatchIDs/${request2Ref}`] = null;
-    updates[`/UserRequests/${request2.userId}/${request2Ref}`] = null;
-    updates[`/UserRequests/${request1.userId}/${pendingMatchID}`] = request1.datetime;
-    updates[`/UserRequests/${request2.userId}/${pendingMatchID}`] = request2.datetime;
-    // updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request1))}/${request1.dietaryRestriction}/${request1Ref}`] = null;
-    updates[`/GobbleRequests/${this.makeDateString(this.getDatetime(request2))}/${request2.dietaryRestriction}/${request2Ref}`] = null;
-
-    updates[`/PendingMatchIDs/${pendingMatchID}/${request1.userId}`] = false
-    updates[`/PendingMatchIDs/${pendingMatchID}/${request2.userId}`] = false
-
-    try{
-      // console.log('Updates',updates);
-      await firebase.database().ref().update(updates);
-    } catch(err) {
-      console.log('Match Update Error:', err.message);
-    }
-      // TODO: What if the user changes his/her profile picture?
-      // Maybe we need to create another table of just user + profile pic so we don't need to load a lot of data every time
-  }
-
   async matchConfirm(request) {
     try {
       const matchConfirmFunction = await firebase.functions().httpsCallable('matchConfirm')
@@ -754,20 +664,6 @@ class FirebaseSvc {
     } catch(e) {
       console.log('Match Confirm Error:', err.message);
     }
-
-    // let updates = {}
-    // updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
-    // updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
-    // updates[`/UserRequests/${request.userId}/${request.matchID}`] = null;
-    // updates[`/UserRequests/${request.otherUserId}/${request.matchID}`] = null;
-    // updates[`/PendingMatchIDs/${request.matchID}`] = null
-    
-    // try{
-    //   // console.log('Updates',updates);
-    //   await firebase.database().ref().update(updates);
-    // } catch(err) {   
-    //   console.log('Match Confirm Error:', err.message);
-    // }
   }
 
   async matchUnaccept(request) {
@@ -781,153 +677,10 @@ class FirebaseSvc {
     }
   }
 
-  async matchFinalise(request) {
-    let updates = {};
-    let otherUserRequest = await firebase.database().ref(`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`)
-    .once("value")
-    .then(snapshot => snapshot.val())
-
-    updates[`/Users/${request.userId}/matchIDs/${request.matchID}`] = request
-    updates[`/Users/${request.otherUserId}/matchIDs/${request.matchID}`] = otherUserRequest
-
-    updates[`/PendingMatchIDs/${request.matchID}`] = null
-    updates[`/Users/${request.userId}/pendingMatchIDs/${request.matchID}`] = null
-    updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
-
-    updates = await this.linkChats(updates, request, otherUserRequest);
-
-    try{
-      // console.log('Updates',updates);
-      await firebase.database().ref().update(updates);
-      return FINAL_SUCCESS;
-    } catch(err) {
-      console.log('Match Confirm Error:', err.message);
-      return FINAL_FAIL;
-    }
-  }
-
-
-  
   async obtainStatusOfPendingMatch(matchID) {
     return firebase.database().ref(`/PendingMatchIDs/${matchID}/${this.uid}`)
     .once("value")
     .then(snapshot => snapshot.val())
-  }
-
-  /**
-   * Threshold for when matching algorithm can stop and return
-   * This is supposed to be dynamic
-   * Will be improved in phase 3
-   * @param {*} request request sent by user
-   * @returns a score number value
-   */
-  getThreshold(request) {
-    // Will have a threshold function to mark how low a score we are willing to accept for a match
-    // Nearer to the schedule time, the lower the threshold
-    // This is for milestone 3
-    // For now we just have a threshold of 18 points
-    return 18;
-  }
-
-  /**
-   * Asynchronously create a chat for matched users
-   */
-  async linkChats(updates, req1, req2) {
-
-    //Adding to Chats Table
-    //If the User has never been matched before, add a new entry in each User's ref under this table
-    //If they have been matched before, update matchDateTime
-    let isNewMatch = false;
-    await this.chatsRef(`${req1.userId}/${req2.userId}`)
-                          .once('value', snapshot => {isNewMatch = !snapshot.exists()});
-
-    if (isNewMatch == null){
-      //Do Nothing
-      console.log('Nothing is done to link chats');
-    } else { 
-      if (isNewMatch) {
-        const conversationID = await this.conversationRef().push().key;  
-        updates[`/Chats/${req1.userId}/${req2.userId}/metadata`] = {
-                                                            _id: req1.userId,
-                                                            name: req1.otherUserName,
-                                                            avatar: req2.otherUserAvatar,
-                                                            otherUserId: req2.userId,
-                                                            industry: req2.industry,
-                                                            otherUserAvatar: req1.otherUserAvatar,
-                                                            lastMessage: '',
-                                                            conversation: conversationID,
-                                                            matchDateTime: req1.datetime,
-                                                          };
-        updates[`/Chats/${req2.userId}/${req1.userId}/metadata`] = {
-                                                            _id: req2.userId,
-                                                            name: req2.otherUserName,
-                                                            avatar: req1.otherUserAvatar,
-                                                            otherUserId: req1.userId,
-                                                            industry: req1.industry,
-                                                            otherUserAvatar: req2.otherUserAvatar,
-                                                            lastMessage: '',
-                                                            conversation: conversationID,
-                                                            matchDateTime: req1.datetime,
-                                                          };
-      } else {
-        updates[`/Chats/${req1.userId}/${req2.userId}/metadata/matchDateTime`] = req1.datetime;
-        updates[`/Chats/${req2.userId}/${req1.userId}/metadata/matchDateTime`] = req1.datetime;
-      }
-    }
-    return updates;
-          // .then (x => x)
-          // .catch(err => console.log('Linking Chats Error:', err.message));
-  }
-
-  /**
-   * Function to measure compatibility between users when 
-   * deciding whether or not to match users
-   * @param {*} request1 request sent by one user
-   * @param {*} request2 request sent by other user
-   * @returns a score number value
-   */
-  measureCompatibility(request1, request2) {
-    let compatibility = 0;
-    if(request1.cuisinePreference == request2.cuisinePreference) {
-      compatibility += 5;
-    }
-    if(request1.industryPreference == 12 || (request1.industryPreference == request2.industry)) {
-      compatibility += 5;
-    }
-    return compatibility;
-  }
-
-  /**
-   * Calculate distance between two users using coordinates provided
-   * @param {*} coords1 coordinates of first user's location
-   * @param {*} coords2 coordinates of second user's location
-   * @returns the distance between the two users via a number value
-   */
-  calculateDistance(coords1, coords2) {
-    let lat1 = coords1['latitude']
-    let lat2 = coords2['latitude']
-    let lon1 = coords1['longitude']
-    let lon2 = coords2['longitude']
-    var p = 0.017453292519943295;    // Math.PI / 180
-    var c = Math.cos;
-    var a = 0.5 - c((lat2 - lat1) * p)/2 + 
-            c(lat1 * p) * c(lat2 * p) * 
-            (1 - c((lon2 - lon1) * p))/2;
-  
-    const distance = 12742 * Math.asin(Math.sqrt(a)); // 2 * R; R = 6371 km
-    return distance;
-  }
-
-  /**
-   * Evaluates if two users are within range of each other for a match to ocurr
-   * @param {*} coords1 coordinates of first user's location
-   * @param {*} distance1 distance willing to be travelled by first user
-   * @param {*} coords2 coordinates of second user's location
-   * @param {*} distance2 distance willing to be travelled by second user
-   * @returns boolean
-   */
-  isWithinRange(coords1, distance1, coords2, distance2) {//was Bug
-    return (distance1 + distance2) >= this.calculateDistance(coords1, coords2)
   }
 
   async validateRequest(datetime, exemptedTime) {
@@ -952,16 +705,6 @@ class FirebaseSvc {
   doesTimeClash(existingTime, datetime) {
     const ACCEPTABLE_TIME_DIFF = 7200000
     return Math.abs(new Date(existingTime) - new Date(datetime)) < ACCEPTABLE_TIME_DIFF
-  }
-
-  /**
-   * Evaluates if two users are compatible based on their match times
-   * @param {*} time1 Preferred time of first user request
-   * @param {*} time2 Preferred time of second user request
-   * @returns Boolean
-   */
-  isWithinTime(time1, time2) {
-    return (Math.abs(time1-time2) <= 30)   
   }
 
   async deleteAwaitingRequest(request) {
@@ -991,24 +734,6 @@ class FirebaseSvc {
     }
   }
 
-  async getBlockedUsers2(uid) {
-    return firebase.database().ref(`/Users/${uid}/blockedUsers`)
-    .once("value")
-    .then(snapshot => snapshot.val());
-  }
-
-  getBlockedUsers = (success, callback, failure) => this.userExists()
-                                      ? firebase.database().ref(`Users/${this.uid}/blockedUsers`)
-                                        .on('value', (x) => callback(success(x)))
-                                      : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
-
-  blockedUsersOff() {
-    firebase.database().ref(`Users/${this.uid}`).off();
-  }
-
-  
-
-  
   removeBlockedUserPendingMatches(otherUid, pendingMatches) {
     let updates = {}
     for(let [key, value] of Object.entries(pendingMatches)) {
@@ -1040,6 +765,7 @@ class FirebaseSvc {
     updates[`/Users/${this.uid}/matchIDs`] = matches
     firebase.database().ref().update(updates)
   }
+
   blockUser(otherUid, otherUserNameAndAvatar) {
     let updates = {}
     return firebase.database().ref(`Users/${this.uid}/pendingMatchIDs`)
@@ -1069,19 +795,6 @@ class FirebaseSvc {
       }
     )
     // Deleting the chat and conversation + metadata
-
-  }
-
-  async isBlocked(uid, otherUid) {
-    let x = false;
-    x = await firebase.database().ref(`Users/${uid}/blockedUsers/${otherUid}`)
-    .once("value")
-    .then(snapshot => {
-      return snapshot.val() ? true : false}
-      )
-    .catch(err => console.log(err)
-    )
-    return x;
   }
 
   async unblockUser(otherUid) {
