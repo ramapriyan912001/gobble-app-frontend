@@ -33,6 +33,7 @@ function GobbleSelect(props, {navigation}) {
   const [date, setDate] = useState(calculateDefaultTime(MIN_DATE))
   const [distance, setDistance] = useState(200);
   const [edit, setEdit] = useState(true);
+  const [pickerMode, setPickerMode] = useState(Platform.OS == 'ios' ? 'datetime' : 'date');
   const colorScheme = useColorScheme();
   const isLight = colorScheme === 'light';
 
@@ -128,13 +129,18 @@ function GobbleSelect(props, {navigation}) {
 
   const onChange = (event, value) => {
     if (value == null) {
-
+        //Do Nothing
     } else {
         setDate(value);
     }
-    setDateSelected(true)
+    setDateSelected(true);
     if (Platform.OS === 'android') {
-      setIsPickerShow(false);
+      if (pickerMode === 'date') {
+        setPickerMode('time');
+      } else if (pickerMode === 'time') {
+        setPickerMode('date');
+        setIsPickerShow(false);
+      }
     }
   };
 
@@ -179,7 +185,7 @@ function GobbleSelect(props, {navigation}) {
                         {isPickerShow && (
                             <DateTimePicker
                             value={date}
-                            mode={'datetime'}
+                            mode={pickerMode}
                             display={Platform.OS === 'ios' ? 'spinner' : 'default'}
                             is24Hour={true}
                             onChange={onChange}
