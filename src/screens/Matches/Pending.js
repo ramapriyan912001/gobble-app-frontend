@@ -84,13 +84,12 @@ import {styles} from '../../styles/RegisterStyles';
                               }}>
                             <ListItem.Subtitle style={{color: 'green'}}>{`Accept`}</ListItem.Subtitle>
                             </TouchableOpacity>}
-                            
                             {!matchIDs[item.matchID] &&
                             <TouchableOpacity onPress={() => {
                               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                               let replacementSelectedID = Math.random();
                               console.log('Declined')
-                              firebaseSvc.matchDecline(item)
+                              firebaseSvc.matchConfirm(item)
                               setSelectedID(replacementSelectedID) 
                             }}>
                             <ListItem.Subtitle style={{color: 'red'}}>{`Decline`}</ListItem.Subtitle>
@@ -155,7 +154,6 @@ import {styles} from '../../styles/RegisterStyles';
                             .once("value")
                             .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
                             .catch(err => console.log('Error Loading Avatar:',err.message));
-                      console.log(details);
                     newData = newData.concat(details);
                   }
                   newData.sort(function (a, b) {

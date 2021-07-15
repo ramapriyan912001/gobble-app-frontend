@@ -430,7 +430,6 @@ class FirebaseSvc {
   async makeReport(otherUserId, complaint, datetime) {
     let updates = {}
     let minimumReportAdmin = await this.getMinimumReportAdmin();
-    console.log(minimumReportAdmin)
     let numComplaints = await this.getNumberOfComplaints(otherUserId);
     let dateJoined = await this.getDateJoined(otherUserId)
     let key = await firebase.database().ref().push().key
@@ -638,7 +637,6 @@ class FirebaseSvc {
    * @returns 
    */
   getDatetime(request) {
-    console.log(request)
     return new Date(request['datetime'])
   }
 
@@ -667,81 +665,16 @@ class FirebaseSvc {
    * @returns  Boolean depending on match found
    */
   async findGobbleMate(request) {
-    console.log('Finding a match');
-    console.log(request)
-    let date1 = this.getDatetime(request)
-    let ref = this.gobbleRequestsRef()
-    .child(this.makeDateString(date1))
-    //TODO: Stop users from entering matches with same datetime
-    let tempRef;
-    let coords1 = this.getCoords(request)
-    let distance1 = this.getDistance(request)
-    let time1 = this.convertTimeToMinutes(date1)
-    let bestMatch = null;
-    let bestMatchCompatibility = 5;
-    let dietaryRef;
-    let counter = 0;
-    let dietaryOptionsArray = DIETARY_ARRAYS[`${request.dietaryRestriction}`]
-    let requestRef2;
-    let result = false;
-    // IF THE USER IS ANY, WE NEED TO SEARCH ALL THE PENDING REQUESTS
-    for(;counter < dietaryOptionsArray.length; counter++) {
-      const dietaryOption = dietaryOptionsArray[counter];
-      console.log('looking through ' + dietaryOption);
-      tempRef = ref.child(`${dietaryOption}`);
-      await tempRef.once("value").then(async(snapshot) => {//values in same day under dietaryOption
-        let iterator, child;
-        let time2, coords2, distance2, date2;
-        let children = snapshot.val()
-        let compatibility
-        for(iterator in children) {//iterate through these values
-          child = children[iterator]
-          coords2 = this.getCoords(child)
-          distance2 = this.getDistance(child)
-          date2 = this.getDatetime(child)
-          time2 = this.convertTimeToMinutes(date2)
-          let isBlocked1 = await this.isBlocked(request.userId, child.userId)
-          let isBlocked2 = await this.isBlocked(child.userId, request.userId)
-          let isBlocked = isBlocked1 || isBlocked2
-          if(!this.isWithinRange(coords1, distance1, coords2, distance2) || 
-          !this.isWithinTime(time1, time2) || isBlocked ||
-          request.userId === child.userId) {
-            console.log('out of range/time/same user/blocked');
-            continue;
-          }
-          compatibility = await this.measureCompatibility(request, child) + this.measureCompatibility(child, request)
-          console.log(compatibility, 'compatiblity');
-          if (compatibility >= this.getThreshold()) {//for now threshold is 18 arbitrarily
-            console.log('greater than threshold');
-            await this.match(request, null, child, iterator)
-            result = true;
-            console.log("EARLY TERMINATION")
-            break;
-          } else if (compatibility > bestMatchCompatibility) {
-            console.log('new best compatibility');
-            bestMatchCompatibility = compatibility
-            bestMatch = child;
-            dietaryRef = iterator; 
-          }
-        }
-      })
-      if(result) {
-        return true;
-      }
+    try {
+      const findGobbleMateFunction = await firebase.functions().httpsCallable('findGobbleMate')
+      console.log("err")
+      let response = await findGobbleMateFunction({request: request})
+      console.log('response', response)
+      return response.data.found;
+    } catch(err) {
+      console.log('FindGobbleMate Error ' + err.message)
     }
-    if (counter === dietaryOptionsArray.length) {
-        if (bestMatch != null) {
-          console.log("AT THE END OF LOOP")
-          this.match(request, null, bestMatch, dietaryRef)
-          return true;
-        } else {
-          console.log('No match found! Creating new entry');
-          this.makeGobbleRequest(ref, request, date1)
-          return false;
-        }
-    }
-}
-
+  }
   /**
    * Getter for user details
    * @param {*} id user id
@@ -750,23 +683,6 @@ class FirebaseSvc {
   async getUserDetails(id) {
     return this.getUserCollection(id, snapshot => snapshot.val(), err => console.log(err))
   }
-
-  /**
- * Function called when match is not instantly found
- * Pending match ID generated and added to the pile
- * @param {*} ref Reference of date object within GobbleRequests object
- * @param {*} request Request sent by user searching for gobble
- * @param {*} date Date object of request
- */
-makeGobbleRequest(ref, request, date) {
-  const matchID = ref.child(`${request.dietaryRestriction}`).push().key;
-  let updates = {};
-  updates[`/Users/${request.userId}/awaitingMatchIDs/${matchID}`] = {...request, matchID: matchID};
-  updates[`/GobbleRequests/${this.makeDateString(date)}/${request.dietaryRestriction}/${matchID}`] = {...request, matchID: matchID};
-  updates[`/UserRequests/${this.uid}/${matchID}`] = request.datetime;
-  // Add more updates here
-  firebase.database().ref().update(updates);
-}
 
   /**
    * Handling database operations when two users match
@@ -794,7 +710,6 @@ makeGobbleRequest(ref, request, date) {
     //Remove Respective Pending Matches
     // updates[`/Users/${request2.userId}/awaitingMatchIDs/${request1Ref}`] = null;
     updates[`/Users/${request2.userId}/awaitingMatchIDs/${request2Ref}`] = null;
-    console.log(request2Ref)
     updates[`/UserRequests/${request2.userId}/${request2Ref}`] = null;
     updates[`/UserRequests/${request1.userId}/${pendingMatchID}`] = request1.datetime;
     updates[`/UserRequests/${request2.userId}/${pendingMatchID}`] = request2.datetime;
@@ -815,26 +730,12 @@ makeGobbleRequest(ref, request, date) {
   }
 
   async matchConfirm(request) {
-    let result = await firebase.database().ref(`/PendingMatchIDs/${request.matchID}/${request.otherUserId}`)
-    .once("value")
-    .then(snapshot => snapshot.val())
-    .catch(err => {
-      console.log(err.message);
-      return {};
-    });
-    if(result) {
-      return this.matchFinalise(request);
-    } else {
-      let updates = {}
-      updates[`/PendingMatchIDs/${request.matchID}/${request.userId}`] = true;
-      try{
-        // console.log('Updates',updates);
-        await firebase.database().ref().update(updates);
-        return CONFIRM_SUCCESS
-      } catch(err) {
-        console.log('Match Confirm Error:', err.message);
-        return CONFIRM_FAIL
-      }
+    try {
+      const matchConfirmFunction = await firebase.functions().httpsCallable('matchConfirm')
+      let response = matchConfirmFunction({request: request})
+      return response.data.message;
+    } catch(e) {
+      return CONFIRM_FAIL
     }
   }
 
@@ -847,8 +748,7 @@ makeGobbleRequest(ref, request, date) {
       .then(async idToken => {
         const matchDeclineFunction = await firebase.functions().httpsCallable('matchDecline')
         let response = await matchDeclineFunction({request: request, idToken: idToken})
-        console.log(response)
-        return response;
+        return response.data.message;
       })
     } catch(e) {
       console.log('Match Confirm Error:', err.message);
@@ -870,22 +770,18 @@ makeGobbleRequest(ref, request, date) {
   }
 
   async matchUnaccept(request) {
-      let updates = {}
-      updates[`/PendingMatchIDs/${request.matchID}/${request.userId}`] = false;
-      try{
-        // console.log('Updates',updates);
-        await firebase.database().ref().update(updates);
-        return UNACCEPT_SUCCESS
-      } catch(err) {
-        console.log('Match Confirm Error:', err.message);
-        return UNACCEPT_FAIL
-      }
+    try{
+      const matchUnacceptFunction = await firebase.functions().httpsCallable('matchUnaccept')
+      let response = await matchUnacceptFunction({request: request})
+      return response.data.message;
+    } catch(e) {
+      console.log('Match Unaccept Error:', err.message);
+      return UNACCEPT_FAIL;
+    }
   }
 
   async matchFinalise(request) {
     let updates = {};
-    let request2UserDetails = await this.getUserDetails(request.otherUserId)
-    let request1UserDetails = await this.getUserDetails(request.userId)
     let otherUserRequest = await firebase.database().ref(`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`)
     .once("value")
     .then(snapshot => snapshot.val())
@@ -898,7 +794,6 @@ makeGobbleRequest(ref, request, date) {
     updates[`/Users/${request.otherUserId}/pendingMatchIDs/${request.matchID}`] = null
 
     updates = await this.linkChats(updates, request, otherUserRequest);
-
 
     try{
       // console.log('Updates',updates);

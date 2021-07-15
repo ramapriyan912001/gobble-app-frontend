@@ -123,7 +123,7 @@ function Awaiting (props, {navigation}) {
                               {
                                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                 let replacementSelectedID = Math.random()
-                                firebaseSvc.deleteAwaitingRequest(item);
+                                await firebaseSvc.deleteAwaitingRequest(item);
                                 setSelectedID(replacementSelectedID)
                                 console.log('Delete awaiting')
                               }}>

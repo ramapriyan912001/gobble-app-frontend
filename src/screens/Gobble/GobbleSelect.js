@@ -38,9 +38,7 @@ function GobbleSelect(props, {navigation}) {
 
   function calculateDefaultTime(date) {
       if(props.route.params && edit) {
-          console.log(props.route.params.request.datetime, 'this');
           const unformattedDate = props.route.params.request.datetime;
-
         const date = new Date(unformattedDate);
         return date;
       } else {

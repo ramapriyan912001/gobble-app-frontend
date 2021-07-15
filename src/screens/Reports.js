@@ -39,7 +39,6 @@ function Reports (props, {navigation}) {
             .getReports(
               snapshot => {
                 let ids = snapshot.val();
-                console.log(ids)
                 if (ids == null) {
                   setData([])
                   setReportIDs({})

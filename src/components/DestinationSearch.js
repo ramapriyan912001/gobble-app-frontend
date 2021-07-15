@@ -47,8 +47,6 @@ export default function DestinationSearch(props) {
           onPress={(data, details=null) => {
             // 'details' is provided when fetchDetails = true
             setLocation({data, details})
-            console.log(data.description)
-            console.log(details.geometry.location)
             let request = props.route.params.request;
             request['location'] = {'coords': {'latitude': details.geometry.location['lat'], 'longitude': details.geometry.location['lng']}}
             const nav = 'Confirm Request'

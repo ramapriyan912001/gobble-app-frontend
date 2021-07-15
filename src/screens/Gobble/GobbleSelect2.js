@@ -34,10 +34,8 @@ export default function GobbleSelect2(props) {
         await firebaseSvc.deleteAwaitingRequest(props.route.params.oldRequest)
       }
       let response =  await firebaseSvc.findGobbleMate(request);
-      const result = response.data.success;
-      console.log(response.data.message);
       // We need to do some load page
-      props.navigation.navigate('BottomTabs', { screen: 'GobbleNavigator', params: { screen: 'GobbleConfirm', params: {result: result}} })
+      props.navigation.navigate('BottomTabs', { screen: 'GobbleNavigator', params: { screen: 'GobbleConfirm', params: {result: response}} })
   }
 
     return (
@@ -56,7 +54,6 @@ export default function GobbleSelect2(props) {
               style={[themes.buttonTheme(isLight), styles.longButton]}
               onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-              console.log(props.route.params.request)
               let request = props.route.params.request
               submitGobble(request);
             }}>
