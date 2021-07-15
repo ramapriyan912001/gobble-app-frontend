@@ -732,9 +732,10 @@ class FirebaseSvc {
   async matchConfirm(request) {
     try {
       const matchConfirmFunction = await firebase.functions().httpsCallable('matchConfirm')
-      let response = matchConfirmFunction({request: request})
+      let response = await matchConfirmFunction({request: request})
       return response.data.message;
     } catch(e) {
+      console.log(e)
       return CONFIRM_FAIL
     }
   }

@@ -15,6 +15,7 @@ import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
 import themes from '../../styles/Themes';
 import {styles} from '../../styles/RegisterStyles';
+import { Alert } from 'react-native'
 
 /**
  * Page to Show previous Matches
@@ -61,6 +62,7 @@ import {styles} from '../../styles/RegisterStyles';
                                   case(FINAL_SUCCESS):
                                   // Logic for modal popping up
                                   setSelectedID(replacementSelectedID)
+                                  Alert.alert('Yay! Your Gobble is set!', 'Happy Gobbling!')
                                   props.navigation.navigate('Matched')
                                   break;
 
@@ -70,12 +72,14 @@ import {styles} from '../../styles/RegisterStyles';
                                   break;
 
                                   case(FINAL_FAIL):
+                                  Alert.alert('Unfortunately, there was an issue.', 'Your match has been cancelled.')
                                   await firebaseSvc.matchDecline(item)
                                   // logic for modal informing of inability to match and deletion
                                   setSelectedID(replacementSelectedID)
                                   break;
 
                                   case(CONFIRM_FAIL):
+                                  Alert.alert('Unfortunately, there was an issue.', 'Your match has been cancelled.')
                                   await firebaseSvc.matchDecline(item)
                                   // logic for modal informing of inability to match and deletion
                                   setSelectedID(replacementSelectedID)
@@ -88,8 +92,8 @@ import {styles} from '../../styles/RegisterStyles';
                             <TouchableOpacity onPress={() => {
                               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                               let replacementSelectedID = Math.random();
-                              console.log('Declined')
-                              firebaseSvc.matchConfirm(item)
+                              console.log('Confirmed')
+                              firebaseSvc.matchDecline(item)
                               setSelectedID(replacementSelectedID) 
                             }}>
                             <ListItem.Subtitle style={{color: 'red'}}>{`Decline`}</ListItem.Subtitle>
