@@ -351,12 +351,27 @@ class FirebaseSvc {
                     }
                   }
 
+  isAuthAdmin = () => {
+    return this
+            .currentUser()
+            .getIdTokenResult()
+            .then(idTokenResult => (!!idTokenResult.claims.admin))
+            .catch(err => {
+              console.log(err.message);
+              return false;
+            });
+  };
+
   isAdmin = () => {
-    return firebase
-    .database()
-    .ref(`ReportCount/${this.uid}`)
-    .once("value")
-    .then(snapshot => snapshot.exists());
+    return (
+      this.isAuthAdmin()  
+      )||(
+      firebase
+      .database()
+      .ref(`ReportCount/${this.uid}`)
+      .once("value")
+      .then(snapshot => snapshot.exists())
+    );
   }
 
   getReports = (success, callback, failure) => 
@@ -502,13 +517,13 @@ class FirebaseSvc {
   }
 
   // The parse method take the snapshot data and construct a message:
-  parseMessage = snapshot => {
-    const message = snapshot.val();
-    const { timestamp, text, user } = snapshot.val();
-    const { key: _id } = snapshot;
-    const parsedMessage = {_id, timestamp, text, user};
-    return parsedMessage;
-  };
+  // parseMessage = snapshot => {
+  //   const message = snapshot.val();
+  //   const { timestamp, text, user } = snapshot.val();
+  //   const { key: _id } = snapshot;
+  //   const parsedMessage = {_id, timestamp, text, user};
+  //   return parsedMessage;
+  // };
 
   parseStoredMessage = snapshot => {
     const messageArray = snapshot.val();
@@ -558,6 +573,27 @@ class FirebaseSvc {
     // this.userRef(`/${this.uid}/matchIDs/${id}/lastMessage`).set(lastSentMessage);
     this.chatsRef(`/${this.uid}/${otherUserID}/metadata/lastMessage`).set(lastSentMessage.text);
     this.chatsRef(`/${otherUserID}/${this.uid}/metadata/lastMessage`).set(lastSentMessage.text);
+
+    //Send a Notification to the Other User
+    this.currentUser().getIdToken(true)
+    .then(idToken => {
+      firebase
+      .functions()
+      .httpsCallable('sendMessageNotif')({
+        otherUserID: otherUserID,
+        text: lastSentMessage.text, 
+        idToken: idToken})
+      .then(response => {
+        console.log(response);
+        if (!response.data.success) {
+          console.log('Last Message not delivered');
+        }
+      })
+      .catch(err => {
+        console.log(`Message Notif Error: ${err.message}`);
+      });
+    })
+    .catch(err => console.log('Message Get ID Token Error: ', err.message));
   };
   
   /**

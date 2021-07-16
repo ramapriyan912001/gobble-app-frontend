@@ -17,7 +17,7 @@ export default function DestinationSearch(props) {
 
     useEffect(() => {
       if(location) {
-        console.log("redirect to result")
+        console.log("redirect to result");
       }
     }, [location])
     return (
