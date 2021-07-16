@@ -715,7 +715,7 @@ class FirebaseSvc {
     let updates = {};
     updates[`/Users/${request.userId}/awaitingMatchIDs/${request.matchID}`] = null;
     let dateString = this.makeDateString(this.getDatetime(request))
-    let dateTimeString = await this.makeDateTimeString(this.getDatetime(request))
+    let dateTimeString = await this.makeDateTimeString(new Date(this.getDatetime(request).toUTCString().slice(0, -4)))
     updates[`/GobbleRequests/${dateString}/${request.dietaryRestriction}/${request.matchID}`] = null;
     updates[`/AwaitingPile/${dateTimeString}/${request.matchID}`] = null;
     updates[`/UserRequests/${request.userId}/${request.matchID}`] = null
