@@ -32,9 +32,9 @@ export default function DeleteAccount(props) {
                 <TouchableOpacity style={buttonStyles.loginButton}
                     onPress={() => {
                         //TODO: Verify if the below function is functional
-                        // firebaseSvc.deleteUser();
+                        firebaseSvc.deleteUser();
                         Alert.alert('Your account has been deleted', 'You will be logged out of the app now.')
-                        // props.navigation.navigate('Welcome')
+                        props.navigation.navigate('Welcome')
                     }}>
                     <Text style={buttonStyles.loginButtonText}>
                         Delete Account

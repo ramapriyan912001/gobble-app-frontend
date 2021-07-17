@@ -7,7 +7,7 @@ import {DIETARY_ARRAYS} from '../constants/objects'
 import {firebaseDetails} from '../../FirebaseDetails'
 import {CONFIRM_SUCCESS, CONFIRM_FAIL, FINAL_SUCCESS, 
   FINAL_FAIL, UNACCEPT_SUCCESS, UNACCEPT_FAIL, BLOCK_SUCCESS, 
-  BLOCK_FAILURE, UNBLOCK_SUCCESS, UNBLOCK_FAILURE} from '../constants/results'
+  BLOCK_FAILURE, UNBLOCK_SUCCESS, UNBLOCK_FAILURE, DELETE_REQUEST_SUCCESS, DELETE_REQUEST_FAILURE, MAKE_REPORT_FAILURE, DELETE_ACCOUNT_FAILURE} from '../constants/results'
 
 /**
  * Class which operates as a database object, whose functions are
@@ -67,69 +67,43 @@ class FirebaseSvc {
    * Used as a delete functionality.
    */
   deleteUser() {
-    if(this.userExists()) {
-      let updates = {}
-        updates[`/Avatars/${this.uid}`] = null
-        updates[`/Industry/${this.uid}`] = null
-        updates[`/Users/${this.uid}`] = null
-        updates[`ComplaintHistory/${this.uid}`] = null
-        updates[`ComplaintCount/${this.uid}`] = null
-        if(this.isAdmin()) {
-          updates[`ReportCount/${this.uid}`] = null
-        }
-        // Need to delete any awaiting requests he has or
-        // set a this.userExists() condition in the matching
-        // function
-      firebase.database().update(updates)
-      this
-      .currentUser()
-      .delete()
-      .catch(err => console.log('delete user ' + err))
+    try {
+      return firebase
+      .auth()
+      .currentUser
+      .getIdToken(true)
+      .then(async idToken => {
+        const deleteAccountFunction = await firebase.functions().httpsCallable('deleteAccount')
+        let response = await deleteAccountFunction({uid: this.uid, idToken: idToken})
+        console.log(response.data.message)
+        return response.data.success;
+      })
+    } catch(err) {
+      console.log('Delete User Error:', err.message);
+      return false;
     }
   }
 
   addPushToken(pushToken) {
-    this
-    .currentUser()
-    .getIdToken(true)
-    .then(async idToken => {
-      console.log("before func initial")
-      const addPushTokenFunction = await firebase.functions().httpsCallable(`addPushTokenToDatabase`);
-      console.log("after func initialisation")
-      await addPushTokenFunction({idToken: idToken, pushToken: pushToken})
-      .then(res => console.log(res.data.success, res.data.message)).catch(err =>{
-        console.log(err);
-        console.log('damnnnn')
-      }
-      );
-    }).catch(err => {
-      console.log("error!!")
-      console.log(err)
-    })
+    try {
+      return firebase
+      .auth()
+      .currentUser
+      .getIdToken(true)
+      .then(async idToken => {
+        const addPushTokenFunction = await firebase.functions().httpsCallable('addPushTokenToDatabase')
+        let response = await addPushTokenFunction({pushToken: pushToken, idToken: idToken})
+        return response.data.success;
+      })
+    } catch(err) {
+      console.log('Add PushToken Error:', err.message);
+      return false;
+    }
   }
 
-
-  // deleteAnotherUser(otherUserId) {
-  //   try {
-  //     if(this.isAdmin()) {
-  //       let updates = {}
-  //       updates[`/Users/${otherUserId}`] = null;
-  //       updates[`/Avatars/${otherUserId}`] = null;
-  //       updates[`/Industry/${otherUserId}`] = null;
-  //       return firebase.database().update(updates);
-  //     } 
-  //   } catch(err) {
-  //     console.log("delete another user " + err);
-  //   }
-  // }
   async adminDeleteAnotherUser(otherUserId) {
     try {
-      if(this.isAdmin()) {
-        // let updates = {}
-        // updates[`/Avatars/${otherUserId}`] = null;
-        // updates[`/Industry/${otherUserId}`] = null;
-        // firebase.database().update(updates);
-        
+      if(this.isAdmin()) {  
         return this.currentUser().getIdToken(/* forceRefresh */ true).then(function(idToken) {
           console.log('Token: ', idToken);
           // Send token to your backend via HTTPS
@@ -266,13 +240,6 @@ class FirebaseSvc {
     } else {
       console.log('No User Logged In');
     }
-    // Scalable multiple update method
-    //
-    // const newUserKey = firebase.database().ref().child('Users/').key;
-    // let updates = {};
-    // updates['/Users/'+ uid + '/' + newUserKey] = userProfile;
-    // // Add more updates here
-    // return firebase.database().ref().update(updates);
   }
 
   getCurrentUserCollection = (success, failure) => this.userExists()
@@ -410,76 +377,38 @@ class FirebaseSvc {
                 }
   }
 
-  async getMinimumReportAdmin(otherUserId) {
-    let admins;
-    let sortedAdmins = [];
-    let involvedParties = [this.uid, otherUserId]
-    await firebase.database()
-    .ref('ReportCount')
-    .once("value", (snapshot) => {
-      admins = snapshot.val()
-    });
-    let minimumReportAdmin = ['', 2000000];
-    for (let admin in admins) {
-      if(admins[admin] < minimumReportAdmin[1] && !involvedParties.includes(admin)) {
-        minimumReportAdmin = [admin, admins[admin]];
-      }
-    }
-    return minimumReportAdmin;
-  }
-
-  async getNumberOfComplaints(otherUserId) {
-    let res; 
-    await firebase.database().ref(`ComplaintCount/${otherUserId}`)
-    .once("value", snapshot => snapshot.val() ? res = snapshot.val() : res = 0)
-    return res;
-  }
-
-  async getDateJoined(otherUserId) {
-    let res;
-    await firebase.database().ref(`Users/${otherUserId}/dateJoined`)
-    .once("value").then(snapshot => res = snapshot.val()).catch(err => console.log(err))
-    return res;
-  }
-
   async makeReport(otherUserId, complaint, datetime) {
-    let updates = {}
-    let minimumReportAdmin = await this.getMinimumReportAdmin();
-    let numComplaints = await this.getNumberOfComplaints(otherUserId);
-    let dateJoined = await this.getDateJoined(otherUserId)
-    let key = await firebase.database().ref().push().key
-
-    updates[`/Reports/${minimumReportAdmin[0]}/${key}`] = {complaint: complaint, datetime: datetime, plaintiff: this.uid, defendant: otherUserId, dateJoined: dateJoined, complaintCount: numComplaints+1}
-    updates[`/ReportCount/${minimumReportAdmin[0]}`] = minimumReportAdmin[1]+1;
-    updates[`/ComplaintCount/${otherUserId}`] = numComplaints+1;
-    updates[`/ComplaintHistory/${otherUserId}/${key}`] = {complaint: complaint, datetime: datetime, plaintiff: this.uid, defendant: otherUserId}
-
     try {
-      return firebase.database().ref().update(updates)
+      return firebase
+      .auth()
+      .currentUser
+      .getIdToken(true)
+      .then(async idToken => {
+        const makeReportFunction = await firebase.functions().httpsCallable('makeReport')
+        let response = await makeReportFunction({otherUserId: otherUserId, complaint: complaint, 
+          datetime: datetime, idToken: idToken})
+        return response.data.message;
+      })
     } catch(err) {
-      console.log("makeReport error: " + err)
+      console.log('Make Report Error:', err.message);
+      return MAKE_REPORT_FAILURE;
     }
-  }
-
-  async getNumberOfReports() {
-    let res;
-    await firebase.database().ref(`/ReportCount/${this.uid}`)
-    .once('value', snapshot => {
-      res = snapshot.val()
-    })
-    return res;
   }
 
   async deleteReport(reportID) {
-    let updates = {}
-    let numReports = await this.getNumberOfReports()
-    let x = numReports-1;
-    updates[`/Reports/${this.uid}/${reportID}`] = null;
-    updates[`/ReportCount/${this.uid}`] = x;
     try {
-      await firebase.database().ref().update(updates);
+      return firebase
+      .auth()
+      .currentUser
+      .getIdToken(true)
+      .then(async idToken => {
+        const deleteReportFunction = await firebase.functions().httpsCallable('makeReport')
+        let response = await deleteReportFunction({reportID: reportID, idToken: idToken})
+        return response.data.message;
+      })
     } catch(err) {
-      console.log("delete report error " + err);
+      console.log('Delete Report Error:', err.message);
+      return DELETE_REPORT_FAILURE;
     }
   }
 
@@ -661,11 +590,17 @@ class FirebaseSvc {
    */
   async findGobbleMate(request) {
     try {
-      const findGobbleMateFunction = await firebase.functions().httpsCallable('findGobbleMate')
-      console.log("err")
-      let response = await findGobbleMateFunction({request: request})
-      console.log('response', response)
-      return response.data.found;
+      return firebase
+      .auth()
+      .currentUser
+      .getIdToken(true)
+      .then(async idToken => {
+        const findGobbleMateFunction = await firebase.functions().httpsCallable('findGobbleMate')
+        console.log("err")
+        let response = await findGobbleMateFunction({request: request, idToken: idToken})
+        console.log('response', response)
+        return response.data.found;
+      })
     } catch(err) {
       console.log('FindGobbleMate Error ' + err.message)
     }
@@ -681,9 +616,15 @@ class FirebaseSvc {
 
   async matchConfirm(request) {
     try {
-      const matchConfirmFunction = await firebase.functions().httpsCallable('matchConfirm')
-      let response = await matchConfirmFunction({request: request})
-      return response.data.message;
+      return firebase
+      .auth()
+      .currentUser
+      .getIdToken(true)
+      .then(async idToken => {
+        const matchConfirmFunction = await firebase.functions().httpsCallable('matchConfirm')
+        let response = await matchConfirmFunction({request: request, idToken: idToken})
+        return response.data.message;
+      })
     } catch(e) {
       console.log(e)
       return CONFIRM_FAIL
@@ -701,17 +642,23 @@ class FirebaseSvc {
         let response = await matchDeclineFunction({request: request, idToken: idToken})
         return response.data.message;
       })
-    } catch(e) {
-      console.log('Match Confirm Error:', err.message);
+    } catch(err) {
+      console.log('Match Decline Error:', err.message);
     }
   }
 
   async matchUnaccept(request) {
     try{
-      const matchUnacceptFunction = await firebase.functions().httpsCallable('matchUnaccept')
-      let response = await matchUnacceptFunction({request: request})
-      return response.data.message;
-    } catch(e) {
+      return firebase
+      .auth()
+      .currentUser
+      .getIdToken(true)
+      .then(async idToken => {
+        const matchUnacceptFunction = await firebase.functions().httpsCallable('matchUnaccept')
+        let response = await matchUnacceptFunction({request: request, idToken: idToken})
+        return response.data.message;
+      })
+    } catch(err) {
       console.log('Match Unaccept Error:', err.message);
       return UNACCEPT_FAIL;
     }
@@ -748,18 +695,20 @@ class FirebaseSvc {
   }
 
   async deleteAwaitingRequest(request) {
-    let updates = {};
-    updates[`/Users/${request.userId}/awaitingMatchIDs/${request.matchID}`] = null;
-    let dateString = this.makeDateString(this.getDatetime(request))
-    let dateTimeString = await this.makeDateTimeString(new Date(this.getDatetime(request).toUTCString().slice(0, -4)))
-    updates[`/GobbleRequests/${dateString}/${request.dietaryRestriction}/${request.matchID}`] = null;
-    updates[`/AwaitingPile/${dateTimeString}/${request.matchID}`] = null;
-    updates[`/UserRequests/${request.userId}/${request.matchID}`] = null
-    // Add more updates here
     try {
-      await firebase.database().ref().update(updates);
+      return firebase
+      .auth()
+      .currentUser
+      .getIdToken(true)
+      .then(async idToken => {
+        const deleteAwaitingRequestFunction = await firebase.functions().httpsCallable('deleteAwaitingRequest')
+        let response = await deleteAwaitingRequestFunction({request: request, idToken: idToken})
+        console.log(response)
+        return response.data.message;
+      })
     } catch(err) {
-      console.log('Delete Awaiting Request Error: ' + err)
+      console.log('Match Confirm Error:', err.message);
+      return DELETE_REQUEST_FAILURE
     }
   }
 
@@ -767,78 +716,37 @@ class FirebaseSvc {
     return new Date(request['datetime'])
   }
 
-  removeBlockedUserPendingMatches(otherUid, pendingMatches) {
-    let updates = {}
-    for(let [key, value] of Object.entries(pendingMatches)) {
-      let id = value['otherUserId']
-      if(id == otherUid) {
-        delete pendingMatches[key]
-        console.log(key)
-        updates[`/PendingMatchIDs/${this.makeDateTimeString(this.getPendingTime(value))}/${key}`] = null;
-        updates[`/Users/${otherUid}/pendingMatchIDs/${key}`] = null
-        updates[`/UserRequests/${this.uid}/${key}`] = null
-        updates[`/UserRequests/${otherUid}/${key}`] = null
-      }
-    }
-    updates[`/Users/${this.uid}/pendingMatchIDs`] = pendingMatches
-    firebase.database().ref().update(updates)
-  }      
-  
-  removeBlockedUserMatches(otherUid, matches) {
-    let updates = {}
-    for(let [key, value] of Object.entries(matches)) {
-      let id = value['otherUserId']
-      if(id == otherUid) {
-        delete matches[key]
-        updates[`/Users/${otherUid}/matchIDs/${key}`] = null
-        updates[`/UserRequests/${this.uid}/${key}`] = null
-        updates[`/UserRequests/${otherUid}/${key}`] = null
-      }
-    }
-    updates[`/Users/${this.uid}/matchIDs`] = matches
-    firebase.database().ref().update(updates)
-  }
-
   blockUser(otherUid, otherUserNameAndAvatar) {
-    let updates = {}
-    return firebase.database().ref(`Users/${this.uid}/pendingMatchIDs`)
-    .once("value")
-    .then(snapshot => {
-      if(snapshot.val()) {
-        this.removeBlockedUserPendingMatches(otherUid, snapshot.val())
-      }
-      firebase.database().ref(`Users/${this.uid}/matchIDs`)
-        .once("value")
-        .then(subsnap => {
-          if(subsnap.val()) {
-            this.removeBlockedUserMatches(otherUid, subsnap.val())
-          }
-        })
-        updates[`/Users/${this.uid}/blockedUsers/${otherUid}`] = otherUserNameAndAvatar;
-        updates[`/Chats/${this.uid}/${otherUid}`] = null
-        updates[`/Chats/${otherUid}/${this.uid}`] = null
-        try {
-          updates;
-          firebase.database().ref().update(updates)
-          return BLOCK_SUCCESS
-        } catch(err) {
-          console.log("Block user error: " + err)
-          return BLOCK_FAILURE
-        }
-      }
-    )
-    // Deleting the chat and conversation + metadata
+    try {
+      return firebase
+      .auth()
+      .currentUser
+      .getIdToken(true)
+      .then(async idToken => {
+        const blockUserFunction = await firebase.functions().httpsCallable('blockUser')
+        let response = await blockUserFunction({otherUid: otherUid, idToken: idToken, otherUserNameAndAvatar: otherUserNameAndAvatar})
+        return response.data.message;
+      })
+    } catch(err) {
+      console.log('Block User Error:', err.message);
+      return BLOCK_FAILURE;
+    }
   }
 
   async unblockUser(otherUid) {
-    let updates = {}
-    updates[`/Users/${this.uid}/blockedUsers/${otherUid}`] = null;
     try {
-      await firebase.database().ref().update(updates)
-      return UNBLOCK_SUCCESS
+      return firebase
+      .auth()
+      .currentUser
+      .getIdToken(true)
+      .then(async idToken => {
+        const unblockUserFunction = await firebase.functions().httpsCallable('unblockUser')
+        let response = await unblockUserFunction({otherUid: otherUid, idToken: idToken})
+        return response.data.message;
+      })
     } catch(err) {
-      console.log("Block user error: " + err)
-      return UNBLOCK_FAILURE
+      console.log('Unblock User Error:', err.message);
+      return UNBLOCK_FAILURE;
     }
   }
 

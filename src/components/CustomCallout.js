@@ -4,6 +4,7 @@ import { API } from '../api'
 import { EMPTY_AVATAR } from '../constants/objects';
 import { Avatar } from 'react-native-elements';
 import { Rating } from 'react-native-ratings';
+import { API_KEY } from '../../keys';
 
 export default function CustomCallout({restaurant}) {
 
@@ -12,7 +13,6 @@ export default function CustomCallout({restaurant}) {
     async function loadDataAsync() {
         let queryString = 'https://maps.googleapis.com/maps/api/place/photo?'
         let photo_reference = restaurant.photo_reference
-        let API_KEY = 'AIzaSyC6h4poHiCJzIWZGNZ5JThvwpTjk0q7eWo'
         queryString = queryString + `maxheight=200&photoreference=${photo_reference}&key=${API_KEY}`
         let temp = await API.get(queryString)
         setData(temp.request.responseURL)

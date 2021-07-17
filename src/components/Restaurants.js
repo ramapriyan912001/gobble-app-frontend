@@ -9,6 +9,7 @@ import { fetchAuthUser, fetchUserData } from '../redux/actions/actions'
 import { Avatar, ListItem, SearchBar } from 'react-native-elements'
 import { API } from '../api'
 import CustomCallout from './CustomCallout'
+import { API_KEY } from '../../keys'
 
 function Restaurants(props) {
 
@@ -47,7 +48,6 @@ function Restaurants(props) {
         let restaurants;
         if(restaurantList.length == 0) {
             let queryString = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?'
-            let API_KEY = 'AIzaSyC6h4poHiCJzIWZGNZ5JThvwpTjk0q7eWo'
             queryString = queryString + `location=${myLocation.lat},${myLocation.lng}&`
             queryString = queryString + `radius=${Math.min(15000, (match.distance+1)*1000)}&`
             queryString = queryString + `keyword=food+restaurant&`
