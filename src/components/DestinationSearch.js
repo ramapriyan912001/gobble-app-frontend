@@ -61,8 +61,8 @@ export default function DestinationSearch(props) {
         placeholder='Type in your address'
         enablePoweredByContainer={false}
         suppressDefaultStyles
-        currentLocation={true}
-        currentLocationLabel='Current location'
+        currentLocation={false}
+        // currentLocationLabel='Current location'
         fetchDetails
         renderRow={(data) => {
           const title = data.description;
