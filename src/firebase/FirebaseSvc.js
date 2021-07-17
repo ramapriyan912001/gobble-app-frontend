@@ -377,15 +377,6 @@ class FirebaseSvc {
                 }
   }
 
-  getBlockedUsers = (success, callback, failure) => this.userExists()
-                                      ? firebase.database().ref(`Users/${this.uid}/blockedUsers`)
-                                        .on('value', (x) => callback(success(x)))
-                                      : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
-
-  blockedUsersOff() {
-    firebase.database().ref(`Users/${this.uid}`).off();
-  }
-
   async makeReport(otherUserId, complaint, datetime) {
     try {
       return firebase
@@ -723,6 +714,15 @@ class FirebaseSvc {
 
   getPendingTime(request) {
     return new Date(request['datetime'])
+  }
+
+  getBlockedUsers = (success, callback, failure) => this.userExists()
+                                      ? firebase.database().ref(`Users/${this.uid}/blockedUsers`)
+                                        .on('value', (x) => callback(success(x)))
+                                      : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+
+  blockedUsersOff() {
+    firebase.database().ref(`Users/${this.uid}`).off();
   }
 
   blockUser(otherUid, otherUserNameAndAvatar) {
