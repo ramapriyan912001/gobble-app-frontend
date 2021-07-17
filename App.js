@@ -19,6 +19,7 @@ import MakeReport from './src/screens/MakeReport';
 import { LogBox } from 'react-native';
 
 LogBox.ignoreLogs(['Setting a timer']);
+LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified.']);
 
 
 export default function AppWrapper() {
