@@ -16,6 +16,8 @@ import { useColorScheme } from 'react-native-appearance';
 import themes from '../../styles/Themes';
 import {styles} from '../../styles/RegisterStyles';
 import { Alert } from 'react-native'
+import Loader from 'react-native-three-dots-loader'
+import Animated from 'react-native-reanimated'
 
 /**
  * Page to Show previous Matches
@@ -27,12 +29,17 @@ import { Alert } from 'react-native'
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
     const [selectedID, setSelectedID] = useState(null);
+    const [loadingStates, setLoadingStates] = useState({})
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
 
     function renderPendingContent(item, index) {
       const dateStringMaker = (date) => {
           return date.slice(0, 10)
+      }
+      function getState(item) {
+        let id = item['matchID']
+        return loadingStates[id]
       }
       const timeStringMaker = (date) => {
           return date.slice(16, 21)
@@ -50,23 +57,34 @@ import { Alert } from 'react-native'
                             <ListItem.Title style={[{fontWeight: '500'}, themes.textTheme(isLight)]}>{`${INDUSTRY_CODES[item.otherUserIndustry]} Industry`}</ListItem.Title>
                             <ListItem.Title style={[{fontWeight: '300'}, themes.textTheme(isLight)]}>{`${item.cuisinePreference} Cuisine`}</ListItem.Title>
                           </ListItem.Content>
+                          {!loadingStates[item.matchID] &&
                           <View style={{flexDirection: 'column'}}>
-
                             {!matchIDs[item.matchID] && 
                             <TouchableOpacity onPress={async() => 
                               {
+                                let states = loadingStates
+                                states[item.matchID] = true;
+                                let replacementSelectedID = Math.random()
+                                setLoadingStates(states)
+                                setSelectedID(replacementSelectedID)
                                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                 let res = await firebaseSvc.matchConfirm(item)
-                                let replacementSelectedID = Math.random()
+                                replacementSelectedID = Math.random()
                                 switch(res) {
                                   case(FINAL_SUCCESS):
                                   // Logic for modal popping up
+                                  states = loadingStates
+                                  states[item.matchID] = false;
+                                  setLoadingStates(states)
                                   setSelectedID(replacementSelectedID)
                                   Alert.alert('Yay! Your Gobble is set!', 'Happy Gobbling!')
                                   props.navigation.navigate('Matched')
                                   break;
 
                                   case(CONFIRM_SUCCESS):
+                                  states = loadingStates
+                                  states[item.matchID] = false;
+                                  setLoadingStates(states)
                                   matchIDs[item.matchID] = true
                                   setSelectedID(replacementSelectedID)
                                   break;
@@ -75,6 +93,9 @@ import { Alert } from 'react-native'
                                   Alert.alert('Unfortunately, there was an issue.', 'Your match has been cancelled.')
                                   await firebaseSvc.matchDecline(item)
                                   // logic for modal informing of inability to match and deletion
+                                  states = loadingStates
+                                  states[item.matchID] = false;
+                                  setLoadingStates(states)
                                   setSelectedID(replacementSelectedID)
                                   break;
 
@@ -82,6 +103,9 @@ import { Alert } from 'react-native'
                                   Alert.alert('Unfortunately, there was an issue.', 'Your match has been cancelled.')
                                   await firebaseSvc.matchDecline(item)
                                   // logic for modal informing of inability to match and deletion
+                                  states = loadingStates
+                                  states[item.matchID] = false;
+                                  setLoadingStates(states)
                                   setSelectedID(replacementSelectedID)
                                   break;
                                 }    
@@ -91,7 +115,12 @@ import { Alert } from 'react-native'
                             {!matchIDs[item.matchID] &&
                             <TouchableOpacity onPress={() => {
                               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                              let replacementSelectedID = Math.random();
+                              let states = loadingStates
+                              states[item.matchID] = true;
+                              setLoadingStates(states)
+                              let replacementSelectedID = Math.random()
+                              setSelectedID(replacementSelectedID)
+                              replacementSelectedID = Math.random();
                               console.log('Confirmed')
                               firebaseSvc.matchDecline(item)
                               setSelectedID(replacementSelectedID) 
@@ -105,18 +134,29 @@ import { Alert } from 'react-native'
                             <TouchableOpacity onPress={async() => 
                               {
                                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                                let unacceptRes = await firebaseSvc.matchUnaccept(item)
+                                let states = loadingStates
+                                states[item.matchID] = true;
                                 let replacementSelectedID = Math.random()
+                                setLoadingStates(states)
+                                setSelectedID(replacementSelectedID)
+                                let unacceptRes = await firebaseSvc.matchUnaccept(item)
+                                replacementSelectedID = Math.random()
                                 switch(unacceptRes) {
                                   case(UNACCEPT_SUCCESS):
                                   matchIDs[item.matchID] = false;                    
                                   console.log(UNACCEPT_SUCCESS)
+                                  states = loadingStates
+                                  states[item.matchID] = false;
+                                  setLoadingStates(states)
                                   setSelectedID(replacementSelectedID)
                                   break
 
                                   case(UNACCEPT_FAIL):
                                   console.log(UNACCEPT_FAIL)
                                   firebaseSvc.matchDecline(item)
+                                  states = loadingStates
+                                  states[item.matchID] = false;
+                                  setLoadingStates(states)
                                   setSelectedID(replacementSelectedID) 
                                   break
                                 } 
@@ -125,6 +165,12 @@ import { Alert } from 'react-native'
                             </TouchableOpacity>
                             }
                           </View>
+                          }
+                          {loadingStates[item.matchID] &&
+                            <View style={{flexDirection: 'column'}}>
+                              <Loader useNativeDriver={true}/>
+                            </View>
+                          }
                         </ListItem>
           )
   }
@@ -136,13 +182,15 @@ import { Alert } from 'react-native'
             .getPendingMatchIDs(
               async(snapshot) => {
                 let ids = snapshot.val();
+                let states = {};
                 if (ids == null) {
                   setData([])
                   setMatchIDs({})
+                  setLoadingStates({})
                 } else  {
-                  // console.log(ids, 'ids')
                   let newData = [];
                   for(let [key, value] of Object.entries(ids)) {
+                    states[key] = false;
                     if(!(key in matchIDs)) {
                       matchIDs[key] = await firebaseSvc.obtainStatusOfPendingMatch(key, value.pendingTime);
                     }
@@ -165,6 +213,7 @@ import { Alert } from 'react-native'
                     let y = new Date(b.datetime)
                     return x <= y ? -1 : 1
                   });
+                  setLoadingStates(states)
                   setData(newData);
                 }
               },
@@ -180,12 +229,13 @@ import { Alert } from 'react-native'
           console.log('pendingMatchID clean up!');
           firebaseSvc.pendingMatchIDsOff();
         }
-    },[])
+    }, [])
 
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
           await loadAsync();
       })
+      
       return unsubscribe;
     }, [navigation])
     
