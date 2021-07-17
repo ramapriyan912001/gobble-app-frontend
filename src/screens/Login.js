@@ -54,7 +54,7 @@ export default function Login(props) {
 
     return(
                 <KeyboardAwareScrollView contentContainerStyle={[styles.container, themes.containerTheme(isLight)]} scrollEnabled={false}>
-                    <Image style={imageStyles.gobbleImage} source = {require('../images/gobble.png')}/>
+                    <Image style={imageStyles.gobbleImage} source = {require('../images/gobble.png')} accessibilityLabel={'GobbleImage'}/>
                     <StatusBar style="auto"/>
                     <View style={[styles.inputView, themes.viewTheme(isLight)]}> 
                         <TextInput
@@ -65,6 +65,7 @@ export default function Login(props) {
                             returnKeyType = 'done'
                             onSubmitEditing={(event) => onPressLogin()}
                             onChangeText={(email) => setEmail(email)}
+                            accessibilityLabel={'email'}
                         />
                     </View>
                         
@@ -78,23 +79,35 @@ export default function Login(props) {
                             secureTextEntry={true}
                             onSubmitEditing={(event) => onPressLogin()}
                             onChangeText={(password) => setPassword(password)}
+                            accessibilityLabel={'password'}
                         />
                     </View>
-                    <TouchableOpacity style={buttonStyles.forgotButton} onPress={()=> {
+                    <TouchableOpacity
+                        style={buttonStyles.forgotButton}
+                        onPress={()=> {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                        props.navigation.navigate('ForgotPassword');}}>
+                        props.navigation.navigate('ForgotPassword');}}
+                        accessibilityLabel={'ToForgotPasswordButton'}
+                    >
                         <Text style={[buttonStyles.forgotButtonText, themes.textTheme(isLight)]}>Forgot Password?</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                    <TouchableOpacity
+                        style={[styles.longButton, themes.buttonTheme(isLight)]}
+                        onPress={() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         onPressLogin();
-                        }}>
+                        }}
+                        accessibilityLabel={'LoginButton'}
+                    >
                         <Text style={[buttonStyles.loginButtonText, themes.oppositeTextTheme(isLight)]}>Log In</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]}
-                    onPress={()=> {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                        props.navigation.navigate('Welcome');}}>
+                    <TouchableOpacity
+                        style={[styles.longButton, themes.buttonTheme(isLight)]}
+                        onPress={()=> {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                            props.navigation.navigate('Welcome');}}
+                        accessibilityLabel={'ToWelcomeButton'}
+                    >
                         <Text style={[buttonStyles.loginButtonText, themes.oppositeTextTheme(isLight)]}>Back</Text>
                     </TouchableOpacity>
                 </KeyboardAwareScrollView>

@@ -58,7 +58,7 @@ export function Welcome(props) {
 
     return (
         <SafeAreaView style={[{...styles.container, justifyContent: 'space-evenly',}, themes.containerTheme(isLight)]}>
-            <Image style={styles.image} source = {require('../images/gobble.png')}/>
+            <Image style={styles.image} source = {require('../images/gobble.png')} accessibilityLabel={'GobbleImage'}/>
             <Animated.View
                 style={[
                 styles.fadingContainer,
@@ -87,6 +87,7 @@ export function Welcome(props) {
                         }
                     }
                     touchSoundDisabled={true}
+                    accessibilityLabel={'ToRegisterButton'}
                 >
                     <Text style={[{fontSize: 20, fontWeight:'bold'},themes.textTheme(isLight)]}>Sign Up</Text>
                 </TouchableOpacity>
@@ -96,6 +97,7 @@ export function Welcome(props) {
                         props.navigation.navigate('Login');
                     }}
                     touchSoundDisabled={true}
+                    accessibilityLabel={'ToLoginButton'}
                 >
                     <Text style={[{fontSize: 20, fontWeight:'bold'},themes.textTheme(isLight)]}>Already have an Account?</Text>
                 </TouchableOpacity>

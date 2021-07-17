@@ -22,7 +22,8 @@
       "supportsTablet": false,
       "config": {
         "googleMapsApiKey": "AIzaSyC6h4poHiCJzIWZGNZ5JThvwpTjk0q7eWo"
-      }
+      },
+      "bundleIdentifier": "com.vishnu.gobble-app"
     },
     "android": {
       "adaptiveIcon": {
@@ -42,7 +43,7 @@
     "description": "Gobble is an app that connects people over food!",
     "githubUrl": "https://github.com/ramapriyan912001/gobble-app-frontend",
     "notification": {
-      "icon":"./assets/adaptive-icon.png"
+      "icon": "./assets/adaptive-icon.png"
     }
   }
 }
