@@ -45,7 +45,7 @@ import Animated from 'react-native-reanimated'
           return date.slice(16, 21)
       }
 
-      const failureAcceptAction = (item) => {
+      const failureAcceptAction = async(item) => {
         Alert.alert('Unfortunately, there was an issue.', 'Your match has been cancelled.')
         await firebaseSvc.matchDecline(item)
         // logic for modal informing of inability to match and deletion

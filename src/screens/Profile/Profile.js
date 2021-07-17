@@ -18,11 +18,6 @@ import { Header } from 'react-native-elements'
 import { DrawerActions } from '@react-navigation/native';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
-
-// props.navigation.dispatch(DrawerActions.closeDrawer());
-
-
-const Tab = createMaterialTopTabNavigator();
 import themes from '../../styles/Themes';
 import { styles } from '../../styles/ProfileStyles'
 import * as Haptics from 'expo-haptics';
@@ -30,6 +25,11 @@ import { useColorScheme } from 'react-native-appearance';
 import { AntDesign } from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
+
+// props.navigation.dispatch(DrawerActions.closeDrawer());
+
+
+const Tab = createMaterialTopTabNavigator();
 
 /**
  * User Profile Page
