@@ -17,9 +17,9 @@ export const styles = StyleSheet.create({
         backgroundColor: light
     },
     longButton:{
-        width:330,
+        width:'85%',
         borderRadius:25,
-        height:50,
+        height:'6%',
         alignSelf:'center',
         alignItems:"center",
         justifyContent:"center",
@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
     inputView: {
         borderRadius: 30,
         width: "60%",
-        height: 45,
+        height: '5%',
         marginBottom: 20,
         shadowOffset: {
             width: 0,

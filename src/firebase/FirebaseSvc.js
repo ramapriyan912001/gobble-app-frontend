@@ -368,14 +368,10 @@ class FirebaseSvc {
   }
  
 
-  reportsOff = () => {
-                if (this.isAdmin()) {
-                  firebase
-                  .database()
-                  .ref(`Reports`)
-                  .off();
-                }
-  }
+  reportsOff = () => firebase
+                      .database()
+                      .ref(`Reports`)
+                      .off();
 
   async makeReport(otherUserId, complaint, datetime) {
     try {
