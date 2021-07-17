@@ -44,6 +44,22 @@ import Animated from 'react-native-reanimated'
       const timeStringMaker = (date) => {
           return date.slice(16, 21)
       }
+
+      const failureAcceptAction = (item) => {
+        Alert.alert('Unfortunately, there was an issue.', 'Your match has been cancelled.')
+        await firebaseSvc.matchDecline(item)
+        // logic for modal informing of inability to match and deletion
+        let states = loadingStates
+        states[item.matchID] = false;
+        setLoadingStates(states)
+        setSelectedID(replacementSelectedID)
+      }
+
+      const successAcceptAction = (item) => {
+        let states = loadingStates
+        states[item.matchID] = false;
+        setLoadingStates(states)
+      }
       return (
           <ListItem
                         containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
@@ -73,40 +89,24 @@ import Animated from 'react-native-reanimated'
                                 switch(res) {
                                   case(FINAL_SUCCESS):
                                   // Logic for modal popping up
-                                  states = loadingStates
-                                  states[item.matchID] = false;
-                                  setLoadingStates(states)
+                                  successAcceptAction(item)
                                   setSelectedID(replacementSelectedID)
                                   Alert.alert('Yay! Your Gobble is set!', 'Happy Gobbling!')
                                   props.navigation.navigate('Matched')
                                   break;
 
                                   case(CONFIRM_SUCCESS):
-                                  states = loadingStates
-                                  states[item.matchID] = false;
-                                  setLoadingStates(states)
+                                  successAcceptAction(item)
                                   matchIDs[item.matchID] = true
                                   setSelectedID(replacementSelectedID)
                                   break;
 
                                   case(FINAL_FAIL):
-                                  Alert.alert('Unfortunately, there was an issue.', 'Your match has been cancelled.')
-                                  await firebaseSvc.matchDecline(item)
-                                  // logic for modal informing of inability to match and deletion
-                                  states = loadingStates
-                                  states[item.matchID] = false;
-                                  setLoadingStates(states)
-                                  setSelectedID(replacementSelectedID)
+                                  failureAcceptAction(item);
                                   break;
 
                                   case(CONFIRM_FAIL):
-                                  Alert.alert('Unfortunately, there was an issue.', 'Your match has been cancelled.')
-                                  await firebaseSvc.matchDecline(item)
-                                  // logic for modal informing of inability to match and deletion
-                                  states = loadingStates
-                                  states[item.matchID] = false;
-                                  setLoadingStates(states)
-                                  setSelectedID(replacementSelectedID)
+                                  failureAcceptAction(item);
                                   break;
                                 }    
                               }}>
