@@ -1,10 +1,4 @@
 import {StyleSheet} from 'react-native'
-import { useFonts, IndieFlower_400Regular } from '@expo-google-fonts/indie-flower'
-const _fontsLoaded = () => {
-    let [fontsLoaded] = useFonts({
-        IndieFlower_400Regular,
-      });
-}
 
 //TODO: Abstract styles by screen
 
