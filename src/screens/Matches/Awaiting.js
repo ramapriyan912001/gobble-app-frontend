@@ -87,7 +87,7 @@ function Awaiting (props, {navigation}) {
       return unsubscribe;
     }, [navigation])
     // const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
-    
+    if(data.length != 0) {
     return (
       <SafeAreaView style={themes.containerTheme(isLight)}>
           <FlatList
@@ -140,6 +140,13 @@ function Awaiting (props, {navigation}) {
           />
       </SafeAreaView>
     );
+  } else {
+    return (
+      <SafeAreaView style={[{flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'center'}, themes.containerTheme(isLight)]}>
+        <Text style={[{alignSelf: 'center', fontWeight:'bold'}, themes.textTheme(isLight)]}>You have no awaiting Gobbles!</Text>
+      </SafeAreaView>
+    )
+  }
 }
 
 const mapStateToProps = (store) => ({

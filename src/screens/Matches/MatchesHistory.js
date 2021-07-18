@@ -94,38 +94,45 @@ function MatchesHistory (props, {navigation}) {
       })
       return unsubscribe;
     }, [navigation])
-    
-    return (
-      <SafeAreaView style={themes.containerTheme(isLight)}>
-          <FlatList
-            data={data}
-            style={themes.containerTheme(isLight)}
-            extraData={selectedID}
-            renderItem={({ item, index }) => (
-              <TouchableOpacity
-              onPress={() => props.navigation.navigate('Restaurants', {item: item})}>
-                <ListItem
-                containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
-                key={index} 
-                roundAvatar>
-                  <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
-                  <ListItem.Content>
-                    <ListItem.Title style={[{fontWeight: 'bold'}, themes.textTheme(isLight)]}>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
-                    <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${item.cuisinePreference} cuisine`}</ListItem.Subtitle>
-                    <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
-                  </ListItem.Content>
-                  <MaterialIcons size={28} name='restaurant-menu'></MaterialIcons>
-                </ListItem>
-              </TouchableOpacity>
-            )}
-            keyExtractor={item => item.matchID}
-            ItemSeparatorComponent={renderSeparator}
-            // ListHeaderComponent={renderHeader}
-            // ListFooterComponent={renderFooter(loading)}
-            onEndReachedThreshold={50}
-          />
-      </SafeAreaView>
-    );
+    if(data.length != 0) {
+      return (
+        <SafeAreaView style={themes.containerTheme(isLight)}>
+            <FlatList
+              data={data}
+              style={themes.containerTheme(isLight)}
+              extraData={selectedID}
+              renderItem={({ item, index }) => (
+                <TouchableOpacity
+                onPress={() => props.navigation.navigate('Restaurants', {item: item})}>
+                  <ListItem
+                  containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
+                  key={index} 
+                  roundAvatar>
+                    <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
+                    <ListItem.Content>
+                      <ListItem.Title style={[{fontWeight: 'bold'}, themes.textTheme(isLight)]}>{`${item.otherUserName}, ${INDUSTRY_CODES[item.otherUserIndustry]} industry`}</ListItem.Title>
+                      <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${item.cuisinePreference} cuisine`}</ListItem.Subtitle>
+                      <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
+                    </ListItem.Content>
+                    <MaterialIcons size={28} name='restaurant-menu'></MaterialIcons>
+                  </ListItem>
+                </TouchableOpacity>
+              )}
+              keyExtractor={item => item.matchID}
+              ItemSeparatorComponent={renderSeparator}
+              // ListHeaderComponent={renderHeader}
+              // ListFooterComponent={renderFooter(loading)}
+              onEndReachedThreshold={50}
+            />
+        </SafeAreaView>
+      );
+    } else {
+      return (
+        <SafeAreaView style={[{flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'center'}, themes.containerTheme(isLight)]}>
+          <Text style={[{alignSelf: 'center', fontWeight:'bold'}, themes.textTheme(isLight)]}>You have no matches at the moment!</Text>
+        </SafeAreaView>
+      )
+    }
 }
 
 const mapStateToProps = (store) => ({
