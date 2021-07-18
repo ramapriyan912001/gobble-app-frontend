@@ -38,17 +38,6 @@ const Tab = createMaterialTopTabNavigator();
  * @returns Profile Render Method
  */
 function Profile(props, {navigation}) {
-    Notifications.setNotificationHandler({
-        handleNotification: async () => ({
-          shouldShowAlert: true,
-          shouldPlaySound: true,
-          shouldSetBadge: false,
-        }),
-    });
-    const [expoPushToken, setExpoPushToken] = useState('');
-    const [notification, setNotification] = useState(false);
-    const notificationListener = useRef();
-    const responseListener = useRef();
     const [userInfo, setUserInfo] = useState({});
     const [change, setChange] = useState(false);
     const [loading, setLoading] = useState(true);
@@ -169,25 +158,9 @@ function Profile(props, {navigation}) {
     useEffect(() => {
         loadDataAsync();
         registerForPushNotificationsAsync().then(token => {
-            setExpoPushToken(token)
             firebaseSvc.addPushToken(token);
             console.log("after adding push token")
         });
-      
-          // This listener is fired whenever a notification is received while the app is foregrounded
-          notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
-            setNotification(notification);
-          });
-      
-          // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
-          responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-            console.log(response);
-          });
-      
-          return () => {
-            Notifications.removeNotificationSubscription(notificationListener.current);
-            Notifications.removeNotificationSubscription(responseListener.current);
-          };
     },[change, navigation]);
 
     const drawerMargin = Platform.OS === 'ios' ? '2%' : '10%';

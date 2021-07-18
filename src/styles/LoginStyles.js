@@ -19,30 +19,8 @@ export const buttonStyles = StyleSheet.create({
         // fontFamily: 'IndieFlower_400Regular'
     },
 
-    backButton: {
-        width:165,
-        borderRadius:25,
-        height:50,
-        alignSelf:'flex-start',
-        justifyContent:'center',
-        backgroundColor:"#0aa859",
-        shadowColor: "#000",
-        shadowOffset: {
-            width: 2,
-            height: 4,
-        },
-        shadowOpacity: 0.3,
-        shadowRadius: 9,
-        elevation: 5
-    },
-
-    backButtonText:{
-        fontSize:20,
-        alignSelf:'center'
-    },
-
     tinyButton:{
-        width:165,
+        width:'42.5%',
         borderRadius:25,
         height:50,
         alignItems:"center",
@@ -60,7 +38,7 @@ export const buttonStyles = StyleSheet.create({
     },
 
     loginButton: {
-        width:330,
+        width:'90%',
         borderRadius:25,
         height:50,
         alignSelf:'center',

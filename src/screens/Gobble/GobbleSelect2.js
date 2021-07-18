@@ -63,7 +63,7 @@ export default function GobbleSelect2(props) {
         <Text style={[inputStyles.detailText, themes.textTheme(isLight)]}>{`${props.route.params.request.distance} km`}</Text>
         <Text style={[{fontSize:17, marginTop:'6%', fontWeight:'bold'},themes.textTheme(isLight)]}>Around</Text>
         <Text style={[inputStyles.detailText, themes.textTheme(isLight)]}>{`${props.route.params.description}`}</Text>
-        <View style={{marginTop:'5%'}}>
+        <View style={{marginTop:'5%', width: '100%'}}>
           <TouchableOpacity 
             style={[themes.buttonTheme(isLight), styles.longButton]}
             onPress={() => {

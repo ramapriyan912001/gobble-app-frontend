@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     longButton:{
         width:'85%',
         borderRadius:25,
-        height:'6%',
+        height:50,
         alignSelf:'center',
         alignItems:"center",
         justifyContent:"center",
@@ -35,7 +35,7 @@ export const styles = StyleSheet.create({
     inputView: {
         borderRadius: 30,
         width: "60%",
-        height: '5%',
+        height: 45,
         marginBottom: 20,
         shadowOffset: {
             width: 0,
@@ -71,7 +71,7 @@ export const styles = StyleSheet.create({
         shadowRadius: 0.1,
     },
     tinyButton:{
-        width:165,
+        width:'42.5%',
         borderRadius:25,
         height:50,
         alignItems:"center",
