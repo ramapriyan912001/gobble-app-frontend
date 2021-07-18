@@ -5,6 +5,7 @@ import { EMPTY_AVATAR } from '../constants/objects';
 import { Avatar } from 'react-native-elements';
 import { Rating } from 'react-native-ratings';
 import { API_KEY } from '../../keys';
+import { Platform } from 'react-native';
 
 export default function CustomCallout({restaurant}) {
 
@@ -27,9 +28,9 @@ export default function CustomCallout({restaurant}) {
     }, [data])
     return (
         <View style={{height: 150, width: 300,}}>
-            <View style={{flexDirection: 'row'}}>
-                <View style={{flex: 2}}>
-                <Avatar avatarStyle={{
+            <View style={{flexDirection: 'row', flex: 2, marginTop: Platform.OS == 'android' ? '-24%' : '0%'}}>
+                    <Text style={{flex: 1, marginTop: '0%'}}>
+                    <Image style={{
                     shadowColor: "#000",
                     shadowOffset: {
                         width: 8,
@@ -37,10 +38,11 @@ export default function CustomCallout({restaurant}) {
                     },
                     shadowOpacity: 0.3,
                     shadowRadius: 9,
-                    elevation: 5,
-                }} size='xlarge' avatarStyle={{}} source={{uri: giveUrl()}}></Avatar>
-                </View>
-                <View style={{flexWrap: 'nowrap', flexDirection: 'column', marginLeft: '50%', justifyContent: 'center'}}>
+                    height: 150,
+                    width: 150
+                }} resizeMode="cover" source={{uri: giveUrl(), height: 100, width: 150}}/>    
+                    </Text>  
+                <View style={{flexWrap: 'nowrap', flexDirection: 'column', flex: 1, justifyContent: 'center', marginTop: Platform.OS == 'android' ? '24%' : '0%'}}>
                 <Text style={{fontWeight: '800', marginBottom: '3%'}}>{`${restaurant.name}`}</Text>
                 <Text style={{fontWeight: '600', marginBottom: '3%'}}>{`${restaurant.address}`}</Text>
                 <Rating

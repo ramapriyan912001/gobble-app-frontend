@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TextInput, SafeAreaView, Alert, TouchableOpacit
 import {Input} from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
-import { fetchAuthUser, fetchUserData } from '../redux/actions/actions'
+import { fetchAuthUser, fetchUserData, clearData} from '../redux/actions/actions'
 import {inputStyles, buttonStyles} from '../styles/LoginStyles'
 import {INDUSTRY_CODES} from '../constants/objects'
 import firebaseSvc from '../firebase/FirebaseSvc'
@@ -80,12 +80,12 @@ function PersonalDetails(props) {
             <TouchableOpacity style={[{...styles.longButton, marginBottom: '20%'}, themes.buttonTheme(isLight)]} onPress={() => {
                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                 signOutUser();
-                props.navigation.navigate('Login')}}>
+                props.navigation.navigate('Login')
+                props.clearData()}}>
                 <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Sign Out</Text>
             </TouchableOpacity>
             </View>
         </SafeAreaView>
-        
     )
 }
 
@@ -94,5 +94,5 @@ const mapStateToProps = (store) => ({
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData }, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, clearData, fetchUserData }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(PersonalDetails);

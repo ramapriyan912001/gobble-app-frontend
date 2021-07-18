@@ -4,7 +4,7 @@ import {Input} from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { onSuccess, onFailure } from '../services/RegistrationHandlers'
-import { fetchAuthUser, fetchUserData, updateCurrentUserCollection } from '../redux/actions/actions'
+import { fetchAuthUser, fetchUserData, clearData, updateCurrentUserCollection } from '../redux/actions/actions'
 import {inputStyles, buttonStyles} from '../styles/LoginStyles'
 import {INDUSTRY_CODES, CUISINES, DIETS} from '../constants/objects'
 import firebaseSvc from '../firebase/FirebaseSvc'
@@ -224,7 +224,8 @@ function MealPreferences(props) {
                         <TouchableOpacity style={[{...styles.longButton, marginBottom: '20%'}, themes.buttonTheme(isLight)]} onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             signOutUser();
-                            props.navigation.navigate('Login')}}>
+                            props.navigation.navigate('Login')
+                            props.clearData()}}>
                             <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Sign Out</Text>
                         </TouchableOpacity>
                 </View>
@@ -281,5 +282,5 @@ const mapStateToProps = (store) => ({
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData, updateCurrentUserCollection }, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, clearData, fetchUserData, updateCurrentUserCollection }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(MealPreferences);

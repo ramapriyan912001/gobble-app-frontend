@@ -43,7 +43,7 @@ import Restaurants from './src/components/Restaurants';
 
 const Stack = createStackNavigator();
 
-export function App() {
+export function App(props, {navigation}) {
   console.log('App Executed');
   const listener = ({origin, data}) => {
     console.log(origin, data)
@@ -59,6 +59,7 @@ const [expoPushToken, setExpoPushToken] = useState('');
 const [notification, setNotification] = useState(false);
 const notificationListener = useRef();
 const responseListener = useRef();
+const navigationRef = useRef({});
 
   useEffect(() => {
     notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
@@ -67,7 +68,9 @@ const responseListener = useRef();
 
     // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
     responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
-      console.log(response);
+      console.log(response)
+      console.log(props)
+      navigationRef?.current.navigate('Test')
     });
 
     return () => {
