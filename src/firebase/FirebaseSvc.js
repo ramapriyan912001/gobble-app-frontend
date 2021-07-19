@@ -3,7 +3,6 @@ import { Alert } from 'react-native';
 require('firebase/functions');
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
-import {DIETARY_ARRAYS} from '../constants/objects'
 import {firebaseDetails} from '../../FirebaseDetails'
 import {CONFIRM_SUCCESS, CONFIRM_FAIL, FINAL_SUCCESS, 
   FINAL_FAIL, UNACCEPT_SUCCESS, UNACCEPT_FAIL, BLOCK_SUCCESS, 
