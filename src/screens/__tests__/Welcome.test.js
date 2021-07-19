@@ -4,8 +4,6 @@ import renderer from 'react-test-renderer';
 import Welcome from '../Welcome';
 import { expect, it, jest } from '@jest/globals';
 
-// const gobbleImg = jest.mock('../../images/gobble.png');
-
 describe('<Welcome />', () => {
     it('should render correctly', () => {
         const tree = renderer.create(<Welcome />).toJSON();
