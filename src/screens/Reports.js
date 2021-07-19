@@ -26,6 +26,7 @@ function Reports (props, {navigation}) {
   const colorScheme = useColorScheme();
   const isLight = colorScheme === 'light';
     const [data, setData] = useState([]);
+    const [authAdmin, setAuthAdmin] = useState(firebaseSvc.isAuthAdmin());
     // const [loading, setLoading]= useState(true);
     const [reportIDs, setReportIDs] = useState({});
     const [selectedID, setSelectedID] = useState(true)
@@ -39,7 +40,6 @@ function Reports (props, {navigation}) {
             .getReports(
               snapshot => {
                 let ids = snapshot.val();
-                console.log(ids)
                 if (ids == null) {
                   setData([])
                   setReportIDs({})
@@ -67,8 +67,8 @@ function Reports (props, {navigation}) {
     useEffect(() => {
         loadAsync();
         return () => {
-          // firebaseSvc.reportsOff();
-          console.log("Reports clean up!")
+          firebaseSvc.reportsOff();
+          console.log("Reports clean up!");
         }
     }, [navigation])
 
@@ -116,7 +116,7 @@ function Reports (props, {navigation}) {
             // ListFooterComponent={renderFooter(isLight)}
             onEndReachedThreshold={50}
           />
-          <TouchableOpacity
+          {!authAdmin && <TouchableOpacity
             style={[{...styles.longButton, marginBottom:'4%'}, themes.buttonTheme(isLight)]}
             onPress={async () => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
@@ -124,7 +124,7 @@ function Reports (props, {navigation}) {
               Alert.alert('Done!',message);
           }}>
               <Text style={themes.textTheme(!isLight)}>Promote to Admin</Text>
-          </TouchableOpacity>
+          </TouchableOpacity>}
       </SafeAreaView>
     );
 }

@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { AppearanceProvider } from 'react-native-appearance';
 import {AppContainer} from './src/routes/routes'
 import { NavigationContainer } from '@react-navigation/native';
@@ -17,8 +17,12 @@ import { Conversation } from './src/screens/Chats/Conversation';
 import GobbleSelect from './src/screens/Gobble/GobbleSelect';
 import MakeReport from './src/screens/MakeReport';
 import { LogBox } from 'react-native';
+import Constants from 'expo-constants';
+import * as Notifications from 'expo-notifications';
+import * as Linking from 'expo-linking'
 
 LogBox.ignoreLogs(['Setting a timer']);
+LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified.']);
 
 
 export default function AppWrapper() {
@@ -39,8 +43,41 @@ import Restaurants from './src/components/Restaurants';
 
 const Stack = createStackNavigator();
 
-export function App() {
+export function App(props, {navigation}) {
   console.log('App Executed');
+  const listener = ({origin, data}) => {
+    console.log(origin, data)
+  }
+  Notifications.setNotificationHandler({
+    handleNotification: async () => ({
+      shouldShowAlert: true,
+      shouldPlaySound: true,
+      shouldSetBadge: false,
+    }),
+});
+const [expoPushToken, setExpoPushToken] = useState('');
+const [notification, setNotification] = useState(false);
+const notificationListener = useRef();
+const responseListener = useRef();
+const navigationRef = useRef({});
+
+  useEffect(() => {
+    notificationListener.current = Notifications.addNotificationReceivedListener(notification => {
+      setNotification(notification);
+    });
+
+    // This listener is fired whenever a user taps on or interacts with a notification (works when app is foregrounded, backgrounded, or killed)
+    responseListener.current = Notifications.addNotificationResponseReceivedListener(response => {
+      console.log(response)
+      console.log(props)
+      navigationRef?.current.navigate('Test')
+    });
+
+    return () => {
+      Notifications.removeNotificationSubscription(notificationListener.current);
+      Notifications.removeNotificationSubscription(responseListener.current);
+    };
+  })
   return (
     <NavigationContainer>
       <Provider store={store}>

@@ -41,7 +41,6 @@ function ComplaintHistory (props, {navigation}) {
               ,
               snapshot => {
                 let ids = snapshot.val();
-                console.log(ids)
                 if (ids == null) {
                   setData([])
                   setReportIDs({})

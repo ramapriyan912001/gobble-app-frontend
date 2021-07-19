@@ -19,10 +19,10 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { DrawerActions } from '@react-navigation/native';
 
 /**
- * Page to Show previous Matches
+ * Page to Show Blocked Users
  * 
  * @param {*} props Props from previous screen
- * @returns MatchesHistory Render Method 
+ * @returns BlockedUsers Render Method 
  */
 function BlockedUsers (props, {navigation}) {
     const [data, setData] = useState([]);

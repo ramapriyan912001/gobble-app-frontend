@@ -15,6 +15,9 @@ import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
 import themes from '../../styles/Themes';
 import {styles} from '../../styles/RegisterStyles';
+import { Alert } from 'react-native'
+import Loader from 'react-native-three-dots-loader'
+import Animated from 'react-native-reanimated'
 
 /**
  * Page to Show previous Matches
@@ -26,6 +29,7 @@ import {styles} from '../../styles/RegisterStyles';
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
     const [selectedID, setSelectedID] = useState(null);
+    const [loadingStates, setLoadingStates] = useState({})
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
 
@@ -33,8 +37,28 @@ import {styles} from '../../styles/RegisterStyles';
       const dateStringMaker = (date) => {
           return date.slice(0, 10)
       }
+      function getState(item) {
+        let id = item['matchID']
+        return loadingStates[id]
+      }
       const timeStringMaker = (date) => {
           return date.slice(16, 21)
+      }
+
+      const failureAcceptAction = async(item) => {
+        Alert.alert('Unfortunately, there was an issue.', 'Your match has been cancelled.')
+        await firebaseSvc.matchDecline(item)
+        // logic for modal informing of inability to match and deletion
+        let states = loadingStates
+        states[item.matchID] = false;
+        setLoadingStates(states)
+        setSelectedID(replacementSelectedID)
+      }
+
+      const successAcceptAction = (item) => {
+        let states = loadingStates
+        states[item.matchID] = false;
+        setLoadingStates(states)
       }
       return (
           <ListItem
@@ -49,47 +73,55 @@ import {styles} from '../../styles/RegisterStyles';
                             <ListItem.Title style={[{fontWeight: '500'}, themes.textTheme(isLight)]}>{`${INDUSTRY_CODES[item.otherUserIndustry]} Industry`}</ListItem.Title>
                             <ListItem.Title style={[{fontWeight: '300'}, themes.textTheme(isLight)]}>{`${item.cuisinePreference} Cuisine`}</ListItem.Title>
                           </ListItem.Content>
+                          {!loadingStates[item.matchID] &&
                           <View style={{flexDirection: 'column'}}>
-
                             {!matchIDs[item.matchID] && 
                             <TouchableOpacity onPress={async() => 
                               {
+                                let states = loadingStates
+                                states[item.matchID] = true;
+                                let replacementSelectedID = Math.random()
+                                setLoadingStates(states)
+                                setSelectedID(replacementSelectedID)
                                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                 let res = await firebaseSvc.matchConfirm(item)
-                                let replacementSelectedID = Math.random()
+                                replacementSelectedID = Math.random()
                                 switch(res) {
                                   case(FINAL_SUCCESS):
                                   // Logic for modal popping up
+                                  successAcceptAction(item)
                                   setSelectedID(replacementSelectedID)
+                                  Alert.alert('Yay! Your Gobble is set!', 'Happy Gobbling!')
                                   props.navigation.navigate('Matched')
                                   break;
 
                                   case(CONFIRM_SUCCESS):
+                                  successAcceptAction(item)
                                   matchIDs[item.matchID] = true
                                   setSelectedID(replacementSelectedID)
                                   break;
 
                                   case(FINAL_FAIL):
-                                  await firebaseSvc.matchDecline(item)
-                                  // logic for modal informing of inability to match and deletion
-                                  setSelectedID(replacementSelectedID)
+                                  failureAcceptAction(item);
                                   break;
 
                                   case(CONFIRM_FAIL):
-                                  await firebaseSvc.matchDecline(item)
-                                  // logic for modal informing of inability to match and deletion
-                                  setSelectedID(replacementSelectedID)
+                                  failureAcceptAction(item);
                                   break;
                                 }    
                               }}>
                             <ListItem.Subtitle style={{color: 'green'}}>{`Accept`}</ListItem.Subtitle>
                             </TouchableOpacity>}
-                            
                             {!matchIDs[item.matchID] &&
                             <TouchableOpacity onPress={() => {
                               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                              let replacementSelectedID = Math.random();
-                              console.log('Declined')
+                              let states = loadingStates
+                              states[item.matchID] = true;
+                              setLoadingStates(states)
+                              let replacementSelectedID = Math.random()
+                              setSelectedID(replacementSelectedID)
+                              replacementSelectedID = Math.random();
+                              console.log('Confirmed')
                               firebaseSvc.matchDecline(item)
                               setSelectedID(replacementSelectedID) 
                             }}>
@@ -102,18 +134,29 @@ import {styles} from '../../styles/RegisterStyles';
                             <TouchableOpacity onPress={async() => 
                               {
                                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                                let unacceptRes = await firebaseSvc.matchUnaccept(item)
+                                let states = loadingStates
+                                states[item.matchID] = true;
                                 let replacementSelectedID = Math.random()
+                                setLoadingStates(states)
+                                setSelectedID(replacementSelectedID)
+                                let unacceptRes = await firebaseSvc.matchUnaccept(item)
+                                replacementSelectedID = Math.random()
                                 switch(unacceptRes) {
                                   case(UNACCEPT_SUCCESS):
                                   matchIDs[item.matchID] = false;                    
                                   console.log(UNACCEPT_SUCCESS)
+                                  states = loadingStates
+                                  states[item.matchID] = false;
+                                  setLoadingStates(states)
                                   setSelectedID(replacementSelectedID)
                                   break
 
                                   case(UNACCEPT_FAIL):
                                   console.log(UNACCEPT_FAIL)
                                   firebaseSvc.matchDecline(item)
+                                  states = loadingStates
+                                  states[item.matchID] = false;
+                                  setLoadingStates(states)
                                   setSelectedID(replacementSelectedID) 
                                   break
                                 } 
@@ -122,6 +165,12 @@ import {styles} from '../../styles/RegisterStyles';
                             </TouchableOpacity>
                             }
                           </View>
+                          }
+                          {loadingStates[item.matchID] &&
+                            <View style={{flexDirection: 'column'}}>
+                              <Loader useNativeDriver={true}/>
+                            </View>
+                          }
                         </ListItem>
           )
   }
@@ -133,15 +182,17 @@ import {styles} from '../../styles/RegisterStyles';
             .getPendingMatchIDs(
               async(snapshot) => {
                 let ids = snapshot.val();
+                let states = {};
                 if (ids == null) {
                   setData([])
                   setMatchIDs({})
+                  setLoadingStates({})
                 } else  {
-                  // console.log(ids, 'ids')
                   let newData = [];
                   for(let [key, value] of Object.entries(ids)) {
+                    states[key] = false;
                     if(!(key in matchIDs)) {
-                      matchIDs[key] = await firebaseSvc.obtainStatusOfPendingMatch(key);
+                      matchIDs[key] = await firebaseSvc.obtainStatusOfPendingMatch(key, value.pendingTime);
                     }
                     let details = ids[key]
                     let otherUserId = details.otherUserId
@@ -155,7 +206,6 @@ import {styles} from '../../styles/RegisterStyles';
                             .once("value")
                             .then(subsnap => {details = {...details, otherUserIndustry: subsnap.val()}})
                             .catch(err => console.log('Error Loading Avatar:',err.message));
-                      console.log(details);
                     newData = newData.concat(details);
                   }
                   newData.sort(function (a, b) {
@@ -163,6 +213,7 @@ import {styles} from '../../styles/RegisterStyles';
                     let y = new Date(b.datetime)
                     return x <= y ? -1 : 1
                   });
+                  setLoadingStates(states)
                   setData(newData);
                 }
               },
@@ -178,30 +229,38 @@ import {styles} from '../../styles/RegisterStyles';
           console.log('pendingMatchID clean up!');
           firebaseSvc.pendingMatchIDsOff();
         }
-    },[])
+    }, [])
 
     useEffect(() => {
       const unsubscribe = props.navigation.addListener('focus', async() => {
           await loadAsync();
       })
+      
       return unsubscribe;
     }, [navigation])
-    
-    return (
-      <SafeAreaView>
-          <FlatList
-            data={data}
-            extraData={selectedID}
-            style={themes.containerTheme(isLight)}
-            renderItem={({ item, index }) => renderPendingContent(item, index)}
-            keyExtractor={item => item.matchID}
-            ItemSeparatorComponent={renderSeparator}
-            // ListHeaderComponent={renderHeader}
-            // ListFooterComponent={renderFooter(loading)}
-            onEndReachedThreshold={50}
-          />
-      </SafeAreaView>
-    );
+    if(data.length != 0) {
+      return (
+        <SafeAreaView>
+            <FlatList
+              data={data}
+              extraData={selectedID}
+              style={themes.containerTheme(isLight)}
+              renderItem={({ item, index }) => renderPendingContent(item, index)}
+              keyExtractor={item => item.matchID}
+              ItemSeparatorComponent={renderSeparator}
+              // ListHeaderComponent={renderHeader}
+              // ListFooterComponent={renderFooter(loading)}
+              onEndReachedThreshold={50}
+            />
+        </SafeAreaView>
+      );
+    } else {
+      return (
+        <SafeAreaView style={[{flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'center'}, themes.containerTheme(isLight)]}>
+          <Text style={[{alignSelf: 'center', fontWeight:'bold'}, themes.textTheme(isLight)]}>You have no pending matches!</Text>
+        </SafeAreaView>
+      )
+    }
 }
 
 const mapStateToProps = (store) => ({

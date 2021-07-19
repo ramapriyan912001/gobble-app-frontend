@@ -17,7 +17,7 @@ export default function DestinationSearch(props) {
 
     useEffect(() => {
       if(location) {
-        console.log("redirect to result")
+        console.log("redirect to result");
       }
     }, [location])
     return (
@@ -47,9 +47,8 @@ export default function DestinationSearch(props) {
           onPress={(data, details=null) => {
             // 'details' is provided when fetchDetails = true
             setLocation({data, details})
-            console.log(data.description)
-            console.log(details.geometry.location)
             let request = props.route.params.request;
+            request['description'] = data.description;
             request['location'] = {'coords': {'latitude': details.geometry.location['lat'], 'longitude': details.geometry.location['lng']}}
             const nav = 'Confirm Request'
             props.navigation.navigate(nav, {request: request,  edit: props.route.params.edit, description: data.description, oldRequest: props.route.params.oldRequest})
@@ -62,8 +61,8 @@ export default function DestinationSearch(props) {
         placeholder='Type in your address'
         enablePoweredByContainer={false}
         suppressDefaultStyles
-        currentLocation={true}
-        currentLocationLabel='Current location'
+        currentLocation={false}
+        // currentLocationLabel='Current location'
         fetchDetails
         renderRow={(data) => {
           const title = data.description;

@@ -17,7 +17,7 @@ export const styles = StyleSheet.create({
         backgroundColor: light
     },
     longButton:{
-        width:330,
+        width:'85%',
         borderRadius:25,
         height:50,
         alignSelf:'center',
@@ -71,7 +71,7 @@ export const styles = StyleSheet.create({
         shadowRadius: 0.1,
     },
     tinyButton:{
-        width:165,
+        width:'42.5%',
         borderRadius:25,
         height:50,
         alignItems:"center",

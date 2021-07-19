@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { View, Text, StyleSheet, Platform, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, Platform, SafeAreaView, TouchableOpacity } from 'react-native'
 import {Input} from 'react-native-elements'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { onSuccess, onFailure } from '../services/RegistrationHandlers'
-import { fetchAuthUser, fetchUserData, updateCurrentUserCollection } from '../redux/actions/actions'
+import { fetchAuthUser, fetchUserData, clearData, updateCurrentUserCollection } from '../redux/actions/actions'
 import {inputStyles, buttonStyles} from '../styles/LoginStyles'
 import {INDUSTRY_CODES, CUISINES, DIETS} from '../constants/objects'
 import firebaseSvc from '../firebase/FirebaseSvc'
@@ -92,7 +92,8 @@ function MealPreferences(props) {
     const signOutUser = () => firebaseSvc.signOut(signOutSuccess, signOutFailure);
     if (edit) {
         return (
-            <View style={[{...profileStylesAddition.container}, themes.containerTheme(isLight)]}>
+            <SafeAreaView>
+                <View style={[{...profileStylesAddition.container}, themes.containerTheme(isLight)]}>
                 {/* <Text style={inputStyles.subText}>Click on any button to edit</Text> */}
                 <View style={profileStylesAddition.item}>
                 <PickerModal
@@ -177,7 +178,8 @@ function MealPreferences(props) {
                     items={industryLabels}
                 />
                 </View>
-                <View style={{marginLeft: '7.5%', marginTop: '3%'}}>
+                </View>
+                <View style={themes.containerTheme(isLight)}>
                         <TouchableOpacity style={[styles.longButton, themes.editButtonTheme(isLight)]} onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             console.log("Changing Preferences");
@@ -194,11 +196,13 @@ function MealPreferences(props) {
                             <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Discard Changes</Text>
                         </TouchableOpacity>
                 </View>
-            </View>
+            </SafeAreaView>
+            
         )
     } else {
         return (
-            <View style={[profileStylesAddition.container, themes.containerTheme(isLight)]}>
+            <SafeAreaView>
+                <View style={[profileStylesAddition.container, themes.containerTheme(isLight)]}>
                 <View style={{...profileStylesAddition.item}}>
                 <Input label='Cuisine' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={cuisine} editable={false}></Input>
                 <Input scrollEnabled={true} label='Diet' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={diet} editable={false}></Input>
@@ -207,7 +211,8 @@ function MealPreferences(props) {
                 <Input label='Industry Choice' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={industryPreference} editable={false}></Input>
                 <Input label='Industry' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={INDUSTRY_CODES[industry]} editable={false}></Input>
                 </View>
-                <View style={{marginLeft: buttonMargins}}>
+                </View>
+                <View style={themes.containerTheme(isLight)}>
                         <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             console.log("Editing Preferences")
@@ -219,11 +224,12 @@ function MealPreferences(props) {
                         <TouchableOpacity style={[{...styles.longButton, marginBottom: '20%'}, themes.buttonTheme(isLight)]} onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             signOutUser();
-                            props.navigation.navigate('Login')}}>
+                            props.navigation.navigate('Login')
+                            props.clearData()}}>
                             <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Sign Out</Text>
                         </TouchableOpacity>
                 </View>
-            </View>
+            </SafeAreaView>
         )
     }
 }
@@ -276,5 +282,5 @@ const mapStateToProps = (store) => ({
     loggedIn: store.userState.loggedIn,
     isAdmin: store.userState.isAdmin
 })
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData, updateCurrentUserCollection }, dispatch);
+const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, clearData, fetchUserData, updateCurrentUserCollection }, dispatch);
 export default connect(mapStateToProps, mapDispatchProps)(MealPreferences);

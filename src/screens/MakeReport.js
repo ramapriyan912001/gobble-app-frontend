@@ -28,7 +28,6 @@ export default function MakeReport(props) {
             style={Platform.OS == 'android' ? {marginLeft: '3%'} : {}}
                         selectedValue={reason}
                         onValueChange={(itemValue, itemIndex) => {
-                            console.log(itemValue)
                             setReason(itemValue)}}>
                         {renderReasons()}
                 </Picker>}
