@@ -1,11 +1,17 @@
 import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
+import renderer from 'react-test-renderer';
 import Welcome from '../Welcome';
 import { expect, it, jest } from '@jest/globals';
 
 // const gobbleImg = jest.mock('../../images/gobble.png');
 
 describe('<Welcome />', () => {
+    it('should render correctly', () => {
+        const tree = renderer.create(<Welcome />).toJSON();
+        expect(tree).toMatchSnapshot();
+    });
+
     it('renders default elements', () => {
         const { getByText, getByTestId } = render(<Welcome/>);
         getByTestId('GobbleImage');

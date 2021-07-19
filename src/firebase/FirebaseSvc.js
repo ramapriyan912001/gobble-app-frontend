@@ -1,10 +1,10 @@
-import firebase from 'firebase';
+// import firebase from 'firebase';
 import { Alert } from 'react-native';
 require('firebase/functions');
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
 import {DIETARY_ARRAYS} from '../constants/objects'
-import {firebaseDetails} from '../../FirebaseDetails'
+import firebase from '../../FirebaseDetails'
 import {CONFIRM_SUCCESS, CONFIRM_FAIL, FINAL_SUCCESS, 
   FINAL_FAIL, UNACCEPT_SUCCESS, UNACCEPT_FAIL, BLOCK_SUCCESS, 
   BLOCK_FAILURE, UNBLOCK_SUCCESS, UNBLOCK_FAILURE, DELETE_REQUEST_SUCCESS, DELETE_REQUEST_FAILURE, MAKE_REPORT_FAILURE, DELETE_ACCOUNT_FAILURE} from '../constants/results'
@@ -18,9 +18,7 @@ import {CONFIRM_SUCCESS, CONFIRM_FAIL, FINAL_SUCCESS,
 
 class FirebaseSvc {
   constructor() {
-    if (!firebase.apps.length) { //avoid re-initializing -> HIDE LATER
-      firebase.initializeApp(firebaseDetails);
-     }
+    
   }
 
   /**
