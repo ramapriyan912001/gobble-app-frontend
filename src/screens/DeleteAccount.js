@@ -5,7 +5,7 @@ import firebaseSvc from '../firebase/FirebaseSvc'
 import { inputStyles, buttonStyles } from '../styles/LoginStyles'
 import { Ionicons } from '@expo/vector-icons'
 import themes from '../styles/Themes';
-import { DrawerActions } from 'react-navigation-drawer'
+import { DrawerActions } from '@react-navigation/native'
 import { useColorScheme } from 'react-native-appearance'
 import { StatusBar } from 'expo-status-bar'
 import * as Haptics from 'expo-haptics';
@@ -17,8 +17,7 @@ export default function DeleteAccount(props) {
     return (
         <SafeAreaView style={[{flex: 1}, themes.containerTheme(isLight)]}>
             <StatusBar style="auto"/>
-            <TouchableOpacity style={{marginTop: drawerMargin}} onPress={() => {
-                props.navigation.dispatch(DrawerActions.openDrawer)}}>
+            <TouchableOpacity style={{marginTop: drawerMargin}} onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
                 <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
             </TouchableOpacity>
             <View style={{marginTop: '20%'}}>

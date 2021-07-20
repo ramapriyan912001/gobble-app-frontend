@@ -25,6 +25,7 @@ import themes from './src/styles/Themes';
 
 LogBox.ignoreLogs(['Setting a timer']);
 LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified.']);
+LogBox.ignoreLogs('VirtualizedLists')
 
 
 export default function AppWrapper() {
