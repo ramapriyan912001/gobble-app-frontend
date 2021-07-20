@@ -285,7 +285,7 @@ class FirebaseSvc {
 
    pendingMatchIDsOff = () => {if (this.userExists()){
                                 this
-                                .userRef(`${this.uid}/awaitingMatchIDs`)
+                                .userRef(`${this.uid}/pendingMatchIDs`)
                                 .off()
                               }}                                                
                                 
@@ -583,21 +583,21 @@ class FirebaseSvc {
    * @returns  Boolean depending on match found
    */
   async findGobbleMate(request) {
-    try {
-      return firebase
+    return firebase
       .auth()
       .currentUser
       .getIdToken(true)
       .then(async idToken => {
-        const findGobbleMateFunction = await firebase.functions().httpsCallable('findGobbleMate')
-        console.log("err")
+        const findGobbleMateFunction = await firebase.functions().httpsCallable('findGobbleMate');
+        console.log('Looking for a Match');
         let response = await findGobbleMateFunction({request: request, idToken: idToken})
         console.log('response', response)
         return response.data.found;
       })
-    } catch(err) {
-      console.log('FindGobbleMate Error ' + err.message)
-    }
+      .catch(err => {
+        console.log('FINDGOBBLEMATE FUNCTION RETRIEVAL/EXECUTION ERROR: ', err.message);
+        return false;
+      })
   }
   /**
    * Getter for user details
@@ -619,9 +619,13 @@ class FirebaseSvc {
         let response = await matchConfirmFunction({request: request, idToken: idToken})
         return response.data.message;
       })
+      .catch(err => {
+        console.log('MATCHCONFIRM ERROR:', err.message);
+        return CONFIRM_FAIL;
+      })
     } catch(e) {
       console.log(e)
-      return CONFIRM_FAIL
+      return CONFIRM_FAIL;
     }
   }
 
@@ -765,17 +769,21 @@ class FirebaseSvc {
     try {
       const response = await fetch(uri);
       const blob = await response.blob();
-      const ref = firebase.storage().ref('avatar').child(uuid());
-      const task = ref.put(blob);
-      return new Promise((resolve, reject) => {
-        task.on('state_changed', () => { }, reject, 
-          () => resolve(task.snapshot.ref.getDownloadURL()));
-      });
+      if (this.userExists()) {
+        const ref = firebase.storage().ref('avatar').child(this.uid);
+        const task = ref.put(blob);
+        return new Promise((resolve, reject) => {
+          task.on('state_changed', () => { }, reject, 
+            () => resolve(task.snapshot.ref.getDownloadURL()));
+        });
+      } else {
+        return new Promise.reject(new Error('User Not Signed In'));
+      }
     } catch (err) {
       console.log('uploadImage error: ' + err.message); 
     }
   }
-
+  
   changeAvatar = async uri => {
     let newImage = await this.uploadImage(uri);
     let updates = {}

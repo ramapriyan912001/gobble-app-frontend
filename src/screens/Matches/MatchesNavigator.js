@@ -1,4 +1,5 @@
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {createStackNavigator} from '@react-navigation/stack'
 import React from 'react'
 import { View, Text, SafeAreaView } from 'react-native';
 import { containerStyles } from '../../styles/LoginStyles';
@@ -10,6 +11,7 @@ import themes from '../../styles/Themes';
 import {styles} from '../../styles/RegisterStyles';
 
 const Tab = createMaterialTopTabNavigator();
+const Stack = createStackNavigator();
 
 /**
  * Navigate between Matches and MatchesHistory

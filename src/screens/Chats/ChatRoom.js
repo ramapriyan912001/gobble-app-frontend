@@ -12,7 +12,7 @@ import { INDUSTRY_CODES } from '../../constants/objects'
 import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
 import themes from '../../styles/Themes';
-import {styles} from '../../styles/RegisterStyles';
+import {styles} from '../../styles/ProfileStyles';
 
 /**
  * List of all matched people/conversations
@@ -79,33 +79,39 @@ function ChatRoom (props, {navigation}) {
       })
   }, [navigation])
 
-    return (
-      <SafeAreaView style={themes.containerTheme(isLight)}>
-          <FlatList
-            data={data}
-            style={themes.containerTheme(isLight)}
-            extraData={selectedID}
-            renderItem={({ item, index }) => (
-              <ListItem
-              containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
-              key={index}
-              onPress={() => props.navigation.navigate('Conversation', {metadata: item})}
-              roundAvatar>
-                <Avatar size="large" avatarStyle={{borderRadius: 120}} source={{uri:item.otherUserAvatar}}/>
-                <ListItem.Content>
-                  <ListItem.Title style={themes.textTheme(isLight)}>{`${item.name}, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Title>
-                  <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${item.lastMessage == '' ? 'Click here to start a chat!': item.lastMessage}`}</ListItem.Subtitle>
-                </ListItem.Content>
-              </ListItem>
-            )}
-            keyExtractor={item => item.matchDateTime}
-            ItemSeparatorComponent={renderSeparator}
-            // ListHeaderComponent={renderHeader}
-            // ListFooterComponent={renderFooter(loading)}
-            onEndReachedThreshold={50}
-          />
-      </SafeAreaView>
-    );
+    if (data.length != 0) {
+      return (
+        <SafeAreaView style={[themes.containerTheme(isLight), styles.container]}>
+            <FlatList
+              data={data}
+              style={themes.containerTheme(isLight)}
+              extraData={selectedID}
+              renderItem={({ item, index }) => (
+                <ListItem
+                containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
+                key={index}
+                onPress={() => props.navigation.navigate('Conversation', {metadata: item})}
+                roundAvatar>
+                  <Avatar size="large" avatarStyle={{borderRadius: 120}} source={{uri:item.otherUserAvatar}}/>
+                  <ListItem.Content>
+                    <ListItem.Title style={themes.textTheme(isLight)}>{`${item.name}, ${INDUSTRY_CODES[item.industry]} industry`}</ListItem.Title>
+                    <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${item.lastMessage == '' ? 'Click here to start a chat!': item.lastMessage}`}</ListItem.Subtitle>
+                  </ListItem.Content>
+                </ListItem>
+              )}
+              keyExtractor={item => item.matchDateTime}
+              ItemSeparatorComponent={renderSeparator}
+              // ListHeaderComponent={renderHeader}
+              // ListFooterComponent={renderFooter(loading)}
+              onEndReachedThreshold={50}
+            />
+        </SafeAreaView>
+      );
+    } else {
+      return (<SafeAreaView style={[{flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'center'}, themes.containerTheme(isLight)]}>
+        <Text style={[{alignSelf: 'center', fontWeight:'bold'}, themes.textTheme(isLight)]}>You have no chats!</Text>
+      </SafeAreaView>);
+    }
 }
 
 const mapStateToProps = (store) => ({

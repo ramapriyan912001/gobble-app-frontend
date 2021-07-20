@@ -46,12 +46,12 @@ export default function ProfileDrawer(props) {
             drawerIcon: ({focused, size}) => {
                 return (
                 <Entypo name="block" size={size} color={focused ? themes.editTheme(!isLight) : themes.oppositeTheme(isLight)}/>)}}} name="Blocked Users" component={BlockedUsers}></Drawer.Screen>
-        <Drawer.Screen
+        {/* <Drawer.Screen
         options={{
             title: "Settings",
             drawerIcon: ({focused, size}) => {
                 return (
-                <Ionicons name="settings" size={size} color={focused ? themes.editTheme(!isLight) : themes.oppositeTheme(isLight)}/>)}}} name="Settings" component={Test}></Drawer.Screen>
+                <Ionicons name="settings" size={size} color={focused ? themes.editTheme(!isLight) : themes.oppositeTheme(isLight)}/>)}}} name="Settings" component={Test}></Drawer.Screen> */}
         <Drawer.Screen
         options={{
             title: "Delete Account",

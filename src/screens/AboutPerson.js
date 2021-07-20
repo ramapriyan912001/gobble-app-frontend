@@ -18,6 +18,7 @@ import {styles, profileStylesAddition} from '.././styles/ProfileStyles';
 import { BLOCK_SUCCESS } from '../constants/results'
 import { blockOrUnblockAlert } from '../constants/alerts'
 import { BLOCK_CONFIRM } from '../constants/results'
+import { SafeAreaView } from 'react-navigation'
 
 
 /*
@@ -60,6 +61,7 @@ function AboutPerson(props, { navigation }) {
         )
 
     return (
+        <SafeAreaView>
         <View style={[profileStylesAddition.container, themes.containerTheme(isLight)]}>
             <View style={{...profileStylesAddition.item}}>
             <Input label='Name' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={otherUser.name} editable={false}></Input>
@@ -69,23 +71,25 @@ function AboutPerson(props, { navigation }) {
             <Input label='Industry' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={INDUSTRY_CODES[otherUser.industry]} editable={false}></Input>
             <Input label='Diet' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={otherUser.diet} editable={false}></Input>
             </View>
-            <View style={themes.containerTheme(isLight)}>
-                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+        </View>
+            <View style={[themes.containerTheme(isLight)]}>
+                <TouchableOpacity
+                    style={[styles.longButton, themes.buttonTheme(isLight)]}
+                    onPress={() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         let text = `Are you sure you wish to block ${otherUser.name}?`;
-                        blockAlert(text)
-                        }}>
-                        <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Block User</Text>
-
-                    </TouchableOpacity>
-                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
-                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                        props.navigation.navigate('Report', {otherUser: otherUser})
+                        blockAlert(text);
                     }}>
-                        <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Report User</Text>
-                    </TouchableOpacity>
+                    <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Block User</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                            props.navigation.navigate('Report', {otherUser: otherUser})
+                        }}>
+                    <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Report User</Text>
+                </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     )
 }
 
