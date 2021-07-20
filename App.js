@@ -20,9 +20,9 @@ import { LogBox } from 'react-native';
 import Constants from 'expo-constants';
 import * as Notifications from 'expo-notifications';
 import * as Linking from 'expo-linking'
-
 LogBox.ignoreLogs(['Setting a timer']);
 LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified.']);
+LogBox.ignoreLogs('VirtualizedLists')
 
 
 export default function AppWrapper() {
