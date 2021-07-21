@@ -9,6 +9,7 @@ exports[`<Welcome /> should render correctly 1`] = `
         "alignItems": "center",
         "flex": 1,
         "flexDirection": "column",
+        "flexWrap": "nowrap",
         "justifyContent": "space-evenly",
       },
       Object {

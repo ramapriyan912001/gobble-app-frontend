@@ -23,10 +23,10 @@ describe('<Login />', () => {
     test("renders default elements", () => {
         //Act
         const localTree = render(<Login/>);
-        const { getByPlaceholderText, getByText, getByTestId, findByTestId } = localTree;
+        const { getByPlaceholderText, getByText, getByTestId } = localTree;
 
         //Assert
-        expect(findByTestId('GobbleImage')).not.toThrow();
+        getByTestId('GobbleImage');
         getByPlaceholderText('Email');
         getByPlaceholderText('Password');
         getByTestId('ToForgotPasswordButton');
