@@ -110,7 +110,7 @@ class FirebaseSvc {
           console.log('UID:',otherUserId);
           return deleteFunction({uid: otherUserId, token:idToken})
           .then(result => {
-            console.log('result of deletion: ', result);
+            // console.log('result of deletion: ', result);
             if (!result.data.success) {
               console.log('Delete Other User Failure: ' + result.data.message);
               return false;
@@ -368,7 +368,7 @@ class FirebaseSvc {
 
   reportsOff = () => firebase
                       .database()
-                      .ref(`Reports`)
+                      .ref(`Reports/${this.uid}`)
                       .off();
 
   async makeReport(otherUserId, complaint, datetime) {
@@ -396,7 +396,7 @@ class FirebaseSvc {
       .currentUser
       .getIdToken(true)
       .then(async idToken => {
-        const deleteReportFunction = await firebase.functions().httpsCallable('makeReport')
+        const deleteReportFunction = await firebase.functions().httpsCallable('deleteReport')
         let response = await deleteReportFunction({reportID: reportID, idToken: idToken})
         return response.data.message;
       })

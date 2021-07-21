@@ -121,7 +121,17 @@ const navigationRef = useRef({});
             <Stack.Screen name="Edit Location" options={{headerShown: false}}  component={DestinationSearch}></Stack.Screen>
             <Stack.Screen name="Confirm Request" options={{headerShown: false}} component={GobbleSelect2}></Stack.Screen>
             <Stack.Screen name="Test" options={{headerShown: false, gestureEnabled: true}} component={Test}></Stack.Screen>
-            <Stack.Screen name="User History" options={{gestureEnabled: true, headerBackTitle: 'Back'}} component={ComplaintHistory}></Stack.Screen>
+            <Stack.Screen name="User History" options={{
+                    // headerLeft: () => null,
+                    headerShown:true,
+                    headerBackTitleVisible: false, 
+                    headerTitle: 'Make a Report', 
+                    headerBackTitle: 'Back', 
+                    headerStyle:{
+                        backgroundColor: themes.oppositeTheme(!isLight),
+                    },
+                    headerTintColor:themes.oppositeTheme(isLight)
+                }} component={ComplaintHistory}></Stack.Screen>
             <Stack.Screen name="Complaint Details" options={{gestureEnabled: true}} component={ReportDetails}></Stack.Screen>
             <Stack.Screen name="Restaurants" options={{
               headerShown:true,

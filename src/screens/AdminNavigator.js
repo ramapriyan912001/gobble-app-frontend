@@ -4,10 +4,9 @@ import Reports from './Reports'
 import ReportDetails from './ReportDetails'
 import { useColorScheme } from 'react-native-appearance'
 import themes from '../styles/Themes'
-import { Text, TouchableOpacity } from 'react-native';
+import { Text, TouchableOpacity, Platform } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { DrawerActions } from '@react-navigation/native';
-
 
 const Stack = createStackNavigator();
 
@@ -51,7 +50,7 @@ export default function AdminNavigator(props) {
                 headerRight: () => (<TouchableOpacity
                                         onPress= {() => props.navigation.navigate('User History', {defendant: route.params.defendant})}
                                     >
-                                        <Text style={[themes.textTheme(isLight), {fontSize:17}]}>User History</Text>
+                                        <Text style={[themes.textTheme(isLight), Platform.OS == 'android'? {fontSize:12}:{fontSize:17}]}>User History</Text>
                                     </TouchableOpacity>),
                             })
             }  component={ReportDetails}></Stack.Screen>
