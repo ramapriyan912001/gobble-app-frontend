@@ -99,7 +99,7 @@ const navigationRef = useRef({});
             <Stack.Screen name="Report" options={{
                     // headerLeft: () => null,
                     headerShown:true,
-                    headerBackTitleVisible: true, 
+                    headerBackTitleVisible: false, 
                     headerTitle: 'Make a Report', 
                     headerBackTitle: 'Back', 
                     headerStyle:{
