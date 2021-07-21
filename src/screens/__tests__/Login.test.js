@@ -2,57 +2,54 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import Login from '../Login';
 import renderer from 'react-test-renderer';
-import {jest} from '@jest/globals';
+import {jest, expect} from '@jest/globals';
 
-test('should render correctly', () => {
-    const mockEmptyFunction = jest.fn(() => {});
-    jest.mock('ScrollView', () => mockEmptyFunction);
-    const { getByPlaceholderText, getByText, getByTestId } = render(<Login/>);
-    getByTestId('GobbleImage');
-    getByPlaceholderText('Email');
-    getByPlaceholderText('Password');
-    getByTestId('ToForgotPasswordButton');
-    getByText('Forgot Password?');
-    getByTestId('LoginButton');
-    getByText('Log In');
-    getByTestId('ToWelcomeButton');
-    getByText('Back');
+describe('<Login />', () => {
+    // it('should render correctly', () => {
+    //     const tree = renderer.create(<Login />).toJSON();
+    //     expect(tree).toMatchSnapshot();
+    //   });
+
+    let tree;
+
+    beforeEach(() => {
+        tree = render(<Login/>)
+    })
+
+    test("snapshot", () => {
+        expect(tree).toMatchSnapshot();
+    })
+
+    test("renders default elements", () => {
+        //Act
+        const localTree = render(<Login/>);
+        const { getByPlaceholderText, getByText, getByTestId, findByTestId } = localTree;
+
+        //Assert
+        expect(findByTestId('GobbleImage')).not.toThrow();
+        getByPlaceholderText('Email');
+        getByPlaceholderText('Password');
+        getByTestId('ToForgotPasswordButton');
+        getByText('Forgot Password?');
+        getByTestId('LoginButton');
+        getByText('Log In');
+        getByTestId('ToWelcomeButton');
+        getByText('Back');
+    });
+
+
+    it('can navigate to ForgotPassword', () => {
+        const navigateMock = jest.fn();
+        const { getByTestId } = render(<Login navigation={{ navigate: navigateMock }}/>);
+        fireEvent.press(getByTestId('ToForgotPasswordButton'));
+        expect(navigateMock).toBeCalledWith('ForgotPassword');
+    });
+
+    it('can navigate to welcome', () => {
+        const navigateMock = jest.fn();
+        const { getByTestId } = render(<Login navigation={{ navigate: navigateMock }}/>);
+
+        fireEvent.press(getByTestId('ToWelcomeButton'));
+        expect(navigateMock).toBeCalledWith('Welcome');
+    });
 });
-
-
-// describe('<Login />', () => {
-//     it('should render correctly', () => {
-//         const tree = renderer.create(<Login />).toJSON();
-//         expect(tree).toMatchSnapshot();
-//       });
-
-//     it('renders default elements', () => {
-//         const { getByPlaceholderText, getByText, getByTestId } = render(<Login/>);
-//         getByTestId('GobbleImage');
-//         getByPlaceholderText('Email');
-//         getByPlaceholderText('Password');
-//         getByTestId('ToForgotPasswordButton');
-//         getByText('Forgot Password?');
-//         getByTestId('LoginButton');
-//         getByText('Log In');
-//         getByTestId('ToWelcomeButton');
-//         getByText('Back');
-//     });
-
-
-//     it('can navigate to ForgotPassword', () => {
-//         const navigateMock = jest.fn();
-//         const { getByTestId } = render(<Login navigation={{ navigate: navigateMock }}/>);
-
-//         fireEvent.press(getByTestId('ToForgotPasswordButton'));
-//         expect(navigateMock).toBeCalledWith('ForgotPassword');
-//     });
-
-//     it('can navigate to welcome', () => {
-//         const navigateMock = jest.fn();
-//         const { getByTestId } = render(<Login navigation={{ navigate: navigateMock }}/>);
-
-//         fireEvent.press(getByTestId('ToWelcomeButton'));
-//         expect(navigateMock).toBeCalledWith('Welcome');
-//     });
-// });

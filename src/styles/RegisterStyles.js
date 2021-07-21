@@ -6,6 +6,7 @@ const dark = '#242C40';
 export const styles = StyleSheet.create({
     container: {
             flex: 1,
+            flexWrap: 'nowrap',
             flexDirection:'column',
             alignItems: 'center',
             justifyContent: 'center',

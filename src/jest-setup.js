@@ -11,3 +11,29 @@ jest.mock('react-native-reanimated', () => {
 
   return Reanimated;
 });
+
+//-----TEMPLATE FOR MOCKS------
+// jest.mock('SomeLibrary', () => {
+//   return ({
+//     MethodOne: jest.fn(() => 'Mocking 1'),
+//     MethodTwo: jest.fn(() => 'Mocking 2'),
+//   })
+// });
+//-----EXAMPLE-----
+// jest.mock('@react-native-community/AsyncStorage', () => {
+//   return ({
+//     shouldThrow: false,
+//     getByKey: jest.fn(() => {
+//       if (shouldThrow) {
+//         throw new Error('Error Occurred while Getting')
+//       }
+//       return Promise.resolve('done');
+//     }),
+//     setByKey: jest.fn(() =>{
+//       if (shouldThrow) {
+//         throw new Error('Error occurred while Setting')
+//       }
+//       return Promise.resolve('setdone');
+//     })
+//   })
+// });
