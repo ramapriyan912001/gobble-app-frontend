@@ -74,7 +74,7 @@ function AboutPerson(props, { navigation }) {
         </View>
             <View style={[themes.containerTheme(isLight)]}>
                 <TouchableOpacity
-                    style={[styles.longButton, themes.buttonTheme(isLight)]}
+                    style={[{...styles.longButton, marginTop:'-2%'}, themes.buttonTheme(isLight)]}
                     onPress={() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         let text = `Are you sure you wish to block ${otherUser.name}?`;

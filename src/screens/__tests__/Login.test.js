@@ -2,27 +2,11 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 import Login from '../Login';
 import renderer from 'react-test-renderer';
-import '../node_modules/react-native/Libraries/Components/ScrollView/ScrollView';
-import mockScrollView from 'react-native/jest/mockScrollView';
+import {jest} from '@jest/globals';
 
 test('should render correctly', () => {
-    jest.mock('../node_modules/react-native/Libraries/Components/ScrollView/ScrollView.js', () => {
-        // const MockScrollView = require.requireMock('ScrollViewMock');
-        const React = require('React');  
-        const RealScrollView = require.requireActual('../node_modules/react-native/Libraries/Components/ScrollView/ScrollView.js');
-        class ScrollView extends React.Component {
-          scrollTo() {
-          }
-      
-          render() {
-            return (
-              <mockScrollView {...this.props} />
-            );
-          }
-        }
-        ScrollView.propTypes = RealScrollView.propTypes;
-        return ScrollView;
-      });
+    const mockEmptyFunction = jest.fn(() => {});
+    jest.mock('ScrollView', () => mockEmptyFunction);
     const { getByPlaceholderText, getByText, getByTestId } = render(<Login/>);
     getByTestId('GobbleImage');
     getByPlaceholderText('Email');

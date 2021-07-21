@@ -16,7 +16,8 @@ export default function MakeReport(props) {
     const isLight = colorScheme === 'light';
     const [reason, setReason] = useState(2);
     const [otherUser, setOtherUser] = useState(props.route.params.otherUser);
-    const [isPickerShow, setIsPickerShow] = useState(false)
+    const [isPickerShow, setIsPickerShow] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [text, setText] = useState('')
 
     const confirmReport = () => {
@@ -28,8 +29,10 @@ export default function MakeReport(props) {
             },
             { text: "Yes", onPress: async() => {
                 let date = new Date()
+                setLoading(true);
                 await firebaseSvc.makeReport(otherUser.id, {description: text, reason: reason}, date.toString())
-                let res = await firebaseSvc.blockUser(otherUser.id, {name: otherUser.name, id: otherUser.id, avatar: otherUser.avatar})
+                let res = await firebaseSvc.blockUser(otherUser.id, {name: otherUser.name, id: otherUser.id, avatar: otherUser.avatar});
+                setLoading(false);
                 if(res == BLOCK_SUCCESS) {
                     await Alert.alert('Gobble takes your complaint very seriously.', 'Our admins are reviewing your complaint and will take appropriate action.')
                     props.navigation.navigate('ChatRoom')
@@ -47,8 +50,8 @@ export default function MakeReport(props) {
         return REASONS.map(reason => (<Picker.Item label={reason} value={reasonID++} color={themes.oppositeTheme(isLight)} key={reasonIDDuplicate++}/>))
     };
     return (
-        <KeyboardAwareScrollView style={themes.containerTheme(isLight)} scrollEnabled={false}>
-            <View style={Platform.OS == 'ios' ? {marginTop: '8%'} : {marginTop: '15%'}}>
+        <KeyboardAwareScrollView style={[themes.containerTheme(isLight)]} contentContainerStyle={Platform.OS == 'android'? {flex:1}: {}} scrollEnabled={false}>
+            <View style={Platform.OS == 'ios' ? {marginTop: '8%'} : {marginTop: '2%'}}>
                 <Text style={[specificStyles.headerText, themes.textTheme(isLight)]}>Why do you wish to report the user?</Text>
             {!isPickerShow && <Picker
             style={Platform.OS == 'android' ? {marginLeft: '3%', color: themes.oppositeTheme(isLight)} : {color: themes.oppositeTheme(isLight)}}
@@ -58,7 +61,7 @@ export default function MakeReport(props) {
                         {renderReasons()}
                 </Picker>}
             </View>
-            <View style={Platform.OS == 'ios' ? {marginTop: '7%', marginLeft:'1%', marginRight: '1%'} : {marginTop: '15%', paddingRight: '5%'}}>
+            <View style={Platform.OS == 'ios' ? {marginTop: '7%', marginLeft:'1%', marginRight: '1%'} : {marginTop: '2%', paddingRight: '5%'}}>
                 <Text style={[specificStyles.headerText, themes.textTheme(isLight)]}>Please describe why you wish to report this user.</Text>
                 <TextInput
                 style={[specificStyles.input, themes.textTheme(isLight)]}
@@ -74,7 +77,7 @@ export default function MakeReport(props) {
                 />
             </View>
             <View>
-            <TouchableOpacity style={[Platform.OS == 'ios'? {...buttonStyles.loginButton, marginTop: '-5%'} : {...buttonStyles.loginButton, marginTop: '-10%'}, themes.buttonTheme(isLight)]} 
+            <TouchableOpacity style={[Platform.OS == 'ios'? {...specificStyles.longButton, marginTop: '-5%'} : {...specificStyles.longButton, marginTop: '-10%'}, themes.buttonTheme(isLight)]} 
                 onPress={confirmReport}>
                 <Text style={themes.textTheme(!isLight)}>Confirm</Text>
             </TouchableOpacity>
@@ -89,7 +92,8 @@ const specificStyles = StyleSheet.create({
       height: '45%',
       width: '90%',
       borderColor: 'gray',
-      borderWidth: 1
+      borderWidth: 1,
+      paddingLeft:'10%'
     },
     headerText: {
         fontSize: 24,
@@ -99,7 +103,21 @@ const specificStyles = StyleSheet.create({
         marginLeft: '5%',
         marginBottom: '5%'
     },
-
+    longButton:{
+        width:'85%',
+        borderRadius:25,
+        height:50,
+        alignSelf:'center',
+        alignItems:"center",
+        justifyContent:"center",
+        shadowOffset: {
+            width: 4,
+            height: 4,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 9,
+        elevation: 5,
+    },
     subHeader: {
         fontSize: 22,
         // alignSelf: 'center',

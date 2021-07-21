@@ -64,7 +64,7 @@ export default function RegisterPage3(props) {
      const industryLabels = (() => {
         let pickerItems = [];
         for (let [code, industryTitle] of Object.entries(industries)) {
-            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} color={themes.oppositeTheme(isLight)} value ={code}/>);
+            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} color={themes.oppositeTheme(isLight)} value ={parseInt(code)}/>);
         }
         return pickerItems;
     })();
@@ -74,6 +74,7 @@ export default function RegisterPage3(props) {
     const showHideIndustries = () => setShowIndustries(!showIndustries);
 
     const pickerText = (bool) => bool ? 'Close' : 'Change Preference';
+    const pickerTextColor = (bool) => !bool ? '#48a832' : '#c71414';
 
     return (
     <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
@@ -83,7 +84,7 @@ export default function RegisterPage3(props) {
             onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
             showHideDiets();}}>
-                <Text style={[{fontSize:15},themes.textTheme(isLight)]}>{`Tap here to ${pickerText(showDiets)}`}</Text>
+                <Text style={[{fontSize:15, color: pickerTextColor(showDiets)}]}>{`Tap here to ${pickerText(showDiets)}`}</Text>
             </TouchableOpacity>}
             {(showDiets && !showCuisines && !showIndustries) &&
             <Picker
@@ -100,7 +101,7 @@ export default function RegisterPage3(props) {
             onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
             showHideCuisines();}}>
-                <Text style={[{fontSize:15},themes.textTheme(isLight)]}>{`Tap here to ${pickerText(showCuisines)}`}</Text>
+                <Text style={[{fontSize:15, color:pickerTextColor(showCuisines)}]}>{`Tap here to ${pickerText(showCuisines)}`}</Text>
             </TouchableOpacity>
             }
             {(!showDiets && showCuisines && !showIndustries) &&
@@ -117,7 +118,7 @@ export default function RegisterPage3(props) {
             onPress={() => {
             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
             showHideIndustries();}}>
-                <Text style={[{fontSize:15},themes.textTheme(isLight)]}>{`Tap here to ${pickerText(showIndustries)}`} </Text>
+                <Text style={[{fontSize:15, color:pickerTextColor(showIndustries)}]}>{`Tap here to ${pickerText(showIndustries)}`} </Text>
             </TouchableOpacity>}
             {(!showDiets && !showCuisines && showIndustries) &&
             <Picker
