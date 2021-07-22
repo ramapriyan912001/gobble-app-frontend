@@ -97,7 +97,7 @@ function Awaiting (props, {navigation}) {
             style={themes.containerTheme(isLight)}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
+              containerStyle={[{borderBottomWidth:3, height: 110}, themes.containerTheme(isLight)]}
               key={index} 
               roundAvatar>
                 <Avatar size='large' avatarStyle={{borderRadius: 120}} source={{uri:FOOD_IMAGES_URIs[item.cuisinePreference]}} />

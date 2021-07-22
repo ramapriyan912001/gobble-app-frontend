@@ -62,7 +62,7 @@ import Animated from 'react-native-reanimated'
       }
       return (
           <ListItem
-                        containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
+                        containerStyle={[{borderBottomWidth:3, height: 110}, themes.containerTheme(isLight)]}
                         key={props.index} 
                         roundAvatar>
                           <View style={{flexDirection: 'column', borderColor: themes.oppositeTheme(isLight), paddingRight: '2.5%',borderRightWidth: 2}}>

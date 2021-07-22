@@ -96,8 +96,9 @@ function MatchesHistory (props, {navigation}) {
     }, [navigation])
     if(data.length != 0) {
       return (
-        <SafeAreaView style={themes.containerTheme(isLight)}>
-            <FlatList
+        <SafeAreaView style={[{height: '100%'},themes.containerTheme(isLight)]}>
+          <View style={themes.containerTheme(isLight)}>
+          <FlatList
               data={data}
               style={themes.containerTheme(isLight)}
               extraData={selectedID}
@@ -105,7 +106,7 @@ function MatchesHistory (props, {navigation}) {
                 <TouchableOpacity
                 onPress={() => props.navigation.navigate('Restaurants', {item: item})}>
                   <ListItem
-                  containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
+                  containerStyle={[{borderBottomWidth:3,  height: 110}, themes.containerTheme(isLight)]}
                   key={index} 
                   roundAvatar>
                     <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>
@@ -124,6 +125,7 @@ function MatchesHistory (props, {navigation}) {
               // ListFooterComponent={renderFooter(loading)}
               onEndReachedThreshold={50}
             />
+          </View>
         </SafeAreaView>
       );
     } else {
