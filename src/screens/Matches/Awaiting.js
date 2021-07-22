@@ -89,7 +89,7 @@ function Awaiting (props, {navigation}) {
     // const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     if(data.length != 0) {
     return (
-      <SafeAreaView style={themes.containerTheme(isLight)}>
+      <SafeAreaView style={[{height: '100%'}, themes.containerTheme(isLight)]}>
           <FlatList
             extraData={selectedID}
             data={data}

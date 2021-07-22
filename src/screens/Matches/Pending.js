@@ -240,7 +240,7 @@ import Animated from 'react-native-reanimated'
     }, [navigation])
     if(data.length != 0) {
       return (
-        <SafeAreaView>
+        <SafeAreaView style={[{height: '100%'}, themes.containerTheme(isLight)]}>
             <FlatList
               data={data}
               extraData={selectedID}

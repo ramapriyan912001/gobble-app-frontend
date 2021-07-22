@@ -97,7 +97,6 @@ function MatchesHistory (props, {navigation}) {
     if(data.length != 0) {
       return (
         <SafeAreaView style={[{height: '100%'},themes.containerTheme(isLight)]}>
-          <View style={themes.containerTheme(isLight)}>
           <FlatList
               data={data}
               style={themes.containerTheme(isLight)}
@@ -125,7 +124,6 @@ function MatchesHistory (props, {navigation}) {
               // ListFooterComponent={renderFooter(loading)}
               onEndReachedThreshold={50}
             />
-          </View>
         </SafeAreaView>
       );
     } else {
