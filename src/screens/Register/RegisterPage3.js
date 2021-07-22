@@ -43,7 +43,7 @@ export default function RegisterPage3(props) {
      */
     const dietaryOptions = (() => {
         let i = 0;
-        return DIETS.map(diet => (<Picker.Item label={diet} color={themes.oppositeTheme(isLight)} value={diet} key={i++}/>));
+        return DIETS.map(diet => (<Picker.Item label={diet} color={Platform.OS == 'android' ? 'black' : themes.oppositeTheme(isLight)} value={diet} key={i++}/>));
     })();
 
     /**
@@ -53,7 +53,7 @@ export default function RegisterPage3(props) {
      */
     const cuisineOptions = (() => {
         let i = 0;
-        return CUISINES.map(cuisine => (<Picker.Item label={cuisine} color={themes.oppositeTheme(isLight)} value={cuisine} key={i++}/>));
+        return CUISINES.map(cuisine => (<Picker.Item label={cuisine} color={Platform.OS == 'android' ? 'black' : themes.oppositeTheme(isLight)} value={cuisine} key={i++}/>));
     })();
 
     /**
@@ -64,7 +64,7 @@ export default function RegisterPage3(props) {
      const industryLabels = (() => {
         let pickerItems = [];
         for (let [code, industryTitle] of Object.entries(industries)) {
-            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} color={themes.oppositeTheme(isLight)} value ={parseInt(code)}/>);
+            pickerItems.push(<Picker.Item key ={code} label= {industryTitle} color={Platform.OS == 'android' ? 'black' : themes.oppositeTheme(isLight)} value ={parseInt(code)}/>);
         }
         return pickerItems;
     })();

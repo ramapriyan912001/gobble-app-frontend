@@ -152,14 +152,14 @@ function GobbleSelect(props, {navigation}) {
    */
   const renderCuisines = () => {
       let cuisineID = 0;
-      return CUISINES.map(cuisine => (<Picker.Item label={cuisine} value={cuisine} key={cuisineID++} color={themes.oppositeTheme(isLight)}/>))
+      return CUISINES.map(cuisine => (<Picker.Item label={cuisine} value={cuisine} key={cuisineID++} color={Platform.OS == 'android' ? 'black' : themes.oppositeTheme(isLight)}/>))
   };
 
   const renderDistances = () => {
     const distances = [1, 2, 5, 10, 200];
     let distanceID = 0;
 
-    return distances.map(distance => (<Picker.Item label={distance == 200 ? 'No Preference' : `${distance} km`} value={distance} key={distanceID++} color={themes.oppositeTheme(isLight)}/>))
+    return distances.map(distance => (<Picker.Item label={distance == 200 ? 'No Preference' : `${distance} km`} value={distance} key={distanceID++} color={Platform.OS == 'android' ? 'black' : themes.oppositeTheme(isLight)}/>))
   };
 
   const topMargin = Platform.OS === 'ios' ? '2%':'12%';
@@ -202,6 +202,7 @@ function GobbleSelect(props, {navigation}) {
                     {!isPickerShow && <Text style={[{...inputStyles.subHeader, marginTop: '0%',}, themes.textTheme(isLight)]}>What are you in the mood for today?</Text>}
                     {!isPickerShow && <Picker
                         selectedValue={cuisinePreference}
+                        style={themes.textTheme(isLight)}
                         onValueChange={(itemValue, itemIndex) => setCuisinePreference(itemValue)}>
                         {renderCuisines()}
                     </Picker>}
@@ -211,6 +212,7 @@ function GobbleSelect(props, {navigation}) {
                     {!isPickerShow &&
                         <Picker
                         selectedValue={distance}
+                        style={themes.textTheme(isLight)}
                         onValueChange={(itemValue, itemIndex) => setDistance(itemValue)}>
                         {renderDistances()}
                     </Picker>}
