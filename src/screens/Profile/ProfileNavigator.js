@@ -35,19 +35,8 @@ export function ProfileNavigator() {
 
     return (
         <Stack.Navigator initialRouteName="Profile">
-            <Stack.Screen name="Profile" options={({ navigation, route }) => 
-                ({
-                    headerLeft:drawerButton(navigation),
-                    headerShown:true,
-                    headerBackTitleVisible: false, 
-                    headerTitle: 'Profile', 
-                    headerBackTitle: 'Profile', 
-                    headerStyle:{
-                        backgroundColor: themes.oppositeTheme(!isLight),
-                    },
-                    headerTintColor:themes.oppositeTheme(isLight)
-                })
-            } component={Profile}></Stack.Screen>
+            <Stack.Screen name="Profile" 
+            component={Profile}  options={{headerShown: false}}></Stack.Screen>
             <Stack.Screen name="RegisterPage2" component={RegisterPage2}></Stack.Screen>
         </Stack.Navigator>
     )

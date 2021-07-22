@@ -17,9 +17,9 @@ export default function DeleteAccount(props) {
     return (
         <SafeAreaView style={[{flex: 1}, themes.containerTheme(isLight)]}>
             <StatusBar style="auto"/>
-            <TouchableOpacity style={{marginTop: drawerMargin}} onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
+            {/* <TouchableOpacity style={{marginTop: drawerMargin}} onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
                 <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <View style={{marginTop: '20%'}}>
                 <Text style={[inputStyles.headerText, themes.textTheme(isLight)]}>
                     {`This is an irreversible action.`}

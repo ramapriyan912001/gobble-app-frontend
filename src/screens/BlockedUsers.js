@@ -98,9 +98,6 @@ function BlockedUsers (props, {navigation}) {
     if(data.length != 0) {
       return (
         <SafeAreaView style={[themes.containerTheme(isLight)]}>
-            <TouchableOpacity style={Platform.OS == 'android'? {marginTop:'10%', marginBottom:'2%'}:{}} onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
-                <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
-            </TouchableOpacity>
             <FlatList
               data={data}
               extraData={selectedID}
@@ -132,9 +129,6 @@ function BlockedUsers (props, {navigation}) {
     } else {
       return (
         <SafeAreaView style={[{flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'center'}, themes.containerTheme(isLight)]}>
-          <TouchableOpacity style={{alignSelf: 'flex-start', marginBottom:'80%', marginTop:drawerTopMargin}} onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
-                <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
-            </TouchableOpacity>
           <Text style={[{alignSelf: 'center', fontWeight:'bold'}, themes.textTheme(isLight)]}>You have no blocked users!</Text>
         </SafeAreaView>
       )
