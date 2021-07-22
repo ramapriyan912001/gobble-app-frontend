@@ -52,4 +52,10 @@ describe('<Login />', () => {
         fireEvent.press(getByTestId('ToWelcomeButton'));
         expect(navigateMock).toBeCalledWith('Welcome');
     });
+
+    //calls firebase auth with the right info when text is entered
+
+    //throws an error when no email is entered
+
+    //throws an error when no password is entered
 });
