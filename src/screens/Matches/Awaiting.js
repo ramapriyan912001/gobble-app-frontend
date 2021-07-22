@@ -25,7 +25,7 @@ function Awaiting (props, {navigation}) {
   const colorScheme = useColorScheme();
   const isLight = colorScheme === 'light';
     const [data, setData] = useState([]);
-    // const [loading, setLoading]= useState(true);
+    const [currentID, setCurrentID] = useState(firebaseSvc.uid);
     const [matchIDs, setMatchIDs] = useState({});
     const [selectedID, setSelectedID] = useState(null)
     
@@ -76,7 +76,7 @@ function Awaiting (props, {navigation}) {
         loadAsync();
         return () => {
           console.log('awaitingMatchID clean up!');
-          firebaseSvc.awaitingMatchIDsOff();
+          firebaseSvc.awaitingMatchIDsOff(currentID);
         }
     }, [])
 

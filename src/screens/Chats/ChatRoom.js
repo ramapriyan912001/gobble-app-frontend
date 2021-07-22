@@ -26,7 +26,8 @@ function ChatRoom (props, {navigation}) {
     const [loading, setLoading]= useState(true);
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
-    const [selectedID, setSelectedID] = useState(null)
+    const [selectedID, setSelectedID] = useState(null);
+    const [currentID, setCurrentID] = useState(firebaseSvc.uid);
     
     /**
      * Load Chats asynchronously
@@ -45,6 +46,7 @@ function ChatRoom (props, {navigation}) {
                       userIDs[key] = true;
                     }
                     let details = value.metadata;
+                    setCurrentID(details._id);
                     const otherUserId = details.otherUserId
                     await firebaseSvc
                           .avatarRef(otherUserId)
@@ -66,7 +68,7 @@ function ChatRoom (props, {navigation}) {
         loadAsync();
         return () => {
           console.log('chatroom clean up!');
-          firebaseSvc.chatsOff();
+          firebaseSvc.chatsOff(currentID);
         }
     }, [])
 

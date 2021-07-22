@@ -271,11 +271,9 @@ class FirebaseSvc {
                                                 .on('value', (x) => callback(success(x)))
                                               : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
                                               
-  awaitingMatchIDsOff = () => {if (this.userExists()){
-                                this
-                                .userRef(`${this.uid}/awaitingMatchIDs`)
-                                .off()
-                              }}                                            
+  awaitingMatchIDsOff = (uid) => this
+                              .userRef(`${uid}/awaitingMatchIDs`)
+                              .off()                                    
 
   getPendingMatchIDs = (success, callback, failure) => this.userExists()
                                               ? this
@@ -283,11 +281,9 @@ class FirebaseSvc {
                                                 .on('value', (x) => callback(success(x)))
                                               : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
-   pendingMatchIDsOff = () => {if (this.userExists()){
-                                this
-                                .userRef(`${this.uid}/pendingMatchIDs`)
-                                .off()
-                              }}                                                
+   pendingMatchIDsOff = (uid) =>  this
+                                  .userRef(`${uid}/pendingMatchIDs`)
+                                  .off();                                         
                                 
   getMatchIDs = (success, callback, failure) => this.userExists()
                                       ? this
@@ -295,12 +291,9 @@ class FirebaseSvc {
                                         .on('value', (x) => callback(success(x)))
                                       : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
-  matchIDsOff = () => {
-                        if (this.userExists()) {
-                          this
-                          .userRef(`${this.uid}/matchIDs`)
-                          .off()
-                      }}
+  matchIDsOff = (uid) => this
+                        .userRef(`${uid}/matchIDs`)
+                        .off();
   
   getChats = (success, failure) => this.userExists()
                                       ? this  
@@ -308,13 +301,9 @@ class FirebaseSvc {
                                         .on('value', success)
                                       : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});  
   
-  chatsOff = () => {
-                      if (this.userExists()) {
-                        this
-                        .chatsRef(`${this.uid}`)
-                        .off();
-                    }
-                  }
+  chatsOff = (uid) => this
+                      .chatsRef(`${uid}`)
+                      .off();
 
   isAuthAdmin = () => {
     return this
@@ -366,9 +355,9 @@ class FirebaseSvc {
   }
  
 
-  reportsOff = () => firebase
+  reportsOff = (uid) => firebase
                       .database()
-                      .ref(`Reports/${this.uid}`)
+                      .ref(`Reports/${uid}`)
                       .off();
 
   async makeReport(otherUserId, complaint, datetime) {
@@ -715,12 +704,13 @@ class FirebaseSvc {
   }
 
   getBlockedUsers = (success, callback, failure) => this.userExists()
-                                      ? firebase.database().ref(`Users/${this.uid}/blockedUsers`)
-                                        .on('value', (x) => callback(success(x)))
-                                      : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+                                                    ? this
+                                                      .userRef(`${this.uid}/blockedUsers`)
+                                                      .on('value', (x) => callback(success(x)))
+                                                    : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
-  blockedUsersOff() {
-    firebase.database().ref(`Users/${this.uid}`).off();
+  blockedUsersOff(uid) {
+    this.userRef(`${uid}`).off();
   }
 
   blockUser(otherUid, otherUserNameAndAvatar) {

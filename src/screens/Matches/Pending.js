@@ -29,7 +29,8 @@ import Animated from 'react-native-reanimated'
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
     const [selectedID, setSelectedID] = useState(null);
-    const [loadingStates, setLoadingStates] = useState({})
+    const [loadingStates, setLoadingStates] = useState({});
+    const [currentID, setCurrentID] = useState(firebaseSvc.uid);
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
 
@@ -227,7 +228,7 @@ import Animated from 'react-native-reanimated'
         loadAsync();
         return () => {
           console.log('pendingMatchID clean up!');
-          firebaseSvc.pendingMatchIDsOff();
+          firebaseSvc.pendingMatchIDsOff(currentID);
         }
     }, [])
 

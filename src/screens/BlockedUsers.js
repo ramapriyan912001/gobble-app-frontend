@@ -27,7 +27,7 @@ import { DrawerActions } from '@react-navigation/native';
 function BlockedUsers (props, {navigation}) {
     const [data, setData] = useState([]);
     const [selectedID, setSelectedID] = useState(null);
-
+    const [currentID, setCurrentID] = useState(firebaseSvc.uid);
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
     const drawerTopMargin = Platform.OS === 'ios' ? '-87%' : '-70%';
@@ -64,7 +64,7 @@ function BlockedUsers (props, {navigation}) {
         loadAsync();
         return () => {
           console.log('Blocked users clean up!');
-          firebaseSvc.blockedUsersOff();
+          firebaseSvc.blockedUsersOff(currentID);
         }
     }, [])
 

@@ -25,7 +25,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 function MatchesHistory (props, {navigation}) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
-    const [selectedID, setSelectedID] = useState(null)
+    const [selectedID, setSelectedID] = useState(null);
+    const [currentID, setCurrentID] = useState(firebaseSvc.uid);
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
 
@@ -83,7 +84,7 @@ function MatchesHistory (props, {navigation}) {
         loadAsync();
         return () => {
           console.log('matchHistory clean up!');
-          firebaseSvc.matchIDsOff();
+          firebaseSvc.matchIDsOff(currentID);
         }
     }, [])
 
