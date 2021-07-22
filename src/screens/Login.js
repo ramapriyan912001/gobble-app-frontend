@@ -51,7 +51,8 @@ export default function Login(props) {
         .login(user, loginSuccess, loginFailed);
     };
 
-    const imageMargin = Platform.OS == 'ios' ? '7%':'2%';
+    const imageMarginTop = Platform.OS == 'ios' ? '7%':'2%';
+    const imageMarginLeft = Platform.OS == 'ios' ? '23%':'22%';
 
     return(
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -60,7 +61,7 @@ export default function Login(props) {
                     enabled={true}
                     behavior={"position"}
                     >
-                    <Image style={{...imageStyles.gobbleImage, marginTop:imageMargin,height:'40%',marginLeft:'20%'}} source = {require('../images/gobble.png')} testID={'GobbleImage'}/>
+                    <Image style={{...imageStyles.gobbleImage, marginTop:imageMarginTop,height:'40%',marginLeft:imageMarginLeft}} source = {require('../images/gobble.png')} testID={'GobbleImage'}/>
                     <StatusBar style="auto"/>
                     <View style={[{...styles.inputView, marginLeft:'20%'}, themes.viewTheme(isLight)]}> 
                         <TextInput
@@ -87,7 +88,7 @@ export default function Login(props) {
                         />
                     </View>
                     <TouchableOpacity
-                        style={{...buttonStyles.forgotButton, marginLeft:'30%'}}
+                        style={{...buttonStyles.forgotButton, marginLeft: Platform.OS == 'android' ? '30%':'35%'}}
                         onPress={()=> {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         props.navigation.navigate('ForgotPassword');}}
@@ -119,6 +120,3 @@ export default function Login(props) {
         </TouchableWithoutFeedback>
     )
 }
-/**
- * 
- */

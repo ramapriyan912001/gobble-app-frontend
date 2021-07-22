@@ -1,8 +1,7 @@
 import React, {useEffect, useState } from 'react'
-import {Text, View, TextInput, Alert, Image, StyleSheet, TouchableOpacity, StatusBar} from 'react-native'
+import {Text, View, TextInput, Alert, Image, SafeAreaView, TouchableWithoutFeedback, TouchableOpacity, StatusBar, Keyboard, KeyboardAvoidingView} from 'react-native'
 import {imageStyles, containerStyles, buttonStyles, inputStyles} from '../../styles/LoginStyles'
 import {styles} from '../../styles/RegisterStyles';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {MESSAGES} from '../../constants/messages'
 import firebaseSvc from '../../firebase/FirebaseSvc';
 import {onSuccess, onFailure, cancelRegistration, createUserProfile} from '../../services/RegistrationHandlers';
@@ -83,12 +82,17 @@ export default function register(props) {
         }
     };
 
+    const imageMargin = Platform.OS == 'ios' ? '7%':'2%';
+
     return(
-            <KeyboardAwareScrollView contentContainerStyle = {[styles.container, themes.containerTheme(isLight)]} scrollEnabled={false}>
-                    <Image style={imageStyles.gobbleImage} source = {require('../../images/gobble.png')}/>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <SafeAreaView style={[themes.containerTheme(isLight), {flex:1, paddingTop:'8%'}]}>  
+                <KeyboardAvoidingView enabled={true}
+                    behavior={"position"}>
+                <Image style={{...imageStyles.gobbleImage, marginTop:imageMargin,height:'35%',marginLeft:'23%'}} source = {require('../../images/gobble.png')} testID={'GobbleImage'}/>
                     <StatusBar style="auto"/>
-                    <Text style={[inputStyles.headerText, themes.textTheme(isLight)]}>Introduce Yourself!</Text>
-                    <View style={[styles.inputView, themes.viewTheme(isLight)]}>
+                    <Text style={[{...inputStyles.headerText, marginTop:'-3%'}, themes.textTheme(isLight)]}>Introduce Yourself!</Text>
+                    <View style={[{...styles.inputView, marginLeft:'20%'}, themes.viewTheme(isLight)]}>
                         <TextInput
                             autoCapitalize="none"
                             textContentType="username"
@@ -101,7 +105,7 @@ export default function register(props) {
                         />
                     </View>
                         
-                    <View style={[styles.inputView, themes.viewTheme(isLight)]}>
+                    <View style={[{...styles.inputView, marginLeft:'20%'}, themes.viewTheme(isLight)]}>
                         <TextInput
                             autoCapitalize="none"
                             textContentType="emailAddress"
@@ -114,7 +118,7 @@ export default function register(props) {
                         />
                     </View>
 
-                    <View style={[inputStyles.inputView, themes.viewTheme(isLight)]}>
+                    <View style={[{...styles.inputView, marginLeft:'20%'}, themes.viewTheme(isLight)]}>
                         <TextInput
                             autoCapitalize="none"
                             passwordRules="minlength: 8; required: lower; required: upper; required: digit; required: [-];"
@@ -148,6 +152,8 @@ export default function register(props) {
                         props.navigation.navigate('Welcome');}}>
                         <Text style={[buttonStyles.longButtonText, themes.oppositeTextTheme(isLight)]}>Back</Text>
                     </TouchableOpacity>
-            </KeyboardAwareScrollView>
+            </KeyboardAvoidingView>
+        </SafeAreaView>
+    </TouchableWithoutFeedback>
     )
 }
