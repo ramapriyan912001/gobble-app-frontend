@@ -1,9 +1,10 @@
-import firebase from 'firebase';
+// import firebase from 'firebase';
 import { Alert } from 'react-native';
 require('firebase/functions');
 import 'react-native-get-random-values';
 import { v4 as uuid } from 'uuid';
-import {firebaseDetails} from '../../FirebaseDetails'
+import {DIETARY_ARRAYS} from '../constants/objects'
+import firebase from '../../FirebaseDetails'
 import {CONFIRM_SUCCESS, CONFIRM_FAIL, FINAL_SUCCESS, 
   FINAL_FAIL, UNACCEPT_SUCCESS, UNACCEPT_FAIL, BLOCK_SUCCESS, 
   BLOCK_FAILURE, UNBLOCK_SUCCESS, UNBLOCK_FAILURE, DELETE_REQUEST_SUCCESS, DELETE_REQUEST_FAILURE, MAKE_REPORT_FAILURE, DELETE_ACCOUNT_FAILURE} from '../constants/results'
@@ -17,9 +18,7 @@ import {CONFIRM_SUCCESS, CONFIRM_FAIL, FINAL_SUCCESS,
 
 class FirebaseSvc {
   constructor() {
-    if (!firebase.apps.length) { //avoid re-initializing -> HIDE LATER
-      firebase.initializeApp(firebaseDetails);
-     }
+    
   }
 
   /**
@@ -111,7 +110,7 @@ class FirebaseSvc {
           console.log('UID:',otherUserId);
           return deleteFunction({uid: otherUserId, token:idToken})
           .then(result => {
-            console.log('result of deletion: ', result);
+            // console.log('result of deletion: ', result);
             if (!result.data.success) {
               console.log('Delete Other User Failure: ' + result.data.message);
               return false;
@@ -272,11 +271,9 @@ class FirebaseSvc {
                                                 .on('value', (x) => callback(success(x)))
                                               : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
                                               
-  awaitingMatchIDsOff = () => {if (this.userExists()){
-                                this
-                                .userRef(`${this.uid}/awaitingMatchIDs`)
-                                .off()
-                              }}                                            
+  awaitingMatchIDsOff = (uid) => this
+                              .userRef(`${uid}/awaitingMatchIDs`)
+                              .off()                                    
 
   getPendingMatchIDs = (success, callback, failure) => this.userExists()
                                               ? this
@@ -284,11 +281,9 @@ class FirebaseSvc {
                                                 .on('value', (x) => callback(success(x)))
                                               : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
-   pendingMatchIDsOff = () => {if (this.userExists()){
-                                this
-                                .userRef(`${this.uid}/awaitingMatchIDs`)
-                                .off()
-                              }}                                                
+   pendingMatchIDsOff = (uid) =>  this
+                                  .userRef(`${uid}/pendingMatchIDs`)
+                                  .off();                                         
                                 
   getMatchIDs = (success, callback, failure) => this.userExists()
                                       ? this
@@ -296,12 +291,9 @@ class FirebaseSvc {
                                         .on('value', (x) => callback(success(x)))
                                       : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
-  matchIDsOff = () => {
-                        if (this.userExists()) {
-                          this
-                          .userRef(`${this.uid}/matchIDs`)
-                          .off()
-                      }}
+  matchIDsOff = (uid) => this
+                        .userRef(`${uid}/matchIDs`)
+                        .off();
   
   getChats = (success, failure) => this.userExists()
                                       ? this  
@@ -309,13 +301,9 @@ class FirebaseSvc {
                                         .on('value', success)
                                       : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});  
   
-  chatsOff = () => {
-                      if (this.userExists()) {
-                        this
-                        .chatsRef(`${this.uid}`)
-                        .off();
-                    }
-                  }
+  chatsOff = (uid) => this
+                      .chatsRef(`${uid}`)
+                      .off();
 
   isAuthAdmin = () => {
     return this
@@ -367,9 +355,9 @@ class FirebaseSvc {
   }
  
 
-  reportsOff = () => firebase
+  reportsOff = (uid) => firebase
                       .database()
-                      .ref(`Reports`)
+                      .ref(`Reports/${uid}`)
                       .off();
 
   async makeReport(otherUserId, complaint, datetime) {
@@ -397,7 +385,7 @@ class FirebaseSvc {
       .currentUser
       .getIdToken(true)
       .then(async idToken => {
-        const deleteReportFunction = await firebase.functions().httpsCallable('makeReport')
+        const deleteReportFunction = await firebase.functions().httpsCallable('deleteReport')
         let response = await deleteReportFunction({reportID: reportID, idToken: idToken})
         return response.data.message;
       })
@@ -584,21 +572,21 @@ class FirebaseSvc {
    * @returns  Boolean depending on match found
    */
   async findGobbleMate(request) {
-    try {
-      return firebase
+    return firebase
       .auth()
       .currentUser
       .getIdToken(true)
       .then(async idToken => {
-        const findGobbleMateFunction = await firebase.functions().httpsCallable('findGobbleMate')
-        console.log("err")
+        const findGobbleMateFunction = await firebase.functions().httpsCallable('findGobbleMate');
+        console.log('Looking for a Match');
         let response = await findGobbleMateFunction({request: request, idToken: idToken})
         console.log('response', response)
         return response.data.found;
       })
-    } catch(err) {
-      console.log('FindGobbleMate Error ' + err.message)
-    }
+      .catch(err => {
+        console.log('FINDGOBBLEMATE FUNCTION RETRIEVAL/EXECUTION ERROR: ', err.message);
+        return false;
+      })
   }
   /**
    * Getter for user details
@@ -620,9 +608,13 @@ class FirebaseSvc {
         let response = await matchConfirmFunction({request: request, idToken: idToken})
         return response.data.message;
       })
+      .catch(err => {
+        console.log('MATCHCONFIRM ERROR:', err.message);
+        return CONFIRM_FAIL;
+      })
     } catch(e) {
       console.log(e)
-      return CONFIRM_FAIL
+      return CONFIRM_FAIL;
     }
   }
 
@@ -712,12 +704,13 @@ class FirebaseSvc {
   }
 
   getBlockedUsers = (success, callback, failure) => this.userExists()
-                                      ? firebase.database().ref(`Users/${this.uid}/blockedUsers`)
-                                        .on('value', (x) => callback(success(x)))
-                                      : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
+                                                    ? this
+                                                      .userRef(`${this.uid}/blockedUsers`)
+                                                      .on('value', (x) => callback(success(x)))
+                                                    : failure({code: 'auth/user-token-expired', message: 'No data provided. Retry Login'});
 
-  blockedUsersOff() {
-    firebase.database().ref(`Users/${this.uid}`).off();
+  blockedUsersOff(uid) {
+    this.userRef(`${uid}`).off();
   }
 
   blockUser(otherUid, otherUserNameAndAvatar) {
@@ -766,17 +759,21 @@ class FirebaseSvc {
     try {
       const response = await fetch(uri);
       const blob = await response.blob();
-      const ref = firebase.storage().ref('avatar').child(uuid());
-      const task = ref.put(blob);
-      return new Promise((resolve, reject) => {
-        task.on('state_changed', () => { }, reject, 
-          () => resolve(task.snapshot.ref.getDownloadURL()));
-      });
+      if (this.userExists()) {
+        const ref = firebase.storage().ref('avatar').child(this.uid);
+        const task = ref.put(blob);
+        return new Promise((resolve, reject) => {
+          task.on('state_changed', () => { }, reject, 
+            () => resolve(task.snapshot.ref.getDownloadURL()));
+        });
+      } else {
+        return new Promise.reject(new Error('User Not Signed In'));
+      }
     } catch (err) {
       console.log('uploadImage error: ' + err.message); 
     }
   }
-
+  
   changeAvatar = async uri => {
     let newImage = await this.uploadImage(uri);
     let updates = {}

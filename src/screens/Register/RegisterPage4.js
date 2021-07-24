@@ -70,6 +70,7 @@ export default function RegisterPage4(props) {
     const switchText = () => cross ? 'Yes!' : 'No!';
     const lastButtonMargin = Platform.OS === 'android'?'35%':'85%';
     const birthdayMargin = Platform.OS === 'android' ? '35%' : '10%';
+    const pickerTextColor = () => !isPickerShow ? '#48a832' : '#c71414';
 
     return(
     <SafeAreaView style={[specificStyles.container, themes.containerTheme(isLight)]}>
@@ -86,7 +87,8 @@ export default function RegisterPage4(props) {
                         onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             showPicker();}} >
-                            <Text style={[themes.textTheme(isLight), {fontSize: 17}]}>{`Chosen: ${Platform.OS == 'ios' ? date.toLocaleString().slice(0, 10) : (date.toLocaleString().slice(0, 10)+date.toLocaleString().slice(19, 24))} ${'\n'}Click me to ${pickerText()}`}</Text>
+                            <Text style={[themes.textTheme(isLight), {fontSize: 17}]}>{`Chosen: ${Platform.OS == 'ios' ? date.toLocaleString().slice(0, 10) : (date.toLocaleString().slice(0, 10)+date.toLocaleString().slice(19, 24))}`}</Text>
+                            <Text style={{color: pickerTextColor()}}>{`Click me to ${pickerText()}`}</Text>
                         </TouchableOpacity>
                         
                         {/* The date picker */}

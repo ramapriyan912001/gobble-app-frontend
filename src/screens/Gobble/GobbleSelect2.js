@@ -65,7 +65,7 @@ export default function GobbleSelect2(props) {
         <Text style={[inputStyles.detailText, themes.textTheme(isLight)]}>{`${props.route.params.description}`}</Text>
         <View style={{marginTop:'5%', width: '100%'}}>
           <TouchableOpacity 
-            style={[themes.buttonTheme(isLight), styles.longButton]}
+            style={[styles.longButton, themes.buttonTheme(isLight)]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
             let request = props.route.params.request
@@ -74,7 +74,7 @@ export default function GobbleSelect2(props) {
             <Text style={themes.textTheme(!isLight)}>Confirm Gobble!</Text>
           </TouchableOpacity>
           <TouchableOpacity 
-            style={[themes.buttonTheme(isLight), styles.longButton]}
+            style={[styles.longButton,themes.buttonTheme(isLight), ]}
             onPress={() => {
               Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
             props.navigation.goBack();

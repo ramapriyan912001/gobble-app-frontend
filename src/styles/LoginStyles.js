@@ -1,10 +1,4 @@
 import {StyleSheet} from 'react-native'
-import { useFonts, IndieFlower_400Regular } from '@expo-google-fonts/indie-flower'
-const _fontsLoaded = () => {
-    let [fontsLoaded] = useFonts({
-        IndieFlower_400Regular,
-      });
-}
 
 //TODO: Abstract styles by screen
 
@@ -71,7 +65,7 @@ export const buttonStyles = StyleSheet.create({
 export const imageStyles = StyleSheet.create({
     gobbleImage: {
         width: '60%',
-        height: '30%',
+        height:'30%',
         marginBottom: '10%',
         marginLeft: '2%',
         marginTop: '-5%'

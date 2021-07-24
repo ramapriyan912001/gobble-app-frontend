@@ -25,7 +25,7 @@ function Awaiting (props, {navigation}) {
   const colorScheme = useColorScheme();
   const isLight = colorScheme === 'light';
     const [data, setData] = useState([]);
-    // const [loading, setLoading]= useState(true);
+    const [currentID, setCurrentID] = useState(firebaseSvc.uid);
     const [matchIDs, setMatchIDs] = useState({});
     const [selectedID, setSelectedID] = useState(null)
     
@@ -76,7 +76,7 @@ function Awaiting (props, {navigation}) {
         loadAsync();
         return () => {
           console.log('awaitingMatchID clean up!');
-          firebaseSvc.awaitingMatchIDsOff();
+          firebaseSvc.awaitingMatchIDsOff(currentID);
         }
     }, [])
 
@@ -89,7 +89,7 @@ function Awaiting (props, {navigation}) {
     // const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     if(data.length != 0) {
     return (
-      <SafeAreaView style={themes.containerTheme(isLight)}>
+      <SafeAreaView style={[{height: '100%'}, themes.containerTheme(isLight)]}>
           <FlatList
             extraData={selectedID}
             data={data}
@@ -97,7 +97,7 @@ function Awaiting (props, {navigation}) {
             style={themes.containerTheme(isLight)}
             renderItem={({ item, index }) => (
               <ListItem
-              containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
+              containerStyle={[{borderBottomWidth:3, height: 110}, themes.containerTheme(isLight)]}
               key={index} 
               roundAvatar>
                 <Avatar size='large' avatarStyle={{borderRadius: 120}} source={{uri:FOOD_IMAGES_URIs[item.cuisinePreference]}} />

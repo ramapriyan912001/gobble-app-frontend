@@ -29,7 +29,8 @@ import Animated from 'react-native-reanimated'
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
     const [selectedID, setSelectedID] = useState(null);
-    const [loadingStates, setLoadingStates] = useState({})
+    const [loadingStates, setLoadingStates] = useState({});
+    const [currentID, setCurrentID] = useState(firebaseSvc.uid);
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
 
@@ -62,7 +63,7 @@ import Animated from 'react-native-reanimated'
       }
       return (
           <ListItem
-                        containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
+                        containerStyle={[{borderBottomWidth:3, height: 110}, themes.containerTheme(isLight)]}
                         key={props.index} 
                         roundAvatar>
                           <View style={{flexDirection: 'column', borderColor: themes.oppositeTheme(isLight), paddingRight: '2.5%',borderRightWidth: 2}}>
@@ -227,7 +228,7 @@ import Animated from 'react-native-reanimated'
         loadAsync();
         return () => {
           console.log('pendingMatchID clean up!');
-          firebaseSvc.pendingMatchIDsOff();
+          firebaseSvc.pendingMatchIDsOff(currentID);
         }
     }, [])
 
@@ -240,7 +241,7 @@ import Animated from 'react-native-reanimated'
     }, [navigation])
     if(data.length != 0) {
       return (
-        <SafeAreaView>
+        <SafeAreaView style={[{height: '100%'}, themes.containerTheme(isLight)]}>
             <FlatList
               data={data}
               extraData={selectedID}
@@ -251,6 +252,7 @@ import Animated from 'react-native-reanimated'
               // ListHeaderComponent={renderHeader}
               // ListFooterComponent={renderFooter(loading)}
               onEndReachedThreshold={50}
+              testID={'PendingFlatList'}
             />
         </SafeAreaView>
       );

@@ -138,7 +138,7 @@ function MealPreferences(props) {
                             if(selected.Value) {
                                 setIndustryPreference('Any')
                             } else {
-                                setIndustryPreference(industry)
+                                setIndustryPreference(INDUSTRY_CODES[industry])
                             }
                         }
                         return selected;
@@ -183,7 +183,7 @@ function MealPreferences(props) {
                         <TouchableOpacity style={[styles.longButton, themes.editButtonTheme(isLight)]} onPress={() => {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             console.log("Changing Preferences");
-                            props.updateCurrentUserCollection({...props.currentUserData, cuisine: cuisine, diet: diet, industry: industry, crossIndustrial: crossIndustrial})
+                            props.updateCurrentUserCollection({...props.currentUserData, cuisine: cuisine, diet: diet, industry: Number(industry), crossIndustrial: crossIndustrial})
                             setEdit(false);
                         }}>
                             <Text style={[buttonStyles.loginButtonText, themes.textTheme(!isLight)]}>Confirm</Text>

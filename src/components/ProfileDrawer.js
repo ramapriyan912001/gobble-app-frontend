@@ -1,5 +1,5 @@
 import {createDrawerNavigator} from '@react-navigation/drawer'
-import { Dimensions } from 'react-native'
+import { Dimensions, TouchableOpacity } from 'react-native'
 import { Ionicons } from '@expo/vector-icons';
 import React from 'react'
 import { ProfileNavigator } from '../screens/Profile/ProfileNavigator';
@@ -11,6 +11,7 @@ import themes from '../styles/Themes';
 import { useColorScheme } from 'react-native-appearance';
 import { AntDesign } from '@expo/vector-icons';
 import DeleteAccount from '../screens/DeleteAccount'
+import { DrawerActions } from '@react-navigation/native';
 
 const {width} = Dimensions.get("window")
 const Drawer = createDrawerNavigator();
@@ -19,11 +20,27 @@ const Drawer = createDrawerNavigator();
 export default function ProfileDrawer(props) {
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
+    const drawerButton = (navigation) => () => (
+        <TouchableOpacity
+            onPress={() => {
+            navigation.dispatch(DrawerActions.openDrawer)}}
+            style={{marginLeft: 14}}>
+            <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', color:themes.oppositeTheme(isLight)}} size={28}></Ionicons>
+        </TouchableOpacity>);
 
     return (
     <Drawer.Navigator
     initialRouteName="Profile"
     drawerType="slide"
+    screenOptions={({navigation, route}) => ({
+        headerLeft:drawerButton(navigation),
+        headerShown:true,
+        headerBackTitleVisible: false, 
+        headerStyle:{
+            backgroundColor: themes.oppositeTheme(!isLight),
+        },
+        headerTintColor:themes.oppositeTheme(isLight)
+    })}
     drawerStyle={{width: 2*width/3, backgroundColor:themes.oppositeTheme(!isLight)}}
     drawerContent={(props) => <DrawerComponent {...props}></DrawerComponent>}
     drawerContentOptions={{
@@ -46,12 +63,12 @@ export default function ProfileDrawer(props) {
             drawerIcon: ({focused, size}) => {
                 return (
                 <Entypo name="block" size={size} color={focused ? themes.editTheme(!isLight) : themes.oppositeTheme(isLight)}/>)}}} name="Blocked Users" component={BlockedUsers}></Drawer.Screen>
-        <Drawer.Screen
+        {/* <Drawer.Screen
         options={{
             title: "Settings",
             drawerIcon: ({focused, size}) => {
                 return (
-                <Ionicons name="settings" size={size} color={focused ? themes.editTheme(!isLight) : themes.oppositeTheme(isLight)}/>)}}} name="Settings" component={Test}></Drawer.Screen>
+                <Ionicons name="settings" size={size} color={focused ? themes.editTheme(!isLight) : themes.oppositeTheme(isLight)}/>)}}} name="Settings" component={Test}></Drawer.Screen> */}
         <Drawer.Screen
         options={{
             title: "Delete Account",

@@ -12,6 +12,8 @@ import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
 import themes from '../../styles/Themes';
 import {styles} from '../../styles/RegisterStyles';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { DrawerActions } from '@react-navigation/native';
 
 const Stack = createStackNavigator();
 
@@ -23,10 +25,16 @@ const Stack = createStackNavigator();
 export function ChatNavigator() {
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
+    const drawerButton = (navigation) => () => (
+        <TouchableOpacity
+            onPress={() => {
+            navigation.dispatch(DrawerActions.openDrawer)}}>
+            <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
+        </TouchableOpacity>);
     return (
         <Stack.Navigator initialRouteName="ChatRoom">
-            <Stack.Screen name="ChatRoom" options={
-                {
+            <Stack.Screen name="ChatRoom" options={({ navigation, route }) => 
+            ({
                     headerLeft: () => null,
                     headerShown:true,
                     headerBackTitleVisible: false, 
@@ -36,7 +44,7 @@ export function ChatNavigator() {
                         backgroundColor: themes.oppositeTheme(!isLight),
                     },
                     headerTintColor:themes.oppositeTheme(isLight)
-            }} component={ChatRoom}></Stack.Screen>
+            })} component={ChatRoom}></Stack.Screen>
             <Stack.Screen name="Conversation" options={({ navigation, route }) => 
             ({  title: route.params.metadata.name,
                 headerStyle:{

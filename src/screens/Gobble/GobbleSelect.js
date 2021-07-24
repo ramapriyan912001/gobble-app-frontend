@@ -23,7 +23,7 @@ import {styles} from '../../styles/RegisterStyles';
  */
 function GobbleSelect(props, {navigation}) {
   const [isPickerShow, setIsPickerShow] = useState(false);
-  const [cuisinePreference, setCuisinePreference] = useState('Any')
+  const [cuisinePreference, setCuisinePreference] = useState('Western')
   const [location, setLocation] = useState(null)
   const [errorMsg, setErrorMsg] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -31,7 +31,7 @@ function GobbleSelect(props, {navigation}) {
   const MIN_DATE = new Date();
   const MAX_DATE = new Date().setDate(MIN_DATE.getDate()+7)
   const [date, setDate] = useState(calculateDefaultTime(MIN_DATE))
-  const [distance, setDistance] = useState(200);
+  const [distance, setDistance] = useState(1);
   const [edit, setEdit] = useState(true);
   const [pickerMode, setPickerMode] = useState(Platform.OS == 'ios' ? 'datetime' : 'date');
   const colorScheme = useColorScheme();
@@ -126,6 +126,7 @@ function GobbleSelect(props, {navigation}) {
   };
 
   const pickerText = () => isPickerShow ? 'Close' : 'choose Date & Time';
+  const pickerTextColor = () => !isPickerShow ? '#48a832' : '#c71414';
 
   const onChange = (event, value) => {
     if (value == null) {
@@ -151,14 +152,14 @@ function GobbleSelect(props, {navigation}) {
    */
   const renderCuisines = () => {
       let cuisineID = 0;
-      return CUISINES.map(cuisine => (<Picker.Item label={cuisine} value={cuisine} key={cuisineID++} color={themes.oppositeTheme(isLight)}/>))
+      return CUISINES.map(cuisine => (<Picker.Item label={cuisine} value={cuisine} key={cuisineID++} color={Platform.OS == 'android' ? 'black' : themes.oppositeTheme(isLight)}/>))
   };
 
   const renderDistances = () => {
     const distances = [1, 2, 5, 10, 200];
     let distanceID = 0;
 
-    return distances.map(distance => (<Picker.Item label={distance == 200 ? 'No Preference' : `${distance} km`} value={distance} key={distanceID++} color={themes.oppositeTheme(isLight)}/>))
+    return distances.map(distance => (<Picker.Item label={distance == 200 ? 'No Preference' : `${distance} km`} value={distance} key={distanceID++} color={Platform.OS == 'android' ? 'black' : themes.oppositeTheme(isLight)}/>))
   };
 
   const topMargin = Platform.OS === 'ios' ? '2%':'12%';
@@ -178,7 +179,8 @@ function GobbleSelect(props, {navigation}) {
                             onPress={() => {
                                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                                 showPicker();}}>
-                            <Text style={themes.textTheme(isLight)}>{`Chosen: ${dateStringMaker(date.toString())} ${'\n'}Click me to ${pickerText()}`} </Text>
+                            <Text style={themes.textTheme(isLight)}>{`Chosen: ${dateStringMaker(date.toString())}`} </Text>
+                            <Text style={{color: pickerTextColor()}}>{`Click me to ${pickerText()}`}</Text>
                         </TouchableOpacity>
                         
                         {/* The date picker */}
@@ -200,6 +202,7 @@ function GobbleSelect(props, {navigation}) {
                     {!isPickerShow && <Text style={[{...inputStyles.subHeader, marginTop: '0%',}, themes.textTheme(isLight)]}>What are you in the mood for today?</Text>}
                     {!isPickerShow && <Picker
                         selectedValue={cuisinePreference}
+                        style={themes.textTheme(isLight)}
                         onValueChange={(itemValue, itemIndex) => setCuisinePreference(itemValue)}>
                         {renderCuisines()}
                     </Picker>}
@@ -209,6 +212,7 @@ function GobbleSelect(props, {navigation}) {
                     {!isPickerShow &&
                         <Picker
                         selectedValue={distance}
+                        style={themes.textTheme(isLight)}
                         onValueChange={(itemValue, itemIndex) => setDistance(itemValue)}>
                         {renderDistances()}
                     </Picker>}

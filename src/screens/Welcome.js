@@ -15,7 +15,7 @@ import { styles } from '.././styles/RegisterStyles';
  * @param {*} props The props from previous screen
  * @returns The Welcome Screen Render function
  */
-export function Welcome(props) {
+export default function Welcome(props) {
     
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
@@ -58,7 +58,7 @@ export function Welcome(props) {
 
     return (
         <SafeAreaView style={[{...styles.container, justifyContent: 'space-evenly',}, themes.containerTheme(isLight)]}>
-            <Image style={styles.image} source = {require('../images/gobble.png')} accessibilityLabel={'GobbleImage'}/>
+            <Image style={styles.image} source = {require('../images/gobble.png')} testID={'GobbleImage'}/>
             <Animated.View
                 style={[
                 styles.fadingContainer,
@@ -87,7 +87,7 @@ export function Welcome(props) {
                         }
                     }
                     touchSoundDisabled={true}
-                    accessibilityLabel={'ToRegisterButton'}
+                    testID={'ToRegisterButton'}
                 >
                     <Text style={[{fontSize: 20, fontWeight:'bold'},themes.textTheme(isLight)]}>Sign Up</Text>
                 </TouchableOpacity>
@@ -97,7 +97,7 @@ export function Welcome(props) {
                         props.navigation.navigate('Login');
                     }}
                     touchSoundDisabled={true}
-                    accessibilityLabel={'ToLoginButton'}
+                    testID={'ToLoginButton'}
                 >
                     <Text style={[{fontSize: 20, fontWeight:'bold'},themes.textTheme(isLight)]}>Already have an Account?</Text>
                 </TouchableOpacity>
@@ -125,11 +125,11 @@ export function Welcome(props) {
         );
 };
 
-const mapStateToProps = (store) => ({
-    currentUserData: store.userState.currentUserData,
-    loggedIn: store.userState.loggedIn,
-    isAdmin: store.userState.isAdmin,
-})
+// const mapStateToProps = (store) => ({
+//     currentUserData: store.userState.currentUserData,
+//     loggedIn: store.userState.loggedIn,
+//     isAdmin: store.userState.isAdmin,
+// })
 
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, clearData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(Welcome);
+// const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, clearData }, dispatch);
+// export default connect(mapStateToProps, mapDispatchProps)(Welcome);

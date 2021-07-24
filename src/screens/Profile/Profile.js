@@ -25,6 +25,7 @@ import { useColorScheme } from 'react-native-appearance';
 import { AntDesign } from '@expo/vector-icons'
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
+import Loader from 'react-native-three-dots-loader';
 
 // props.navigation.dispatch(DrawerActions.closeDrawer());
 
@@ -166,19 +167,19 @@ function Profile(props, {navigation}) {
     const drawerMargin = Platform.OS === 'ios' ? '2%' : '10%';
 if (loading) {
     return (
-        <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
-            <Text style={[themes.textTheme(isLight), {fontWeight:'bold', fontSize:25}]}>Hang on a sec</Text>
-        </SafeAreaView>
+        <SafeAreaView style={[{flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'center'}, themes.containerTheme(isLight)]}>
+        <Loader background={themes.editTheme(isLight)} activeBackground={themes.oppositeTheme(isLight)}/>
+      </SafeAreaView>
     );
 } else {
         return(
         <SafeAreaView style={[styles.container, themes.containerTheme(isLight)]}>
             <ScrollView contentContainerStyle={{paddingBottom:'5%'}}>
             <StatusBar style="auto"/>
-            <TouchableOpacity style={{marginTop: drawerMargin}} onPress={() => {
+            {/* <TouchableOpacity style={{marginTop: drawerMargin}} onPress={() => {
                 props.navigation.dispatch(DrawerActions.openDrawer)}}>
                 <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <View style={{marginTop:'-6%'}}>
                 <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: props.currentUserData.avatar}}/>
                 <TouchableOpacity onPress={() => {

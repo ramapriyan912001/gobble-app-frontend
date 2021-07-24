@@ -29,7 +29,8 @@ function Reports (props, {navigation}) {
     const [authAdmin, setAuthAdmin] = useState(firebaseSvc.isAuthAdmin());
     // const [loading, setLoading]= useState(true);
     const [reportIDs, setReportIDs] = useState({});
-    const [selectedID, setSelectedID] = useState(true)
+    const [selectedID, setSelectedID] = useState(true);
+    const [currentID, setCurrentID] = useState(firebaseSvc.uid);
     
     /**
      * Load Page Data Asynchronously
@@ -67,7 +68,7 @@ function Reports (props, {navigation}) {
     useEffect(() => {
         loadAsync();
         return () => {
-          firebaseSvc.reportsOff();
+          firebaseSvc.reportsOff(currentID);
           console.log("Reports clean up!");
         }
     }, [navigation])

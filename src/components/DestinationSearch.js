@@ -58,7 +58,7 @@ export default function DestinationSearch(props) {
             language: 'en',
             // components: 'country:sg'
         }}
-        placeholder='Type in your address'
+        placeholder='Tap Here to Type in your Address'
         enablePoweredByContainer={false}
         suppressDefaultStyles
         currentLocation={false}

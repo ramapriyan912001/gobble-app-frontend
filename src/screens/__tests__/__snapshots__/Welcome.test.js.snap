@@ -1,0 +1,134 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Welcome /> should render correctly 1`] = `
+<RCTSafeAreaView
+  emulateUnlessSupported={true}
+  style={
+    Array [
+      Object {
+        "alignItems": "center",
+        "flex": 1,
+        "flexDirection": "column",
+        "flexWrap": "nowrap",
+        "justifyContent": "space-evenly",
+      },
+      Object {
+        "backgroundColor": "#242C40",
+      },
+    ]
+  }
+>
+  <Image
+    source={1}
+    style={
+      Object {
+        "height": "40%",
+        "marginTop": "0%",
+        "width": "70%",
+      }
+    }
+    testID="GobbleImage"
+  />
+  <View
+    style={
+      Object {
+        "opacity": 0,
+      }
+    }
+  >
+    <Text
+      style={
+        Array [
+          Object {
+            "fontSize": 38,
+            "fontWeight": "bold",
+            "marginBottom": "0%",
+            "marginLeft": "1%",
+            "textAlign": "left",
+          },
+          Object {
+            "color": "#ffe",
+          },
+        ]
+      }
+    >
+      Connecting People Over Food.
+    </Text>
+  </View>
+  <View
+    style={
+      Object {
+        "opacity": 0,
+      }
+    }
+  >
+    <View
+      accessible={true}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "marginVertical": "6%",
+          "opacity": 1,
+        }
+      }
+      testID="ToRegisterButton"
+    >
+      <Text
+        style={
+          Array [
+            Object {
+              "fontSize": 20,
+              "fontWeight": "bold",
+            },
+            Object {
+              "color": "#ffe",
+            },
+          ]
+        }
+      >
+        Sign Up
+      </Text>
+    </View>
+    <View
+      accessible={true}
+      focusable={true}
+      onClick={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+      style={
+        Object {
+          "opacity": 1,
+        }
+      }
+      testID="ToLoginButton"
+    >
+      <Text
+        style={
+          Array [
+            Object {
+              "fontSize": 20,
+              "fontWeight": "bold",
+            },
+            Object {
+              "color": "#ffe",
+            },
+          ]
+        }
+      >
+        Already have an Account?
+      </Text>
+    </View>
+  </View>
+</RCTSafeAreaView>
+`;

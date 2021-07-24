@@ -1,10 +1,9 @@
 import React, {useState} from 'react'
-import {Text, View, TextInput, Image, TouchableOpacity, StyleSheet, Alert} from 'react-native'
+import {Text, View, TextInput, Image, TouchableOpacity, SafeAreaView, Alert, KeyboardAvoidingView, TouchableWithoutFeedback, Keyboard, Platform } from 'react-native'
 import {StatusBar} from 'expo-status-bar'
 import {imageStyles, inputStyles, buttonStyles, containerStyles} from '../styles/LoginStyles'
 import {styles} from '../styles/RegisterStyles'
 import themes from '../styles/Themes';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 import {API} from '../api'
 import firebaseSvc from '../firebase/FirebaseSvc';
 import BottomTabs from '../components/BottomTabs'
@@ -52,11 +51,19 @@ export default function Login(props) {
         .login(user, loginSuccess, loginFailed);
     };
 
+    const imageMarginTop = Platform.OS == 'ios' ? '7%':'2%';
+    const imageMarginLeft = Platform.OS == 'ios' ? '23%':'22%';
+
     return(
-                <KeyboardAwareScrollView contentContainerStyle={[styles.container, themes.containerTheme(isLight)]} scrollEnabled={false}>
-                    <Image style={imageStyles.gobbleImage} source = {require('../images/gobble.png')} accessibilityLabel={'GobbleImage'}/>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <SafeAreaView style={[themes.containerTheme(isLight), {flex:1, paddingTop:'20%'}]}>    
+                <KeyboardAvoidingView 
+                    enabled={true}
+                    behavior={"position"}
+                    >
+                    <Image style={{...imageStyles.gobbleImage, marginTop:imageMarginTop,height:'40%',marginLeft:imageMarginLeft}} source = {require('../images/gobble.png')} testID={'GobbleImage'}/>
                     <StatusBar style="auto"/>
-                    <View style={[styles.inputView, themes.viewTheme(isLight)]}> 
+                    <View style={[{...styles.inputView, marginLeft:'20%'}, themes.viewTheme(isLight)]}> 
                         <TextInput
                             autoCapitalize="none"
                             style={[inputStyles.TextInput, themes.textTheme(isLight)]}
@@ -65,11 +72,10 @@ export default function Login(props) {
                             returnKeyType = 'done'
                             onSubmitEditing={(event) => onPressLogin()}
                             onChangeText={(email) => setEmail(email)}
-                            accessibilityLabel={'email'}
                         />
                     </View>
                         
-                    <View style={[styles.inputView, themes.viewTheme(isLight)]}>
+                    <View style={[{...styles.inputView, marginLeft:'20%'}, themes.viewTheme(isLight)]}>
                         <TextInput
                             autoCapitalize="none"
                             style={[inputStyles.TextInput, themes.textTheme(isLight)]}
@@ -79,15 +85,14 @@ export default function Login(props) {
                             secureTextEntry={true}
                             onSubmitEditing={(event) => onPressLogin()}
                             onChangeText={(password) => setPassword(password)}
-                            accessibilityLabel={'password'}
                         />
                     </View>
                     <TouchableOpacity
-                        style={buttonStyles.forgotButton}
+                        style={{...buttonStyles.forgotButton, marginLeft: Platform.OS == 'android' ? '30%':'35%'}}
                         onPress={()=> {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         props.navigation.navigate('ForgotPassword');}}
-                        accessibilityLabel={'ToForgotPasswordButton'}
+                        testID={'ToForgotPasswordButton'}
                     >
                         <Text style={[buttonStyles.forgotButtonText, themes.textTheme(isLight)]}>Forgot Password?</Text>
                     </TouchableOpacity>
@@ -97,7 +102,7 @@ export default function Login(props) {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         onPressLogin();
                         }}
-                        accessibilityLabel={'LoginButton'}
+                        testID={'LoginButton'}
                     >
                         <Text style={[buttonStyles.loginButtonText, themes.oppositeTextTheme(isLight)]}>Log In</Text>
                     </TouchableOpacity>
@@ -106,10 +111,12 @@ export default function Login(props) {
                         onPress={()=> {
                             Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                             props.navigation.navigate('Welcome');}}
-                        accessibilityLabel={'ToWelcomeButton'}
+                        testID={'ToWelcomeButton'}
                     >
                         <Text style={[buttonStyles.loginButtonText, themes.oppositeTextTheme(isLight)]}>Back</Text>
                     </TouchableOpacity>
-                </KeyboardAwareScrollView>
+                </KeyboardAvoidingView>
+            </SafeAreaView>
+        </TouchableWithoutFeedback>
     )
 }

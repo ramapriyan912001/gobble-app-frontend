@@ -4,6 +4,7 @@ import { API } from '../api'
 import { EMPTY_AVATAR } from '../constants/objects';
 import { Avatar } from 'react-native-elements';
 import { Rating } from 'react-native-ratings';
+import StarRating from 'react-native-star-rating';
 import { API_KEY } from '../../keys';
 import { Platform } from 'react-native';
 
@@ -45,6 +46,7 @@ export default function CustomCallout({restaurant}) {
                 <View style={{flexWrap: 'nowrap', flexDirection: 'column', flex: 1, justifyContent: 'center', marginTop: Platform.OS == 'android' ? '24%' : '0%'}}>
                 <Text style={{fontWeight: '800', marginBottom: '3%'}}>{`${restaurant.name}`}</Text>
                 <Text style={{fontWeight: '600', marginBottom: '3%'}}>{`${restaurant.address}`}</Text>
+                {Platform.OS != 'android' &&
                 <Rating
                 type='star'
                 ratingImage='star'
@@ -55,7 +57,15 @@ export default function CustomCallout({restaurant}) {
                 imageSize={20}
                 readonly
                 style={{ paddingHorizontal: 1, paddingVertical: 2 }}
-                />
+                />}
+                {Platform.OS == 'android' &&
+                <StarRating
+                fullStarColor='#f1c40f'
+                halfStarColor='#f1c40f'
+                rating={restaurant.rating}
+                starSize={20}
+                disabled={true}
+                />}
                 </View>
                 
             </View>

@@ -1,0 +1,277 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<Login /> snapshot 1`] = `
+<RCTSafeAreaView
+  accessible={true}
+  emulateUnlessSupported={true}
+  focusable={true}
+  onClick={[Function]}
+  onResponderGrant={[Function]}
+  onResponderMove={[Function]}
+  onResponderRelease={[Function]}
+  onResponderTerminate={[Function]}
+  onResponderTerminationRequest={[Function]}
+  onStartShouldSetResponder={[Function]}
+  style={
+    Array [
+      Object {
+        "backgroundColor": "#242C40",
+      },
+      Object {
+        "flex": 1,
+        "paddingTop": "20%",
+      },
+    ]
+  }
+>
+  <View
+    onLayout={[Function]}
+  >
+    <View
+      style={
+        Object {
+          "bottom": 0,
+        }
+      }
+    >
+      <Image
+        source={1}
+        style={
+          Object {
+            "height": "40%",
+            "marginBottom": "10%",
+            "marginLeft": "23%",
+            "marginTop": "7%",
+            "width": "60%",
+          }
+        }
+        testID="GobbleImage"
+      />
+      <View
+        style={
+          Array [
+            Object {
+              "borderRadius": 30,
+              "elevation": 5,
+              "height": 45,
+              "marginBottom": 20,
+              "marginLeft": "20%",
+              "shadowOffset": Object {
+                "height": 2,
+                "width": 0,
+              },
+              "shadowOpacity": 0.25,
+              "width": "60%",
+            },
+            Object {
+              "backgroundColor": "#242C40",
+              "shadowColor": "#ffe",
+              "shadowRadius": 0.1,
+            },
+          ]
+        }
+      >
+        <TextInput
+          allowFontScaling={true}
+          autoCapitalize="none"
+          onChangeText={[Function]}
+          onSubmitEditing={[Function]}
+          placeholder="Email"
+          placeholderTextColor="#ffe"
+          rejectResponderTermination={true}
+          returnKeyType="done"
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "height": "5%",
+                "paddingLeft": "6%",
+                "width": 200,
+              },
+              Object {
+                "color": "#ffe",
+              },
+            ]
+          }
+          underlineColorAndroid="transparent"
+        />
+      </View>
+      <View
+        style={
+          Array [
+            Object {
+              "borderRadius": 30,
+              "elevation": 5,
+              "height": 45,
+              "marginBottom": 20,
+              "marginLeft": "20%",
+              "shadowOffset": Object {
+                "height": 2,
+                "width": 0,
+              },
+              "shadowOpacity": 0.25,
+              "width": "60%",
+            },
+            Object {
+              "backgroundColor": "#242C40",
+              "shadowColor": "#ffe",
+              "shadowRadius": 0.1,
+            },
+          ]
+        }
+      >
+        <TextInput
+          allowFontScaling={true}
+          autoCapitalize="none"
+          onChangeText={[Function]}
+          onSubmitEditing={[Function]}
+          placeholder="Password"
+          placeholderTextColor="#ffe"
+          rejectResponderTermination={true}
+          returnKeyType="done"
+          secureTextEntry={true}
+          style={
+            Array [
+              Object {
+                "flex": 1,
+                "height": "5%",
+                "paddingLeft": "6%",
+                "width": 200,
+              },
+              Object {
+                "color": "#ffe",
+              },
+            ]
+          }
+          underlineColorAndroid="transparent"
+        />
+      </View>
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "height": 30,
+            "marginBottom": "6%",
+            "marginLeft": "35%",
+            "opacity": 1,
+          }
+        }
+        testID="ToForgotPasswordButton"
+      >
+        <Text
+          style={
+            Array [
+              Object {},
+              Object {
+                "color": "#ffe",
+              },
+            ]
+          }
+        >
+          Forgot Password?
+        </Text>
+      </View>
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "center",
+            "backgroundColor": "#ffe",
+            "borderRadius": 25,
+            "elevation": 5,
+            "height": 50,
+            "justifyContent": "center",
+            "marginTop": "5%",
+            "opacity": 1,
+            "shadowColor": "#ffe",
+            "shadowOffset": Object {
+              "height": 4,
+              "width": 4,
+            },
+            "shadowOpacity": 0.3,
+            "shadowRadius": 0.1,
+            "width": "85%",
+          }
+        }
+        testID="LoginButton"
+      >
+        <Text
+          style={
+            Array [
+              Object {},
+              Object {
+                "color": "#242C40",
+              },
+            ]
+          }
+        >
+          Log In
+        </Text>
+      </View>
+      <View
+        accessible={true}
+        focusable={true}
+        onClick={[Function]}
+        onResponderGrant={[Function]}
+        onResponderMove={[Function]}
+        onResponderRelease={[Function]}
+        onResponderTerminate={[Function]}
+        onResponderTerminationRequest={[Function]}
+        onStartShouldSetResponder={[Function]}
+        style={
+          Object {
+            "alignItems": "center",
+            "alignSelf": "center",
+            "backgroundColor": "#ffe",
+            "borderRadius": 25,
+            "elevation": 5,
+            "height": 50,
+            "justifyContent": "center",
+            "marginTop": "5%",
+            "opacity": 1,
+            "shadowColor": "#ffe",
+            "shadowOffset": Object {
+              "height": 4,
+              "width": 4,
+            },
+            "shadowOpacity": 0.3,
+            "shadowRadius": 0.1,
+            "width": "85%",
+          }
+        }
+        testID="ToWelcomeButton"
+      >
+        <Text
+          style={
+            Array [
+              Object {},
+              Object {
+                "color": "#242C40",
+              },
+            ]
+          }
+        >
+          Back
+        </Text>
+      </View>
+    </View>
+  </View>
+</RCTSafeAreaView>
+`;

@@ -25,7 +25,8 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons'
 function MatchesHistory (props, {navigation}) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
-    const [selectedID, setSelectedID] = useState(null)
+    const [selectedID, setSelectedID] = useState(null);
+    const [currentID, setCurrentID] = useState(firebaseSvc.uid);
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
 
@@ -83,7 +84,7 @@ function MatchesHistory (props, {navigation}) {
         loadAsync();
         return () => {
           console.log('matchHistory clean up!');
-          firebaseSvc.matchIDsOff();
+          firebaseSvc.matchIDsOff(currentID);
         }
     }, [])
 
@@ -96,8 +97,8 @@ function MatchesHistory (props, {navigation}) {
     }, [navigation])
     if(data.length != 0) {
       return (
-        <SafeAreaView style={themes.containerTheme(isLight)}>
-            <FlatList
+        <SafeAreaView style={[{height: '100%'},themes.containerTheme(isLight)]}>
+          <FlatList
               data={data}
               style={themes.containerTheme(isLight)}
               extraData={selectedID}
@@ -105,7 +106,7 @@ function MatchesHistory (props, {navigation}) {
                 <TouchableOpacity
                 onPress={() => props.navigation.navigate('Restaurants', {item: item})}>
                   <ListItem
-                  containerStyle={[{borderBottomWidth:5, height: 110}, themes.containerTheme(isLight)]}
+                  containerStyle={[{borderBottomWidth:3,  height: 110}, themes.containerTheme(isLight)]}
                   key={index} 
                   roundAvatar>
                     <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.otherUserAvatar}}/>

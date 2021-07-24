@@ -27,7 +27,7 @@ import { DrawerActions } from '@react-navigation/native';
 function BlockedUsers (props, {navigation}) {
     const [data, setData] = useState([]);
     const [selectedID, setSelectedID] = useState(null);
-
+    const [currentID, setCurrentID] = useState(firebaseSvc.uid);
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
     const drawerTopMargin = Platform.OS === 'ios' ? '-87%' : '-70%';
@@ -64,7 +64,7 @@ function BlockedUsers (props, {navigation}) {
         loadAsync();
         return () => {
           console.log('Blocked users clean up!');
-          firebaseSvc.blockedUsersOff();
+          firebaseSvc.blockedUsersOff(currentID);
         }
     }, [])
 
@@ -97,27 +97,24 @@ function BlockedUsers (props, {navigation}) {
         )
     if(data.length != 0) {
       return (
-        <SafeAreaView style={themes.containerTheme(isLight)}>
-            <TouchableOpacity onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
-                <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
-            </TouchableOpacity>
+        <SafeAreaView style={[themes.containerTheme(isLight)]}>
             <FlatList
               data={data}
               extraData={selectedID}
               renderItem={({ item, index }) => (
                 <ListItem
-                containerStyle={{borderBottomWidth:5, height: 110}}
+                containerStyle={{borderBottomWidth:5, height: 110, backgroundColor:themes.oppositeTheme(!isLight)}}
                 key={index} 
                 roundAvatar>
                   <Avatar avatarStyle={{borderRadius: 120}} size="large" source={{uri:item.avatar}}/>
                   <ListItem.Content>
-                    <ListItem.Title style={{fontWeight: 'bold'}}>{`${item.name}`}</ListItem.Title>
+                    <ListItem.Title style={{fontWeight: 'bold', color:themes.oppositeTheme(isLight)}}>{`${item.name}`}</ListItem.Title>
                   </ListItem.Content>
                   <TouchableOpacity onPress={() => {
                     let text = `Are you sure you wish to unblock ${item.name}?`
                       unblockAlert(text, item)
                   }}>
-                      <MaterialCommunityIcons name="account-off-outline" size={28}/>
+                      <MaterialCommunityIcons color={themes.oppositeTheme(isLight)} name="account-off-outline" size={28}/>
                   </TouchableOpacity>
                 </ListItem>
               )}
@@ -132,9 +129,6 @@ function BlockedUsers (props, {navigation}) {
     } else {
       return (
         <SafeAreaView style={[{flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'center'}, themes.containerTheme(isLight)]}>
-          <TouchableOpacity style={{alignSelf: 'flex-start', marginBottom:'80%', marginTop:drawerTopMargin}} onPress={() => props.navigation.dispatch(DrawerActions.openDrawer)}>
-                <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
-            </TouchableOpacity>
           <Text style={[{alignSelf: 'center', fontWeight:'bold'}, themes.textTheme(isLight)]}>You have no blocked users!</Text>
         </SafeAreaView>
       )
