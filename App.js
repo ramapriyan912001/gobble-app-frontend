@@ -43,6 +43,7 @@ import GobbleSelect2 from './src/screens/Gobble/GobbleSelect2';
 import ComplaintHistory from './src/screens/ComplaintHistory';
 import ReportDetails from './src/screens/ReportDetails';
 import Restaurants from './src/components/Restaurants';
+import { Platform } from 'react-native';
 
 const Stack = createStackNavigator();
 
@@ -135,9 +136,7 @@ const navigationRef = useRef({});
             <Stack.Screen name="Complaint Details" options={{gestureEnabled: true}} component={ReportDetails}></Stack.Screen>
             <Stack.Screen name="Restaurants" options={{
               headerShown:true,
-              headerBackTitleVisible: true, 
-              headerTitle: 'Find a Match!', 
-              headerBackTitle: 'Matches', 
+              headerTitle: 'Restaurants!', 
               headerStyle:{
                   backgroundColor: themes.oppositeTheme(!isLight),
               },
