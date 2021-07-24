@@ -40,7 +40,7 @@ exports[`<Login /> snapshot 1`] = `
           Object {
             "height": "40%",
             "marginBottom": "10%",
-            "marginLeft": "20%",
+            "marginLeft": "23%",
             "marginTop": "7%",
             "width": "60%",
           }
@@ -160,7 +160,7 @@ exports[`<Login /> snapshot 1`] = `
           Object {
             "height": 30,
             "marginBottom": "6%",
-            "marginLeft": "30%",
+            "marginLeft": "35%",
             "opacity": 1,
           }
         }

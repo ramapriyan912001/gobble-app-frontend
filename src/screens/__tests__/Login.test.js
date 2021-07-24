@@ -60,6 +60,7 @@ describe('<Login />', () => {
         //Assert
         fireEvent.changeText(getByPlaceholderText('Email'), 'shouldwork@email.com');
         fireEvent.changeText(getByPlaceholderText('Password', 'shouldwork'));
+        console.log((getByTestId('LoginButton')))
         expect(fireEvent.press(getByTestId('LoginButton'))).not.toThrow();
     });
 

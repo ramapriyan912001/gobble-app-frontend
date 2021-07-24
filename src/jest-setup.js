@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler/jestSetup';
-import firebase from 'firebase';
+import firebase from 'firebase/app';
 
 jest.mock('react-native/Libraries/Animated/src/NativeAnimatedHelper');
 
@@ -32,9 +32,6 @@ jest.mock('firebase', () => {
         }
       })
     },
-    apps: {
-      
-    }
   })
 });
 
