@@ -1,21 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import {ProfileNavigator} from '../screens/Profile/ProfileNavigator'
-import {GobbleNavigator} from '../screens/Gobble/GobbleNavigator'
-import Awaiting from '../screens/Matches/Awaiting'
+import GobbleNavigator from '../screens/Gobble/GobbleNavigator'
 import { ChatNavigator } from '../screens/Chats/ChatNavigator';
 import Ionicons from '@expo/vector-icons/Ionicons'
 import MatchesNavigator from '../screens/Matches/MatchesNavigator';
-import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
 import themes from '.././styles/Themes';
-import {styles, profileStylesAddition} from '.././styles/ProfileStyles';
 import { FontAwesome5 } from '@expo/vector-icons';
-import { store } from '../redux/store';
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import { fetchUserData, giveAdminAccess, removeAdminAccess } from '../redux/actions/actions'
-import { loadAsync } from 'expo-font';
 import AdminNavigator from '../screens/AdminNavigator';
 import firebaseSvc from '../firebase/FirebaseSvc';
 import ProfileDrawer from './ProfileDrawer';

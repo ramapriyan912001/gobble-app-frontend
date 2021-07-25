@@ -21,7 +21,7 @@ import {styles} from '../../styles/RegisterStyles';
  * @param {*} props Props from previous screen
  * @returns Matches Render Method 
  */
-function Awaiting (props, {navigation}) {
+export default function Awaiting (props, {navigation}) {
   const colorScheme = useColorScheme();
   const isLight = colorScheme === 'light';
     const [data, setData] = useState([]);
@@ -148,11 +148,3 @@ function Awaiting (props, {navigation}) {
     )
   }
 }
-
-const mapStateToProps = (store) => ({
-    currentUserData: store.userState.currentUserData,
-    loggedIn: store.userState.loggedIn,
-    isAdmin: store.userState.isAdmin
-})
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(Awaiting);

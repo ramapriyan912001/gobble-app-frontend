@@ -25,7 +25,7 @@ import Animated from 'react-native-reanimated'
  * @param {*} props Props from previous screen
  * @returns MatchesHistory Render Method 
  */
- function Pending (props, {navigation}) {
+ export default function Pending (props, {navigation}) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
     const [selectedID, setSelectedID] = useState(null);
@@ -264,11 +264,3 @@ import Animated from 'react-native-reanimated'
       )
     }
 }
-
-const mapStateToProps = (store) => ({
-    currentUserData: store.userState.currentUserData,
-    loggedIn: store.userState.loggedIn,
-    isAdmin: store.userState.isAdmin
-})
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(Pending);

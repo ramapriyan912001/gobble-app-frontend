@@ -17,7 +17,7 @@ const Stack = createStackNavigator();
  * 
  * @returns Stack Navigator
  */
-export function GobbleNavigator() {
+export default function GobbleNavigator() {
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
     return (
@@ -49,9 +49,3 @@ export function GobbleNavigator() {
         </Stack.Navigator>
     )
 }
-
-const mapStateToProps = (store) => ({
-    currentUserData: store.userState.currentUserData
-})
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, clearData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(GobbleNavigator);

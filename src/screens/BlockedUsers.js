@@ -24,7 +24,7 @@ import { DrawerActions } from '@react-navigation/native';
  * @param {*} props Props from previous screen
  * @returns BlockedUsers Render Method 
  */
-function BlockedUsers (props, {navigation}) {
+export default function BlockedUsers (props, {navigation}) {
     const [data, setData] = useState([]);
     const [selectedID, setSelectedID] = useState(null);
     const [currentID, setCurrentID] = useState(firebaseSvc.uid);
@@ -134,11 +134,3 @@ function BlockedUsers (props, {navigation}) {
       )
     }
 }
-
-const mapStateToProps = (store) => ({
-    currentUserData: store.userState.currentUserData,
-    loggedIn: store.userState.loggedIn,
-    isAdmin: store.userState.isAdmin
-})
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(BlockedUsers);
