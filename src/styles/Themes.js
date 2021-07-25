@@ -1,5 +1,6 @@
 import {styles} from './RegisterStyles'
 import { profileStylesAddition } from './ProfileStyles';
+import { MAP_DARK_MODE } from '../constants/objects';
 
 const light = '#ffe';
 const dark = '#242C40';
@@ -10,6 +11,7 @@ const editYellow = '#c3990b';
 
 class Themes {
     constructor() {}
+    mapTheme = isLight => isLight ? [] : MAP_DARK_MODE;
     oppositeTheme = isLight => isLight ? dark : light;
     containerTheme = isLight => isLight ? styles.lightContainer: styles.darkContainer;
     containerEditTheme = isLight => isLight ? profileStylesAddition.lightEditContainer: profileStylesAddition.darkEditContainer;

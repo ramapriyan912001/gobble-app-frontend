@@ -10,6 +10,9 @@ import { Avatar, ListItem, SearchBar } from 'react-native-elements'
 import { API } from '../api'
 import CustomCallout from './CustomCallout'
 import { API_KEY } from '../../keys'
+import { useColorScheme } from 'react-native-appearance';
+import themes from '.././styles/Themes';
+
 
 function Restaurants(props) {
 
@@ -28,7 +31,9 @@ function Restaurants(props) {
         lat: props.route.params.item.location.coords.latitude,
         lng: props.route.params.item.location.coords.longitude,
     })
-    
+    const colorScheme = useColorScheme();
+    const isLight = colorScheme == 'light';
+
     function calculateDistance(coords1, coords2) {
         let lat1 = coords1['lat']
         let lat2 = coords2['lat']
@@ -103,7 +108,7 @@ function Restaurants(props) {
             alignItems: 'center'
         }}>
             <MapView
-                customMapStyle={MAP_DARK_MODE}
+                customMapStyle={themes.mapTheme(isLight)}
                 showsUserLocation
                 style={{height: '100%', width: '100%'}}
                 provider={PROVIDER_GOOGLE}

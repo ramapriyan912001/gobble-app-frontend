@@ -111,8 +111,8 @@ const navigationRef = useRef({});
             <Stack.Screen name="Edit Gobble Request" options={{
                     // headerLeft: () => null,
                     headerShown:true,
-                    headerBackTitleVisible: true, 
-                    headerTitle: 'Find a Match!', 
+                    headerBackTitleVisible: false, 
+                    headerTitle: 'Edit Gobble', 
                     headerBackTitle: 'Back', 
                     headerStyle:{
                         backgroundColor: themes.oppositeTheme(!isLight),

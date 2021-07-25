@@ -12,6 +12,7 @@ import { useColorScheme } from 'react-native-appearance';
 import { AntDesign } from '@expo/vector-icons';
 import DeleteAccount from '../screens/DeleteAccount'
 import { DrawerActions } from '@react-navigation/native';
+import FAQs from '../screens/FAQs';
 
 const {width} = Dimensions.get("window")
 const Drawer = createDrawerNavigator();
@@ -69,6 +70,12 @@ export default function ProfileDrawer(props) {
             drawerIcon: ({focused, size}) => {
                 return (
                 <Ionicons name="settings" size={size} color={focused ? themes.editTheme(!isLight) : themes.oppositeTheme(isLight)}/>)}}} name="Settings" component={Test}></Drawer.Screen> */}
+        <Drawer.Screen
+        options={{
+            title: "FAQs",
+            drawerIcon: ({focused, size}) => {
+                return (
+                <AntDesign name="question" size={size} color={focused ? themes.editTheme(!isLight) : themes.oppositeTheme(isLight)}/>)}}} name="FAQs" component={FAQs}></Drawer.Screen>
         <Drawer.Screen
         options={{
             title: "Delete Account",
