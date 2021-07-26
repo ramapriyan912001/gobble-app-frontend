@@ -138,7 +138,8 @@ const navigationRef = useRef({});
             <Stack.Screen name="Complaint Details" options={{gestureEnabled: true}} component={ReportDetails}></Stack.Screen>
             <Stack.Screen name="Restaurants" options={{
               headerShown:true,
-              headerTitle: 'Restaurants!', 
+              headerTitle: 'Restaurants!',
+              headerBackTitle:'Back',
               headerStyle:{
                   backgroundColor: themes.oppositeTheme(!isLight),
               },
