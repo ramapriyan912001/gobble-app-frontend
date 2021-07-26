@@ -14,6 +14,7 @@ import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
 import themes from '../../styles/Themes';
 import {styles} from '../../styles/RegisterStyles';
+import Loader from 'react-native-three-dots-loader'
 
 /**
  * Page to Load the Pending Matches Screen
@@ -25,6 +26,7 @@ export default function Awaiting (props, {navigation}) {
   const colorScheme = useColorScheme();
   const isLight = colorScheme === 'light';
     const [data, setData] = useState([]);
+    const [loadingStates, setLoadingStates] = useState({});
     const [currentID, setCurrentID] = useState(firebaseSvc.uid);
     const [matchIDs, setMatchIDs] = useState({});
     const [selectedID, setSelectedID] = useState(null)
@@ -37,13 +39,16 @@ export default function Awaiting (props, {navigation}) {
             .getAwaitingMatchIDs(
               snapshot => {
                 let ids = snapshot.val();
+                let states = {};
                 if (ids == null) {
                   setData([])
                   setMatchIDs({})
+                  setLoadingStates({})
                 } else  {
                   // console.log(ids, 'ids')
                   let newData = [];
                   for(let [key, value] of Object.entries(ids)) {
+                    states[key] = false;
                     if(!(key in matchIDs)) {
                       matchIDs[key] = true;
                     }
@@ -54,6 +59,7 @@ export default function Awaiting (props, {navigation}) {
                     let y = new Date(b.datetime)
                     return x <= y ? -1 : 1
                   });
+                  setLoadingStates(states)
                   setData(newData);
                 // console.log(data);
                 }
@@ -111,26 +117,43 @@ export default function Awaiting (props, {navigation}) {
                   <ListItem.Subtitle style={themes.textTheme(isLight)}>{dateStringMaker(item.datetime)}</ListItem.Subtitle>
                   </View>
                 </ListItem.Content>
+                {!loadingStates[item.matchID] &&
                 <View style={{flexDirection: 'column'}}>
-                <TouchableOpacity onPress={async() => 
-                              {
-                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                                props.navigation.navigate('Edit Gobble Request', {edit: true, request: item})
-                                console.log('Edit awaiting')
-                              }}>
-                  <ListItem.Subtitle style={{color: themes.editLabelTheme(isLight)}}>{`Edit`}</ListItem.Subtitle>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={async() => 
-                              {
-                                Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                                let replacementSelectedID = Math.random()
-                                await firebaseSvc.deleteAwaitingRequest(item);
-                                setSelectedID(replacementSelectedID)
-                                console.log('Delete awaiting')
-                              }}>
-                  <ListItem.Subtitle style={{color: 'red'}}>{`Delete`}</ListItem.Subtitle>
-                </TouchableOpacity>
+                  <TouchableOpacity onPress={async() => 
+                                {
+                                  let states = loadingStates
+                                  states[item.matchID] = true;
+                                  let replacementSelectedID = Math.random()
+                                  setLoadingStates(states)
+                                  setSelectedID(replacementSelectedID)
+                                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                                  props.navigation.navigate('Edit Gobble Request', {edit: true, request: item})
+                                  console.log('Edit awaiting')
+                                }}>
+                    <ListItem.Subtitle style={{color: themes.editLabelTheme(isLight)}}>{`Edit`}</ListItem.Subtitle>
+                  </TouchableOpacity>
+                  <TouchableOpacity onPress={async() => 
+                                {
+                                  let states = loadingStates
+                                  states[item.matchID] = true;
+                                  let replacementSelectedID = Math.random()
+                                  setLoadingStates(states)
+                                  setSelectedID(replacementSelectedID)
+                                  Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                                  replacementSelectedID = Math.random()
+                                  await firebaseSvc.deleteAwaitingRequest(item);
+                                  setSelectedID(replacementSelectedID)
+                                  console.log('Delete awaiting')
+                                }}>
+                    <ListItem.Subtitle style={{color: 'red'}}>{`Delete`}</ListItem.Subtitle>
+                  </TouchableOpacity>
                 </View>
+            }
+            {loadingStates[item.matchID] &&
+                            <View style={{flexDirection: 'column'}}>
+                              <Loader useNativeDriver={true}/>
+                            </View>
+                          }
               </ListItem>
             )}
             keyExtractor={item => item.matchID}
