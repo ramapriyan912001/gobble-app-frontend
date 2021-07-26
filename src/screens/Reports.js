@@ -22,7 +22,7 @@ import { REASONS } from '../constants/objects'
  * @param {*} props Props from previous screen
  * @returns Matches Render Method 
  */
-function Reports (props, {navigation}) {
+export default function Reports (props, {navigation}) {
   const colorScheme = useColorScheme();
   const isLight = colorScheme === 'light';
     const [data, setData] = useState([]);
@@ -129,11 +129,3 @@ function Reports (props, {navigation}) {
       </SafeAreaView>
     );
 }
-
-const mapStateToProps = (store) => ({
-    currentUserData: store.userState.currentUserData,
-    loggedIn: store.userState.loggedIn,
-    isAdmin: store.userState.isAdmin
-})
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(Reports);

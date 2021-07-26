@@ -21,7 +21,7 @@ import {styles} from '.././styles/ProfileStyles';
  * @param {*} props Props from previous screen
  * @returns MatchesHistory Render Method 
  */
- function PreviousMatches (props, {navigation}) {
+ export default function PreviousMatches (props, {navigation}) {
    const colorScheme = useColorScheme();
    const isLight = colorScheme === 'light';
     const [data, setData] = useState([]);
@@ -127,11 +127,3 @@ import {styles} from '.././styles/ProfileStyles';
       </SafeAreaView>
     );
 }
-
-const mapStateToProps = (store) => ({
-    currentUserData: store.userState.currentUserData,
-    loggedIn: store.userState.loggedIn,
-    isAdmin: store.userState.isAdmin
-})
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(PreviousMatches);

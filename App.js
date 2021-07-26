@@ -30,9 +30,12 @@ LogBox.ignoreLogs(['VirtualizedLists']);
 
 export default function AppWrapper() {
   return (
-    <AppearanceProvider>
-      <App />
-    </AppearanceProvider>
+    <Provider store={store}>
+      <AppearanceProvider>
+        <App />
+      </AppearanceProvider>
+    </Provider>
+    
   );
 }
 import ProfileDrawer from './src/components/ProfileDrawer';
@@ -47,7 +50,7 @@ import { Platform } from 'react-native';
 
 const Stack = createStackNavigator();
 
-export function App(props, {navigation}) {
+function App(props, {navigation}) {
   console.log('App Executed');
   const colorScheme = useColorScheme();
   const isLight = colorScheme === 'light';
@@ -86,7 +89,6 @@ const navigationRef = useRef({});
   })
   return (
     <NavigationContainer>
-      <Provider store={store}>
           <Stack.Navigator initialRouteName="Welcome" 
           >
             <Stack.Screen name="Welcome" options={{headerShown: false, gestureEnabled: false}} component={Welcome}></Stack.Screen>
@@ -143,7 +145,6 @@ const navigationRef = useRef({});
               headerTintColor:themes.oppositeTheme(isLight)
             }} component={Restaurants}></Stack.Screen>
           </Stack.Navigator>
-      </Provider> 
     </NavigationContainer>
   );
 }

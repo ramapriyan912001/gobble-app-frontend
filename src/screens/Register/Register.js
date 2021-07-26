@@ -36,7 +36,7 @@ export default function register(props) {
     const validateInput = (user) => {
         const shortMessage = (infoString, len) => infoString + MESSAGES.TOO_SHORT + `${len} characters!`;
         const longMessage = (infoString, len) => infoString + MESSAGES.TOO_LONG + `${len} characters!`;
-        const emailRegex = /@gmail.com|@yahoo.com|@icloud.com|@u.nus.edu|@hotmail.com|@live.com|@yahoo.co.uk|@nus.edu.sg/;
+        const emailRegex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         function checkInfo(infoString, info, minLength, maxLength) {
             if (info.length < minLength) {
                 return {
@@ -137,7 +137,7 @@ export default function register(props) {
                     </View>
                     
                     <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} 
-
+                        testID={'ToValidateUserButton'}
                         onPress={() => {
                                 let user = createUserProfile();
                                 Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
@@ -147,7 +147,9 @@ export default function register(props) {
                         <Text style={[buttonStyles.longButtonText, themes.oppositeTextTheme(isLight)]}>Create Account</Text>
 
                     </TouchableOpacity>
-                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} onPress={() => {
+                    <TouchableOpacity style={[styles.longButton, themes.buttonTheme(isLight)]} 
+                        testID={'ToWelcomeButton'}
+                        onPress={() => {
                         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
                         props.navigation.navigate('Welcome');}}>
                         <Text style={[buttonStyles.longButtonText, themes.oppositeTextTheme(isLight)]}>Back</Text>

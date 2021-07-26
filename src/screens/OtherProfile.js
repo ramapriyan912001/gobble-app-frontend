@@ -24,7 +24,7 @@ import {styles} from '../styles/ProfileStyles';
  * @param {*} props Props from previous screen
  * @returns Profile Render Method
  */
-function OtherProfile(props) {
+export default function OtherProfile(props) {
     const colorScheme = useColorScheme();
     const isLight = colorScheme === 'light';
     const [userData, setUserData] = useState({})
@@ -103,11 +103,3 @@ function OtherProfile(props) {
         );
     }  
 }
-
-const mapStateToProps = (store) => ({
-    currentUserData: store.userState.currentUserData,
-    loggedIn: store.userState.loggedIn,
-    isAdmin: store.userState.isAdmin
-})
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(OtherProfile);

@@ -124,12 +124,3 @@ export default function Welcome(props) {
         </SafeAreaView>
         );
 };
-
-// const mapStateToProps = (store) => ({
-//     currentUserData: store.userState.currentUserData,
-//     loggedIn: store.userState.loggedIn,
-//     isAdmin: store.userState.isAdmin,
-// })
-
-// const mapDispatchProps = (dispatch) => bindActionCreators({ fetchAuthUser, clearData }, dispatch);
-// export default connect(mapStateToProps, mapDispatchProps)(Welcome);

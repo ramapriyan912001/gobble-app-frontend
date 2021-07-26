@@ -22,7 +22,7 @@ import MaterialIcons from '@expo/vector-icons/MaterialIcons'
  * @param {*} props Props from previous screen
  * @returns MatchesHistory Render Method 
  */
-function MatchesHistory (props, {navigation}) {
+export default function MatchesHistory (props, {navigation}) {
     const [data, setData] = useState([]);
     const [matchIDs, setMatchIDs] = useState({});
     const [selectedID, setSelectedID] = useState(null);
@@ -135,11 +135,3 @@ function MatchesHistory (props, {navigation}) {
       )
     }
 }
-
-const mapStateToProps = (store) => ({
-    currentUserData: store.userState.currentUserData,
-    loggedIn: store.userState.loggedIn,
-    isAdmin: store.userState.isAdmin
-})
-const mapDispatchProps = (dispatch) => bindActionCreators({ fetchUserData }, dispatch);
-export default connect(mapStateToProps, mapDispatchProps)(MatchesHistory);

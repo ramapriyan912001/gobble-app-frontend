@@ -12,11 +12,11 @@ export default function FAQs(props) {
     const isLight = colorScheme === 'light';
     return (
         <ScrollView style={[{flex: 1,},themes.containerTheme(isLight)]}>
-            <Text></Text>
-            {QUESTION_AND_ANSWER.map((qna, index) => {
-                return (<QuestionAndAnswer {...{...props, question: qna.Question, answer: qna.Answer}} key={index}/>)
-            })}
-            <Text></Text>
+            <View style={{marginTop: '2%', marginBottom: '2%'}}>
+                {QUESTION_AND_ANSWER.map((qna, index) => {
+                    return (<QuestionAndAnswer {...{...props, question: qna.Question, answer: qna.Answer}} key={index}/>)
+                })}
+            </View>
         </ScrollView>
     )
 }
