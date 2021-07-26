@@ -91,6 +91,7 @@ export default function Awaiting (props, {navigation}) {
     return (
       <SafeAreaView style={[{height: '100%'}, themes.containerTheme(isLight)]}>
           <FlatList
+            testID={'AwaitingFlatList'}
             extraData={selectedID}
             data={data}
             contentContainerStyle={themes.containerEditTheme(isLight)}

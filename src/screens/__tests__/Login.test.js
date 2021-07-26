@@ -52,20 +52,4 @@ describe('<Login />', () => {
         fireEvent.press(getByTestId('ToWelcomeButton'));
         expect(navigateMock).toBeCalledWith('Welcome');
     });
-
-    it('calls firebase auth with the right info when text is entered', () => {
-        //Act
-        const { getByTestId , getByPlaceholderText } = render(<Login/>);
-        
-        //Assert
-        fireEvent.changeText(getByPlaceholderText('Email'), 'shouldwork@email.com');
-        fireEvent.changeText(getByPlaceholderText('Password', 'shouldwork'));
-        console.log((getByTestId('LoginButton')))
-        expect(fireEvent.press(getByTestId('LoginButton'))).not.toThrow();
-    });
-
-
-    //throws an error when no email is entered
-
-    //throws an error when no password is entered
 });

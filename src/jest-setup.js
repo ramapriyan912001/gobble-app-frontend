@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler/jestSetup';
-import firebase from 'firebase/app';
+import 'react-native/Libraries/Utilities/Platform';
 
 jest.mock('react-native/Libraries/Animated/src/NativeAnimatedHelper');
 
@@ -12,7 +12,6 @@ jest.mock('react-native-reanimated', () => {
 
   return Reanimated;
 });
-
 //-----TEMPLATE FOR MOCKS------
 // jest.mock('SomeLibrary', () => {
 //   return ({
@@ -21,19 +20,19 @@ jest.mock('react-native-reanimated', () => {
 //   })
 // });
 
-jest.mock('firebase', () => {
-  return ({
-    auth: {
-      signInWithEmailAndPassword: jest.fn((email, password) => {
-        if (email === 'shouldwork@email.com' && password === 'shouldwork') {
-          return Promise.resolve('Pass');
-        } else {
-          throw new Error('Fail');
-        }
-      })
-    },
-  })
-});
+// jest.mock('firebase', () => {
+//   return ({
+//     auth: {
+//       signInWithEmailAndPassword: jest.fn((email, password) => {
+//         if (email === 'shouldwork@email.com' && password === 'shouldwork') {
+//           return Promise.resolve('Pass');
+//         } else {
+//           throw new Error('Fail');
+//         }
+//       })
+//     },
+//   })
+// });
 
 //-----EXAMPLE-----
 // jest.mock('@react-native-community/AsyncStorage', () => {

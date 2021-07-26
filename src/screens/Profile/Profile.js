@@ -181,7 +181,7 @@ if (loading) {
                 <Ionicons name="menu-outline" style={{alignSelf: 'flex-start', marginLeft: '5%', color:themes.oppositeTheme(isLight)}} size={30}></Ionicons>
             </TouchableOpacity> */}
             <View style={{marginTop:'-6%'}}>
-                <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: props.currentUserData.avatar}}/>
+                <Image style={{...profileStyles.profilePic, width: 120, height: 125, marginTop: '10%', marginBottom: '0%', borderRadius: 60}}  source={{uri: props.currentUserData.avatar}} testID={"GobbleImage"}/>
                 <TouchableOpacity onPress={() => {
                     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small)
                     updateImage();
@@ -189,12 +189,14 @@ if (loading) {
                     style={{alignSelf: 'center', marginLeft: '23%',
                     marginRight:'1.8%',
                     marginBottom: '1.5%',
-                    marginTop: '-6.5%'}}>
-                <AntDesign name='pluscircle' style={{marginLeft:'4%'}} size={20} color={themes.oppositeTheme(isLight)}></AntDesign>
+                    marginTop: '-6.5%'}}
+                    testID={'ToUpdateImageButton'}
+                    >
+                <AntDesign name='pluscircle' style={{marginLeft:'4%'}} size={20} testID={'ToUpdateImageButtonIcon'} color={themes.oppositeTheme(isLight)}></AntDesign>
                 </TouchableOpacity>
             </View>
-            <Text style={[{...inputStyles.headerText, fontWeight:'400', marginBottom: '0%',fontSize: 26}, themes.textTheme(isLight)]}>{`${props.currentUserData.name}, ${getAge(props.currentUserData.dob)}`}</Text>
-            <Text style={[{...inputStyles.headerText, fontWeight: '300', marginBottom: '2%',fontSize: 16}, themes.textTheme(isLight)]}>{`${INDUSTRY_CODES[props.currentUserData.industry]}`}</Text>
+            <Text testID={'NameAgeText'} style={[{...inputStyles.headerText, fontWeight:'400', marginBottom: '0%',fontSize: 26}, themes.textTheme(isLight)]}>{`${props.currentUserData.name}, ${getAge(props.currentUserData.dob)}`}</Text>
+            <Text testID={'IndustryText'} style={[{...inputStyles.headerText, fontWeight: '300', marginBottom: '2%',fontSize: 16}, themes.textTheme(isLight)]}>{`${INDUSTRY_CODES[props.currentUserData.industry]}`}</Text>
             <Tab.Navigator 
                 initialRouteName="Ongoing" 
                 style={{marginTop: '0%',paddingTop:'0%', backgroundColor:themes.oppositeTheme(!isLight)}}
