@@ -69,7 +69,7 @@ function AboutPerson(props, { navigation }) {
         );
     } else {
         return (
-            <SafeAreaView>
+            <SafeAreaView style={[{height: '100%'}, themes.containerTheme(isLight)]}>
             <View style={[profileStylesAddition.container, themes.containerTheme(isLight)]}>
                 <View style={{...profileStylesAddition.item}}>
                 <Input label='Name' labelStyle={[profileStylesAddition.labelStyle, {color:themes.oppositeTheme(isLight), borderBottomColor: themes.oppositeTheme(isLight),}]} style={[profileStylesAddition.inputStyle, {backgroundColor: themes.oppositeTheme(!isLight), color: themes.oppositeTheme(isLight)}]} value={otherUser.name} editable={false}></Input>

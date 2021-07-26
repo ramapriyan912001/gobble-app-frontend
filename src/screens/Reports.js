@@ -83,7 +83,7 @@ export default function Reports (props, {navigation}) {
     // const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     
     return (
-      <SafeAreaView style={[themes.containerTheme(isLight), styles.container]}>
+      <SafeAreaView style={[{height: '100%', flex: 1}, themes.containerTheme(isLight)]}>
           <FlatList
             extraData={selectedID}
             data={data}

@@ -113,7 +113,7 @@ import {styles} from '.././styles/ProfileStyles';
     }, [navigation])
     
     return (
-      <SafeAreaView>
+      <SafeAreaView style={[{height: '100%'}, themes.containerTheme(isLight)]}>
           <FlatList
             data={data}
             extraData={selectedID}

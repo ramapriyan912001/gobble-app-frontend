@@ -97,7 +97,7 @@ export default function BlockedUsers (props, {navigation}) {
         )
     if(data.length != 0) {
       return (
-        <SafeAreaView style={[themes.containerTheme(isLight)]}>
+        <SafeAreaView style={[{height: '100%'}, themes.containerTheme(isLight)]}>
             <FlatList
               data={data}
               extraData={selectedID}

@@ -83,7 +83,7 @@ export default function ComplaintHistory (props, {navigation}) {
     // const pickImage = item => FOOD_IMAGES_URIs[item.cuisinePreference];
     
     return (
-      <SafeAreaView style={themes.containerTheme(isLight)}>
+      <SafeAreaView style={[{height: '100%'}, themes.containerTheme(isLight)]}>
           <FlatList
             extraData={selectedID}
             data={data}
