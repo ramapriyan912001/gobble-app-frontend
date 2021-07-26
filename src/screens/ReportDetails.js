@@ -7,6 +7,7 @@ import * as Haptics from 'expo-haptics';
 import { useColorScheme } from 'react-native-appearance';
 import themes from '../styles/Themes';
 import {styles} from '../styles/ProfileStyles';
+import Loader from 'react-native-three-dots-loader'
 
 export default function ReportDetails(props) {
     const colorScheme = useColorScheme();
@@ -15,6 +16,7 @@ export default function ReportDetails(props) {
     const [text, setText] = useState(props.route.params.complaint.description)
     const [reason, setReason] = useState(REASONS[props.route.params.complaint.reason])
     const [buttons, setButtons] = useState(props.route.params.buttons)
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setButtons(props.route.params.buttons)
@@ -23,99 +25,109 @@ export default function ReportDetails(props) {
     const dateStringMaker = (date) => {
         return date.slice(4, 15)
     }
-
-    return (
-        <ScrollView scrollEnabled={true} style={themes.containerTheme(isLight)} contentContainerStyle={Platform.OS == 'android'? {flex:1}:{}}>
-            <View style={Platform.OS == 'ios' ? {marginTop: '3%',} : {marginTop: '1%'}}>
-                <Text style={[specificStyles.headerText, themes.textTheme(isLight)]}>Why do you wish to report the user?</Text>
-                <TextInput
-                style={[{...specificStyles.input, borderColor:themes.editTheme(!isLight)}, themes.textTheme(isLight)]}
-                textAlignVertical='top'
-                autoCapitalize='sentences'
-                multiline
-                editable={false}
-                placeholder='Give a short description of why you believe the user should be reported.'
-                placeholderTextColor={themes.oppositeTheme(isLight)}
-                value={reason}
-                />
-            </View>
-            <View style={Platform.OS == 'ios' ? {marginTop: '-8%', marginLeft:'0%', marginRight: '1%', marginBottom:'45%'} : {marginTop: '-18%', paddingRight: '5%'}}>
-                <Text style={[specificStyles.headerText, themes.textTheme(isLight)]}>Please describe why you wish to report this user.</Text>
-                <TextInput
-                style={[{...specificStyles.input, borderColor:themes.editTheme(!isLight)}, themes.textTheme(isLight)]}
-                textAlignVertical='top'
-                autoCapitalize='sentences'
-                multiline
-                editable={false}
-                placeholderTextColor={themes.oppositeTheme(isLight)}
-                placeholder='Give a short description of why you believe the user should be reported.'
-                value={text}
-                />
-            </View>
-            {buttons &&
-                <View style={Platform.OS == 'android'?{marginTop: '-10%'}:{marginTop:'-17%'}}>
-                    <Text style={[{...specificStyles.headerText,marginLeft:'3%',  fontSize:20, marginTop: '-10%'}, themes.textTheme(isLight)]}>
-                        {`This user has had ${props.route.params.complaintCount} complaints against them since joining in ${dateStringMaker(props.route.params.datetime)}`}</Text>
+    if(loading) {
+        return (
+            <SafeAreaView style={[{flex: 1, justifyContent: 'center', alignItems: 'center', alignContent: 'center'}, themes.containerTheme(isLight)]}>
+              <Loader background={themes.editTheme(isLight)} activeBackground={themes.oppositeTheme(isLight)}/>
+            </SafeAreaView>
+          );
+    } else {
+        return (
+            <ScrollView scrollEnabled={true} style={themes.containerTheme(isLight)} contentContainerStyle={Platform.OS == 'android'? {flex:1}:{}}>
+                <View style={Platform.OS == 'ios' ? {marginTop: '3%',} : {marginTop: '1%'}}>
+                    <Text style={[specificStyles.headerText, themes.textTheme(isLight)]}>Why do you wish to report the user?</Text>
+                    <TextInput
+                    style={[{...specificStyles.input, borderColor:themes.editTheme(!isLight)}, themes.textTheme(isLight)]}
+                    textAlignVertical='top'
+                    autoCapitalize='sentences'
+                    multiline
+                    editable={false}
+                    placeholder='Give a short description of why you believe the user should be reported.'
+                    placeholderTextColor={themes.oppositeTheme(isLight)}
+                    value={reason}
+                    />
                 </View>
-            }
-            {buttons &&
-            <View>
-            <TouchableOpacity 
-                style={[{...styles.longButton, marginTop: '0%'}, themes.buttonTheme(isLight)]} 
-                onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                    Alert.alert(`Are you sure you wish to delete the user's account?`, 'This action is irreversible.', [
-                    {
-                    text: "No",
-                    onPress: () => console.log('cancel pressed'),
-                    style: "cancel"
-                    },
-                    { text: "Yes", onPress: async() => {
-                        // TODO VISHNU
-                            const success = await firebaseSvc.adminDeleteAnotherUser(defendant);
-                            if (success) {
-                                await firebaseSvc.deleteReport(props.route.params.id);
-                                await Alert.alert('Report Deleted.', 'User Deleted.');
-                                props.navigation.navigate('Reports');
-                            } else {
-                                await Alert.alert('Failed to Delete', 'Check Logs');
-                            }
-                        }
-                    }
-                ])
-            }}>
-                <Text style={themes.textTheme(!isLight)}>Delete User Account</Text>
-            </TouchableOpacity>
-            </View>
-            }
-            {buttons &&
-            <View>
-            <TouchableOpacity 
-                style={[{...styles.longButton, marginTop: '3%'}, themes.buttonTheme(isLight)]} 
-                onPress={() => {
-                    Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
-                    Alert.alert(`Are you sure you wish to report the user?`, 'The user will be blocked automatically.', [
+                <View style={Platform.OS == 'ios' ? {marginTop: '-8%', marginLeft:'0%', marginRight: '1%', marginBottom:'45%'} : {marginTop: '-18%', paddingRight: '5%'}}>
+                    <Text style={[specificStyles.headerText, themes.textTheme(isLight)]}>Please describe why you wish to report this user.</Text>
+                    <TextInput
+                    style={[{...specificStyles.input, borderColor:themes.editTheme(!isLight)}, themes.textTheme(isLight)]}
+                    textAlignVertical='top'
+                    autoCapitalize='sentences'
+                    multiline
+                    editable={false}
+                    placeholderTextColor={themes.oppositeTheme(isLight)}
+                    placeholder='Give a short description of why you believe the user should be reported.'
+                    value={text}
+                    />
+                </View>
+                {buttons &&
+                    <View style={Platform.OS == 'android'?{marginTop: '-10%'}:{marginTop:'-17%'}}>
+                        <Text style={[{...specificStyles.headerText,marginLeft:'3%',  fontSize:20, marginTop: '-10%'}, themes.textTheme(isLight)]}>
+                            {`This user has had ${props.route.params.complaintCount} complaints against them since joining in ${dateStringMaker(props.route.params.datetime)}`}</Text>
+                    </View>
+                }
+                {buttons &&
+                <View>
+                <TouchableOpacity 
+                    style={[{...styles.longButton, marginTop: '0%'}, themes.buttonTheme(isLight)]} 
+                    onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                        Alert.alert(`Are you sure you wish to delete the user's account?`, 'This action is irreversible.', [
                         {
                         text: "No",
                         onPress: () => console.log('cancel pressed'),
                         style: "cancel"
                         },
                         { text: "Yes", onPress: async() => {
-                            console.log("No action taken")
-                            // Not tested yet
-                            await firebaseSvc.deleteReport(props.route.params.id);
-                            await Alert.alert('Report Deleted.', 'No action taken.');
-                            props.navigation.navigate('Reports')
+                                setLoading(true)
+                                const success = await firebaseSvc.adminDeleteAnotherUser(defendant);
+                                setLoading(false)
+                                if (success) {
+                                    await firebaseSvc.deleteReport(props.route.params.id);
+                                    await Alert.alert('Report Deleted.', 'User Deleted.');
+                                    props.navigation.navigate('Reports');
+                                } else {
+                                    await Alert.alert('Failed to Delete', 'Check Logs');
+                                }
+                            }
                         }
-                        }
-                    ]);
-            }}>
-                <Text style={themes.textTheme(!isLight)}>No Action</Text>
-            </TouchableOpacity>
-            </View>
-            }
-        </ScrollView>
-    )
+                    ])
+                }}>
+                    <Text style={themes.textTheme(!isLight)}>Delete User Account</Text>
+                </TouchableOpacity>
+                </View>
+                }
+                {buttons &&
+                <View>
+                <TouchableOpacity 
+                    style={[{...styles.longButton, marginTop: '3%'}, themes.buttonTheme(isLight)]} 
+                    onPress={() => {
+                        Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Small);
+                        Alert.alert(`Are you sure you wish to not take any action upon this user?`, '', [
+                            {
+                            text: "No",
+                            onPress: () => console.log('cancel pressed'),
+                            style: "cancel"
+                            },
+                            { text: "Yes", onPress: async() => {
+                                console.log("No action taken")
+                                // Not tested yet
+                                setLoading(true)
+                                await firebaseSvc.deleteReport(props.route.params.id);
+                                setLoading(false)
+                                await Alert.alert('Report Deleted.', 'No action taken.');
+                                props.navigation.navigate('Reports')
+                            }
+                            }
+                        ]);
+                }}>
+                    <Text style={themes.textTheme(!isLight)}>No Action</Text>
+                </TouchableOpacity>
+                </View>
+                }
+            </ScrollView>
+        )
+    }
 }
 
 const specificStyles = StyleSheet.create({

@@ -722,6 +722,7 @@ class FirebaseSvc {
       .then(async idToken => {
         const blockUserFunction = await firebase.functions().httpsCallable('blockUser')
         let response = await blockUserFunction({otherUid: otherUid, idToken: idToken, otherUserNameAndAvatar: otherUserNameAndAvatar})
+        console.log(response)
         return response.data.message;
       })
     } catch(err) {
