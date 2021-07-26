@@ -115,7 +115,7 @@ export default function MatchesHistory (props, {navigation}) {
                       <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${item.cuisinePreference} cuisine`}</ListItem.Subtitle>
                       <ListItem.Subtitle style={themes.textTheme(isLight)}>{`${dateStringMaker(item.datetime)}`}</ListItem.Subtitle>
                     </ListItem.Content>
-                    <MaterialIcons size={28} name='restaurant-menu'></MaterialIcons>
+                    <MaterialIcons size={28} color={isLight ? '#000000' : '#ffffff'} name='restaurant-menu'></MaterialIcons>
                   </ListItem>
                 </TouchableOpacity>
               )}
